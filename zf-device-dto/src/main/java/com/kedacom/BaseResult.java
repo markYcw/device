@@ -34,7 +34,7 @@ public class BaseResult<T> implements Serializable {
     }
 
 
-    public static <T> BaseResult<T> builder(int errCode, String errMsg, T data) {
+    private static <T> BaseResult<T> builder(int errCode, String errMsg, T data) {
         return new BaseResult<>(errCode, errMsg, data);
     }
 

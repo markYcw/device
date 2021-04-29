@@ -12,5 +12,24 @@
     <artifactId>zf-device-web</artifactId>
     <description>项目web统一访问模块</description>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.kedacom</groupId>
+            <artifactId>zf-device-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kedacom</groupId>
+            <artifactId>zf-device-dto</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
 </project>

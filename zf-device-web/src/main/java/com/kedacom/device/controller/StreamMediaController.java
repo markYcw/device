@@ -83,28 +83,28 @@ public class StreamMediaController {
         return streamMediaService.queryAudioMix(queryAudioMixRequestDTO);
     }
 
-    @ApiOperation("开始画面合成（不支持语音激励功能）")
+    @ApiOperation("开始画面合成")
     @PostMapping("/startVideoMix")
     public BaseResult<String> startVideoMix(@Valid @RequestBody StartVideoMixRequestDTO startVideoMixRequestDTO, BindingResult br){
         ValidUtils.paramValid(br);
         return streamMediaService.startVideoMix(startVideoMixRequestDTO);
     }
 
-    @ApiOperation("停止画面合成（不支持语音激励功能）")
+    @ApiOperation("停止画面合成")
     @PostMapping("/stopVideoMix")
     public BaseResult<Boolean> stopVideoMix(@Valid @RequestBody StopVideoMixRequestDTO stopVideoMixRequestDTO, BindingResult br){
         ValidUtils.paramValid(br);
         return streamMediaService.stopVideoMix(stopVideoMixRequestDTO);
     }
 
-    @ApiOperation("更新画面合成（不支持语音激励功能）")
+    @ApiOperation("更新画面合成")
     @PostMapping("/updateVideoMix")
     public BaseResult<Boolean> updateVideoMix(@Valid @RequestBody UpdateVideoMixRequestDTO updateVideoMixRequestDTO, BindingResult br){
         ValidUtils.paramValid(br);
         return streamMediaService.updateVideoMix(updateVideoMixRequestDTO);
     }
 
-    @ApiOperation("查询所有画面合成（不支持语音激励功能）")
+    @ApiOperation("查询所有画面合成")
     @PostMapping("/queryAllVideoMix")
     public BaseResult<List<String>> queryAllVideoMix(@RequestParam("unitId") String unitId){
         if (StringUtils.isBlank(unitId)){
@@ -113,7 +113,7 @@ public class StreamMediaController {
         return streamMediaService.queryAllVideoMix(unitId);
     }
 
-    @ApiOperation("查询画面信息（不支持语音激励功能）")
+    @ApiOperation("查询画面合成信息")
     @PostMapping("/queryVideoMix")
     public BaseResult<QueryVideoMixResponseVO> queryVideoMix(@Valid @RequestBody QueryVideoMixRequestDTO queryVideoMixRequestDTO, BindingResult br){
         ValidUtils.paramValid(br);

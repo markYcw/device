@@ -79,7 +79,7 @@ public interface StreamMediaInterface {
     BaseResult<QueryAudioMixResponseVO> queryAudioMix(String ssid, QueryAudioMixRequestDTO queryAudioMixRequestDTO);
 
     /**
-     *  开始画面合成（不支持语音激励功能）
+     *  开始画面合成
      * @param ssid
      * @param startVideoMixRequestDTO
      * @return StartVideoMixResponseVO
@@ -87,7 +87,7 @@ public interface StreamMediaInterface {
     BaseResult<String> startVideoMix(String ssid, StartVideoMixRequestDTO startVideoMixRequestDTO);
 
     /**
-     * 停止画面合成（不支持语音激励功能）
+     * 停止画面合成
      * @param ssid
      * @param stopVideoMixRequestDTO
      * @return Boolean
@@ -95,7 +95,7 @@ public interface StreamMediaInterface {
     BaseResult<Boolean> stopVideoMix(String ssid, StopVideoMixRequestDTO stopVideoMixRequestDTO);
 
     /**
-     * 更新画面合成（不支持语音激励功能）
+     * 更新画面合成
      * @param ssid
      * @param updateVideoMixRequestDTO
      * @return Boolean
@@ -103,14 +103,14 @@ public interface StreamMediaInterface {
     BaseResult<Boolean> updateVideoMix(String ssid, UpdateVideoMixRequestDTO updateVideoMixRequestDTO);
 
     /**
-     * 查询所有画面合成（不支持语音激励功能）
+     * 查询所有画面合成
      * @param ssid
      * @return List<String> 合成ID集合
      */
     BaseResult<List<String>> queryAllVideoMix(String ssid);
 
     /**
-     * 查询画面信息（不支持语音激励功能）
+     * 查询画面信息
      * @param ssid
      * @param queryVideoMixRequestDTO
      * @return QueryVideoMixResponseVO

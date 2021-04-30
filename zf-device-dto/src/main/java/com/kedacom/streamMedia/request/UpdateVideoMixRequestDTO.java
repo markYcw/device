@@ -35,6 +35,9 @@ public class UpdateVideoMixRequestDTO implements Serializable {
     @ApiModelProperty("画面是否拉伸铺满。0-否  1-是")
     private Integer fullWindow;
 
+    @ApiModelProperty("是否支持语音激励VIP合成:0-不支持，默认;1-支持语音激励")
+    private Integer vad;
+
     @ApiModelProperty("画布内容")
     private DrawText drawText;
 

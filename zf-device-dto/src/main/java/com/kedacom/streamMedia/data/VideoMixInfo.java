@@ -1,27 +1,19 @@
-package com.kedacom.streamMedia.request;
+package com.kedacom.streamMedia.data;
 
-import com.kedacom.streamMedia.data.DrawText;
-import com.kedacom.streamMedia.data.VideoMixer;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * @Auther: hxj
- * @Date: 2021/4/30 14:11
+ * @Date: 2021/4/30 15:38
  */
 @Data
-public class StartVideoMixRequestDTO implements Serializable {
-
-    @NotBlank(message = "统一平台Id不能为空")
-    @ApiModelProperty("统一平台Id，必填")
-    private String unitId;
+public class VideoMixInfo {
 
     @ApiModelProperty("使用32位UUID（无横线）")
-    private String GroupID;
+    private String mixID;
 
     @ApiModelProperty("画面合成风格")
     private Integer layout;
@@ -43,7 +35,7 @@ public class StartVideoMixRequestDTO implements Serializable {
     @ApiModelProperty("画布内容")
     private DrawText drawText;
 
-    @ApiModelProperty("参与画面合成的终端ID(最大数目为 25路，实际路数依赖硬件性能)")
-    private List<VideoMixer> mixerList;
+    @ApiModelProperty("画面合成信息")
+    private List<VideoMixer> videoMixList;
 
 }

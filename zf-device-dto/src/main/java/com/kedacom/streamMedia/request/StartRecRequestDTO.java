@@ -4,6 +4,7 @@ import com.kedacom.streamMedia.data.BackgroundPicParam;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -11,9 +12,13 @@ import java.io.Serializable;
  * @Date: 2021/4/29 18:45
  */
 @Data
-public class StartrecRequestDTO implements Serializable {
+public class StartRecRequestDTO implements Serializable {
 
-    @ApiModelProperty("设备ID")
+    @NotBlank(message = "统一平台Id不能为空")
+    @ApiModelProperty("统一平台Id，必填")
+    private String unitId;
+
+    @ApiModelProperty("具体设备ID")
     private String deviceId;
 
     @ApiModelProperty("录像保存天数")

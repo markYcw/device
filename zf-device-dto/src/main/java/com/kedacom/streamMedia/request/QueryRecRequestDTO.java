@@ -3,6 +3,7 @@ package com.kedacom.streamMedia.request;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -10,12 +11,18 @@ import java.io.Serializable;
  * @Date: 2021/4/29 19:44
  */
 @Data
-public class QueryrecRequestDTO implements Serializable {
+public class QueryRecRequestDTO implements Serializable {
 
-    @ApiModelProperty("设备ID")
+    @NotBlank(message = "统一平台Id不能为空")
+    @ApiModelProperty("统一平台Id，必填")
+    private String unitId;
+
+    @ApiModelProperty("具体设备ID")
     private String deviceId;
 
-    @ApiModelProperty("域ID、在跨域访问场景必填")
+    @ApiModelProperty(value = "域ID。*在跨域访问场景必填" +
+            "deviceID不为空时选填，表示交换节点（resourceID）所在的流媒体微服务和目标设备不在同一网络环境中，且需要通过目标设备所在域的指定流媒体微服务（nmedia_id）才能正确获取目标设备的音视频码流。" +
+            "若nmedia_id=0或不填，表示交换节点所在的流媒体微服务和目标视频源在同一网络中，通过本流媒体微服务上交换节点即可获取到目标设备的音视频码流")
     private String nmediaId;
 
     @ApiModelProperty("查询录像的开始时间，日期格式为:YYYY-MM-DDThh:mm:ss，如：2020-10-01T00:00:00(建议每次查询的录像时间段不大于2天)")

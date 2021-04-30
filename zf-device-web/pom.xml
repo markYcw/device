@@ -26,5 +26,10 @@
             <artifactId>zf-device-core</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.kedacom</groupId>
+            <artifactId>zf-device-common</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 </project>

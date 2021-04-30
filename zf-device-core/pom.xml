@@ -12,5 +12,12 @@
     <artifactId>zf-device-core</artifactId>
     <description>设备核心业务模块</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.kedacom</groupId>
+            <artifactId>zf-device-acl</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -12,5 +12,12 @@
     <artifactId>zf-device-acl</artifactId>
     <description>设备支撑抽象模块</description>
 
+    <dependencies>
+            <dependency>
+                <groupId>com.kedacom</groupId>
+                <artifactId>zf-device-dto</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+    </dependencies>
 
 </project>

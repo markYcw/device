@@ -2,10 +2,7 @@ package com.kedacom.device.service;
 
 import com.kedacom.BaseResult;
 import com.kedacom.streamMedia.request.*;
-import com.kedacom.streamMedia.response.QueryAudioMixResponseVO;
-import com.kedacom.streamMedia.response.QueryrecResponseVO;
-import com.kedacom.streamMedia.response.StartAudioMixResponseVO;
-import com.kedacom.streamMedia.response.StartrecResponseVO;
+import com.kedacom.streamMedia.response.*;
 
 import java.util.List;
 
@@ -15,13 +12,13 @@ import java.util.List;
  */
 public interface StreamMediaService {
 
-    BaseResult<StartrecResponseVO> startRec(StartRecRequestDTO startrecRequestDTO);
+    BaseResult<StartRecResponseVO> startRec(StartRecRequestDTO startrecRequestDTO);
 
     BaseResult<Boolean> stopRec(StopRecRequestDTO stoprecRequestDTO);
 
-    BaseResult<QueryrecResponseVO> queryRec(QueryRecRequestDTO queryrecRequestDTO);
+    BaseResult<QueryRecResponseVO> queryRec(QueryRecRequestDTO queryrecRequestDTO);
 
-    BaseResult<StartAudioMixResponseVO> startAudioMix(StartAudioMixRequestDTO startAudioMixRequestDTO);
+    BaseResult<String> startAudioMix(StartAudioMixRequestDTO startAudioMixRequestDTO);
 
     BaseResult<Boolean> stopAudioMix(StopAudioMixRequestDTO stopAudioMixRequestDTO);
 
@@ -30,5 +27,15 @@ public interface StreamMediaService {
     BaseResult<List<String>> queryAllAudioMix(QueryAllAudioMixRequestDTO queryAllAudioMixRequestDTO);
 
     BaseResult<QueryAudioMixResponseVO> queryAudioMix(QueryAudioMixRequestDTO queryAudioMixRequestDTO);
+
+    BaseResult<String> startVideoMix(StartVideoMixRequestDTO startVideoMixRequestDTO);
+
+    BaseResult<Boolean> stopVideoMix(StopVideoMixRequestDTO stopVideoMixRequestDTO);
+
+    BaseResult<Boolean> updateVideoMix(UpdateVideoMixRequestDTO updateVideoMixRequestDTO);
+
+    BaseResult<List<String>> queryAllVideoMix(String unitId);
+
+    BaseResult<QueryVideoMixResponseVO> queryVideoMix(QueryVideoMixRequestDTO queryVideoMixRequestDTO);
 
 }

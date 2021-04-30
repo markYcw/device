@@ -2,10 +2,7 @@ package com.kedacom.acl.network.unite;
 
 import com.kedacom.BaseResult;
 import com.kedacom.streamMedia.request.*;
-import com.kedacom.streamMedia.response.QueryAudioMixResponseVO;
-import com.kedacom.streamMedia.response.QueryrecResponseVO;
-import com.kedacom.streamMedia.response.StartAudioMixResponseVO;
-import com.kedacom.streamMedia.response.StartrecResponseVO;
+import com.kedacom.streamMedia.response.*;
 
 import java.util.List;
 
@@ -23,7 +20,7 @@ public interface StreamMediaInterface {
      * @param startrecRequestDTO
      * @return StartrecResponseVO
      */
-    BaseResult<StartrecResponseVO> startRec(String ssid, StartRecRequestDTO startrecRequestDTO);
+    BaseResult<StartRecResponseVO> startRec(String ssid, StartRecRequestDTO startrecRequestDTO);
 
     /**
      * 停止录像
@@ -39,7 +36,7 @@ public interface StreamMediaInterface {
      * @param queryrecRequestDTO
      * @return QueryrecResponseVO
      */
-    BaseResult<QueryrecResponseVO> queryRec(String ssid, QueryRecRequestDTO queryrecRequestDTO);
+    BaseResult<QueryRecResponseVO> queryRec(String ssid, QueryRecRequestDTO queryrecRequestDTO);
 
     /**
      * 开启音频混音
@@ -47,7 +44,7 @@ public interface StreamMediaInterface {
      * @param startAudioMixRequestDTO
      * @return StartAudioMixResponseVO
      */
-    BaseResult<StartAudioMixResponseVO> startAudioMix(String ssid, StartAudioMixRequestDTO startAudioMixRequestDTO);
+    BaseResult<String> startAudioMix(String ssid, StartAudioMixRequestDTO startAudioMixRequestDTO);
 
     /**
      * 停止音频混音
@@ -80,5 +77,44 @@ public interface StreamMediaInterface {
      * @return QueryAudioMixResponseVO
      */
     BaseResult<QueryAudioMixResponseVO> queryAudioMix(String ssid, QueryAudioMixRequestDTO queryAudioMixRequestDTO);
+
+    /**
+     *  开始画面合成（不支持语音激励功能）
+     * @param ssid
+     * @param startVideoMixRequestDTO
+     * @return StartVideoMixResponseVO
+     */
+    BaseResult<String> startVideoMix(String ssid, StartVideoMixRequestDTO startVideoMixRequestDTO);
+
+    /**
+     * 停止画面合成（不支持语音激励功能）
+     * @param ssid
+     * @param stopVideoMixRequestDTO
+     * @return Boolean
+     */
+    BaseResult<Boolean> stopVideoMix(String ssid, StopVideoMixRequestDTO stopVideoMixRequestDTO);
+
+    /**
+     * 更新画面合成（不支持语音激励功能）
+     * @param ssid
+     * @param updateVideoMixRequestDTO
+     * @return Boolean
+     */
+    BaseResult<Boolean> updateVideoMix(String ssid, UpdateVideoMixRequestDTO updateVideoMixRequestDTO);
+
+    /**
+     * 查询所有画面合成（不支持语音激励功能）
+     * @param ssid
+     * @return List<String> 合成ID集合
+     */
+    BaseResult<List<String>> queryAllVideoMix(String ssid);
+
+    /**
+     * 查询画面信息（不支持语音激励功能）
+     * @param ssid
+     * @param queryVideoMixRequestDTO
+     * @return QueryVideoMixResponseVO
+     */
+    BaseResult<QueryVideoMixResponseVO> queryVideoMix(String ssid, QueryVideoMixRequestDTO queryVideoMixRequestDTO);
 
 }

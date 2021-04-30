@@ -3,6 +3,7 @@ package com.kedacom.streamMedia.data;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  * @Date: 2021/4/30 13:57
  */
 @Data
-public class AudioMixInfo {
+public class AudioMixInfo implements Serializable {
 
     @ApiModelProperty("混音ID")
     private String mixID;

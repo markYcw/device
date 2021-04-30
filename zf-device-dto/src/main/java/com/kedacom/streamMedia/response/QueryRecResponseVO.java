@@ -12,7 +12,7 @@ import java.util.List;
  * @Date: 2021/4/30 09:22
  */
 @Data
-public class QueryrecResponseVO implements Serializable {
+public class QueryRecResponseVO implements Serializable {
 
     @ApiModelProperty("查询到的录像总数")
    private Integer sumNumber;

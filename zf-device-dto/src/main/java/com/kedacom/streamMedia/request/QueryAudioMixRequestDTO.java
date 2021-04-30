@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
  * @Date: 2021/4/30 13:55
  */
 @Data
-public class QueryAudioMixRequestDTO {
+public class QueryAudioMixRequestDTO implements Serializable {
 
     @NotBlank(message = "统一平台Id不能为空")
     @ApiModelProperty("统一平台Id，必填")

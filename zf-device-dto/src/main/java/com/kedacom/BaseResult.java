@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 /**
  * 统一返回类
+ *
  * @author van.shu
  * @create 2021/4/23 13:37
  */
@@ -28,16 +29,18 @@ public class BaseResult<T> implements Serializable {
         return builder(0, null, data);
     }
 
-    public static <T> BaseResult<T> failed(int errCode, String errMsg, T data) {
-
-        return builder(errCode, errMsg, data);
+    public static <T> BaseResult<T> failed(String errMsg) {
+        return builder(0, errMsg, null);
     }
 
+
+    public static <T> BaseResult<T> failed(int errCode, String errMsg, T data) {
+        return builder(errCode, errMsg, data);
+    }
 
     private static <T> BaseResult<T> builder(int errCode, String errMsg, T data) {
         return new BaseResult<>(errCode, errMsg, data);
     }
-
 
     public BaseResult(int errCode, String errMsg, T data) {
         this.errCode = errCode;

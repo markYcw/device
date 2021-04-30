@@ -1,20 +1,15 @@
 package com.kedacom.device.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.service.StreamMediaService;
 import com.kedacom.streamMedia.request.*;
-import com.kedacom.streamMedia.response.QueryAudioMixResponseVO;
-import com.kedacom.streamMedia.response.QueryrecResponseVO;
-import com.kedacom.streamMedia.response.StartAudioMixResponseVO;
-import com.kedacom.streamMedia.response.StartrecResponseVO;
+import com.kedacom.streamMedia.response.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -34,7 +29,7 @@ public class StreamMediaController {
 
     @ApiOperation("开启录像")
     @PostMapping("/startRec")
-    public BaseResult<StartrecResponseVO> startRec(@Valid @RequestBody StartRecRequestDTO startrecRequestDTO, BindingResult br){
+    public BaseResult<StartRecResponseVO> startRec(@Valid @RequestBody StartRecRequestDTO startrecRequestDTO, BindingResult br){
         ValidUtils.paramValid(br);
         return streamMediaService.startRec(startrecRequestDTO);
     }
@@ -48,14 +43,14 @@ public class StreamMediaController {
 
     @ApiOperation("查询录像记录")
     @PostMapping("/queryRec")
-    public BaseResult<QueryrecResponseVO> queryRec(@Valid @RequestBody QueryRecRequestDTO queryrecRequestDTO, BindingResult br){
+    public BaseResult<QueryRecResponseVO> queryRec(@Valid @RequestBody QueryRecRequestDTO queryrecRequestDTO, BindingResult br){
         ValidUtils.paramValid(br);
         return streamMediaService.queryRec(queryrecRequestDTO);
     }
 
     @ApiOperation("开启音频混音")
     @PostMapping("/startAudioMix")
-    public BaseResult<StartAudioMixResponseVO> startAudioMix(@Valid @RequestBody StartAudioMixRequestDTO startAudioMixRequestDTO, BindingResult br){
+    public BaseResult<String> startAudioMix(@Valid @RequestBody StartAudioMixRequestDTO startAudioMixRequestDTO, BindingResult br){
         ValidUtils.paramValid(br);
         return streamMediaService.startAudioMix(startAudioMixRequestDTO);
     }
@@ -88,6 +83,41 @@ public class StreamMediaController {
         return streamMediaService.queryAudioMix(queryAudioMixRequestDTO);
     }
 
+    @ApiOperation("开始画面合成（不支持语音激励功能）")
+    @PostMapping("/startVideoMix")
+    public BaseResult<String> startVideoMix(@Valid @RequestBody StartVideoMixRequestDTO startVideoMixRequestDTO, BindingResult br){
+        ValidUtils.paramValid(br);
+        return streamMediaService.startVideoMix(startVideoMixRequestDTO);
+    }
 
+    @ApiOperation("停止画面合成（不支持语音激励功能）")
+    @PostMapping("/stopVideoMix")
+    public BaseResult<Boolean> stopVideoMix(@Valid @RequestBody StopVideoMixRequestDTO stopVideoMixRequestDTO, BindingResult br){
+        ValidUtils.paramValid(br);
+        return streamMediaService.stopVideoMix(stopVideoMixRequestDTO);
+    }
+
+    @ApiOperation("更新画面合成（不支持语音激励功能）")
+    @PostMapping("/updateVideoMix")
+    public BaseResult<Boolean> updateVideoMix(@Valid @RequestBody UpdateVideoMixRequestDTO updateVideoMixRequestDTO, BindingResult br){
+        ValidUtils.paramValid(br);
+        return streamMediaService.updateVideoMix(updateVideoMixRequestDTO);
+    }
+
+    @ApiOperation("查询所有画面合成（不支持语音激励功能）")
+    @PostMapping("/queryAllVideoMix")
+    public BaseResult<List<String>> queryAllVideoMix(@RequestParam("unitId") String unitId){
+        if (StringUtils.isBlank(unitId)){
+            return BaseResult.failed("统一平台id为空");
+        }
+        return streamMediaService.queryAllVideoMix(unitId);
+    }
+
+    @ApiOperation("查询画面信息（不支持语音激励功能）")
+    @PostMapping("/queryVideoMix")
+    public BaseResult<QueryVideoMixResponseVO> queryVideoMix(@Valid @RequestBody QueryVideoMixRequestDTO queryVideoMixRequestDTO, BindingResult br){
+        ValidUtils.paramValid(br);
+        return streamMediaService.queryVideoMix(queryVideoMixRequestDTO);
+    }
 
 }

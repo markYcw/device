@@ -1,5 +1,6 @@
 package com.kedacom.streamMedia.data;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ import java.util.List;
  * @Date: 2021/4/30 15:38
  */
 @Data
+@ApiModel("画面合成信息")
 public class VideoMixInfo {
 
     @ApiModelProperty("使用32位UUID（无横线）")

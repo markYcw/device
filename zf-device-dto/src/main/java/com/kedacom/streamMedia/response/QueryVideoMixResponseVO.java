@@ -1,8 +1,7 @@
 package com.kedacom.streamMedia.response;
 
-import com.kedacom.streamMedia.data.AudioMixInfo;
 import com.kedacom.streamMedia.data.VideoMixInfo;
-import com.kedacom.streamMedia.data.VideoMixer;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -14,6 +13,7 @@ import java.util.List;
  * @Date: 2021/4/30 15:05
  */
 @Data
+@ApiModel("查询画面合成信息应答")
 public class QueryVideoMixResponseVO implements Serializable {
 
     @ApiModelProperty("画面合成信息")

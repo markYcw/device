@@ -1,5 +1,6 @@
 package com.kedacom.streamMedia.data;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/4/30 14:13
  */
 @Data
+@ApiModel("画布内容")
 public class DrawText implements Serializable {
 
     @ApiModelProperty("是否叠加文本信息，默认值 0。0-不叠加；1-叠加。")

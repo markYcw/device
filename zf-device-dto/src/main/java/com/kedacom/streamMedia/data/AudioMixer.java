@@ -1,5 +1,6 @@
 package com.kedacom.streamMedia.data;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/4/30 09:38
  */
 @Data
+@ApiModel("混音成员资源")
 public class AudioMixer implements Serializable {
 
     @ApiModelProperty("参与混音方终端ID")

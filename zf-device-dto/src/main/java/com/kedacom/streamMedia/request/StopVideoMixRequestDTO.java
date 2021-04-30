@@ -1,5 +1,6 @@
 package com.kedacom.streamMedia.request;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * @Date: 2021/4/30 14:27
  */
 @Data
+@ApiModel("停止画面合成入参")
 public class StopVideoMixRequestDTO implements Serializable {
 
     @NotBlank(message = "统一平台Id不能为空")

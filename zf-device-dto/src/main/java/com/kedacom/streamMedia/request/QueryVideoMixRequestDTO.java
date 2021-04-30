@@ -1,5 +1,7 @@
 package com.kedacom.streamMedia.request;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -12,6 +14,7 @@ import java.util.List;
  * @Date: 2021/4/30 15:03
  */
 @Data
+@ApiModel("查询画面合成信息入参")
 public class QueryVideoMixRequestDTO implements Serializable {
 
     @NotBlank(message = "统一平台Id不能为空")

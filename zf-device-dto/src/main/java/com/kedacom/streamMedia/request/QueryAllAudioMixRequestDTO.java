@@ -1,5 +1,6 @@
 package com.kedacom.streamMedia.request;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
  * @Date: 2021/4/30 13:51
  */
 @Data
+@ApiModel("查询所有混音入参")
 public class QueryAllAudioMixRequestDTO implements Serializable {
 
     @NotBlank(message = "统一平台Id不能为空")

@@ -1,6 +1,7 @@
 package com.kedacom.streamMedia.request;
 
 import com.kedacom.streamMedia.data.BackgroundPicParam;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import java.io.Serializable;
  * @Date: 2021/4/29 18:45
  */
 @Data
+@ApiModel("开启录像入参")
 public class StartRecRequestDTO implements Serializable {
 
     @NotBlank(message = "统一平台Id不能为空")

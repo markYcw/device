@@ -1,6 +1,7 @@
 package com.kedacom.streamMedia.response;
 
 import com.kedacom.streamMedia.data.RecordInfo;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * @Date: 2021/4/30 09:22
  */
 @Data
+@ApiModel("查询录像记录应答")
 public class QueryRecResponseVO implements Serializable {
 
     @ApiModelProperty("查询到的录像总数")

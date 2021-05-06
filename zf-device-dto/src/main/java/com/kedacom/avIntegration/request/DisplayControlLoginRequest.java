@@ -1,18 +1,20 @@
 package com.kedacom.avIntegration.request;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 
 /**
  * @Auther: hxj
  * @Date: 2021/5/6 09:29
  */
 @Data
-@Api("显控服务登录入参")
-public class DisplayControlLoginRequest {
+@ApiModel("鉴权登录入参")
+public class DisplayControlLoginRequest implements Serializable {
 
     /**
      * 用户名 必填

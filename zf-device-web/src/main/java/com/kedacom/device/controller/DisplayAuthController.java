@@ -25,7 +25,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/v1/manage/system")
-@Api(value = "显控服务")
+@Api(value = "鉴权")
 public class DisplayAuthController {
 
     @Resource

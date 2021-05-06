@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel("鉴权登录入参")
-public class DisplayControlLoginRequest implements Serializable {
+public class SystemLoginRequest implements Serializable {
 
     /**
      * 用户名 必填

@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel("鉴权基本入参")
-public class DisplayControlBaseDTO implements Serializable {
+public class RequestBaseParam implements Serializable {
 
     @NotEmpty(message = "token令牌不能为空")
     @ApiModelProperty(value = "token令牌 - 必填")

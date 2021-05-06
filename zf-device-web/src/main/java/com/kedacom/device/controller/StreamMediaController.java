@@ -8,6 +8,7 @@ import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("device/streamMedia")
 @Api(value = "流媒体")
+@Slf4j
 public class StreamMediaController {
 
     @Resource
@@ -108,6 +110,7 @@ public class StreamMediaController {
     @PostMapping("/queryAllVideoMix")
     public BaseResult<List<String>> queryAllVideoMix(@RequestParam("unitId") String unitId){
         if (StringUtils.isBlank(unitId)){
+            log.error("统一平台id为空");
             return BaseResult.failed("统一平台id为空");
         }
         return streamMediaService.queryAllVideoMix(unitId);

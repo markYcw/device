@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.kedacom.device.msp.AuthFeign,\
+  com.kedacom.device.msp.TvWallManageFeign

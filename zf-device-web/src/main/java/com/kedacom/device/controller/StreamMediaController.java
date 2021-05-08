@@ -3,7 +3,7 @@ package com.kedacom.device.controller;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
-import com.kedacom.device.service.StreamMediaService;
+import com.kedacom.device.core.service.StreamMediaService;
 import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
 import io.swagger.annotations.Api;

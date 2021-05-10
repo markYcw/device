@@ -6,7 +6,7 @@ import com.kedacom.avIntegration.response.auth.SystemKeepAliveResponse;
 import com.kedacom.avIntegration.response.auth.SystemLogOutResponse;
 import com.kedacom.avIntegration.response.auth.SystemLoginResponse;
 import com.kedacom.avIntegration.response.auth.SystemVersionResponse;
-import com.kedacom.device.api.msp.fallback.SystemAuthFeignFallbackFactory;
+import com.kedacom.device.api.msp.fallback.SystemAuthApiFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @Auther: hxj
  * @Date: 2021/5/6 17:08
  */
-@FeignClient(contextId = "systemAuthFeign", path = "/api/v1/manage/system", fallbackFactory = SystemAuthFeignFallbackFactory.class)
-public interface SystemAuthFeign {
+@FeignClient(contextId = "systemAuthApi", path = "/api/v1/manage/system", fallbackFactory = SystemAuthApiFallbackFactory.class)
+public interface SystemAuthApi {
     /**
      * 登录显控服务
      *

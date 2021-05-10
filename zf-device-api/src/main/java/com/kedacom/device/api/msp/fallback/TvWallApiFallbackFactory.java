@@ -2,20 +2,20 @@ package com.kedacom.device.api.msp.fallback;
 
 import com.kedacom.avIntegration.request.tvwall.*;
 import com.kedacom.avIntegration.response.tvwall.*;
-import com.kedacom.device.api.msp.TvWallFeign;
+import com.kedacom.device.api.msp.TvWallApi;
 import feign.hystrix.FallbackFactory;
 
 /**
  * @Auther: hxj
  * @Date: 2021/5/6 18:58
  */
-public class TvWallFeignFallbackFactory implements FallbackFactory<TvWallFeign> {
+public class TvWallApiFallbackFactory implements FallbackFactory<TvWallApi> {
 
-    private TvWallFeign tvWallFeign;
+    private TvWallApi tvWallApi;
 
     @Override
-    public TvWallFeign create(Throwable cause) {
-      return new TvWallFeign() {
+    public TvWallApi create(Throwable cause) {
+      return new TvWallApi() {
           @Override
           public TvWallListResponse ls(TvWallListRequest request) {
               return null;

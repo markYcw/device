@@ -1,4 +1,4 @@
-package com.kedacom.device.msp.fallback;
+package com.kedacom.device.core.msp.fallback;
 
 import com.kedacom.avIntegration.request.RequestBaseParam;
 import com.kedacom.avIntegration.request.auth.SystemLoginRequest;
@@ -6,28 +6,30 @@ import com.kedacom.avIntegration.response.auth.SystemKeepAliveResponse;
 import com.kedacom.avIntegration.response.auth.SystemLogOutResponse;
 import com.kedacom.avIntegration.response.auth.SystemLoginResponse;
 import com.kedacom.avIntegration.response.auth.SystemVersionResponse;
-import com.kedacom.device.msp.AuthFeign;
-import com.kedacom.device.msp.exception.MspRemoteCallException;
+import com.kedacom.device.core.msp.SystemAuthSdk;
+import com.kedacom.device.core.msp.exception.MspRemoteCallException;
 import feign.hystrix.FallbackFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * @Auther: hxj
  * @Date: 2021/5/6 17:08
  */
-public class AuthFeignFallbackFactory implements FallbackFactory<AuthFeign> {
+@Component
+public class SystemAuthSdkFallbackFactory implements FallbackFactory<SystemAuthSdk> {
 
-    private volatile AuthFeign authFeign;
+    private volatile SystemAuthSdk systemAuthSdk;
 
     @Override
-    public AuthFeign create(Throwable cause) {
+    public SystemAuthSdk create(Throwable cause) {
 
-        if (this.authFeign == null) {
+        if (this.systemAuthSdk == null) {
 
-            synchronized (AuthFeignFallbackFactory.class) {
+            synchronized (SystemAuthSdkFallbackFactory.class) {
 
-                if (this.authFeign == null) {
+                if (this.systemAuthSdk == null) {
 
-                    this.authFeign = new AuthFeign() {
+                    this.systemAuthSdk = new SystemAuthSdk() {
                         @Override
                         public SystemLoginResponse login(SystemLoginRequest request) {
                             throw new MspRemoteCallException(cause.getMessage());
@@ -52,7 +54,7 @@ public class AuthFeignFallbackFactory implements FallbackFactory<AuthFeign> {
             }
         }
 
-        return this.authFeign;
+        return this.systemAuthSdk;
 
     }
 }

@@ -1,6 +1,6 @@
-package com.kedacom.device.msp.fallback;
+package com.kedacom.device.api.msp.fallback;
 
-import com.kedacom.device.msp.SchemeManageFeign;
+import com.kedacom.device.api.msp.SchemeManageFeign;
 import feign.hystrix.FallbackFactory;
 
 /**

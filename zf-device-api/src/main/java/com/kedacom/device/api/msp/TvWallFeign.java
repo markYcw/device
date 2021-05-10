@@ -1,8 +1,8 @@
-package com.kedacom.device.msp;
+package com.kedacom.device.api.msp;
 
 import com.kedacom.avIntegration.request.tvwall.*;
 import com.kedacom.avIntegration.response.tvwall.*;
-import com.kedacom.device.msp.fallback.TvWallManageFeignFallbackFactory;
+import com.kedacom.device.api.msp.fallback.TvWallFeignFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,12 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @Auther: hxj
  * @Date: 2021/5/6 18:57
  */
-@FeignClient(name = "msp",
-        contextId = "msp-tvwall",
-        url = "${zf.msp.server_addr}",
-        path = "/api/v1/manage/tvwall",
-        fallbackFactory = TvWallManageFeignFallbackFactory.class)
-public interface TvWallManageFeign {
+@FeignClient(contextId = "tvWallFeign", path = "/api/v1/manage/tvwall", fallbackFactory = TvWallFeignFallbackFactory.class)
+public interface TvWallFeign {
 
     /**
      * 获取所有大屏配置

@@ -1,4 +1,4 @@
-package com.kedacom.device.msp;
+package com.kedacom.device.api.msp;
 
 import com.kedacom.avIntegration.request.RequestBaseParam;
 import com.kedacom.avIntegration.request.auth.SystemLoginRequest;
@@ -6,7 +6,7 @@ import com.kedacom.avIntegration.response.auth.SystemKeepAliveResponse;
 import com.kedacom.avIntegration.response.auth.SystemLogOutResponse;
 import com.kedacom.avIntegration.response.auth.SystemLoginResponse;
 import com.kedacom.avIntegration.response.auth.SystemVersionResponse;
-import com.kedacom.device.msp.fallback.AuthFeignFallbackFactory;
+import com.kedacom.device.api.msp.fallback.SystemAuthFeignFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,12 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @Auther: hxj
  * @Date: 2021/5/6 17:08
  */
-@FeignClient(name = "msp",
-        contextId = "msp-auth",
-        url = "${zf.msp.server_addr}",
-        path = "/api/v1/manage/system",
-        fallbackFactory = AuthFeignFallbackFactory.class)
-public interface AuthFeign {
+@FeignClient(contextId = "systemAuthFeign", path = "/api/v1/manage/system", fallbackFactory = SystemAuthFeignFallbackFactory.class)
+public interface SystemAuthFeign {
     /**
      * 登录显控服务
      *

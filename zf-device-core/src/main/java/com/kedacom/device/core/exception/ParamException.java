@@ -1,4 +1,4 @@
-package com.kedacom.device.common.exception;
+package com.kedacom.device.core.exception;
 
 /**
  * @Auther: hxj

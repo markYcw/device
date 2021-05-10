@@ -13,12 +13,12 @@ import com.kedacom.avIntegration.response.auth.SystemVersionResponse;
  */
 public interface SystemAuthService {
 
-    SystemLoginResponse login(SystemLoginRequest request);
+    SystemLoginResponse login(SystemLoginRequest request) ;
 
-    SystemKeepAliveResponse keepAlive(RequestBaseParam request);
+    SystemKeepAliveResponse keepAlive(RequestBaseParam request) ;
 
-    SystemVersionResponse version(RequestBaseParam request);
+    SystemVersionResponse version(RequestBaseParam request) ;
 
-    SystemLogOutResponse logout(RequestBaseParam request);
+    SystemLogOutResponse logout(RequestBaseParam request) ;
 
 }

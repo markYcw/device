@@ -23,6 +23,13 @@ public class BaseResult<T> implements Serializable {
     @ApiModelProperty("具体结果数据")
     private T data;
 
+    public static <T> BaseResult<T> succeed() {
+        return builder(0, null, null);
+    }
+
+    public static <T> BaseResult<T> succeed(String errMsg) {
+        return builder(0, errMsg, null);
+    }
 
     public static <T> BaseResult<T> succeed(T data) {
 
@@ -33,6 +40,9 @@ public class BaseResult<T> implements Serializable {
         return builder(0, errMsg, null);
     }
 
+    public static <T> BaseResult<T> failed(int errCode, String errMsg) {
+        return builder(errCode, errMsg, null);
+    }
 
     public static <T> BaseResult<T> failed(int errCode, String errMsg, T data) {
         return builder(errCode, errMsg, data);

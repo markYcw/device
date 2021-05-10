@@ -1,20 +1,28 @@
 package com.kedacom.device.controller;
 
+import com.kedacom.BaseResult;
 import com.kedacom.avIntegration.request.RequestBaseParam;
 import com.kedacom.avIntegration.request.auth.SystemLoginRequest;
 import com.kedacom.avIntegration.response.auth.SystemKeepAliveResponse;
 import com.kedacom.avIntegration.response.auth.SystemLogOutResponse;
 import com.kedacom.avIntegration.response.auth.SystemLoginResponse;
 import com.kedacom.avIntegration.response.auth.SystemVersionResponse;
+import com.kedacom.avIntegration.vo.auth.SystemLoginVO;
+import com.kedacom.avIntegration.vo.auth.SystemVersionVO;
+import com.kedacom.device.core.utils.ValidUtils;
+import com.kedacom.device.core.convert.SystemAuthConvert;
 import com.kedacom.device.core.service.SystemAuthService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 /**
  * @Auther: hxj
@@ -37,8 +45,12 @@ public class SystemAuthController {
      */
     @PostMapping("login")
     @ApiOperation("登录显控统一服务，获取令牌")
-    public SystemLoginResponse login(@RequestBody SystemLoginRequest request) {
-        return systemAuthService.login(request);
+    public BaseResult<SystemLoginVO> login(@Valid @RequestBody SystemLoginRequest request, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        SystemLoginResponse response = systemAuthService.login(request);
+        SystemLoginVO systemLoginVO = SystemAuthConvert.INSTANCE.loginResponseToLoginVo(response);
+        return BaseResult.succeed(systemLoginVO);
     }
 
     /**
@@ -50,8 +62,11 @@ public class SystemAuthController {
      */
     @PostMapping("keepalive")
     @ApiOperation("成功登陆后，用户有效期为30m，需手动调用该接口保持心跳")
-    public SystemKeepAliveResponse keepAlive(@RequestBody RequestBaseParam request) {
-        return systemAuthService.keepAlive(request);
+    public BaseResult<SystemKeepAliveResponse> keepAlive(@Valid @RequestBody RequestBaseParam request, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        SystemKeepAliveResponse response = systemAuthService.keepAlive(request);
+        return BaseResult.succeed();
     }
 
     /**
@@ -62,8 +77,12 @@ public class SystemAuthController {
      */
     @PostMapping("version")
     @ApiOperation("显控统一服务API版本号")
-    public SystemVersionResponse version(@RequestBody RequestBaseParam request) {
-        return systemAuthService.version(request);
+    public BaseResult<SystemVersionVO> version(@Valid @RequestBody RequestBaseParam request, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        SystemVersionResponse response = systemAuthService.version(request);
+        SystemVersionVO systemVersionVO = SystemAuthConvert.INSTANCE.versionResponseToLoginVo(response);
+        return BaseResult.succeed(systemVersionVO);
     }
 
     /**
@@ -74,8 +93,11 @@ public class SystemAuthController {
      */
     @PostMapping("logout")
     @ApiOperation("退出显控统一服务，关闭令牌")
-    public SystemLogOutResponse logout(@RequestBody RequestBaseParam request) {
-        return systemAuthService.logout(request);
+    public BaseResult<SystemLogOutResponse> logout(@Valid @RequestBody RequestBaseParam request, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        SystemLogOutResponse logout = systemAuthService.logout(request);
+        return BaseResult.succeed();
     }
 
 }

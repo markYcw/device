@@ -6,6 +6,7 @@ import com.kedacom.avIntegration.response.auth.SystemKeepAliveResponse;
 import com.kedacom.avIntegration.response.auth.SystemLogOutResponse;
 import com.kedacom.avIntegration.response.auth.SystemLoginResponse;
 import com.kedacom.avIntegration.response.auth.SystemVersionResponse;
+import com.kedacom.device.core.msp.config.FeignConfig;
 import com.kedacom.device.core.msp.fallback.SystemAuthSdkFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
         contextId = "msp-auth",
         url = "${zf.msp.server_addr}",
         path = "/api/v1/manage/system",
-        fallbackFactory = SystemAuthSdkFallbackFactory.class)
+        fallbackFactory = SystemAuthSdkFallbackFactory.class,
+        configuration = FeignConfig.class)
 public interface SystemAuthSdk {
     /**
      * 登录显控服务

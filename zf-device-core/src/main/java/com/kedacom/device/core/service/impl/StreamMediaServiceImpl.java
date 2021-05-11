@@ -8,9 +8,9 @@ import com.kedacom.streamMedia.response.QueryRecResponseVO;
 import com.kedacom.streamMedia.response.QueryVideoMixResponseVO;
 import com.kedacom.streamMedia.response.StartRecResponseVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -21,7 +21,7 @@ import java.util.List;
 @Service
 public class StreamMediaServiceImpl implements StreamMediaService {
 
-    @Resource
+    @Autowired
     private StreamMediaInterface streamMediaInterface;
 
     @Override

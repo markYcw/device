@@ -11,4 +11,8 @@ public class UniteAclImpl extends BaseUniteAcl {
     private UniteDeviceClient client;
 
 
+    @Override
+    public void test2() {
+
+    }
 }

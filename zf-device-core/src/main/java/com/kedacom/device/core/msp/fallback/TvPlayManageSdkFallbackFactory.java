@@ -2,14 +2,16 @@ package com.kedacom.device.core.msp.fallback;
 
 import com.kedacom.avIntegration.request.tvplay.*;
 import com.kedacom.avIntegration.response.tvplay.*;
-import com.kedacom.device.core.msp.TvPlayManageSdk;
 import com.kedacom.device.core.exception.MspRemoteCallException;
+import com.kedacom.device.core.msp.TvPlayManageSdk;
 import feign.hystrix.FallbackFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * @Auther: hxj
  * @Date: 2021/5/8 10:08
  */
+@Component
 public class TvPlayManageSdkFallbackFactory implements FallbackFactory<TvPlayManageSdk> {
 
     private volatile TvPlayManageSdk tvPlayManageSdk;

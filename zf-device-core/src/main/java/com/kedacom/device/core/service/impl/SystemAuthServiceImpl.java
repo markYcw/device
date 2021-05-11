@@ -29,9 +29,9 @@ public class SystemAuthServiceImpl implements SystemAuthService {
 
     @Override
     public SystemLoginResponse login(SystemLoginRequest request) {
-        log.info("登录显控统一服务入参---SystemLoginRequest:{}", request);
+        log.info("登录显控统一服务入参:{}", request);
         SystemLoginResponse response = systemAuthSdk.login(request);
-        log.info("登录显控统一服务应答---SystemLoginResponse:{}", response);
+        log.info("登录显控统一服务应答:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
             throw new AuthException(DeviceErrorEnum.SYSTEM_LOGIN_FAILED.getCode(), DeviceErrorEnum.SYSTEM_LOGIN_FAILED.getMsg());
         }
@@ -40,9 +40,9 @@ public class SystemAuthServiceImpl implements SystemAuthService {
 
     @Override
     public SystemKeepAliveResponse keepAlive(RequestBaseParam request) {
-        log.info("保活入参---RequestBaseParam:{}", request);
+        log.info("保活入参:{}", request);
         SystemKeepAliveResponse response = systemAuthSdk.keepAlive(request);
-        log.info("保活应答---SystemKeepAliveResponse:{}", response);
+        log.info("保活应答:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
             throw new AuthException(DeviceErrorEnum.SYSTEM_KEEPALIVE_FAILED.getCode(), DeviceErrorEnum.SYSTEM_KEEPALIVE_FAILED.getMsg());
         }
@@ -51,9 +51,9 @@ public class SystemAuthServiceImpl implements SystemAuthService {
 
     @Override
     public SystemVersionResponse version(RequestBaseParam request) {
-        log.info("显控统一服务API版本号入参---RequestBaseParam:{}", request);
+        log.info("显控统一服务API版本号入参:{}", request);
         SystemVersionResponse response = systemAuthSdk.version(request);
-        log.info("显控统一服务API版本号应答---SystemVersionResponse:{}", response);
+        log.info("显控统一服务API版本号应答:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
             throw new AuthException(DeviceErrorEnum.SYSTEM_VERSION_FAILED.getCode(), DeviceErrorEnum.SYSTEM_VERSION_FAILED.getMsg());
         }
@@ -62,9 +62,9 @@ public class SystemAuthServiceImpl implements SystemAuthService {
 
     @Override
     public SystemLogOutResponse logout(RequestBaseParam request) {
-        log.info("退出显控统一服务入参---RequestBaseParam:{}", request);
+        log.info("退出显控统一服务入参:{}", request);
         SystemLogOutResponse response = systemAuthSdk.logout(request);
-        log.info("退出显控统一服务应答---SystemLogOutResponse:{}", response);
+        log.info("退出显控统一服务应答:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
             throw new AuthException(DeviceErrorEnum.SYSTEM_LOGOUT_FAILED.getCode(), DeviceErrorEnum.SYSTEM_LOGOUT_FAILED.getMsg());
         }

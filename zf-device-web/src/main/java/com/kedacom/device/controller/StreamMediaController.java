@@ -1,18 +1,21 @@
 package com.kedacom.device.controller;
 
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.StreamMediaService;
 import com.kedacom.streamMedia.request.*;
-import com.kedacom.streamMedia.response.*;
+import com.kedacom.streamMedia.response.QueryAudioMixResponseVO;
+import com.kedacom.streamMedia.response.QueryRecResponseVO;
+import com.kedacom.streamMedia.response.QueryVideoMixResponseVO;
+import com.kedacom.streamMedia.response.StartRecResponseVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -26,7 +29,7 @@ import java.util.List;
 @Slf4j
 public class StreamMediaController {
 
-    @Resource
+    @Autowired
     private StreamMediaService streamMediaService;
 
     @ApiOperation("开启录像")

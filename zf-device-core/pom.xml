@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>com.kedacom</groupId>
-            <artifactId>zf-device-acl</artifactId>
+            <artifactId>zf-device-support-mock</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
@@ -24,11 +24,11 @@
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-jdk8</artifactId>
+            <artifactId>mapstruct</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
         </dependency>
     </dependencies>
 

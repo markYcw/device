@@ -5,12 +5,14 @@ import com.kedacom.avIntegration.response.tvwall.*;
 import com.kedacom.device.core.msp.TvWallManageSdk;
 import com.kedacom.device.core.exception.MspRemoteCallException;
 import feign.hystrix.FallbackFactory;
+import org.springframework.stereotype.Component;
 
 
 /**
  * @Auther: hxj
  * @Date: 2021/5/6 18:58
  */
+@Component
 public class TvWallManageSdkFallbackFactory implements FallbackFactory<TvWallManageSdk> {
     
     private TvWallManageSdk tvWallManageSdk;

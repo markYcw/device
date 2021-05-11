@@ -8,7 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @Auther: hxj
  * @Date: 2021/4/29 15:57
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.kedacom")
 @EnableFeignClients(basePackages = "com.kedacom.device.core.msp")
 public class DeviceServer {
     public static void main(String[] args) {

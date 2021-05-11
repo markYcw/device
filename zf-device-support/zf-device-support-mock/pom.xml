@@ -13,4 +13,12 @@
     <description>项目mock测试模块</description>
 
 
+    <dependencies>
+        <dependency>
+            <groupId>com.kedacom</groupId>
+            <artifactId>zf-device-acl</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+
 </project>

@@ -1,3 +1,19 @@
 spring:
   application:
     name: device-server
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:18848
+      config:
+        server-addr: 127.0.0.1:18848
+  datasource:
+    username: root
+    password: kedacom#123
+    url: jdbc:mysql://127.0.0.1:3306/device_server?$createDatabaseIfNotExist=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+zf:
+  msp:
+    server_addr: 172.16.231.20:38703

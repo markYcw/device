@@ -1,8 +1,10 @@
 package com.kedacom.device.core.service;
 
-import com.kedacom.BaseResult;
 import com.kedacom.streamMedia.request.*;
-import com.kedacom.streamMedia.response.*;
+import com.kedacom.streamMedia.response.QueryAudioMixResponseVO;
+import com.kedacom.streamMedia.response.QueryRecResponseVO;
+import com.kedacom.streamMedia.response.QueryVideoMixResponseVO;
+import com.kedacom.streamMedia.response.StartRecResponseVO;
 
 import java.util.List;
 
@@ -12,30 +14,30 @@ import java.util.List;
  */
 public interface StreamMediaService {
 
-    BaseResult<StartRecResponseVO> startRec(StartRecRequestDTO startrecRequestDTO);
+    StartRecResponseVO startRec(StartRecRequestDTO startrecRequestDTO);
 
-    BaseResult<Boolean> stopRec(StopRecRequestDTO stoprecRequestDTO);
+    Boolean stopRec(StopRecRequestDTO stoprecRequestDTO);
 
-    BaseResult<QueryRecResponseVO> queryRec(QueryRecRequestDTO queryrecRequestDTO);
+    QueryRecResponseVO queryRec(QueryRecRequestDTO queryrecRequestDTO);
 
-    BaseResult<String> startAudioMix(StartAudioMixRequestDTO startAudioMixRequestDTO);
+    String startAudioMix(StartAudioMixRequestDTO startAudioMixRequestDTO);
 
-    BaseResult<Boolean> stopAudioMix(StopAudioMixRequestDTO stopAudioMixRequestDTO);
+    Boolean stopAudioMix(StopAudioMixRequestDTO stopAudioMixRequestDTO);
 
-    BaseResult<Boolean> updateAudioMix(UpdateAudioMixRequestDTO updateAudioMixRequestDTO);
+    Boolean updateAudioMix(UpdateAudioMixRequestDTO updateAudioMixRequestDTO);
 
-    BaseResult<List<String>> queryAllAudioMix(QueryAllAudioMixRequestDTO queryAllAudioMixRequestDTO);
+    List<String> queryAllAudioMix(QueryAllAudioMixRequestDTO queryAllAudioMixRequestDTO);
 
-    BaseResult<QueryAudioMixResponseVO> queryAudioMix(QueryAudioMixRequestDTO queryAudioMixRequestDTO);
+    QueryAudioMixResponseVO queryAudioMix(QueryAudioMixRequestDTO queryAudioMixRequestDTO);
 
-    BaseResult<String> startVideoMix(StartVideoMixRequestDTO startVideoMixRequestDTO);
+    String startVideoMix(StartVideoMixRequestDTO startVideoMixRequestDTO);
 
-    BaseResult<Boolean> stopVideoMix(StopVideoMixRequestDTO stopVideoMixRequestDTO);
+    Boolean stopVideoMix(StopVideoMixRequestDTO stopVideoMixRequestDTO);
 
-    BaseResult<Boolean> updateVideoMix(UpdateVideoMixRequestDTO updateVideoMixRequestDTO);
+    Boolean updateVideoMix(UpdateVideoMixRequestDTO updateVideoMixRequestDTO);
 
-    BaseResult<List<String>> queryAllVideoMix(String unitId);
+    List<String> queryAllVideoMix(String unitId);
 
-    BaseResult<QueryVideoMixResponseVO> queryVideoMix(QueryVideoMixRequestDTO queryVideoMixRequestDTO);
+    QueryVideoMixResponseVO queryVideoMix(QueryVideoMixRequestDTO queryVideoMixRequestDTO);
 
 }

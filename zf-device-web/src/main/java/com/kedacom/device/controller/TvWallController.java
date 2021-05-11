@@ -1,17 +1,23 @@
 package com.kedacom.device.controller;
 
+import com.kedacom.BaseResult;
 import com.kedacom.avIntegration.request.tvwall.*;
 import com.kedacom.avIntegration.response.tvwall.*;
+import com.kedacom.avIntegration.vo.tvwall.*;
+import com.kedacom.device.common.utils.ValidUtils;
+import com.kedacom.device.core.convert.TvWallConvert;
 import com.kedacom.device.core.service.TvWallService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 /**
  * @Auther: hxj
@@ -34,7 +40,12 @@ public class TvWallController {
      */
     @PostMapping("ls")
     @ApiOperation("获取所有大屏配置")
-    public TvWallListResponse ls(@RequestBody TvWallListRequest request) {
+    public BaseResult<TvWallListVO> ls(@Valid @RequestBody TvWallListRequest request, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        TvWallListResponse response = tvWallService.ls(request);
+        TvWallListVO tvWallListVO = TvWallConvert.INSTANCE.listResponseToListVO(response);
+        return BaseResult.succeed(tvWallListVO);
 
     }
 
@@ -46,8 +57,12 @@ public class TvWallController {
      */
     @PostMapping("layout")
     @ApiOperation("获取大屏布局，不等分模式下使用")
-    public TvWallLayoutResponse layout(@RequestBody TvWallLayoutRequest request) {
+    public BaseResult<TvWallLayoutVO> layout(@Valid @RequestBody TvWallLayoutRequest request, BindingResult br) {
+        ValidUtils.paramValid(br);
 
+        TvWallLayoutResponse response = tvWallService.layout(request);
+        TvWallLayoutVO tvWallLayoutVO = TvWallConvert.INSTANCE.layoutResponseToLayoutVO(response);
+        return BaseResult.succeed(tvWallLayoutVO);
     }
 
     /**
@@ -58,8 +73,12 @@ public class TvWallController {
      */
     @PostMapping("query")
     @ApiOperation("主要是查询虚拟屏窗口绑定关系信息和解码通道使用模式（使用显控平台的内置解码通道资源或外部绑定的解码通道资源）")
-    public TvWallQueryPipelineResponse query(@RequestBody TvWallQueryPipelineRequest request) {
+    public BaseResult<TvWallQueryPipelineVO> query(@Valid @RequestBody TvWallQueryPipelineRequest request, BindingResult br) {
+        ValidUtils.paramValid(br);
 
+        TvWallQueryPipelineResponse response = tvWallService.query(request);
+        TvWallQueryPipelineVO tvWallQueryPipelineVO = TvWallConvert.INSTANCE.queryPipelineResponseToQueryPipelineVO(response);
+        return BaseResult.succeed(tvWallQueryPipelineVO);
     }
 
     /**
@@ -70,8 +89,12 @@ public class TvWallController {
      */
     @PostMapping("config")
     @ApiOperation("配置虚拟屏")
-    public TvWallConfigResponse config(@RequestBody TvWallConfigRequest request) {
+    public BaseResult<TvWallConfigVO> config(@Valid @RequestBody TvWallConfigRequest request, BindingResult br) {
+        ValidUtils.paramValid(br);
 
+        TvWallConfigResponse response = tvWallService.config(request);
+        TvWallConfigVO tvWallConfigVO = TvWallConvert.INSTANCE.configResponseToConfigVO(response);
+        return BaseResult.succeed(tvWallConfigVO);
     }
 
     /**
@@ -82,8 +105,12 @@ public class TvWallController {
      */
     @PostMapping("config/bind")
     @ApiOperation("配置虚拟屏窗口与资源的绑定关系、解码通道资源使用模式")
-    public TvWallPipelineBindResponse configBind(@RequestBody TvWallPipelineBindRequest request) {
+    public BaseResult<TvWallPipelineBindVO> configBind(@Valid @RequestBody TvWallPipelineBindRequest request, BindingResult br) {
+        ValidUtils.paramValid(br);
 
+        TvWallPipelineBindResponse response = tvWallService.configBind(request);
+        TvWallPipelineBindVO tvWallPipelineBindVOVO = TvWallConvert.INSTANCE.pipelineBindResponseToPipelineBindVO(response);
+        return BaseResult.succeed(tvWallPipelineBindVOVO);
     }
 
     /**
@@ -94,8 +121,11 @@ public class TvWallController {
      */
     @PostMapping("delete")
     @ApiOperation("拼接屏模式不允许删除，虚拟屏模式全部删除，混合屏模式删除绑定关系")
-    public TvWallDeleteResponse delete(@RequestBody TvWallDeleteRequest request) {
+    public BaseResult delete(@Valid @RequestBody TvWallDeleteRequest request, BindingResult br) {
+        ValidUtils.paramValid(br);
 
+        TvWallDeleteResponse response = tvWallService.delete(request);
+        return BaseResult.succeed("删除成功");
     }
 
 }

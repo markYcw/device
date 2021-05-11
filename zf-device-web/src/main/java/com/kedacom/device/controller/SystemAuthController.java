@@ -66,7 +66,7 @@ public class SystemAuthController {
         ValidUtils.paramValid(br);
 
         SystemKeepAliveResponse response = systemAuthService.keepAlive(request);
-        return BaseResult.succeed();
+        return BaseResult.succeed("保活成功");
     }
 
     /**
@@ -97,7 +97,7 @@ public class SystemAuthController {
         ValidUtils.paramValid(br);
 
         SystemLogOutResponse logout = systemAuthService.logout(request);
-        return BaseResult.succeed();
+        return BaseResult.succeed("登出成功");
     }
 
 }

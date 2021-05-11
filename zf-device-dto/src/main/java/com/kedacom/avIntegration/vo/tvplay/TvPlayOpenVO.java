@@ -1,5 +1,6 @@
-package com.kedacom.avIntegration.response.tvplay;
+package com.kedacom.avIntegration.vo.tvplay;
 
+import com.kedacom.avIntegration.response.tvplay.Winds;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,10 +14,7 @@ import java.util.List;
  */
 @Data
 @ApiModel(value = "任意开窗应答")
-public class TvPlayOpenResponse implements Serializable {
-
-    @ApiModelProperty("响应状态码 成功0 失败4")
-    private Integer error;
+public class TvPlayOpenVO implements Serializable {
 
     @ApiModelProperty(value = "窗口信息")
     private List<Winds> wnds;

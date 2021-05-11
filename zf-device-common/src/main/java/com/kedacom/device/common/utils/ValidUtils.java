@@ -1,6 +1,6 @@
-package com.kedacom.device.core.utils;
+package com.kedacom.device.common.utils;
 
-import com.kedacom.device.core.exception.ParamException;
+import com.kedacom.device.common.exception.ParamException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 

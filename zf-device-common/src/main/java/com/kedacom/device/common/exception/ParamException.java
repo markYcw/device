@@ -1,4 +1,4 @@
-package com.kedacom.device.core.exception;
+package com.kedacom.device.common.exception;
 
 /**
  * @Auther: hxj
@@ -10,6 +10,5 @@ public class ParamException extends RuntimeException {
 
     public ParamException(String message) {
         super(message);
-
     }
 }

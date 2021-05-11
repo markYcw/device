@@ -9,7 +9,7 @@ import com.kedacom.avIntegration.response.auth.SystemLoginResponse;
 import com.kedacom.avIntegration.response.auth.SystemVersionResponse;
 import com.kedacom.avIntegration.vo.auth.SystemLoginVO;
 import com.kedacom.avIntegration.vo.auth.SystemVersionVO;
-import com.kedacom.device.core.utils.ValidUtils;
+import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.convert.SystemAuthConvert;
 import com.kedacom.device.core.service.SystemAuthService;
 import io.swagger.annotations.Api;

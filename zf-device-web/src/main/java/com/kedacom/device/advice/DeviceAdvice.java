@@ -2,10 +2,12 @@ package com.kedacom.device.advice;
 
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.exception.AuthException;
-import com.kedacom.device.core.data.DeviceErrorEnum;
 import com.kedacom.device.common.exception.ParamException;
+import com.kedacom.device.core.data.DeviceErrorEnum;
+import com.kedacom.device.core.exception.DecoderException;
+import com.kedacom.device.core.exception.MspRemoteCallException;
+import com.kedacom.device.core.exception.TvPlayException;
 import com.kedacom.device.core.exception.TvWallException;
-import com.kedacom.device.core.msp.exception.MspRemoteCallException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -41,6 +43,30 @@ public class DeviceAdvice {
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler({TvWallException.class})
     public BaseResult handleException(TvWallException e) {
+        return BaseResult.failed(e.getCode(), e.getMessage());
+    }
+
+    /**
+     * 大屏异常捕获
+     *
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler({TvPlayException.class})
+    public BaseResult handleException(TvPlayException e) {
+        return BaseResult.failed(e.getCode(), e.getMessage());
+    }
+
+    /**
+     * 大屏异常捕获
+     *
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler({DecoderException.class})
+    public BaseResult handleException(DecoderException e) {
         return BaseResult.failed(e.getCode(), e.getMessage());
     }
 

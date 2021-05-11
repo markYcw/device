@@ -1,5 +1,6 @@
-package com.kedacom.avIntegration.response.decoder;
+package com.kedacom.avIntegration.vo.decoder;
 
+import com.kedacom.avIntegration.response.decoder.ChnList;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,13 +14,7 @@ import java.util.List;
  */
 @Data
 @ApiModel(value = "获取解码通道风格信息应答")
-public class StyleQueryResponse implements Serializable {
-
-    @ApiModelProperty("响应状态码 成功0 失败4")
-    private Integer error;
-
-    @ApiModelProperty("失败时返回信息")
-    private String errstr;
+public class StyleQueryVO implements Serializable {
 
     @ApiModelProperty(value = "解码通道风格信息")
     private List<ChnList> chnls;

@@ -3,7 +3,7 @@ package com.kedacom.device.core.msp.fallback;
 import com.kedacom.avIntegration.request.tvwall.*;
 import com.kedacom.avIntegration.response.tvwall.*;
 import com.kedacom.device.core.msp.TvWallManageSdk;
-import com.kedacom.device.core.msp.exception.MspRemoteCallException;
+import com.kedacom.device.core.exception.MspRemoteCallException;
 import feign.hystrix.FallbackFactory;
 
 

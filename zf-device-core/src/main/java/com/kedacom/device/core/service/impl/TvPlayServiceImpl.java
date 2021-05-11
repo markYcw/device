@@ -95,7 +95,7 @@ public class TvPlayServiceImpl implements TvPlayService {
         TvPlayActionResponse response = tvPlayManageSdk.action(request);
         log.info("窗口操作应答---TvPlayActionResponse:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
-            throw new TvPlayException(DeviceErrorEnum.TVWALL_DELETE_FAILED.getCode(), DeviceErrorEnum.TVWALL_DELETE_FAILED.getMsg());
+            throw new TvPlayException(DeviceErrorEnum.TVPLAY_ACTION_FAILED.getCode(), DeviceErrorEnum.TVPLAY_ACTION_FAILED.getMsg());
         }
         return response;
     }

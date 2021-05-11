@@ -29,6 +29,11 @@ public enum DeviceErrorEnum {
     TVPLAY_ORDER_FAILED(3025, "窗口排序失败"),
     TVPLAY_ACTION_FAILED(3026, "窗口操作失败"),
 
+    DECODER_OSD_CONFIG_FAILED(3030, "配置解码通道字幕信息失败"),
+    DECODER_OSD_DELETE_FAILED(3031, ""),
+    DECODER_STYLE_QUERY_FAILED(3032, ""),
+    DECODER_STYLE_CONFIG_FAILED(3033, ""),
+
     TVWALL_LIST(301023, "获取所有大屏配置失败");
 
     private Integer code;

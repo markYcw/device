@@ -25,7 +25,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/v1/manage/tvplay")
-@Api(value = "浏览")
+@Api(value = "窗口浏览",tags = "窗口浏览")
 @Slf4j
 public class TvPlayController {
 

@@ -19,6 +19,6 @@ public class AudioMixInfo implements Serializable {
     private String mixID;
 
     @ApiModelProperty("混音成员资源ID")
-    private List<AudioMixer> audioMixerList;
+    private List<AudioMixer> mixer_list;
 
 }

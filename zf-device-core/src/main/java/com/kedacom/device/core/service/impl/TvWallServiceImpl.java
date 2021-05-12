@@ -1,13 +1,16 @@
 package com.kedacom.device.core.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.kedacom.avIntegration.request.tvwall.*;
 import com.kedacom.avIntegration.response.tvwall.*;
+import com.kedacom.device.core.config.AvIntegrationErrCode;
 import com.kedacom.device.core.data.DeviceConstants;
 import com.kedacom.device.core.data.DeviceErrorEnum;
 import com.kedacom.device.core.exception.TvWallException;
 import com.kedacom.device.core.msp.TvWallManageSdk;
 import com.kedacom.device.core.service.TvWallService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -22,14 +25,21 @@ public class TvWallServiceImpl implements TvWallService {
 
     @Resource
     private TvWallManageSdk tvWallManageSdk;
+    @Autowired
+    private AvIntegrationErrCode avIntegrationErrCode;
 
     @Override
     public TvWallListResponse ls(TvWallListRequest request) {
+
         log.info("获取所有大屏配置入参---TvWallListRequest:{}", request);
         TvWallListResponse response = tvWallManageSdk.ls(request);
         log.info("获取所有大屏配置应答---TvWallListResponse:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
-            throw new TvWallException(DeviceErrorEnum.TVWALL_LIST_FAILED.getCode(),DeviceErrorEnum.TVWALL_LIST_FAILED.getMsg());
+            if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                throw new TvWallException(DeviceErrorEnum.TVWALL_LIST_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
+            } else {
+                throw new TvWallException(DeviceErrorEnum.TVWALL_LIST_FAILED.getCode(), DeviceErrorEnum.TVWALL_LIST_FAILED.getMsg());
+            }
         }
         return response;
     }
@@ -40,7 +50,11 @@ public class TvWallServiceImpl implements TvWallService {
         TvWallLayoutResponse response = tvWallManageSdk.layout(request);
         log.info("获取大屏布局应答---TvWallLayoutResponse:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
-            throw new TvWallException(DeviceErrorEnum.TVWALL_LAYOUT_FAILED.getCode(),DeviceErrorEnum.TVWALL_LAYOUT_FAILED.getMsg());
+            if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                throw new TvWallException(DeviceErrorEnum.TVWALL_LAYOUT_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
+            } else {
+                throw new TvWallException(DeviceErrorEnum.TVWALL_LAYOUT_FAILED.getCode(), DeviceErrorEnum.TVWALL_LAYOUT_FAILED.getMsg());
+            }
         }
         return response;
     }
@@ -51,7 +65,11 @@ public class TvWallServiceImpl implements TvWallService {
         TvWallQueryPipelineResponse response = tvWallManageSdk.query(request);
         log.info("查询虚拟屏应答---TvWallQueryPipelineResponse:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
-            throw new TvWallException(DeviceErrorEnum.TVWALL_QUERY_PIPELINE_FAILED.getCode(),DeviceErrorEnum.TVWALL_QUERY_PIPELINE_FAILED.getMsg());
+            if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                throw new TvWallException(DeviceErrorEnum.TVWALL_QUERY_PIPELINE_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
+            } else {
+                throw new TvWallException(DeviceErrorEnum.TVWALL_QUERY_PIPELINE_FAILED.getCode(), DeviceErrorEnum.TVWALL_QUERY_PIPELINE_FAILED.getMsg());
+            }
         }
         return response;
     }
@@ -62,7 +80,11 @@ public class TvWallServiceImpl implements TvWallService {
         TvWallConfigResponse response = tvWallManageSdk.config(request);
         log.info("配置虚拟屏应答---TvWallConfigResponse:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
-            throw new TvWallException(DeviceErrorEnum.TVWALL_CONFIG_FAILED.getCode(),DeviceErrorEnum.TVWALL_CONFIG_FAILED.getMsg());
+            if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                throw new TvWallException(DeviceErrorEnum.TVWALL_CONFIG_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
+            } else {
+                throw new TvWallException(DeviceErrorEnum.TVWALL_CONFIG_FAILED.getCode(), DeviceErrorEnum.TVWALL_CONFIG_FAILED.getMsg());
+            }
         }
         return response;
     }
@@ -73,7 +95,11 @@ public class TvWallServiceImpl implements TvWallService {
         TvWallPipelineBindResponse response = tvWallManageSdk.configBind(request);
         log.info("配置虚拟屏窗口与资源的绑定关系应答---TvWallPipelineBindResponse:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
-            throw new TvWallException(DeviceErrorEnum.TVWALL_PIPELINE_BIND_FAILED.getCode(),DeviceErrorEnum.TVWALL_PIPELINE_BIND_FAILED.getMsg());
+            if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                throw new TvWallException(DeviceErrorEnum.TVWALL_PIPELINE_BIND_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
+            } else {
+                throw new TvWallException(DeviceErrorEnum.TVWALL_PIPELINE_BIND_FAILED.getCode(), DeviceErrorEnum.TVWALL_PIPELINE_BIND_FAILED.getMsg());
+            }
         }
         return response;
     }
@@ -84,7 +110,11 @@ public class TvWallServiceImpl implements TvWallService {
         TvWallDeleteResponse response = tvWallManageSdk.delete(request);
         log.info("大屏删除应答---TvWallDeleteResponse:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
-            throw new TvWallException(DeviceErrorEnum.TVWALL_DELETE_FAILED.getCode(),DeviceErrorEnum.TVWALL_DELETE_FAILED.getMsg());
+            if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                throw new TvWallException(DeviceErrorEnum.TVWALL_DELETE_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
+            } else {
+                throw new TvWallException(DeviceErrorEnum.TVWALL_DELETE_FAILED.getCode(), DeviceErrorEnum.TVWALL_DELETE_FAILED.getMsg());
+            }
         }
         return response;
     }

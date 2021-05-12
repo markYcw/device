@@ -25,7 +25,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/v1/manage/tvwall")
-@Api(value = "大屏管理")
+@Api(value = "大屏管理",tags = "大屏管理")
 @Slf4j
 public class TvWallController {
 

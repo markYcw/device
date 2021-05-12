@@ -6,7 +6,6 @@ package com.kedacom.device.core.data;
  */
 public class DeviceConstants {
 
-
     public static final int SUCCESS = 0 ;
 
 }

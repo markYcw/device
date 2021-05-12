@@ -53,5 +53,4 @@ public interface SystemAuthApi {
      */
     @PostMapping("logout")
     SystemLogOutResponse logout(@RequestBody RequestBaseParam request);
-
 }

@@ -15,22 +15,24 @@ import java.util.List;
  */
 @Data
 @ApiModel("更新音频混音入参")
-public class UpdateAudioMixRequestDTO implements Serializable {
+public class UpdateAudioMixRequest implements Serializable {
 
     @NotBlank(message = "统一平台Id不能为空")
     @ApiModelProperty("统一平台Id，必填")
     private String unitId;
 
+    @NotBlank(message = "使用32位UUID不能为空")
     @ApiModelProperty("使用32位UUID（无横线）")
-    private String groupID;
+    private String GroupID;
 
-    @ApiModelProperty("使用32位UUID（无横线）")
+    @NotBlank(message = "混音ID不能为空")
+    @ApiModelProperty("混音ID")
     private String mixID;
 
     @ApiModelProperty("add-添加  update-更新  delete-删除")
     private String cmdType;
 
     @ApiModelProperty("参与混音方列表(最大数目为 16)")
-    private List<AudioMixer> mixerList;
+    private List<AudioMixer> mixer_list;
 
 }

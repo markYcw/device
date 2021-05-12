@@ -15,9 +15,9 @@ import java.io.Serializable;
 public class StartRecResponseVO implements Serializable {
 
     @ApiModelProperty("设备ID")
-    private String deviceId;
+    private String device_id;
 
     @ApiModelProperty("录像ID")
-    private String recordId;
+    private String record_id;
 
 }

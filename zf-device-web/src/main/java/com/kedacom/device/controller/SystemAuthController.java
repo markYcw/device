@@ -30,7 +30,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/v1/manage/system")
-@Api(value = "鉴权")
+@Api(value = "鉴权",tags = "鉴权")
 @Slf4j
 public class SystemAuthController {
 

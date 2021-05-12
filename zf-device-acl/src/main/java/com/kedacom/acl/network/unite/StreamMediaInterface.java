@@ -1,6 +1,9 @@
 package com.kedacom.acl.network.unite;
 
-import com.kedacom.streamMedia.request.*;
+
+import com.kedacom.acl.network.anno.HeadParam;
+import com.kedacom.acl.network.anno.RequestBody;
+import com.kedacom.streamMedia.dto.*;
 import com.kedacom.streamMedia.response.QueryAudioMixResponseVO;
 import com.kedacom.streamMedia.response.QueryRecResponseVO;
 import com.kedacom.streamMedia.response.QueryVideoMixResponseVO;
@@ -23,7 +26,7 @@ public interface StreamMediaInterface {
      * @param startrecRequestDTO
      * @return StartrecResponseVO
      */
-    StartRecResponseVO startRec(String ssid, StartRecRequestDTO startrecRequestDTO);
+    StartRecResponseVO startRec(@HeadParam String ssid, @RequestBody StartRecRequestDTO startrecRequestDTO);
 
     /**
      * 停止录像
@@ -32,7 +35,7 @@ public interface StreamMediaInterface {
      * @param stoprecRequestDTO
      * @return Boolean
      */
-    Boolean stopRec(String ssid, StopRecRequestDTO stoprecRequestDTO);
+    Boolean stopRec(@HeadParam String ssid, @RequestBody StopRecRequestDTO stoprecRequestDTO);
 
     /**
      * 查询录像记录
@@ -41,7 +44,7 @@ public interface StreamMediaInterface {
      * @param queryrecRequestDTO
      * @return QueryrecResponseVO
      */
-    QueryRecResponseVO queryRec(String ssid, QueryRecRequestDTO queryrecRequestDTO);
+    QueryRecResponseVO queryRec(@HeadParam String ssid, @RequestBody QueryRecRequestDTO queryrecRequestDTO);
 
     /**
      * 开启音频混音
@@ -50,7 +53,7 @@ public interface StreamMediaInterface {
      * @param startAudioMixRequestDTO
      * @return StartAudioMixResponseVO
      */
-    String startAudioMix(String ssid, StartAudioMixRequestDTO startAudioMixRequestDTO);
+    String startAudioMix(@HeadParam String ssid, @RequestBody StartAudioMixRequestDTO startAudioMixRequestDTO);
 
     /**
      * 停止音频混音
@@ -59,7 +62,7 @@ public interface StreamMediaInterface {
      * @param stopAudioMixRequestDTO
      * @return Boolean
      */
-    Boolean stopAudioMix(String ssid, StopAudioMixRequestDTO stopAudioMixRequestDTO);
+    Boolean stopAudioMix(@HeadParam String ssid, @RequestBody StopAudioMixRequestDTO stopAudioMixRequestDTO);
 
     /**
      * 更新音频混音
@@ -68,7 +71,7 @@ public interface StreamMediaInterface {
      * @param updateAudioMixRequestDTO
      * @return Boolean
      */
-    Boolean updateAudioMix(String ssid, UpdateAudioMixRequestDTO updateAudioMixRequestDTO);
+    Boolean updateAudioMix(@HeadParam String ssid, @RequestBody UpdateAudioMixRequestDTO updateAudioMixRequestDTO);
 
     /**
      * 查询所有混音
@@ -77,7 +80,7 @@ public interface StreamMediaInterface {
      * @param queryAllAudioMixRequestDTO
      * @return List<String> 混音ID集合
      */
-    List<String> queryAllAudioMix(String ssid, QueryAllAudioMixRequestDTO queryAllAudioMixRequestDTO);
+    List<String> queryAllAudioMix(@HeadParam String ssid, @RequestBody QueryAllAudioMixRequestDTO queryAllAudioMixRequestDTO);
 
     /**
      * 查询混音信息
@@ -86,7 +89,7 @@ public interface StreamMediaInterface {
      * @param queryAudioMixRequestDTO
      * @return QueryAudioMixResponseVO
      */
-    QueryAudioMixResponseVO queryAudioMix(String ssid, QueryAudioMixRequestDTO queryAudioMixRequestDTO);
+    QueryAudioMixResponseVO queryAudioMix(@HeadParam String ssid, @RequestBody QueryAudioMixRequestDTO queryAudioMixRequestDTO);
 
     /**
      * 开始画面合成
@@ -95,7 +98,7 @@ public interface StreamMediaInterface {
      * @param startVideoMixRequestDTO
      * @return StartVideoMixResponseVO
      */
-    String startVideoMix(String ssid, StartVideoMixRequestDTO startVideoMixRequestDTO);
+    String startVideoMix(@HeadParam String ssid, @RequestBody StartVideoMixRequestDTO startVideoMixRequestDTO);
 
     /**
      * 停止画面合成
@@ -104,7 +107,7 @@ public interface StreamMediaInterface {
      * @param stopVideoMixRequestDTO
      * @return Boolean
      */
-    Boolean stopVideoMix(String ssid, StopVideoMixRequestDTO stopVideoMixRequestDTO);
+    Boolean stopVideoMix(@HeadParam String ssid, @RequestBody StopVideoMixRequestDTO stopVideoMixRequestDTO);
 
     /**
      * 更新画面合成
@@ -113,7 +116,7 @@ public interface StreamMediaInterface {
      * @param updateVideoMixRequestDTO
      * @return Boolean
      */
-    Boolean updateVideoMix(String ssid, UpdateVideoMixRequestDTO updateVideoMixRequestDTO);
+    Boolean updateVideoMix(@HeadParam String ssid, @RequestBody UpdateVideoMixRequestDTO updateVideoMixRequestDTO);
 
     /**
      * 查询所有画面合成
@@ -121,7 +124,7 @@ public interface StreamMediaInterface {
      * @param ssid
      * @return List<String> 合成ID集合
      */
-    List<String> queryAllVideoMix(String ssid);
+    List<String> queryAllVideoMix(@HeadParam String ssid);
 
     /**
      * 查询画面信息
@@ -130,6 +133,6 @@ public interface StreamMediaInterface {
      * @param queryVideoMixRequestDTO
      * @return QueryVideoMixResponseVO
      */
-    QueryVideoMixResponseVO queryVideoMix(String ssid, QueryVideoMixRequestDTO queryVideoMixRequestDTO);
+    QueryVideoMixResponseVO queryVideoMix(@HeadParam String ssid, @RequestBody QueryVideoMixRequestDTO queryVideoMixRequestDTO);
 
 }

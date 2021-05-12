@@ -25,7 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("device/streamMedia")
-@Api(value = "流媒体")
+@Api(value = "流媒体",tags = "流媒体")
 @Slf4j
 public class StreamMediaController {
 
@@ -34,117 +34,117 @@ public class StreamMediaController {
 
     @ApiOperation("开启录像")
     @PostMapping("/startRec")
-    public BaseResult<StartRecResponseVO> startRec(@Valid @RequestBody StartRecRequestDTO startrecRequestDTO, BindingResult br) {
+    public BaseResult<StartRecResponseVO> startRec(@Valid @RequestBody StartRecRequest startrecRequest, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        StartRecResponseVO startRec = streamMediaService.startRec(startrecRequestDTO);
+        StartRecResponseVO startRec = streamMediaService.startRec(startrecRequest);
         return BaseResult.succeed(startRec);
     }
 
     @ApiOperation("停止录像")
     @PostMapping("/stopRec")
-    public BaseResult<Boolean> stopRec(@Valid @RequestBody StopRecRequestDTO stoprecRequestDTO, BindingResult br) {
+    public BaseResult<Boolean> stopRec(@Valid @RequestBody StopRecRequest stoprecRequest, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        Boolean stopRec = streamMediaService.stopRec(stoprecRequestDTO);
+        Boolean stopRec = streamMediaService.stopRec(stoprecRequest);
         return BaseResult.succeed(stopRec);
     }
 
     @ApiOperation("查询录像记录")
     @PostMapping("/queryRec")
-    public BaseResult<QueryRecResponseVO> queryRec(@Valid @RequestBody QueryRecRequestDTO queryrecRequestDTO, BindingResult br) {
+    public BaseResult<QueryRecResponseVO> queryRec(@Valid @RequestBody QueryRecRequest queryrecRequest, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        QueryRecResponseVO queryRec = streamMediaService.queryRec(queryrecRequestDTO);
+        QueryRecResponseVO queryRec = streamMediaService.queryRec(queryrecRequest);
         return BaseResult.succeed(queryRec);
     }
 
     /**
      * 混音ID，20位字符
      *
-     * @param startAudioMixRequestDTO
+     * @param startAudioMixRequest
      * @param br
      * @return mixID 混音ID，20位字符
      */
     @ApiOperation("开启音频混音: 返回mixID 混音ID，20位字符")
     @PostMapping("/startAudioMix")
-    public BaseResult<String> startAudioMix(@Valid @RequestBody StartAudioMixRequestDTO startAudioMixRequestDTO, BindingResult br) {
+    public BaseResult<String> startAudioMix(@Valid @RequestBody StartAudioMixRequest startAudioMixRequest, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        String mixID = streamMediaService.startAudioMix(startAudioMixRequestDTO);
+        String mixID = streamMediaService.startAudioMix(startAudioMixRequest);
         return BaseResult.succeed(mixID);
     }
 
     @ApiOperation("停止音频混音")
     @PostMapping("/stopAudioMix")
-    public BaseResult<Boolean> stopAudioMix(@Valid @RequestBody StopAudioMixRequestDTO stopAudioMixRequestDTO, BindingResult br) {
+    public BaseResult<Boolean> stopAudioMix(@Valid @RequestBody StopAudioMixRequest stopAudioMixRequest, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        Boolean stopAudioMix = streamMediaService.stopAudioMix(stopAudioMixRequestDTO);
+        Boolean stopAudioMix = streamMediaService.stopAudioMix(stopAudioMixRequest);
         return BaseResult.succeed(stopAudioMix);
     }
 
     @ApiOperation("更新音频混音")
     @PostMapping("/updateAudioMix")
-    public BaseResult<Boolean> updateAudioMix(@Valid @RequestBody UpdateAudioMixRequestDTO updateAudioMixRequestDTO, BindingResult br) {
+    public BaseResult<Boolean> updateAudioMix(@Valid @RequestBody UpdateAudioMixRequest updateAudioMixRequest, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        Boolean updateAudioMix = streamMediaService.updateAudioMix(updateAudioMixRequestDTO);
+        Boolean updateAudioMix = streamMediaService.updateAudioMix(updateAudioMixRequest);
         return BaseResult.succeed(updateAudioMix);
     }
 
     /**
-     * @param queryAllAudioMixRequestDTO
+     * @param queryAllAudioMixRequest
      * @param br
      * @return 混音ID集合
      */
     @ApiOperation("查询所有混音 返回混音ID集合")
     @PostMapping("/queryAllAudioMix")
-    public BaseResult<List<String>> queryAllAudioMix(@Valid @RequestBody QueryAllAudioMixRequestDTO queryAllAudioMixRequestDTO, BindingResult br) {
+    public BaseResult<List<String>> queryAllAudioMix(@Valid @RequestBody QueryAllAudioMixRequest queryAllAudioMixRequest, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        List<String> queryAllAudioMix = streamMediaService.queryAllAudioMix(queryAllAudioMixRequestDTO);
+        List<String> queryAllAudioMix = streamMediaService.queryAllAudioMix(queryAllAudioMixRequest);
         return BaseResult.succeed(queryAllAudioMix);
     }
 
     @ApiOperation("查询混音信息")
     @PostMapping("/queryAudioMix")
-    public BaseResult<QueryAudioMixResponseVO> queryAudioMix(@Valid @RequestBody QueryAudioMixRequestDTO queryAudioMixRequestDTO, BindingResult br) {
+    public BaseResult<QueryAudioMixResponseVO> queryAudioMix(@Valid @RequestBody QueryAudioMixRequest queryAudioMixRequest, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        QueryAudioMixResponseVO queryAudioMixResponseVO = streamMediaService.queryAudioMix(queryAudioMixRequestDTO);
+        QueryAudioMixResponseVO queryAudioMixResponseVO = streamMediaService.queryAudioMix(queryAudioMixRequest);
         return BaseResult.succeed(queryAudioMixResponseVO);
     }
 
     /**
-     * @param startVideoMixRequestDTO
+     * @param startVideoMixRequest
      * @param br
      * @return mixID 合成ID，20位字符
      */
     @ApiOperation("开始画面合成: 返回mixID 合成ID，20位字符")
     @PostMapping("/startVideoMix")
-    public BaseResult<String> startVideoMix(@Valid @RequestBody StartVideoMixRequestDTO startVideoMixRequestDTO, BindingResult br) {
+    public BaseResult<String> startVideoMix(@Valid @RequestBody StartVideoMixRequest startVideoMixRequest, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        String mixID = streamMediaService.startVideoMix(startVideoMixRequestDTO);
+        String mixID = streamMediaService.startVideoMix(startVideoMixRequest);
         return BaseResult.succeed(mixID);
     }
 
     @ApiOperation("停止画面合成")
     @PostMapping("/stopVideoMix")
-    public BaseResult<Boolean> stopVideoMix(@Valid @RequestBody StopVideoMixRequestDTO stopVideoMixRequestDTO, BindingResult br) {
+    public BaseResult<Boolean> stopVideoMix(@Valid @RequestBody StopVideoMixRequest stopVideoMixRequest, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        Boolean stopVideoMix = streamMediaService.stopVideoMix(stopVideoMixRequestDTO);
+        Boolean stopVideoMix = streamMediaService.stopVideoMix(stopVideoMixRequest);
         return BaseResult.succeed(stopVideoMix);
     }
 
     @ApiOperation("更新画面合成")
     @PostMapping("/updateVideoMix")
-    public BaseResult<Boolean> updateVideoMix(@Valid @RequestBody UpdateVideoMixRequestDTO updateVideoMixRequestDTO, BindingResult br) {
+    public BaseResult<Boolean> updateVideoMix(@Valid @RequestBody UpdateVideoMixRequest updateVideoMixRequest, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        Boolean updateVideoMix = streamMediaService.updateVideoMix(updateVideoMixRequestDTO);
+        Boolean updateVideoMix = streamMediaService.updateVideoMix(updateVideoMixRequest);
         return BaseResult.succeed(updateVideoMix);
     }
 
@@ -165,10 +165,10 @@ public class StreamMediaController {
 
     @ApiOperation("查询画面合成信息")
     @PostMapping("/queryVideoMix")
-    public BaseResult<QueryVideoMixResponseVO> queryVideoMix(@Valid @RequestBody QueryVideoMixRequestDTO queryVideoMixRequestDTO, BindingResult br) {
+    public BaseResult<QueryVideoMixResponseVO> queryVideoMix(@Valid @RequestBody QueryVideoMixRequest queryVideoMixRequest, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        QueryVideoMixResponseVO queryVideoMixResponseVO = streamMediaService.queryVideoMix(queryVideoMixRequestDTO);
+        QueryVideoMixResponseVO queryVideoMixResponseVO = streamMediaService.queryVideoMix(queryVideoMixRequest);
         return BaseResult.succeed(queryVideoMixResponseVO);
     }
 

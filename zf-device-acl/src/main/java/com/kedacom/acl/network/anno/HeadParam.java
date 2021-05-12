@@ -18,7 +18,6 @@ public @interface HeadParam {
     /**
      * 指定key的名称
      * 可以不填，默认为参数名称
-     *
      * @return
      */
     String name() default "";

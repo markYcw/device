@@ -21,20 +21,6 @@ public class StyleConfigRequest implements Serializable {
     private String token;
 
     @ApiModelProperty(value = "解码通道风格信息")
-    private List<ChnInfo> chnls;
-
-    @Data
-    class ChnInfo {
-
-        @ApiModelProperty(value = "解码通道ID")
-        private String chnid;
-
-        @ApiModelProperty(value = "解码画面风格 - 1=一画面;2=二画面;3=三画面;4=四画面;9=九画面;16=十六画面")
-        private Integer style;
-
-        @ApiModelProperty(value = "最大解码能力 - 当前解码通道数")
-        private Integer maxchn;
-
-    }
+    private List<StyleConfigChnInfo> chnls;
 
 }

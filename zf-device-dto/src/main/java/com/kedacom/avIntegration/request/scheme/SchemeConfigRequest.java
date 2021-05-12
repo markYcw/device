@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -22,14 +22,14 @@ public class SchemeConfigRequest implements Serializable {
     @ApiModelProperty(value = "token令牌 - 必填")
     private String token;
 
-    @NotEmpty(message = "大屏ID不能为空")
+    @NotNull(message = "大屏ID不能为空")
     @ApiModelProperty(value = "大屏ID - 必填，预案所在的大屏的ID")
     private Integer tvid;
 
     @ApiModelProperty(value = "预案ID - 调度测自定义的预案ID（例如三思拼接器场景），该值有效时，拼控不返回窗口ID和预案ID")
     private Integer schid;
 
-    @NotEmpty(message = "预案名称不能为空")
+    @NotBlank(message = "预案名称不能为空")
     @ApiModelProperty(value = "预案名称 - 必填，预案的显示名称，最大64个英文字符")
     private String name;
 

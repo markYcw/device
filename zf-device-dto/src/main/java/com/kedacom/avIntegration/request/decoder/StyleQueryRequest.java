@@ -20,7 +20,8 @@ public class StyleQueryRequest implements Serializable {
     @ApiModelProperty(value = "token令牌 - 必填")
     private String token;
 
+    @NotEmpty(message = "解码通道ID不能为空")
     @ApiModelProperty(value = "解码通道ID - 必填，统一设备服务分配国标ID")
-    private List<String> chnid;
+    private List<String> chnls;
 
 }

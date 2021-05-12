@@ -21,6 +21,10 @@ public class BatchWndInfo implements Serializable {
     @ApiModelProperty(value = "必填 - 窗口位置ID")
     private Integer wnd_id;
 
+    @NotNull(message = "窗口内小窗口索引不能为空")
+    @ApiModelProperty(value = "必填 - 窗口内小窗口索引， 从0开始，从上到下，从左到右排布")
+    private Integer wnd_index;
+
     @NotBlank(message = "信号源ID（UUID）不能为空")
     @ApiModelProperty(value = "必填 - 信号源ID（UUID）")
     private String chnid;
@@ -29,18 +33,16 @@ public class BatchWndInfo implements Serializable {
     @ApiModelProperty(value = "必填 - 信号源类型，0=监控源、1=画面合成源或者会议终端")
     private Integer chntype;
 
-    @NotBlank(message = "会议终端的国标ID不能为空")
     @ApiModelProperty(value = "必填 - 会议终端的国标ID，只有是会议终端时有效")
     private String chnidex;
 
-    @NotNull(message = "窗口内小窗口索引不能为空")
-    @ApiModelProperty(value = "必填 - 窗口内小窗口索引， 从0开始，从上到下，从左到右排布")
-    private Integer wnd_index;
+    @ApiModelProperty("参与混音的设备列表")
+    private List<String> mixer;
 
     @ApiModelProperty(value = "包传输方式 - 0=单播，1=组播，默认单播")
     private Integer protocol;
 
-    @ApiModelProperty(value = "组播地址信息")
-    private List<MulticastAddress> multicast;
+    @ApiModelProperty(value = "组播地址信息、注意：组播只针对网络流")
+    private MulticastAddress multicast;
 
 }

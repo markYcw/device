@@ -15,12 +15,12 @@ import java.io.Serializable;
 public class RecordInfo implements Serializable {
 
     @ApiModelProperty("本段录像的开始时间，日期格式为:YYYY-MM-DDThh:mm:ss，如：2020-10-01T00:00:00")
-    private String startTime;
+    private String start_time;
 
     @ApiModelProperty("本段录像的结束时间，日期格式为:YYYY-MM-DDThh:mm:ss，如：2020-10-01T00:00:00")
-    private String endTime;
+    private String end_time;
 
     @ApiModelProperty("文件大小")
-    private String fileSize;
+    private String file_size;
 
 }

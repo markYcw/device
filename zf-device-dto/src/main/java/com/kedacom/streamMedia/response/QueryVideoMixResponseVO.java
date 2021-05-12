@@ -17,6 +17,6 @@ import java.util.List;
 public class QueryVideoMixResponseVO implements Serializable {
 
     @ApiModelProperty("画面合成信息")
-    private List<VideoMixInfo> videoMixInfoList;
+    private List<VideoMixInfo> videoMixInfo;
 
 }

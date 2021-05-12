@@ -14,12 +14,13 @@ public enum DeviceErrorEnum {
     SYSTEM_VERSION_FAILED(3004, "获取版本号失败"),
     SYSTEM_LOGOUT_FAILED(3005, "退出显控服务失败"),
 
-    TVWALL_LIST_FAILED(3010, "获取所有大屏配置失败"),
-    TVWALL_LAYOUT_FAILED(3011, "获取大屏布局失败"),
-    TVWALL_QUERY_PIPELINE_FAILED(3012, "查询虚拟屏失败"),
-    TVWALL_CONFIG_FAILED(3013, "配置虚拟屏失败"),
-    TVWALL_PIPELINE_BIND_FAILED(3014, "配置虚拟屏窗口与资源的绑定关系失败"),
-    TVWALL_DELETE_FAILED(3015, "大屏删除失败"),
+    TVWALL_FAILED(3010, ""),
+    TVWALL_LIST_FAILED(3011, "获取所有大屏配置失败"),
+    TVWALL_LAYOUT_FAILED(3012, "获取大屏布局失败"),
+    TVWALL_QUERY_PIPELINE_FAILED(3013, "查询虚拟屏失败"),
+    TVWALL_CONFIG_FAILED(3014, "配置虚拟屏失败"),
+    TVWALL_PIPELINE_BIND_FAILED(3015, "配置虚拟屏窗口与资源的绑定关系失败"),
+    TVWALL_DELETE_FAILED(3016, "大屏删除失败"),
 
     TVPLAY_START_FAILED(3020, "窗口显示失败"),
     TVPLAY_STOP_FAILED(3021, "关闭窗口显示失败"),
@@ -33,6 +34,10 @@ public enum DeviceErrorEnum {
     DECODER_OSD_DELETE_FAILED(3031, ""),
     DECODER_STYLE_QUERY_FAILED(3032, ""),
     DECODER_STYLE_CONFIG_FAILED(3033, ""),
+
+    SCHEME_FAILED(3040,""),
+    SCHEME_CONFIG_FAILED(3041,"预案的画面布局配置失败"),
+    SCHEME_QUERY_FAILED(3042,"查询预案布局失败"),
 
     TVWALL_LIST(301023, "获取所有大屏配置失败");
 

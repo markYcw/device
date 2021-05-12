@@ -17,6 +17,6 @@ import java.util.List;
 public class QueryAudioMixResponseVO implements Serializable {
 
     @ApiModelProperty("混音信息集合")
-    private List<AudioMixInfo> audioMixInfoList;
+    private List<AudioMixInfo> audioMixInfo;
 
 }

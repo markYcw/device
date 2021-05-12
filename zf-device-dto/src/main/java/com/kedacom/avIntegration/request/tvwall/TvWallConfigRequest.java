@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -20,7 +20,7 @@ public class TvWallConfigRequest implements Serializable {
     @ApiModelProperty(value = "token令牌 - 必填")
     private String token;
 
-    @NotEmpty(message = "大屏ID不能为空")
+    @NotNull(message = "大屏ID不能为空")
     @ApiModelProperty(value = "大屏ID - 按需填写，新建大屏填0或不填，修改大屏必填")
     private Integer id;
 
@@ -39,7 +39,7 @@ public class TvWallConfigRequest implements Serializable {
     @ApiModelProperty(value = "大屏初始风格列数 - 大屏的横向布局，融合调度1.6版本以上该字段不用")
     private Integer cell_col;
 
-    @NotEmpty(message = "大屏模式不能为空")
+    @NotNull(message = "大屏模式不能为空")
     @ApiModelProperty(value = "必填, 大屏模式 - 1=虚拟屏模式（解码器）;4=自定义屏（调度侧配置）")
     private Integer module;
 

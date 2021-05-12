@@ -31,7 +31,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/v1/manage/decoder")
-@Api(value = "解码通道管理")
+@Api(value = "解码通道管理",tags = "解码通道管理")
 @Slf4j
 public class DecoderController {
 

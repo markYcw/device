@@ -13,13 +13,14 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel("停止录像入参")
-public class StopRecRequestDTO implements Serializable {
+public class StopRecRequest implements Serializable {
 
     @NotBlank(message = "统一平台Id不能为空")
     @ApiModelProperty("统一平台Id，必填")
     private String unitId;
 
+    @NotBlank(message = "录像ID不能为空")
     @ApiModelProperty("录像ID")
-    private  String recordId;
+    private String record_id;
 
 }

@@ -17,11 +17,11 @@ import java.io.Serializable;
 public class TvPlayClearRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")
-    @ApiModelProperty(value = "token令牌 - 必填")
+    @ApiModelProperty(value = "token令牌 - 必填", required = true)
     private String token;
 
     @NotNull(message = "大屏ID不能为空")
-    @ApiModelProperty(value = "大屏ID - 必填")
+    @ApiModelProperty(value = "大屏ID - 必填", required = true)
     private Integer tvid;
 
 }

@@ -13,7 +13,7 @@ public class Subtitle implements Serializable {
     private Integer index;
 
     @NotBlank(message = "字幕的内容不能为空")
-    @ApiModelProperty(value = "字幕的内容 - 必填")
+    @ApiModelProperty(value = "字幕的内容 - 必填", required = true)
     private String content;
 
     @ApiModelProperty(value = "字幕的内容")

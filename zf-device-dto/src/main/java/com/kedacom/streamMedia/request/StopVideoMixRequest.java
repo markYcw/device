@@ -21,8 +21,8 @@ public class StopVideoMixRequest implements Serializable {
     @ApiModelProperty("统一平台Id，必填")
     private String unitId;
 
-    @NotBlank(message = "使用32位UUID不能为空")
-    @ApiModelProperty("使用32位UUID（无横线）")
+    @NotBlank(message = "画面合成设备分组id不能为空")
+    @ApiModelProperty("画面合成设备分组id")
     private String GroupID;
 
     @NotEmpty(message = "画面合成ID不能为空")

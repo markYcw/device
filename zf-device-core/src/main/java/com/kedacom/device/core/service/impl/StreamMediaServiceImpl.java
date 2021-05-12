@@ -5,15 +5,13 @@ import com.kedacom.device.core.convert.StreamMediaConvert;
 import com.kedacom.device.core.service.StreamMediaService;
 import com.kedacom.streamMedia.dto.*;
 import com.kedacom.streamMedia.request.*;
-import com.kedacom.streamMedia.response.QueryAudioMixResponseVO;
-import com.kedacom.streamMedia.response.QueryRecResponseVO;
-import com.kedacom.streamMedia.response.QueryVideoMixResponseVO;
-import com.kedacom.streamMedia.response.StartRecResponseVO;
+import com.kedacom.streamMedia.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @Auther: hxj
@@ -64,13 +62,19 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     }
 
     @Override
-    public String startAudioMix(StartAudioMixRequest request) {
+    public StartAudioMixResponseVO startAudioMix(StartAudioMixRequest request) {
         log.info("开启音频混音入参信息:{}", request);
         String ssid = "";
+        // 自定义的分组id
+        String groupId = UUID.randomUUID().toString().replace("-","");
         StartAudioMixRequestDTO startAudioMixRequestDTO = streamMediaConvert.convertStartAudioMixRequest(request);
+        startAudioMixRequestDTO.setGroupID(groupId);
         String startAudioMix = streamMediaInterface.startAudioMix(ssid, startAudioMixRequestDTO);
-        log.info("开启音频混音应答信息:{}",startAudioMix);
-        return startAudioMix;
+        StartAudioMixResponseVO response = new StartAudioMixResponseVO();
+        response.setMixID(startAudioMix);
+        response.setGroupID(groupId);
+        log.info("开启音频混音应答信息:{}",response);
+        return response;
     }
 
     @Override
@@ -114,51 +118,56 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     }
 
     @Override
-    public String startVideoMix(StartVideoMixRequest request) {
-        log.info("开始画面合成（不支持语音激励功能）入参信息:{}", request);
+    public StartVideoMixResponseVO startVideoMix(StartVideoMixRequest request) {
+        log.info("开始画面合成入参信息:{}", request);
         String ssid = "";
+        String groupId = UUID.randomUUID().toString().replace("-","");
         StartVideoMixRequestDTO startVideoMixRequestDTO = streamMediaConvert.convertStartVideoMixRequest(request);
+        startVideoMixRequestDTO.setGroupID(groupId);
         String startVideoMix = streamMediaInterface.startVideoMix(ssid, startVideoMixRequestDTO);
-        log.info("开始画面合成（不支持语音激励功能）应答信息:{}",startVideoMix);
-        return startVideoMix;
+        StartVideoMixResponseVO response = new StartVideoMixResponseVO();
+        response.setMixID(startVideoMix);
+        response.setGroupID(groupId);
+        log.info("开始画面合成应答信息:{}",response);
+        return response;
     }
 
     @Override
     public Boolean stopVideoMix(StopVideoMixRequest request) {
-        log.info("停止画面合成（不支持语音激励功能）入参信息:{}", request);
+        log.info("停止画面合成入参信息:{}", request);
         String ssid = "";
         StopVideoMixRequestDTO stopVideoMixRequestDTO = streamMediaConvert.convertStopVideoMixRequest(request);
         Boolean stopVideoMix = streamMediaInterface.stopVideoMix(ssid, stopVideoMixRequestDTO);
-        log.info("停止画面合成（不支持语音激励功能）应答信息 —— stopVideoMix:{}",stopVideoMix);
+        log.info("停止画面合成应答信息 —— stopVideoMix:{}",stopVideoMix);
         return stopVideoMix;
     }
 
     @Override
     public Boolean updateVideoMix(UpdateVideoMixRequest request) {
-        log.info("更新画面合成（不支持语音激励功能）入参信息:{}", request);
+        log.info("更新画面合成入参信息:{}", request);
         String ssid = "";
         UpdateVideoMixRequestDTO updateVideoMixRequestDTO = streamMediaConvert.convertUpdateVideoMixRequest(request);
         Boolean updateVideoMix = streamMediaInterface.updateVideoMix(ssid, updateVideoMixRequestDTO);
-        log.info("更新画面合成（不支持语音激励功能）应答信息:{}",updateVideoMix);
+        log.info("更新画面合成应答信息:{}",updateVideoMix);
         return updateVideoMix;
     }
 
     @Override
     public List<String> queryAllVideoMix(String unitId) {
-        log.info("查询所有画面合成（不支持语音激励功能）入参信息 :{}", unitId);
+        log.info("查询所有画面合成入参信息 :{}", unitId);
         String ssid = "";
         List<String> queryAllVideoMix = streamMediaInterface.queryAllVideoMix(ssid);
-        log.info("查询所有画面合成（不支持语音激励功能）应答信息:{}",queryAllVideoMix);
+        log.info("查询所有画面合成应答信息:{}",queryAllVideoMix);
         return queryAllVideoMix;
     }
 
     @Override
     public QueryVideoMixResponseVO queryVideoMix(QueryVideoMixRequest request) {
-        log.info("查询画面信息（不支持语音激励功能）入参信息:{}", request);
+        log.info("查询画面信息入参信息:{}", request);
         String ssid = "";
         QueryVideoMixRequestDTO queryVideoMixRequestDTO = streamMediaConvert.convertQueryVideoMixRequest(request);
         QueryVideoMixResponseVO queryVideoMix = streamMediaInterface.queryVideoMix(ssid, queryVideoMixRequestDTO);
-        log.info("查询画面信息（不支持语音激励功能）应答信息:{}",queryVideoMix);
+        log.info("查询画面信息应答信息:{}",queryVideoMix);
         return queryVideoMix;
     }
 }

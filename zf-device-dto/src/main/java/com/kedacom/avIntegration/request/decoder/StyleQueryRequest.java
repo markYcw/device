@@ -17,11 +17,11 @@ import java.util.List;
 public class StyleQueryRequest implements Serializable {
 
     @NotEmpty(message = "token令牌不能为空")
-    @ApiModelProperty(value = "token令牌 - 必填")
+    @ApiModelProperty(value = "token令牌 - 必填", required = true)
     private String token;
 
     @NotEmpty(message = "解码通道ID不能为空")
-    @ApiModelProperty(value = "解码通道ID - 必填，统一设备服务分配国标ID")
+    @ApiModelProperty(value = "解码通道ID - 必填，统一设备服务分配国标ID", required = true)
     private List<String> chnls;
 
 }

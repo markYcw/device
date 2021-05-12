@@ -19,11 +19,11 @@ import java.util.List;
 public class TvWallPipelineBindRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")
-    @ApiModelProperty(value = "token令牌 - 必填")
+    @ApiModelProperty(value = "token令牌 - 必填", required = true)
     private String token;
 
     @NotNull(message = "大屏ID不能为空")
-    @ApiModelProperty(value = "必填 - 大屏ID")
+    @ApiModelProperty(value = "必填 - 大屏ID", required = true)
     private Integer id;
 
     @ApiModelProperty(value = "解码通道使用模式 - 0=外置、1=内置，不填或填0时为外置")

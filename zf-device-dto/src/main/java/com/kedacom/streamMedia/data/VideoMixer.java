@@ -17,11 +17,11 @@ import java.io.Serializable;
 public class VideoMixer implements Serializable {
 
     @NotNull(message = "画面合成通道索引不能为空")
-    @ApiModelProperty("画面合成通道索引，从0开始")
+    @ApiModelProperty(value = "画面合成通道索引，从0开始",required = true)
     private Integer window_index;
 
     @NotBlank(message = "参与混音方终端ID不能为空")
-    @ApiModelProperty("参与混音方终端ID")
+    @ApiModelProperty(value = "参与混音方终端ID",required = true)
     private String resourceID;
 
     @ApiModelProperty("域ID。")

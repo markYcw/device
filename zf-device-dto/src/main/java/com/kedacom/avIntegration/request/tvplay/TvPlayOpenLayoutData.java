@@ -14,19 +14,19 @@ public class TvPlayOpenLayoutData implements Serializable {
     private Integer wndid;
 
     @NotNull(message = "窗口行起始位置不能为空")
-    @ApiModelProperty(value = "窗口行起始位置 - 必填，单位：像素")
+    @ApiModelProperty(value = "窗口行起始位置 - 必填，单位：像素",required = true)
     private Integer x;
 
     @NotNull(message = "窗口列起始位置不能为空")
-    @ApiModelProperty(value = "窗口列起始位置 - 必填，单位：像素")
+    @ApiModelProperty(value = "窗口列起始位置 - 必填，单位：像素",required = true)
     private Integer y;
 
     @NotNull(message = "窗口宽度不能为空")
-    @ApiModelProperty(value = "窗口宽度 - 必填，单位：像素")
+    @ApiModelProperty(value = "窗口宽度 - 必填，单位：像素",required = true)
     private Integer w;
 
     @NotNull(message = "窗口高度不能为空")
-    @ApiModelProperty(value = "窗口高度 - 必填，单位：像素")
+    @ApiModelProperty(value = "窗口高度 - 必填，单位：像素",required = true)
     private Integer h;
 
     @ApiModelProperty(value = "信号参数")

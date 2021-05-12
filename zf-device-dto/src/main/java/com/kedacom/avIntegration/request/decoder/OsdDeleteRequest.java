@@ -17,11 +17,11 @@ import java.util.List;
 public class OsdDeleteRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")
-    @ApiModelProperty(value = "token令牌 - 必填")
+    @ApiModelProperty(value = "token令牌 - 必填", required = true)
     private String token;
 
     @NotBlank(message = "解码通道ID不能为空")
-    @ApiModelProperty(value = "解码通道ID - 必填，统一设备服务分配国标ID")
+    @ApiModelProperty(value = "解码通道ID - 必填，统一设备服务分配国标ID", required = true)
     private String chnid;
 
     @ApiModelProperty(value = "画面编号集合， 编号从0开始")

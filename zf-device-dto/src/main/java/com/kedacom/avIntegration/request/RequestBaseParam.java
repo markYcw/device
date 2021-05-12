@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class RequestBaseParam implements Serializable {
 
     @NotEmpty(message = "token令牌不能为空")
-    @ApiModelProperty(value = "token令牌 - 必填")
+    @ApiModelProperty(value = "token令牌 - 必填", required = true)
     private String token;
 
 }

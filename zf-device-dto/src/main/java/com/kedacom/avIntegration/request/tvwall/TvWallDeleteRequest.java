@@ -17,11 +17,11 @@ import java.io.Serializable;
 public class TvWallDeleteRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")
-    @ApiModelProperty(value = "token令牌 - 必填")
+    @ApiModelProperty(value = "token令牌 - 必填", required = true)
     private String token;
 
     @NotNull(message = "大屏ID不能为空")
-    @ApiModelProperty(value = "大屏ID - 按需填写，新建大屏填0或不填，修改大屏必填")
+    @ApiModelProperty(value = "大屏ID - 按需填写，新建大屏填0或不填，修改大屏必填", required = true)
     private Integer id;
 
 }

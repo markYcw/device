@@ -1,10 +1,7 @@
 package com.kedacom.device.core.service;
 
 import com.kedacom.streamMedia.request.*;
-import com.kedacom.streamMedia.response.QueryAudioMixResponseVO;
-import com.kedacom.streamMedia.response.QueryRecResponseVO;
-import com.kedacom.streamMedia.response.QueryVideoMixResponseVO;
-import com.kedacom.streamMedia.response.StartRecResponseVO;
+import com.kedacom.streamMedia.response.*;
 
 import java.util.List;
 
@@ -20,7 +17,7 @@ public interface StreamMediaService {
 
     QueryRecResponseVO queryRec(QueryRecRequest request);
 
-    String startAudioMix(StartAudioMixRequest request);
+    StartAudioMixResponseVO startAudioMix(StartAudioMixRequest request);
 
     Boolean stopAudioMix(StopAudioMixRequest request);
 
@@ -30,7 +27,7 @@ public interface StreamMediaService {
 
     QueryAudioMixResponseVO queryAudioMix(QueryAudioMixRequest request);
 
-    String startVideoMix(StartVideoMixRequest request);
+    StartVideoMixResponseVO startVideoMix(StartVideoMixRequest request);
 
     Boolean stopVideoMix(StopVideoMixRequest request);
 

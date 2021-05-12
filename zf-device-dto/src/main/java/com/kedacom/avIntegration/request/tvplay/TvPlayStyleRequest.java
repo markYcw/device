@@ -17,23 +17,23 @@ import java.io.Serializable;
 public class TvPlayStyleRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")
-    @ApiModelProperty(value = "token令牌 - 必填")
+    @ApiModelProperty(value = "token令牌 - 必填", required = true)
     private String token;
 
     @NotNull(message = "预案ID不能为空")
-    @ApiModelProperty(value = "预案ID - 必填，预案的配置ID")
+    @ApiModelProperty(value = "预案ID - 必填，预案的配置ID", required = true)
     private Integer schid;
 
     @NotNull(message = "大屏ID不能为空")
-    @ApiModelProperty(value = "大屏ID - 必填，预案所属的大屏ID")
+    @ApiModelProperty(value = "大屏ID - 必填，预案所属的大屏ID", required = true)
     private Integer tvid;
 
     @NotNull(message = "窗口ID不能为空")
-    @ApiModelProperty(value = "窗口ID - 必填")
+    @ApiModelProperty(value = "窗口ID - 必填", required = true)
     private Integer wndid;
 
     @NotNull(message = "画面风格不能为空")
-    @ApiModelProperty(value = "画面风格 - 必填，1=一画面，4=四画面")
+    @ApiModelProperty(value = "画面风格 - 必填，1=一画面，4=四画面", required = true)
     private Integer style;
 
 }

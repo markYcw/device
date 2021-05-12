@@ -18,15 +18,15 @@ import java.util.List;
 public class BatchStopRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")
-    @ApiModelProperty(value = "token令牌 - 必填")
+    @ApiModelProperty(value = "token令牌 - 必填", required = true)
     private String token;
 
     @NotNull(message = "大屏ID不能为空")
-    @ApiModelProperty(value = "大屏ID - 必填")
+    @ApiModelProperty(value = "大屏ID - 必填", required = true)
     private Integer tvid;
 
     @NotNull(message = "窗口个数不能为空")
-    @ApiModelProperty(value = "窗口个数 - 必填，待关闭显示的窗口个数")
+    @ApiModelProperty(value = "窗口个数 - 必填，待关闭显示的窗口个数", required = true)
     private Integer number;
 
     @ApiModelProperty(value = "批量窗口信息")

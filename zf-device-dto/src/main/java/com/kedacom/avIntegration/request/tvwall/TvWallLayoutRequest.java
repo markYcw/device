@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class TvWallLayoutRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")
-    @ApiModelProperty(value = "token令牌 - 必填")
+    @ApiModelProperty(value = "token令牌 - 必填", required = true)
     private String token;
 
     @ApiModelProperty(value = "大屏ID - 不填或填0查询全部")

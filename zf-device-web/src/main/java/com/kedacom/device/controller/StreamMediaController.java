@@ -4,10 +4,7 @@ import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.StreamMediaService;
 import com.kedacom.streamMedia.request.*;
-import com.kedacom.streamMedia.response.QueryAudioMixResponseVO;
-import com.kedacom.streamMedia.response.QueryRecResponseVO;
-import com.kedacom.streamMedia.response.QueryVideoMixResponseVO;
-import com.kedacom.streamMedia.response.StartRecResponseVO;
+import com.kedacom.streamMedia.response.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -59,20 +56,13 @@ public class StreamMediaController {
         return BaseResult.succeed(queryRec);
     }
 
-    /**
-     * 混音ID，20位字符
-     *
-     * @param startAudioMixRequest
-     * @param br
-     * @return mixID 混音ID，20位字符
-     */
-    @ApiOperation("开启音频混音: 返回mixID 混音ID，20位字符")
+    @ApiOperation("开启音频混音:返回混音设备分组id、混音ID")
     @PostMapping("/startAudioMix")
-    public BaseResult<String> startAudioMix(@Valid @RequestBody StartAudioMixRequest startAudioMixRequest, BindingResult br) {
+    public BaseResult<StartAudioMixResponseVO> startAudioMix(@Valid @RequestBody StartAudioMixRequest startAudioMixRequest, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        String mixID = streamMediaService.startAudioMix(startAudioMixRequest);
-        return BaseResult.succeed(mixID);
+        StartAudioMixResponseVO startAudioMixResponseVO = streamMediaService.startAudioMix(startAudioMixRequest);
+        return BaseResult.succeed(startAudioMixResponseVO);
     }
 
     @ApiOperation("停止音频混音")
@@ -93,11 +83,7 @@ public class StreamMediaController {
         return BaseResult.succeed(updateAudioMix);
     }
 
-    /**
-     * @param queryAllAudioMixRequest
-     * @param br
-     * @return 混音ID集合
-     */
+
     @ApiOperation("查询所有混音 返回混音ID集合")
     @PostMapping("/queryAllAudioMix")
     public BaseResult<List<String>> queryAllAudioMix(@Valid @RequestBody QueryAllAudioMixRequest queryAllAudioMixRequest, BindingResult br) {
@@ -116,18 +102,13 @@ public class StreamMediaController {
         return BaseResult.succeed(queryAudioMixResponseVO);
     }
 
-    /**
-     * @param startVideoMixRequest
-     * @param br
-     * @return mixID 合成ID，20位字符
-     */
-    @ApiOperation("开始画面合成: 返回mixID 合成ID，20位字符")
+    @ApiOperation("开始画面合成: 返回画面合成设备分组id、画面合成ID")
     @PostMapping("/startVideoMix")
-    public BaseResult<String> startVideoMix(@Valid @RequestBody StartVideoMixRequest startVideoMixRequest, BindingResult br) {
+    public BaseResult<StartVideoMixResponseVO> startVideoMix(@Valid @RequestBody StartVideoMixRequest startVideoMixRequest, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        String mixID = streamMediaService.startVideoMix(startVideoMixRequest);
-        return BaseResult.succeed(mixID);
+        StartVideoMixResponseVO startVideoMixResponseVO = streamMediaService.startVideoMix(startVideoMixRequest);
+        return BaseResult.succeed(startVideoMixResponseVO);
     }
 
     @ApiOperation("停止画面合成")
@@ -148,10 +129,6 @@ public class StreamMediaController {
         return BaseResult.succeed(updateVideoMix);
     }
 
-    /**
-     * @param unitId
-     * @return mixIDs 合成ID集合
-     */
     @ApiOperation("查询所有画面合成:返回mixIDs 合成ID集合")
     @PostMapping("/queryAllVideoMix")
     public BaseResult<List<String>> queryAllVideoMix(@RequestParam("unitId") String unitId) {

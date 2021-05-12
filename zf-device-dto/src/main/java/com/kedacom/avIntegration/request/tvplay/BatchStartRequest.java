@@ -18,19 +18,19 @@ import java.util.List;
 public class BatchStartRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")
-    @ApiModelProperty(value = "token令牌 - 必填")
+    @ApiModelProperty(value = "token令牌 - 必填", required = true)
     private String token;
 
     @NotNull(message = "预案ID不能为空")
-    @ApiModelProperty(value = "预案ID - 必填，当前使用的预案ID")
+    @ApiModelProperty(value = "预案ID - 必填，当前使用的预案ID", required = true)
     private Integer schid;
 
     @NotNull(message = "大屏ID不能为空")
-    @ApiModelProperty(value = "大屏ID - 必填，预案所在的大屏ID")
+    @ApiModelProperty(value = "大屏ID - 必填，预案所在的大屏ID", required = true)
     private Integer tvid;
 
     @NotNull(message = "窗口个数不能为空")
-    @ApiModelProperty(value = "窗口个数 - 必填，需要显示信号的窗口个数")
+    @ApiModelProperty(value = "窗口个数 - 必填，需要显示信号的窗口个数", required = true)
     private Integer number;
 
     @ApiModelProperty(value = "批量窗口信息")

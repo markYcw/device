@@ -19,12 +19,8 @@ import java.util.List;
 public class StartVideoMixRequest implements Serializable {
 
     @NotBlank(message = "统一平台Id不能为空")
-    @ApiModelProperty("统一平台Id，必填")
+    @ApiModelProperty(value = "统一平台Id，必填",required = true)
     private String unitId;
-
-    @NotBlank(message = "使用32位UUID不能为空")
-    @ApiModelProperty("使用32位UUID（无横线）")
-    private String GroupID;
 
     @ApiModelProperty("画面合成风格")
     private Integer layout;

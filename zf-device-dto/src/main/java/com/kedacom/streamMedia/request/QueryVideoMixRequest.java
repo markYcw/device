@@ -21,8 +21,8 @@ public class QueryVideoMixRequest implements Serializable {
     @ApiModelProperty("统一平台Id，必填")
     private String unitId;
 
-    @NotEmpty(message = "合成ID集合不能为空")
-    @ApiModelProperty("合成ID集合")
+    @NotEmpty(message = "画面合成ID不能为空")
+    @ApiModelProperty("画面合成ID")
     private List<String> mixIDs;
 
 }

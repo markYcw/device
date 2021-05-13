@@ -6,7 +6,7 @@ import java.io.Serializable;
  * @author van.shu
  * @create 2021/4/26 11:10
  */
-public class ProtocolException extends RuntimeException implements Serializable {
+public class ProtocolException extends KMException implements Serializable {
 
     public ProtocolException(String message, Throwable cause) {
         super(message, cause);

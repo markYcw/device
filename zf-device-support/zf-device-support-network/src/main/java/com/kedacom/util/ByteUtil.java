@@ -73,23 +73,50 @@ public class ByteUtil {
 
     }
 
+    /**
+     * 将字节数组转成int值
+     * 如[0,0,1,2,3,4]-->1234
+     * [666600]-->666600
+     * @param bytes
+     * @return
+     */
+    public static int byteArray2Int(byte[] bytes) {
+        if (bytes == null || bytes.length == 0) {
+            return 0;
+        }
+        String s = new String(bytes);
+        return Integer.parseInt(s);
+    }
+
 
     public static void main(String[] args) {
-        byte[] merger = merger(new byte[]{}, new byte[]{'1', 'd'});
+//        byte[] merger = merger(new byte[]{}, new byte[]{'1', 'd'});
+//
+//        String s = new String(merger);
+//
+//        System.out.println("s = " + s);
+//
+//        byte[] b1 = int2byteArray(123, 7);
+//
+//        System.out.println(new String(b1));
+//
+//        byte[] b2 = int2byteArray(1234567, 3);
+//
+//        System.out.println(new String(b2));
 
-        String s = new String(merger);
+        byte[] bytes = new byte[]{'0', '0', '3', '0', '2', '1'};
 
-        System.out.println("s = " + s);
+        String str = new String(bytes);
 
-        byte[] b1 = int2byteArray(123, 7);
+        System.out.println("str = " + str);
 
-        System.out.println(new String(b1));
+        int i = Integer.parseInt(str);
 
-        byte[] b2 = int2byteArray(1234567, 3);
+        System.out.println("i = " + i);
 
-        System.out.println(new String(b2));
 
     }
+
 
 
 

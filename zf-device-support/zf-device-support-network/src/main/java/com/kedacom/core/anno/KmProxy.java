@@ -14,16 +14,4 @@ public @interface KmProxy {
 
     String name() default "";
 
-    /**
-     * commandName策略，默认方法名小写
-     *
-     * @return 策略
-     */
-    CommandNameStrategy COMMAND_NAME_STRATEGY() default CommandNameStrategy.LOWERCASE;
-
-
-    enum CommandNameStrategy {
-        LOWERCASE;
-    }
-
 }

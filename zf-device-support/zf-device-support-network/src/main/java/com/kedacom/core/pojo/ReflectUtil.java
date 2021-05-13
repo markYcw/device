@@ -174,49 +174,4 @@ public class ReflectUtil {
     }
 
 
-    public static void main(String[] args) throws Exception{
-        Student student = Student.builder().name("jack").email("xy123zk@163.com").build();
-        System.out.println(student.toString());
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("address","浙江杭州");
-        properties.put("age",26);
-        Teacher teacher = new Teacher();
-        teacher.setName("老师");
-        teacher.setAge(88);
-        List<User> userList = new ArrayList<>();
-        userList.add(new User(1, "1", 1));
-        userList.add(new User(2, "2", 2));
-        userList.add(new User(3, "3", 3));
-        teacher.setUserList(userList);
-        properties.put("teach", teacher);
-        //ObjectMapper mapper = new ObjectMapper();
-
-        //String json = mapper.writeValueAsString(getTarget(student,properties));
-        //System.out.println(json);
-        Object target = getTarget(student, properties);
-
-        Class<?> clazz = target.getClass();
-
-        String name = clazz.getName();
-        System.out.println("name = " + name);
-
-
-        String typeName = clazz.getTypeName();
-
-        System.out.println("typeName = " + typeName);
-
-        String json = JSON.toJSONString(target);
-
-        int length = json.getBytes().length;
-
-        System.out.println("length = " + length);
-
-        System.out.println("json = " + json);
-
-
-        String tyVoid = void.class.getTypeName();
-
-        System.out.println("tyVoid = " + tyVoid);
-
-    }
 }

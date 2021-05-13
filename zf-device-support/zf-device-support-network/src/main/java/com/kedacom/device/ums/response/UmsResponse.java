@@ -56,4 +56,9 @@ public abstract class UmsResponse implements Response {
     public Integer getSsno() {
         return resp.getSsno();
     }
+
+    public Integer getErrcode() {
+        return resp.getErrcode();
+    }
+
 }

@@ -33,9 +33,4 @@ public class LoginRequest extends UmsRequest {
         return COMMAND;
     }
 
-    @Override
-    public String buildData(Integer ssid) throws JSONException {
-        return super.buildData(ssid);
-    }
-
 }

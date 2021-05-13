@@ -17,9 +17,9 @@ import java.util.List;
 public class UmsScheduleGroupQueryResponseDto implements Serializable {
 
     @ApiModelProperty(value = "调度组Id")
-    private String groupId;
+    private String GroupID;
 
     @ApiModelProperty(value = "调度组成员设备信息")
-    private List<UmsScheduleGroupMembersQueryResponseDto> members;
+    private List<UmsScheduleGroupMembersQueryResponseDto> Members;
 
 }

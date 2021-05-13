@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -18,14 +19,14 @@ public class UmsScheduleGroupMembersSetMuteRequestDto implements Serializable {
 
     @NotBlank(message = "成员设备类型不能为空")
     @ApiModelProperty(value = "成员设备类型")
-    private String deviceType;
+    private String DeviceType;
 
     @NotBlank(message = "成员设备Id不能为空")
     @ApiModelProperty(value = "成员设备Id")
-    private String deviceId;
+    private String DeviceID;
 
-    @NotBlank(message = "状态不能为空")
+    @NotNull(message = "状态不能为空")
     @ApiModelProperty(value = "状态（1:哑音 0:不哑音）")
-    private Integer muteState;
+    private Integer MuteState;
 
 }

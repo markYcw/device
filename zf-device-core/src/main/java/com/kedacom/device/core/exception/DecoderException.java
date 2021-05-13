@@ -3,6 +3,8 @@ package com.kedacom.device.core.exception;
 import com.kedacom.device.common.exception.DeviceException;
 
 /**
+ * 解码通道服务异常
+ *
  * @Auther: hxj
  * @Date: 2021/5/11 13:24
  */

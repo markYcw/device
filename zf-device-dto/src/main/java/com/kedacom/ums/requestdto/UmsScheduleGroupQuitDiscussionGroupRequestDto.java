@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "推出讨论组请求参数类")
+@ApiModel(value = "退出讨论组请求参数类")
 public class UmsScheduleGroupQuitDiscussionGroupRequestDto implements Serializable {
 
     @NotBlank(message = "umsId不能为空")
@@ -22,10 +22,10 @@ public class UmsScheduleGroupQuitDiscussionGroupRequestDto implements Serializab
 
     @NotBlank(message = "调度组Id不能为空")
     @ApiModelProperty(value = "调度组Id")
-    private String groupId;
+    private String GroupID;
 
     @NotBlank(message = "设备Id不能为空")
     @ApiModelProperty(value = "设备Id")
-    private String deviceId;
+    private String DeviceID;
 
 }

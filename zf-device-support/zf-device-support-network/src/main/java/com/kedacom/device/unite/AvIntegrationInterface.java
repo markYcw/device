@@ -1,4 +1,4 @@
-package com.kedacom.acl.network.unite;
+package com.kedacom.device.unite;
 
 /**
  * 音视融合（拼控）服务 接口

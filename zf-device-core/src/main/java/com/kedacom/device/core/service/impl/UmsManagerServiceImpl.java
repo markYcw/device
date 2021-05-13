@@ -10,7 +10,7 @@ import com.kedacom.BasePage;
 import com.kedacom.acl.network.ums.requestvo.LoginPlatformRequestVo;
 import com.kedacom.acl.network.ums.responsevo.DeviceInfoVo;
 import com.kedacom.acl.network.ums.responsevo.UmsAlarmTypeQueryResponseVo;
-import com.kedacom.acl.network.unite.UmsManagerInterface;
+import com.kedacom.device.unite.UmsManagerInterface;
 import com.kedacom.device.core.constant.UmsMod;
 import com.kedacom.device.core.convert.UmsAlarmTypeConvert;
 import com.kedacom.device.core.convert.UmsDeviceConvert;

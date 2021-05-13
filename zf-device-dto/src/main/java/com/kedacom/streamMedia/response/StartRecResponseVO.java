@@ -14,6 +14,9 @@ import java.io.Serializable;
 @ApiModel("开启录像应答")
 public class StartRecResponseVO implements Serializable {
 
+    @ApiModelProperty("唯一请求ID（用户自定义数据）")
+    private String request_id;
+
     @ApiModelProperty("设备ID")
     private String device_id;
 

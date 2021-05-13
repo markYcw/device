@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.List;
 
@@ -19,6 +20,8 @@ public class UmsScheduleGroupCreateRequestDto implements Serializable {
     @ApiModelProperty(value = "平台id")
     private String umsId;
 
-    private List<UmsScheduleGroupMembersRequestDto> members;
+    @NotEmpty(message = "调度组成员列表不能为空")
+    @ApiModelProperty("调度组成员列表")
+    private List<UmsScheduleGroupMembersRequestDto> Members;
 
 }

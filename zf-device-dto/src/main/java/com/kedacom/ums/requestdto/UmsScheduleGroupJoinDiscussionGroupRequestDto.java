@@ -23,10 +23,10 @@ public class UmsScheduleGroupJoinDiscussionGroupRequestDto implements Serializab
 
     @NotBlank(message = "调度组Id不能为空")
     @ApiModelProperty(value = "调度组Id")
-    private String groupId;
+    private String GroupID;
 
     @NotBlank(message = "加入讨论组成员信息参数不能为空")
     @ApiModelProperty(value = "加入讨论组成员信息")
-    private List<UmsScheduleGroupDiscussionGroupMembersRequestDto> members;
+    private List<UmsScheduleGroupDiscussionGroupMembersRequestDto> Members;
 
 }

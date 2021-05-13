@@ -5,9 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author wangxy
@@ -24,10 +22,10 @@ public class UmsScheduleGroupDeleteMembersRequestDto implements Serializable {
 
     @NotBlank(message = "调度组Id不能为空")
     @ApiModelProperty(value = "调度组Id")
-    private String groupId;
+    private String GroupID;
 
-    @NotEmpty(message = "删除的成员设备Id不能为空")
+    @NotBlank(message = "删除的成员设备Id不能为空")
     @ApiModelProperty(value = "删除的成员设备ID集合")
-    private List<String> members;
+    private String DeviceID;
 
 }

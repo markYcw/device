@@ -24,7 +24,7 @@ public class UmsScheduleGroupUpdateVmpMixRequestDto implements Serializable {
 
     @NotBlank(message = "调度组Id不能为空")
     @ApiModelProperty(value = "调度组Id")
-    private String groupId;
+    private String GroupID;
 
     @ApiModelProperty(value = "默认0-自动风格，>0,定制的画面布局，取值见创建会议 时的布局说明")
     private Integer layout;
@@ -35,11 +35,14 @@ public class UmsScheduleGroupUpdateVmpMixRequestDto implements Serializable {
     @ApiModelProperty(value = "操作类型。当有members参数或listeners参数时operType必须填 写，“add”:增加画面合成成员，”delete”：删除画 面合成成员")
     private String operType;
 
+    @ApiModelProperty(value = "风格设置")
+    private UmsScheduleGroupStartVmpMixSetStyleRequestDto style;
+
     @NotEmpty(message = "参与画面合成设备不能为空")
     @ApiModelProperty(value = "参与画面合成者设置")
     private List<UmsScheduleGroupStartVmpMixAttendMembersRequestDto> members;
 
     @ApiModelProperty(value = "观看画面合成的成员设备id列表")
-    private List<UmsScheduleGroupStartVmpMixListenerMembersRequestDto> listeners;
+    private List<String> listeners;
 
 }

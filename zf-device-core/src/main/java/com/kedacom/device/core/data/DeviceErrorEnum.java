@@ -8,6 +8,8 @@ public enum DeviceErrorEnum {
 
     PARAM_ERROR(1001, ""),
 
+    STREAM_MEDIA_FAILED(2010, "流媒体服务失败"),
+
     MSP_REMOTE_ERROR(3001, "调用远程接口错误"),
     SYSTEM_LOGIN_FAILED(3002, "登录显控服务获取令牌失败"),
     SYSTEM_KEEPALIVE_FAILED(3003, "token令牌保活失败"),
@@ -35,9 +37,9 @@ public enum DeviceErrorEnum {
     DECODER_STYLE_QUERY_FAILED(3032, ""),
     DECODER_STYLE_CONFIG_FAILED(3033, ""),
 
-    SCHEME_FAILED(3040,""),
-    SCHEME_CONFIG_FAILED(3041,"预案的画面布局配置失败"),
-    SCHEME_QUERY_FAILED(3042,"查询预案布局失败"),
+    SCHEME_FAILED(3040, ""),
+    SCHEME_CONFIG_FAILED(3041, "预案的画面布局配置失败"),
+    SCHEME_QUERY_FAILED(3042, "查询预案布局失败"),
 
     TVWALL_LIST(301023, "获取所有大屏配置失败");
 

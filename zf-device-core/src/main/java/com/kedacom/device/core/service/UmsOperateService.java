@@ -94,7 +94,7 @@ public interface UmsOperateService {
      * @param requestDto
      * @return
      */
-    List<UmsScheduleGroupJoinDiscussionGroupResponseDto> joinScheduleGroupDiscussionGroup(UmsScheduleGroupJoinDiscussionGroupRequestDto requestDto);
+    List<String> joinScheduleGroupDiscussionGroup(UmsScheduleGroupJoinDiscussionGroupRequestDto requestDto);
 
     /**
      * 离开讨论组
@@ -122,7 +122,7 @@ public interface UmsOperateService {
      * @param requestDto
      * @return
      */
-    UmsScheduleGroupStartVmpMixResponseDto startScheduleGroupVmpMix(UmsScheduleGroupStartVmpMixRequestDto requestDto);
+    String startScheduleGroupVmpMix(UmsScheduleGroupStartVmpMixRequestDto requestDto);
 
     /**
      * 更新画面合成

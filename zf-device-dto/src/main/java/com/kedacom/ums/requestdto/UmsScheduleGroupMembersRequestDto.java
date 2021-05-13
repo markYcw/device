@@ -16,12 +16,11 @@ import java.io.Serializable;
 @ApiModel(value = "调度组成员设备请求参数类")
 public class UmsScheduleGroupMembersRequestDto implements Serializable {
 
-    @NotBlank(message = "成员设备类型不能为空")
     @ApiModelProperty(value = "成员设备类型")
-    private String deviceType;
+    private String DeviceType;
 
     @NotBlank(message = "成员设备Id不能为空")
     @ApiModelProperty(value = "成员设备Id")
-    private String deviceId;
+    private String DeviceID;
 
 }

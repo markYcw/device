@@ -1,4 +1,4 @@
-package com.kedacom.acl.network.unite;
+package com.kedacom.device.unite;
 
 /**
  * 统一设备管理接口（包含一机一档设备管理）

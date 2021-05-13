@@ -17,12 +17,12 @@ import java.util.List;
 public class UmsScheduleGroupCreateResponseDto implements Serializable {
 
     @ApiModelProperty(value = "调度组Id")
-    private String groupId;
+    private String GroupID;
 
     @ApiModelProperty(value = "录像CR交换节点")
-    private String recStorageId;
+    private String CRStorageID;
 
     @ApiModelProperty(value = "成员设备id")
-    private List<UmsScheduleGroupMembersResponseDto> deviceIds;
+    private List<String> DeviceIDs;
 
 }

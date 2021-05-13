@@ -22,10 +22,10 @@ public class UmsScheduleGroupQuerySilenceRequestDto implements Serializable {
 
     @NotBlank(message = "调度组Id不能为空")
     @ApiModelProperty(value = "调度组Id")
-    private String groupId;
+    private String GroupID;
 
     @NotBlank(message = "设备Id不能为空")
     @ApiModelProperty(value = "设备Id")
-    private String deviceId;
+    private String DeviceID;
 
 }

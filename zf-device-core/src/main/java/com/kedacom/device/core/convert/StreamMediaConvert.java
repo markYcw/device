@@ -1,6 +1,6 @@
 package com.kedacom.device.core.convert;
 
-import com.kedacom.acl.network.data.streamMeida.*;
+import com.kedacom.device.stream.request.*;
 import com.kedacom.streamMedia.request.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -14,28 +14,28 @@ public interface StreamMediaConvert {
 
     StreamMediaConvert INSTANCE = Mappers.getMapper(StreamMediaConvert.class);
 
-    StartRecRequestDTO convertStartRecRequest(StartRecRequest request);
+    StartRecDTO convertStartRecRequest(StartRecRequest request);
 
-    StopRecRequestDTO convertStopRecRequest(StopRecRequest request);
+    StopRecDTO convertStopRecRequest(StopRecRequest request);
 
-    QueryRecRequestDTO convertQueryRecRequest(QueryRecRequest request);
+    QueryRecDTO convertQueryRecRequest(QueryRecRequest request);
 
-    StartAudioMixRequestDTO convertStartAudioMixRequest(StartAudioMixRequest request);
+    StartAudioMixDTO convertStartAudioMixRequest(StartAudioMixRequest request);
 
-    StopAudioMixRequestDTO convertStopAudioMixRequest(StopAudioMixRequest request);
+    StopAudioMixDTO convertStopAudioMixRequest(StopAudioMixRequest request);
 
-    UpdateAudioMixRequestDTO convertUpdateAudioMixRequest(UpdateAudioMixRequest request);
+    UpdateAudioMixDTO convertUpdateAudioMixRequest(UpdateAudioMixRequest request);
 
-    QueryAllAudioMixRequestDTO convertQueryAllAudioMixRequest(QueryAllAudioMixRequest request);
+    QueryAllAudioMixDTO convertQueryAllAudioMixRequest(QueryAllAudioMixRequest request);
 
-    QueryAudioMixRequestDTO convertQueryAudioMixRequest(QueryAudioMixRequest request);
+    QueryAudioMixDTO convertQueryAudioMixRequest(QueryAudioMixRequest request);
 
-    StartVideoMixRequestDTO convertStartVideoMixRequest(StartVideoMixRequest request);
+    StartVideoMixDTO convertStartVideoMixRequest(StartVideoMixRequest request);
 
-    StopVideoMixRequestDTO convertStopVideoMixRequest(StopVideoMixRequest request);
+    StopVideoMixDTO convertStopVideoMixRequest(StopVideoMixRequest request);
 
-    UpdateVideoMixRequestDTO convertUpdateVideoMixRequest(UpdateVideoMixRequest request);
+    UpdateVideoMixDTO convertUpdateVideoMixRequest(UpdateVideoMixRequest request);
 
-    QueryVideoMixRequestDTO convertQueryVideoMixRequest(QueryVideoMixRequest request);
+    QueryVideoMixDTO convertQueryVideoMixRequest(QueryVideoMixRequest request);
 
 }

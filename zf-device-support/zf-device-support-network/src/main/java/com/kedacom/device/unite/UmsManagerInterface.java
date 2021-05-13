@@ -1,4 +1,4 @@
-package com.kedacom.acl.network.unite;
+package com.kedacom.device.unite;
 
 import com.kedacom.acl.network.anno.HeadParam;
 import com.kedacom.acl.network.anno.RequestBody;

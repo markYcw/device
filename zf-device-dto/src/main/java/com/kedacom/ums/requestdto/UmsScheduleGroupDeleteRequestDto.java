@@ -22,6 +22,6 @@ public class UmsScheduleGroupDeleteRequestDto implements Serializable {
 
     @NotBlank(message = "调度组Id不能为空")
     @ApiModelProperty(value = "调度组Id")
-    private String groupId;
+    private String GroupID;
 
 }

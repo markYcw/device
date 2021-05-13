@@ -1,9 +1,10 @@
-package com.kedacom.acl.network.unite;
+package com.kedacom.device.unite;
 
 
 import com.kedacom.acl.network.anno.HeadParam;
 import com.kedacom.acl.network.anno.RequestBody;
 import com.kedacom.acl.network.data.streamMeida.*;
+import com.kedacom.device.stream.request.StartRecDTO;
 import com.kedacom.streamMedia.response.QueryAudioMixResponseVO;
 import com.kedacom.streamMedia.response.QueryRecResponseVO;
 import com.kedacom.streamMedia.response.QueryVideoMixResponseVO;
@@ -23,10 +24,10 @@ public interface StreamMediaInterface {
      * 开启录像
      *
      * @param ssid
-     * @param startrecRequestDTO
+     * @param StartRecDTO
      * @return StartrecResponseVO
      */
-    StartRecResponseVO startRec(@HeadParam Integer ssid, @RequestBody StartRecRequestDTO startrecRequestDTO);
+    StartRecResponseVO startRec(StartRecDTO startRecDTO);
 
     /**
      * 停止录像

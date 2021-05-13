@@ -2,10 +2,12 @@ package com.kedacom.device.controller;
 
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
+import com.kedacom.device.core.service.UmsOperateService;
 import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,13 +27,16 @@ import java.util.List;
 @Api(value = "统一设备操作接口",tags = "统一设备操作接口")
 public class UmsOperateController {
 
+    @Autowired
+    private UmsOperateService umsOperateService;
+
     @ApiOperation("创建调度组")
     @PostMapping("/createScheduleGroup")
-    public BaseResult<UmsScheduleGroupCreateResponseDto> createScheduleGroup(@Valid @RequestBody UmsScheduleGroupCreateRequestDto requestDto, BindingResult result) {
-
+    public BaseResult<UmsScheduleGroupCreateResponseDto> createScheduleGroup(@Valid @RequestBody UmsScheduleGroupCreateRequestDto request, BindingResult result) {
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        UmsScheduleGroupCreateResponseDto response = umsOperateService.createScheduleGroup(request);
+        return BaseResult.succeed(response);
     }
 
     @ApiOperation("删除调度组")

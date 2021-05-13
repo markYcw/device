@@ -18,10 +18,10 @@ public class UmsScheduleGroupQueryDiscussionGroupResponseDto implements Serializ
 
     @NotBlank(message = "成员设备类型不能为空")
     @ApiModelProperty(value = "成员设备类型")
-    private String deviceType;
+    private String DeviceType;
 
     @NotBlank(message = "成员设备Id不能为空")
     @ApiModelProperty(value = "成员设备Id")
-    private String deviceId;
+    private String DeviceID;
 
 }

@@ -3,6 +3,8 @@ package com.kedacom.device.core.exception;
 import com.kedacom.device.common.exception.DeviceException;
 
 /**
+ * 大屏管理异常
+ *
  * @Auther: hxj
  * @Date: 2021/5/10 17:33
  */

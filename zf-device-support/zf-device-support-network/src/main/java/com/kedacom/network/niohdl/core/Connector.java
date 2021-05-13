@@ -6,11 +6,13 @@ import com.kedacom.network.niohdl.box.StringSendPacket;
 import com.kedacom.network.niohdl.impl.SocketChannelAdapter;
 import com.kedacom.network.niohdl.impl.async.AsyncReceiveDispatcher;
 import com.kedacom.network.niohdl.impl.async.AsyncSendDispatcher;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
+@Slf4j
 public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatusChangedListener {
 
     private SocketChannel channel;
@@ -34,7 +36,6 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
     }
 
     public void send(String msg){
-        //System.out.println("发送:"+msg);
         SendPacket packet = new StringSendPacket(msg);
         sendDispatcher.send(packet);
     }

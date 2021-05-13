@@ -9,6 +9,9 @@ import com.alibaba.fastjson.JSONException;
 public interface Response {
 
 
+    Integer getSsid();
+
+
     /**
      * 获取数据
      * @param clazz clazz 对象

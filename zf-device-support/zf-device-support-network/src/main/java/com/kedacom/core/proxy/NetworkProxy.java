@@ -1,7 +1,7 @@
 package com.kedacom.core.proxy;
 
 import com.kedacom.core.config.NetworkConfig;
-import com.kedacom.network.client.NIOConnector;
+import com.kedacom.core.NIOConnector;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
@@ -45,7 +45,7 @@ public class NetworkProxy implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
 
-        connector.sendRequest();
+      //  connector.sendRequest();
 
         return null;
     }

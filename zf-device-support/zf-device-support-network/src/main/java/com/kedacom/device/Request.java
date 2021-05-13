@@ -17,4 +17,10 @@ public interface Request {
      */
     String buildData(Integer ssid) throws JSONException;
 
+
+    Integer getSsno();
+
+
+    String getCommand();
+
 }

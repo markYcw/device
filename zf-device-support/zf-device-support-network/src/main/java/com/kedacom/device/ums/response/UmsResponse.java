@@ -50,6 +50,7 @@ public abstract class UmsResponse implements Response {
 
     }
 
+    @Override
     public Integer getSsid() {
         return resp.getSsid();
     }

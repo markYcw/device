@@ -22,7 +22,11 @@ public abstract class UmsRequest implements Request {
         this.req = req;
     }
 
-    abstract String getCommand();
+    @Override
+    public String getCommand() {
+        //TODO 子类需要实现
+        return null;
+    }
 
     @Override
     public String buildData(Integer ssid) throws JSONException {
@@ -30,9 +34,12 @@ public abstract class UmsRequest implements Request {
         return JSON.toJSONString(this);
     }
 
-    public int getSsno() {
+
+    @Override
+    public Integer getSsno() {
         return req.getSsno();
     }
+
 
     public int getSsid() {
         return req.getSsid();

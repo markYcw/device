@@ -1,7 +1,6 @@
 package com.kedacom.core.pojo;
 
 
-import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

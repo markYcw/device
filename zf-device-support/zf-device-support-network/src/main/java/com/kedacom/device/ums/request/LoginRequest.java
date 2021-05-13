@@ -1,6 +1,5 @@
 package com.kedacom.device.ums.request;
 
-import com.alibaba.fastjson.JSONException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,7 +28,7 @@ public class LoginRequest extends UmsRequest {
     private Integer recport;
 
     @Override
-    String getCommand() {
+    public String getCommand() {
         return COMMAND;
     }
 

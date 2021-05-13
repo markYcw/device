@@ -3,8 +3,8 @@ package com.kedacom.device.core.msp.fallback;
 
 import com.kedacom.avIntegration.request.scheme.SchemeConfigRequest;
 import com.kedacom.avIntegration.request.scheme.SchemeQueryRequest;
-import com.kedacom.avIntegration.response.scheme.SchemeConfigResponse;
-import com.kedacom.avIntegration.response.scheme.SchemeQueryResponse;
+import com.kedacom.acl.network.data.avIntegration.scheme.SchemeConfigResponse;
+import com.kedacom.acl.network.data.avIntegration.scheme.SchemeQueryResponse;
 import com.kedacom.device.core.exception.MspRemoteCallException;
 import com.kedacom.device.core.msp.SchemeManageSdk;
 import feign.hystrix.FallbackFactory;

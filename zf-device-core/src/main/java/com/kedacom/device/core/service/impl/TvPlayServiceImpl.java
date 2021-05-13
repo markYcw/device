@@ -1,8 +1,8 @@
 package com.kedacom.device.core.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.kedacom.acl.network.data.avIntegration.tvplay.*;
 import com.kedacom.avIntegration.request.tvplay.*;
-import com.kedacom.avIntegration.response.tvplay.*;
 import com.kedacom.device.core.config.AvIntegrationErrCode;
 import com.kedacom.device.core.data.DeviceConstants;
 import com.kedacom.device.core.data.DeviceErrorEnum;

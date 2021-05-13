@@ -1,6 +1,6 @@
 package com.kedacom.device.core.convert;
 
-import com.kedacom.streamMedia.dto.*;
+import com.kedacom.acl.network.data.streamMeida.*;
 import com.kedacom.streamMedia.request.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

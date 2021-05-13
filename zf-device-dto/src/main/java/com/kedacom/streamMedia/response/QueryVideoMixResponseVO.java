@@ -1,6 +1,6 @@
 package com.kedacom.streamMedia.response;
 
-import com.kedacom.streamMedia.data.VideoMixInfo;
+import com.kedacom.streamMedia.info.VideoMixInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

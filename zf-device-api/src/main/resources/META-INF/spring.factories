@@ -1,6 +1,7 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.kedacom.device.api.msp.fallback.SchemeManageApiFallbackFactory,\
+  com.kedacom.device.api.msp.fallback.SchemeApiFallbackFactory,\
   com.kedacom.device.api.msp.fallback.SystemAuthApiFallbackFactory,\
   com.kedacom.device.api.msp.fallback.TvWallApiFallbackFactory,\
   com.kedacom.device.api.msp.fallback.TvPlayApiFallbackFactory,\
- com.kedacom.device.api.streammedia.fallback.StreamMediaApiFallbackFactory
+  com.kedacom.device.api.msp.fallback.DecoderApiFallbackFactory,\
+  com.kedacom.device.api.streammedia.fallback.StreamMediaApiFallbackFactory

@@ -2,10 +2,10 @@ package com.kedacom.device.controller;
 
 import com.kedacom.BaseResult;
 import com.kedacom.avIntegration.request.tvplay.*;
-import com.kedacom.avIntegration.response.tvplay.*;
-import com.kedacom.avIntegration.vo.tvplay.TvPlayOpenVO;
+import com.kedacom.avIntegration.response.tvplay.TvPlayOpenVO;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.convert.TvPlayConvert;
+import com.kedacom.acl.network.data.avIntegration.tvplay.TvPlayOpenResponse;
 import com.kedacom.device.core.service.TvPlayService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

@@ -2,10 +2,10 @@ package com.kedacom.device.core.msp.fallback;
 
 import com.kedacom.avIntegration.request.RequestBaseParam;
 import com.kedacom.avIntegration.request.auth.SystemLoginRequest;
-import com.kedacom.avIntegration.response.auth.SystemKeepAliveResponse;
-import com.kedacom.avIntegration.response.auth.SystemLogOutResponse;
-import com.kedacom.avIntegration.response.auth.SystemLoginResponse;
-import com.kedacom.avIntegration.response.auth.SystemVersionResponse;
+import com.kedacom.acl.network.data.avIntegration.auth.SystemKeepAliveResponse;
+import com.kedacom.acl.network.data.avIntegration.auth.SystemLogOutResponse;
+import com.kedacom.acl.network.data.avIntegration.auth.SystemLoginResponse;
+import com.kedacom.acl.network.data.avIntegration.auth.SystemVersionResponse;
 import com.kedacom.device.core.msp.SystemAuthSdk;
 import com.kedacom.device.core.exception.MspRemoteCallException;
 import feign.hystrix.FallbackFactory;

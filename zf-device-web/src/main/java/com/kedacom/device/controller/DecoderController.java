@@ -5,11 +5,10 @@ import com.kedacom.avIntegration.request.decoder.OsdConfigRequest;
 import com.kedacom.avIntegration.request.decoder.OsdDeleteRequest;
 import com.kedacom.avIntegration.request.decoder.StyleConfigRequest;
 import com.kedacom.avIntegration.request.decoder.StyleQueryRequest;
-import com.kedacom.avIntegration.response.decoder.OsdConfigResponse;
-import com.kedacom.avIntegration.response.decoder.OsdDeleteResponse;
-import com.kedacom.avIntegration.response.decoder.StyleConfigResponse;
-import com.kedacom.avIntegration.response.decoder.StyleQueryResponse;
-import com.kedacom.avIntegration.vo.decoder.StyleQueryVO;
+import com.kedacom.acl.network.data.avIntegration.decoder.OsdConfigResponse;
+import com.kedacom.acl.network.data.avIntegration.decoder.OsdDeleteResponse;
+import com.kedacom.acl.network.data.avIntegration.decoder.StyleQueryResponse;
+import com.kedacom.avIntegration.response.decoder.StyleQueryVO;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.convert.DecoderConvert;
 import com.kedacom.device.core.service.DecoderService;
@@ -95,7 +94,7 @@ public class DecoderController {
     public BaseResult styleConfig(@Valid @RequestBody StyleConfigRequest request, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        StyleConfigResponse response = decoderService.styleConfig(request);
+        decoderService.styleConfig(request);
         return BaseResult.succeed("设置成功");
     }
 

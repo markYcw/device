@@ -3,7 +3,7 @@ package com.kedacom.device.api.msp;
 
 import com.kedacom.BaseResult;
 import com.kedacom.avIntegration.request.tvplay.*;
-import com.kedacom.avIntegration.vo.tvplay.TvPlayOpenVO;
+import com.kedacom.avIntegration.response.tvplay.TvPlayOpenVO;
 import com.kedacom.device.api.msp.fallback.TvPlayApiFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @Date: 2021/5/10 09:52
  */
 @FeignClient(contextId = "tvPlayApi", path = "/api/v1/manage/tvplay", fallbackFactory = TvPlayApiFallbackFactory.class)
-interface TvPlayApi {
+public interface TvPlayApi {
 
     /**
      * 信号源在指定窗口的显示，可批量显示

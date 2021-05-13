@@ -1,7 +1,7 @@
 package com.kedacom.device.core.msp.fallback;
 
+import com.kedacom.acl.network.data.avIntegration.tvplay.*;
 import com.kedacom.avIntegration.request.tvplay.*;
-import com.kedacom.avIntegration.response.tvplay.*;
 import com.kedacom.device.core.exception.MspRemoteCallException;
 import com.kedacom.device.core.msp.TvPlayManageSdk;
 import feign.hystrix.FallbackFactory;

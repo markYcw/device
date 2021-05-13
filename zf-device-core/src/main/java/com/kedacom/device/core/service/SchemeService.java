@@ -2,8 +2,8 @@ package com.kedacom.device.core.service;
 
 import com.kedacom.avIntegration.request.scheme.SchemeConfigRequest;
 import com.kedacom.avIntegration.request.scheme.SchemeQueryRequest;
-import com.kedacom.avIntegration.response.scheme.SchemeConfigResponse;
-import com.kedacom.avIntegration.response.scheme.SchemeQueryResponse;
+import com.kedacom.acl.network.data.avIntegration.scheme.SchemeConfigResponse;
+import com.kedacom.acl.network.data.avIntegration.scheme.SchemeQueryResponse;
 
 /**
  * @Auther: hxj

@@ -1,6 +1,6 @@
 package com.kedacom.streamMedia.request;
 
-import com.kedacom.streamMedia.data.BackgroundPicParam;
+import com.kedacom.streamMedia.info.BackgroundPicParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

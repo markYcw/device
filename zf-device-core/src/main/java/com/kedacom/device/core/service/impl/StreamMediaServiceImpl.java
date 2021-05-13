@@ -1,9 +1,9 @@
 package com.kedacom.device.core.service.impl;
 
+import com.kedacom.acl.network.data.streamMeida.*;
 import com.kedacom.acl.network.unite.StreamMediaInterface;
 import com.kedacom.device.core.convert.StreamMediaConvert;
 import com.kedacom.device.core.service.StreamMediaService;
-import com.kedacom.streamMedia.dto.*;
 import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     @Override
     public StartRecResponseVO startRec(StartRecRequest request) {
         log.info("开启录像入参信息:{}", request);
-        String ssid = "1";
+        Integer ssid = 1 ;
         StartRecRequestDTO startRecRequestDTO = streamMediaConvert.convertStartRecRequest(request);
         startRecRequestDTO.setAccount_token("123");
         startRecRequestDTO.setRequest_id("321321");
@@ -42,7 +42,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     @Override
     public Boolean stopRec(StopRecRequest request) {
         log.info("停止录像入参信息:{}", request);
-        String ssid = "";
+        Integer ssid = 1 ;
+
         StopRecRequestDTO stopRecRequestDTO = streamMediaConvert.convertStopRecRequest(request);
         stopRecRequestDTO.setAccount_token("123");
         stopRecRequestDTO.setRequest_id("321321");
@@ -54,7 +55,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     @Override
     public QueryRecResponseVO queryRec(QueryRecRequest request) {
         log.info("查询录像记录入参信息:{}", request);
-        String ssid = "";
+        Integer ssid = 1 ;
+
         QueryRecRequestDTO queryRecRequestDTO = streamMediaConvert.convertQueryRecRequest(request);
         QueryRecResponseVO queryRec = streamMediaInterface.queryRec(ssid, queryRecRequestDTO);
         log.info("查询录像记录应答信息:{}",queryRec);
@@ -64,7 +66,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     @Override
     public StartAudioMixResponseVO startAudioMix(StartAudioMixRequest request) {
         log.info("开启音频混音入参信息:{}", request);
-        String ssid = "";
+        Integer ssid = 1 ;
+
         // 自定义的分组id
         String groupId = UUID.randomUUID().toString().replace("-","");
         StartAudioMixRequestDTO startAudioMixRequestDTO = streamMediaConvert.convertStartAudioMixRequest(request);
@@ -80,7 +83,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     @Override
     public Boolean stopAudioMix(StopAudioMixRequest request) {
         log.info("停止音频混音入参信息:{}", request);
-        String ssid = "";
+        Integer ssid = 1 ;
+
         StopAudioMixRequestDTO stopAudioMixRequestDTO = streamMediaConvert.convertStopAudioMixRequest(request);
         Boolean stopAudioMix = streamMediaInterface.stopAudioMix(ssid, stopAudioMixRequestDTO);
         log.info("停止音频混音应答信息:{}",stopAudioMix);
@@ -90,7 +94,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     @Override
     public Boolean updateAudioMix(UpdateAudioMixRequest request) {
         log.info("更新音频混音入参信息:{}", request);
-        String ssid = "";
+        Integer ssid = 1 ;
+
         UpdateAudioMixRequestDTO updateAudioMixRequestDTO = streamMediaConvert.convertUpdateAudioMixRequest(request);
         Boolean updateAudioMix = streamMediaInterface.updateAudioMix(ssid, updateAudioMixRequestDTO);
         log.info("更新音频混音应答信息:{}",updateAudioMix);
@@ -100,7 +105,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     @Override
     public List<String> queryAllAudioMix(QueryAllAudioMixRequest request) {
         log.info("查询所有混音入参信息:{}", request);
-        String ssid = "";
+        Integer ssid = 1 ;
+
         QueryAllAudioMixRequestDTO queryAllAudioMixRequestDTO = streamMediaConvert.convertQueryAllAudioMixRequest(request);
         List<String> queryAllAudioMix = streamMediaInterface.queryAllAudioMix(ssid, queryAllAudioMixRequestDTO);
         log.info("查询所有混音应答信息:{}",queryAllAudioMix);
@@ -110,7 +116,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     @Override
     public QueryAudioMixResponseVO queryAudioMix(QueryAudioMixRequest request) {
         log.info("查询混音信息入参信息:{}", request);
-        String ssid = "";
+        Integer ssid = 1 ;
+
         QueryAudioMixRequestDTO queryAudioMixRequestDTO = streamMediaConvert.convertQueryAudioMixRequest(request);
         QueryAudioMixResponseVO queryAudioMix = streamMediaInterface.queryAudioMix(ssid, queryAudioMixRequestDTO);
         log.info("查询混音信息应答信息:{}",queryAudioMix);
@@ -120,7 +127,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     @Override
     public StartVideoMixResponseVO startVideoMix(StartVideoMixRequest request) {
         log.info("开始画面合成入参信息:{}", request);
-        String ssid = "";
+        Integer ssid = 1 ;
+
         String groupId = UUID.randomUUID().toString().replace("-","");
         StartVideoMixRequestDTO startVideoMixRequestDTO = streamMediaConvert.convertStartVideoMixRequest(request);
         startVideoMixRequestDTO.setGroupID(groupId);
@@ -135,7 +143,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     @Override
     public Boolean stopVideoMix(StopVideoMixRequest request) {
         log.info("停止画面合成入参信息:{}", request);
-        String ssid = "";
+        Integer ssid = 1 ;
+
         StopVideoMixRequestDTO stopVideoMixRequestDTO = streamMediaConvert.convertStopVideoMixRequest(request);
         Boolean stopVideoMix = streamMediaInterface.stopVideoMix(ssid, stopVideoMixRequestDTO);
         log.info("停止画面合成应答信息:{}",stopVideoMix);
@@ -145,7 +154,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     @Override
     public Boolean updateVideoMix(UpdateVideoMixRequest request) {
         log.info("更新画面合成入参信息:{}", request);
-        String ssid = "";
+        Integer ssid = 1 ;
+
         UpdateVideoMixRequestDTO updateVideoMixRequestDTO = streamMediaConvert.convertUpdateVideoMixRequest(request);
         Boolean updateVideoMix = streamMediaInterface.updateVideoMix(ssid, updateVideoMixRequestDTO);
         log.info("更新画面合成应答信息:{}",updateVideoMix);
@@ -155,7 +165,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     @Override
     public List<String> queryAllVideoMix(String unitId) {
         log.info("查询所有画面合成入参信息 :{}", unitId);
-        String ssid = "";
+        Integer ssid = 1 ;
+
         List<String> queryAllVideoMix = streamMediaInterface.queryAllVideoMix(ssid);
         log.info("查询所有画面合成应答信息:{}",queryAllVideoMix);
         return queryAllVideoMix;
@@ -164,7 +175,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     @Override
     public QueryVideoMixResponseVO queryVideoMix(QueryVideoMixRequest request) {
         log.info("查询画面信息入参信息:{}", request);
-        String ssid = "";
+        Integer ssid = 1 ;
+
         QueryVideoMixRequestDTO queryVideoMixRequestDTO = streamMediaConvert.convertQueryVideoMixRequest(request);
         QueryVideoMixResponseVO queryVideoMix = streamMediaInterface.queryVideoMix(ssid, queryVideoMixRequestDTO);
         log.info("查询画面信息应答信息:{}",queryVideoMix);

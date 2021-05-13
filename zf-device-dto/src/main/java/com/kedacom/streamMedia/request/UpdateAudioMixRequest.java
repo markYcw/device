@@ -1,6 +1,6 @@
 package com.kedacom.streamMedia.request;
 
-import com.kedacom.streamMedia.data.AudioMixer;
+import com.kedacom.streamMedia.info.AudioMixer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package com.kedacom.avIntegration.request.scheme;
 
-import com.kedacom.avIntegration.data.LayoutParam;
+import com.kedacom.avIntegration.info.LayoutParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

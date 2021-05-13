@@ -1,7 +1,7 @@
 package com.kedacom.device.core.service;
 
+import com.kedacom.acl.network.data.avIntegration.tvwall.*;
 import com.kedacom.avIntegration.request.tvwall.*;
-import com.kedacom.avIntegration.response.tvwall.*;
 
 /**
  * @Auther: hxj

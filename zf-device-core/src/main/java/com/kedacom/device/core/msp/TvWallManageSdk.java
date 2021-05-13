@@ -1,7 +1,7 @@
 package com.kedacom.device.core.msp;
 
+import com.kedacom.acl.network.data.avIntegration.tvwall.*;
 import com.kedacom.avIntegration.request.tvwall.*;
-import com.kedacom.avIntegration.response.tvwall.*;
 import com.kedacom.device.core.msp.config.FeignConfig;
 import com.kedacom.device.core.msp.fallback.TvWallManageSdkFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;

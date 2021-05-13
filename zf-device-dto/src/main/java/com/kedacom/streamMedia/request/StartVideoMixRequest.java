@@ -1,7 +1,7 @@
 package com.kedacom.streamMedia.request;
 
-import com.kedacom.streamMedia.data.DrawText;
-import com.kedacom.streamMedia.data.VideoMixer;
+import com.kedacom.streamMedia.info.DrawText;
+import com.kedacom.streamMedia.info.VideoMixer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

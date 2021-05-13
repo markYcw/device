@@ -4,10 +4,9 @@ import com.kedacom.avIntegration.request.decoder.OsdConfigRequest;
 import com.kedacom.avIntegration.request.decoder.OsdDeleteRequest;
 import com.kedacom.avIntegration.request.decoder.StyleConfigRequest;
 import com.kedacom.avIntegration.request.decoder.StyleQueryRequest;
-import com.kedacom.avIntegration.response.decoder.OsdConfigResponse;
-import com.kedacom.avIntegration.response.decoder.OsdDeleteResponse;
-import com.kedacom.avIntegration.response.decoder.StyleConfigResponse;
-import com.kedacom.avIntegration.response.decoder.StyleQueryResponse;
+import com.kedacom.acl.network.data.avIntegration.decoder.OsdConfigResponse;
+import com.kedacom.acl.network.data.avIntegration.decoder.OsdDeleteResponse;
+import com.kedacom.acl.network.data.avIntegration.decoder.StyleQueryResponse;
 
 /**
  * @Auther: hxj
@@ -21,6 +20,6 @@ public interface DecoderService {
 
     StyleQueryResponse styleQuery(StyleQueryRequest request);
 
-    StyleConfigResponse styleConfig(StyleConfigRequest request);
+    void styleConfig(StyleConfigRequest request);
 
 }

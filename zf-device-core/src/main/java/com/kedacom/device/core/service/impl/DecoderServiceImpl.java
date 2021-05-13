@@ -5,10 +5,10 @@ import com.kedacom.avIntegration.request.decoder.OsdConfigRequest;
 import com.kedacom.avIntegration.request.decoder.OsdDeleteRequest;
 import com.kedacom.avIntegration.request.decoder.StyleConfigRequest;
 import com.kedacom.avIntegration.request.decoder.StyleQueryRequest;
-import com.kedacom.avIntegration.response.decoder.OsdConfigResponse;
-import com.kedacom.avIntegration.response.decoder.OsdDeleteResponse;
-import com.kedacom.avIntegration.response.decoder.StyleConfigResponse;
-import com.kedacom.avIntegration.response.decoder.StyleQueryResponse;
+import com.kedacom.acl.network.data.avIntegration.decoder.OsdConfigResponse;
+import com.kedacom.acl.network.data.avIntegration.decoder.OsdDeleteResponse;
+import com.kedacom.acl.network.data.avIntegration.decoder.StyleConfigResponse;
+import com.kedacom.acl.network.data.avIntegration.decoder.StyleQueryResponse;
 import com.kedacom.device.core.config.AvIntegrationErrCode;
 import com.kedacom.device.core.data.DeviceConstants;
 import com.kedacom.device.core.data.DeviceErrorEnum;
@@ -82,7 +82,7 @@ public class DecoderServiceImpl implements DecoderService {
     }
 
     @Override
-    public StyleConfigResponse styleConfig(StyleConfigRequest request) {
+    public void styleConfig(StyleConfigRequest request) {
         log.info("设置解码通道的画面风格入参信息:{}", request);
         StyleConfigResponse response = decoderManageSdk.styleConfig(request);
         log.info("设置解码通道的画面风格应答信息:{}", response);
@@ -93,6 +93,5 @@ public class DecoderServiceImpl implements DecoderService {
                 throw new DecoderException(DeviceErrorEnum.DECODER_STYLE_CONFIG_FAILED.getCode(), response.getErrstr());
             }
         }
-        return response;
     }
 }

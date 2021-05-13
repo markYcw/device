@@ -19,7 +19,7 @@ public class Test {
 
             request.setDevplatip("127");
 
-            String json = request.buildPacket(i);
+            String json = request.buildData(i);
 
 
             System.out.println("json = " + json);

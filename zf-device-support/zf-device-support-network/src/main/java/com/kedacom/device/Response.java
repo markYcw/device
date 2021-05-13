@@ -10,10 +10,14 @@ public interface Response {
 
 
     /**
-     * 解包
+     * 获取数据
+     * @param json json
+     * @param clazz clazz 对象
+     * @param <T> 泛型
      * @return 结果
+     * @throws JSONException
      */
-    <T> T parsePacket(String json, Class<T> clazz) throws JSONException;
+    <T> T acquireData(String json, Class<T> clazz) throws JSONException;
 
 
 }

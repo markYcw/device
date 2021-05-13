@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import lombok.experimental.SuperBuilder;
 
 /**
  * @author van.shu
@@ -35,8 +34,8 @@ public class LoginRequest extends UmsRequest {
     }
 
     @Override
-    public String buildPacket(Integer ssid) throws JSONException {
-        return super.buildPacket(ssid);
+    public String buildData(Integer ssid) throws JSONException {
+        return super.buildData(ssid);
     }
 
 }

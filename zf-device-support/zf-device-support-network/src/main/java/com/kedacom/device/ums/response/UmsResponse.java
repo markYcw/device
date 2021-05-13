@@ -42,7 +42,7 @@ public abstract class UmsResponse implements Response {
     }
 
     @Override
-    public <T> T parsePacket(String json, Class<T> clazz) throws JSONException {
+    public <T> T acquireData(String json, Class<T> clazz) throws JSONException {
         JSONObject jsonObject = parseRespHead(json);
 
         return jsonObject.toJavaObject(clazz);

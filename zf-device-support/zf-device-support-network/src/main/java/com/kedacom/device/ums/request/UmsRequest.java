@@ -25,7 +25,7 @@ public abstract class UmsRequest implements Request {
     abstract String getCommand();
 
     @Override
-    public String buildPacket(Integer ssid) throws JSONException {
+    public String buildData(Integer ssid) throws JSONException {
         buildHead(ssid);
         return JSON.toJSONString(this);
     }

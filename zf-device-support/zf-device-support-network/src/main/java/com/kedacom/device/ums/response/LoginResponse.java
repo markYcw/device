@@ -18,9 +18,9 @@ import lombok.ToString;
 public class LoginResponse extends UmsResponse {
 
     @Override
-    public <T> T parsePacket(String json,Class<T> clazz)throws JSONException {
+    public <T> T acquireData(String json, Class<T> clazz)throws JSONException {
 
-        return super.parsePacket(json, clazz);
+        return super.acquireData(json, clazz);
     }
 
 

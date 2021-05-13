@@ -10,9 +10,11 @@ public interface Request {
 
 
     /**
-     * 构建发送包
-     * @return 构建
+     * 构建发送数据
+     * @param ssid ssid
+     * @return 数据
+     * @throws JSONException
      */
-    String buildPacket(Integer ssid) throws JSONException;
+    String buildData(Integer ssid) throws JSONException;
 
 }

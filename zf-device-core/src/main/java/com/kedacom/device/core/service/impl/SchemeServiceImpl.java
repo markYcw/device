@@ -8,7 +8,7 @@ import com.kedacom.avIntegration.request.scheme.SchemeQueryRequest;
 import com.kedacom.device.core.config.AvIntegrationErrCode;
 import com.kedacom.device.core.data.DeviceConstants;
 import com.kedacom.device.core.data.DeviceErrorEnum;
-import com.kedacom.device.core.exception.TvWallException;
+import com.kedacom.device.core.exception.SchemeException;
 import com.kedacom.device.core.msp.SchemeManageSdk;
 import com.kedacom.device.core.service.SchemeService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,15 +34,7 @@ public class SchemeServiceImpl implements SchemeService {
         log.info("预案的画面布局配置入参:{}", request);
         SchemeConfigResponse response = schemeManageSdk.config(request);
         log.info("预案的画面布局配置应答:{}", response);
-        if (response.getError() != DeviceConstants.SUCCESS) {
-            if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
-                log.error("预案的画面布局配置应答异常:{},{}", DeviceErrorEnum.SCHEME_CONFIG_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
-                throw new TvWallException(DeviceErrorEnum.SCHEME_CONFIG_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
-            } else {
-                log.error("预案的画面布局配置应答异常:{},{}", DeviceErrorEnum.SCHEME_CONFIG_FAILED.getCode(), DeviceErrorEnum.SCHEME_CONFIG_FAILED.getMsg());
-                throw new TvWallException(DeviceErrorEnum.SCHEME_CONFIG_FAILED.getCode(), DeviceErrorEnum.SCHEME_CONFIG_FAILED.getMsg());
-            }
-        }
+        handleRes("预案的画面布局配置异常:{},{}", response.getError(), null);
         return response;
     }
 
@@ -51,15 +43,22 @@ public class SchemeServiceImpl implements SchemeService {
         log.info("查询预案布局，窗口位置信息入参:{}", request);
         SchemeQueryResponse response = schemeManageSdk.query(request);
         log.info("查询预案布局，窗口位置信息应答:{}", response);
-        if (response.getError() != DeviceConstants.SUCCESS) {
-            if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
-                log.error("查询预案布局，窗口位置信息应答异常:{},{}", DeviceErrorEnum.SCHEME_QUERY_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
-                throw new TvWallException(DeviceErrorEnum.SCHEME_QUERY_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
+        handleRes("查询预案布局，窗口位置信息异常:{},{}", response.getError(), null);
+        return response;
+    }
+
+    private void handleRes(String str, Integer errCode, String errorMsg) {
+        if (errCode != DeviceConstants.SUCCESS) {
+            if (StrUtil.isNotBlank(errorMsg)) {
+                log.error(str, DeviceErrorEnum.SCHEME_FAILED.getCode(), errorMsg);
+                throw new SchemeException(DeviceErrorEnum.SCHEME_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
+            } else if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(errCode))) {
+                log.error(str, DeviceErrorEnum.SCHEME_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
+                throw new SchemeException(DeviceErrorEnum.SCHEME_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
             } else {
-                log.error("查询预案布局，窗口位置信息应答异常:{},{}", DeviceErrorEnum.SCHEME_QUERY_FAILED.getCode(), DeviceErrorEnum.SCHEME_QUERY_FAILED.getMsg());
-                throw new TvWallException(DeviceErrorEnum.SCHEME_QUERY_FAILED.getCode(), DeviceErrorEnum.SCHEME_QUERY_FAILED.getMsg());
+                log.error(str, DeviceErrorEnum.SCHEME_FAILED.getCode(), DeviceErrorEnum.SCHEME_FAILED.getMsg());
+                throw new SchemeException(DeviceErrorEnum.SCHEME_FAILED.getCode(), DeviceErrorEnum.SCHEME_FAILED.getMsg());
             }
         }
-        return response;
     }
 }

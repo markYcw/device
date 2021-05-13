@@ -9,18 +9,18 @@ import com.kedacom.avIntegration.response.tvplay.*;
  */
 public interface TvPlayService {
 
-    BatchStartResponse batchStart(BatchStartRequest request);
+    void batchStart(BatchStartRequest request);
 
-    BatchStopResponse batchStop(BatchStopRequest request);
+    void batchStop(BatchStopRequest request);
 
-    TvPlayClearResponse clear(TvPlayClearRequest request);
+    void clear(TvPlayClearRequest request);
 
-    TvPlayStyleResponse style(TvPlayStyleRequest request);
+    void style(TvPlayStyleRequest request);
 
     TvPlayOpenResponse open(TvPlayOpenRequest request);
 
-    TvPlayOrderResponse order(TvPlayOrderRequest request);
+    void order(TvPlayOrderRequest request);
 
-    TvPlayActionResponse action(TvPlayActionRequest request);
+    void action(TvPlayActionRequest request);
 
 }

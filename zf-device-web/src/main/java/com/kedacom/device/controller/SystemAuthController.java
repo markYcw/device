@@ -3,8 +3,6 @@ package com.kedacom.device.controller;
 import com.kedacom.BaseResult;
 import com.kedacom.avIntegration.request.RequestBaseParam;
 import com.kedacom.avIntegration.request.auth.SystemLoginRequest;
-import com.kedacom.avIntegration.response.auth.SystemKeepAliveResponse;
-import com.kedacom.avIntegration.response.auth.SystemLogOutResponse;
 import com.kedacom.avIntegration.response.auth.SystemLoginResponse;
 import com.kedacom.avIntegration.response.auth.SystemVersionResponse;
 import com.kedacom.avIntegration.vo.auth.SystemLoginVO;
@@ -30,7 +28,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/v1/manage/system")
-@Api(value = "鉴权",tags = "鉴权")
+@Api(value = "鉴权", tags = "鉴权")
 @Slf4j
 public class SystemAuthController {
 
@@ -62,10 +60,10 @@ public class SystemAuthController {
      */
     @PostMapping("keepalive")
     @ApiOperation("成功登陆后，用户有效期为30m，需手动调用该接口保持心跳")
-    public BaseResult<SystemKeepAliveResponse> keepAlive(@Valid @RequestBody RequestBaseParam request, BindingResult br) {
+    public BaseResult keepAlive(@Valid @RequestBody RequestBaseParam request, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        SystemKeepAliveResponse response = systemAuthService.keepAlive(request);
+        systemAuthService.keepAlive(request);
         return BaseResult.succeed("保活成功");
     }
 
@@ -93,10 +91,10 @@ public class SystemAuthController {
      */
     @PostMapping("logout")
     @ApiOperation("退出显控统一服务，关闭令牌")
-    public BaseResult<SystemLogOutResponse> logout(@Valid @RequestBody RequestBaseParam request, BindingResult br) {
+    public BaseResult logout(@Valid @RequestBody RequestBaseParam request, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        SystemLogOutResponse logout = systemAuthService.logout(request);
+        systemAuthService.logout(request);
         return BaseResult.succeed("登出成功");
     }
 

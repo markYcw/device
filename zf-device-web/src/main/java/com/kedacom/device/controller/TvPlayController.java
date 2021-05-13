@@ -44,7 +44,7 @@ public class TvPlayController {
     public BaseResult batchStart(@Valid @RequestBody BatchStartRequest request, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        BatchStartResponse response =  tvPlayService.batchStart(request);
+        tvPlayService.batchStart(request);
         return BaseResult.succeed("开启成功");
     }
 
@@ -59,7 +59,7 @@ public class TvPlayController {
     public BaseResult batchStop(@Valid @RequestBody BatchStopRequest request, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        BatchStopResponse response = tvPlayService.batchStop(request);
+        tvPlayService.batchStop(request);
         return BaseResult.succeed("关闭成功");
     }
 
@@ -74,7 +74,7 @@ public class TvPlayController {
     public BaseResult clear(@Valid @RequestBody TvPlayClearRequest request, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        TvPlayClearResponse response = tvPlayService.clear(request);
+        tvPlayService.clear(request);
         return BaseResult.succeed("清空成功");
     }
 
@@ -89,7 +89,7 @@ public class TvPlayController {
     public BaseResult style(@Valid @RequestBody TvPlayStyleRequest request, BindingResult br) {
         ValidUtils.paramValid(br);
 
-       TvPlayStyleResponse response = tvPlayService.style(request);
+      tvPlayService.style(request);
        return BaseResult.succeed("设置成功");
     }
 
@@ -121,7 +121,7 @@ public class TvPlayController {
         ValidUtils.paramValid(br);
 
 
-        TvPlayOrderResponse response = tvPlayService.order(request);
+        tvPlayService.order(request);
         return BaseResult.succeed("排序成功");
     }
 
@@ -136,7 +136,7 @@ public class TvPlayController {
     public BaseResult action(@Valid @RequestBody TvPlayActionRequest request, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        TvPlayActionResponse response = tvPlayService.action(request);
+        tvPlayService.action(request);
         return BaseResult.succeed("操作成功");
     }
 

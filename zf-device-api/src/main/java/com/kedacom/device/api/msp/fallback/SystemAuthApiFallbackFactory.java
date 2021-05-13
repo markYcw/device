@@ -1,11 +1,10 @@
 package com.kedacom.device.api.msp.fallback;
 
+import com.kedacom.BaseResult;
 import com.kedacom.avIntegration.request.RequestBaseParam;
 import com.kedacom.avIntegration.request.auth.SystemLoginRequest;
-import com.kedacom.avIntegration.response.auth.SystemKeepAliveResponse;
-import com.kedacom.avIntegration.response.auth.SystemLogOutResponse;
-import com.kedacom.avIntegration.response.auth.SystemLoginResponse;
-import com.kedacom.avIntegration.response.auth.SystemVersionResponse;
+import com.kedacom.avIntegration.vo.auth.SystemLoginVO;
+import com.kedacom.avIntegration.vo.auth.SystemVersionVO;
 import com.kedacom.device.api.msp.SystemAuthApi;
 import feign.hystrix.FallbackFactory;
 
@@ -21,23 +20,23 @@ public class SystemAuthApiFallbackFactory implements FallbackFactory<SystemAuthA
     public SystemAuthApi create(Throwable cause) {
         return new SystemAuthApi() {
             @Override
-            public SystemLoginResponse login(SystemLoginRequest request) {
-                return null;
+            public BaseResult<SystemLoginVO> login(SystemLoginRequest request) {
+                return BaseResult.failed("服务出错，请稍后重试");
             }
 
             @Override
-            public SystemKeepAliveResponse keepAlive(RequestBaseParam request) {
-                return null;
+            public BaseResult keepAlive(RequestBaseParam request) {
+                return BaseResult.failed("服务出错，请稍后重试");
             }
 
             @Override
-            public SystemVersionResponse version(RequestBaseParam request) {
-                return null;
+            public BaseResult<SystemVersionVO> version(RequestBaseParam request) {
+                return BaseResult.failed("服务出错，请稍后重试");
             }
 
             @Override
-            public SystemLogOutResponse logout(RequestBaseParam request) {
-                return null;
+            public BaseResult logout(RequestBaseParam request) {
+                return BaseResult.failed("服务出错，请稍后重试");
             }
         };
     }

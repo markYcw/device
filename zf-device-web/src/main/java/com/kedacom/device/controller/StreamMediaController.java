@@ -1,5 +1,6 @@
 package com.kedacom.device.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.StreamMediaService;
@@ -8,7 +9,6 @@ import com.kedacom.streamMedia.response.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -132,7 +132,7 @@ public class StreamMediaController {
     @ApiOperation("查询所有画面合成:返回mixIDs 合成ID集合")
     @PostMapping("/queryAllVideoMix")
     public BaseResult<List<String>> queryAllVideoMix(@RequestParam("unitId") String unitId) {
-        if (StringUtils.isBlank(unitId)) {
+        if (StrUtil.isBlank(unitId)) {
             log.error("统一平台id为空");
             return BaseResult.failed("统一平台id为空");
         }

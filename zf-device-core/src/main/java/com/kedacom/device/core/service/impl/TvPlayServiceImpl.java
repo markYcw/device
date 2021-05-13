@@ -28,63 +28,67 @@ public class TvPlayServiceImpl implements TvPlayService {
     private AvIntegrationErrCode avIntegrationErrCode;
 
     @Override
-    public BatchStartResponse batchStart(BatchStartRequest request) {
+    public void batchStart(BatchStartRequest request) {
         log.info("窗口显示入参:{}", request);
         BatchStartResponse response = tvPlayManageSdk.batchStart(request);
         log.info("窗口显示应答:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
             if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                log.error("窗口显示应答异常:{},{}", DeviceErrorEnum.TVPLAY_START_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
                 throw new TvPlayException(DeviceErrorEnum.TVPLAY_START_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
             } else {
+                log.error("窗口显示应答异常:{},{}", DeviceErrorEnum.TVPLAY_START_FAILED.getCode(), DeviceErrorEnum.TVPLAY_START_FAILED.getMsg());
                 throw new TvPlayException(DeviceErrorEnum.TVPLAY_START_FAILED.getCode(), DeviceErrorEnum.TVPLAY_START_FAILED.getMsg());
             }
         }
-        return response;
     }
 
     @Override
-    public BatchStopResponse batchStop(BatchStopRequest request) {
+    public void batchStop(BatchStopRequest request) {
         log.info("关闭窗口显示入参:{}", request);
         BatchStopResponse response = tvPlayManageSdk.batchStop(request);
         log.info("关闭窗口显示应答:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
             if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                log.error("关闭窗口显示应答异常:{},{}", DeviceErrorEnum.TVPLAY_STOP_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
                 throw new TvPlayException(DeviceErrorEnum.TVPLAY_STOP_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
             } else {
+                log.error("关闭窗口显示应答异常:{},{}", DeviceErrorEnum.TVPLAY_STOP_FAILED.getCode(), DeviceErrorEnum.TVPLAY_STOP_FAILED.getMsg());
                 throw new TvPlayException(DeviceErrorEnum.TVPLAY_STOP_FAILED.getCode(), DeviceErrorEnum.TVPLAY_STOP_FAILED.getMsg());
             }
         }
-        return response;
     }
 
     @Override
-    public TvPlayClearResponse clear(TvPlayClearRequest request) {
+    public void clear(TvPlayClearRequest request) {
         log.info("清空窗口显示入参:{}", request);
         TvPlayClearResponse response = tvPlayManageSdk.clear(request);
         log.info("清空窗口显示应答:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
             if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                log.error("清空窗口显示应答异常:{},{}", DeviceErrorEnum.TVPLAY_CLEAR_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
                 throw new TvPlayException(DeviceErrorEnum.TVPLAY_CLEAR_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
             } else {
+                log.error("清空窗口显示应答异常:{},{}", DeviceErrorEnum.TVPLAY_CLEAR_FAILED.getCode(), DeviceErrorEnum.TVPLAY_CLEAR_FAILED.getMsg());
                 throw new TvPlayException(DeviceErrorEnum.TVPLAY_CLEAR_FAILED.getCode(), DeviceErrorEnum.TVPLAY_CLEAR_FAILED.getMsg());
             }
         }
-        return response;
     }
 
     @Override
-    public TvPlayStyleResponse style(TvPlayStyleRequest request) {
+    public void style(TvPlayStyleRequest request) {
         log.info("设置窗口风格入参:{}", request);
         TvPlayStyleResponse response = tvPlayManageSdk.style(request);
         log.info("设置窗口风格应答:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
             if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                log.error("设置窗口风格应答异常:{},{}", DeviceErrorEnum.TVPLAY_STYLE_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
                 throw new TvPlayException(DeviceErrorEnum.TVPLAY_STYLE_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
             } else {
+                log.error("设置窗口风格应答异常:{},{}", DeviceErrorEnum.TVPLAY_STYLE_FAILED.getCode(), DeviceErrorEnum.TVPLAY_STYLE_FAILED.getMsg());
                 throw new TvPlayException(DeviceErrorEnum.TVPLAY_STYLE_FAILED.getCode(), DeviceErrorEnum.TVPLAY_STYLE_FAILED.getMsg());
             }
         }
-        return response;
     }
 
     @Override
@@ -94,8 +98,10 @@ public class TvPlayServiceImpl implements TvPlayService {
         log.info("任意开窗应答:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
             if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                log.error("任意开窗应答异常:{},{}", DeviceErrorEnum.TVPLAY_OPEN_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
                 throw new TvPlayException(DeviceErrorEnum.TVPLAY_OPEN_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
             } else {
+                log.error("任意开窗应答异常:{},{}", DeviceErrorEnum.TVPLAY_OPEN_FAILED.getCode(), DeviceErrorEnum.TVPLAY_OPEN_FAILED.getMsg());
                 throw new TvPlayException(DeviceErrorEnum.TVPLAY_OPEN_FAILED.getCode(), DeviceErrorEnum.TVPLAY_OPEN_FAILED.getMsg());
             }
         }
@@ -103,32 +109,35 @@ public class TvPlayServiceImpl implements TvPlayService {
     }
 
     @Override
-    public TvPlayOrderResponse order(TvPlayOrderRequest request) {
+    public void order(TvPlayOrderRequest request) {
         log.info("窗口排序入参:{}", request);
         TvPlayOrderResponse response = tvPlayManageSdk.order(request);
         log.info("窗口排序应答:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
             if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                log.error("窗口排序应答异常:{},{}", DeviceErrorEnum.TVPLAY_ORDER_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()))
+                ;
                 throw new TvPlayException(DeviceErrorEnum.TVPLAY_ORDER_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
             } else {
+                log.error("窗口排序应答异常:{},{}", DeviceErrorEnum.TVPLAY_ORDER_FAILED.getCode(), DeviceErrorEnum.TVPLAY_ORDER_FAILED.getMsg());
                 throw new TvPlayException(DeviceErrorEnum.TVPLAY_ORDER_FAILED.getCode(), DeviceErrorEnum.TVPLAY_ORDER_FAILED.getMsg());
             }
         }
-        return response;
     }
 
     @Override
-    public TvPlayActionResponse action(TvPlayActionRequest request) {
+    public void action(TvPlayActionRequest request) {
         log.info("窗口操作入参:{}", request);
         TvPlayActionResponse response = tvPlayManageSdk.action(request);
         log.info("窗口操作应答:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
             if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                log.error("窗口操作应答异常:{},{}", DeviceErrorEnum.TVPLAY_ACTION_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
                 throw new TvPlayException(DeviceErrorEnum.TVPLAY_ACTION_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
             } else {
+                log.error("窗口操作应答异常:{},{}", DeviceErrorEnum.TVPLAY_ACTION_FAILED.getCode(), DeviceErrorEnum.TVPLAY_ACTION_FAILED.getMsg());
                 throw new TvPlayException(DeviceErrorEnum.TVPLAY_ACTION_FAILED.getCode(), DeviceErrorEnum.TVPLAY_ACTION_FAILED.getMsg());
             }
         }
-        return response;
     }
 }

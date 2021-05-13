@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * @Auther: hxj
  * @Date: 2021/4/29 16:35
- */
+ */ 
 @Slf4j
 @Service
 public class StreamMediaServiceImpl implements StreamMediaService {
@@ -103,7 +103,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         String ssid = "";
         QueryAllAudioMixRequestDTO queryAllAudioMixRequestDTO = streamMediaConvert.convertQueryAllAudioMixRequest(request);
         List<String> queryAllAudioMix = streamMediaInterface.queryAllAudioMix(ssid, queryAllAudioMixRequestDTO);
-        log.info("查询所有混音应答信息 —— queryAllAudioMix:{}",queryAllAudioMix);
+        log.info("查询所有混音应答信息:{}",queryAllAudioMix);
         return queryAllAudioMix;
     }
 
@@ -138,7 +138,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         String ssid = "";
         StopVideoMixRequestDTO stopVideoMixRequestDTO = streamMediaConvert.convertStopVideoMixRequest(request);
         Boolean stopVideoMix = streamMediaInterface.stopVideoMix(ssid, stopVideoMixRequestDTO);
-        log.info("停止画面合成应答信息 —— stopVideoMix:{}",stopVideoMix);
+        log.info("停止画面合成应答信息:{}",stopVideoMix);
         return stopVideoMix;
     }
 

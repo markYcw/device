@@ -1,7 +1,8 @@
 package com.kedacom.device.api.msp.fallback;
 
+import com.kedacom.BaseResult;
 import com.kedacom.avIntegration.request.tvwall.*;
-import com.kedacom.avIntegration.response.tvwall.*;
+import com.kedacom.avIntegration.vo.tvwall.*;
 import com.kedacom.device.api.msp.TvWallApi;
 import feign.hystrix.FallbackFactory;
 
@@ -15,36 +16,36 @@ public class TvWallApiFallbackFactory implements FallbackFactory<TvWallApi> {
 
     @Override
     public TvWallApi create(Throwable cause) {
-      return new TvWallApi() {
-          @Override
-          public TvWallListResponse ls(TvWallListRequest request) {
-              return null;
-          }
+        return new TvWallApi() {
+            @Override
+            public BaseResult<TvWallListVO> ls(TvWallListRequest request) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
 
-          @Override
-          public TvWallLayoutResponse layout(TvWallLayoutRequest request) {
-              return null;
-          }
+            @Override
+            public BaseResult<TvWallLayoutVO> layout(TvWallLayoutRequest request) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
 
-          @Override
-          public TvWallQueryPipelineResponse query(TvWallQueryPipelineRequest request) {
-              return null;
-          }
+            @Override
+            public BaseResult<TvWallQueryPipelineVO> query(TvWallQueryPipelineRequest request) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
 
-          @Override
-          public TvWallConfigResponse config(TvWallConfigRequest request) {
-              return null;
-          }
+            @Override
+            public BaseResult<TvWallConfigVO> config(TvWallConfigRequest request) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
 
-          @Override
-          public TvWallPipelineBindResponse configBind(TvWallPipelineBindRequest request) {
-              return null;
-          }
+            @Override
+            public BaseResult<TvWallPipelineBindVO> configBind(TvWallPipelineBindRequest request) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
 
-          @Override
-          public TvWallDeleteResponse delete(TvWallDeleteRequest request) {
-              return null;
-          }
-      };
+            @Override
+            public BaseResult delete(TvWallDeleteRequest request) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+        };
     }
 }

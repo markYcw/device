@@ -38,8 +38,10 @@ public class SystemAuthServiceImpl implements SystemAuthService {
         log.info("登录显控统一服务应答:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
             if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                log.error("登录显控统一服务应答异常:{},{}", DeviceErrorEnum.SYSTEM_LOGIN_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
                 throw new AuthException(DeviceErrorEnum.SYSTEM_LOGIN_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
             } else {
+                log.error("登录显控统一服务应答异常:{},{}", DeviceErrorEnum.SYSTEM_LOGIN_FAILED.getCode(), DeviceErrorEnum.SYSTEM_LOGIN_FAILED.getMsg());
                 throw new AuthException(DeviceErrorEnum.SYSTEM_LOGIN_FAILED.getCode(), DeviceErrorEnum.SYSTEM_LOGIN_FAILED.getMsg());
             }
         }
@@ -47,18 +49,19 @@ public class SystemAuthServiceImpl implements SystemAuthService {
     }
 
     @Override
-    public SystemKeepAliveResponse keepAlive(RequestBaseParam request) {
+    public void keepAlive(RequestBaseParam request) {
         log.info("保活入参:{}", request);
         SystemKeepAliveResponse response = systemAuthSdk.keepAlive(request);
         log.info("保活应答:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
             if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                log.error("保活应答异常:{},{}", DeviceErrorEnum.SYSTEM_KEEPALIVE_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
                 throw new AuthException(DeviceErrorEnum.SYSTEM_KEEPALIVE_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
             } else {
+                log.error("保活应答异常:{},{}", DeviceErrorEnum.SYSTEM_KEEPALIVE_FAILED.getCode(), DeviceErrorEnum.SYSTEM_KEEPALIVE_FAILED.getMsg());
                 throw new AuthException(DeviceErrorEnum.SYSTEM_KEEPALIVE_FAILED.getCode(), DeviceErrorEnum.SYSTEM_KEEPALIVE_FAILED.getMsg());
             }
         }
-        return response;
     }
 
     @Override
@@ -68,8 +71,10 @@ public class SystemAuthServiceImpl implements SystemAuthService {
         log.info("显控统一服务API版本号应答:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
             if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                log.error("显控统一服务API版本号应答异常:{},{}", DeviceErrorEnum.SYSTEM_VERSION_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
                 throw new AuthException(DeviceErrorEnum.SYSTEM_VERSION_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
             } else {
+                log.error("显控统一服务API版本号应答异常:{},{}", DeviceErrorEnum.SYSTEM_VERSION_FAILED.getCode(), DeviceErrorEnum.SYSTEM_VERSION_FAILED.getMsg());
                 throw new AuthException(DeviceErrorEnum.SYSTEM_VERSION_FAILED.getCode(), DeviceErrorEnum.SYSTEM_VERSION_FAILED.getMsg());
             }
         }
@@ -77,18 +82,19 @@ public class SystemAuthServiceImpl implements SystemAuthService {
     }
 
     @Override
-    public SystemLogOutResponse logout(RequestBaseParam request) {
+    public void logout(RequestBaseParam request) {
         log.info("退出显控统一服务入参:{}", request);
         SystemLogOutResponse response = systemAuthSdk.logout(request);
         log.info("退出显控统一服务应答:{}", response);
         if (response.getError() != DeviceConstants.SUCCESS) {
             if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(response.getError()))) {
+                log.error("退出显控统一服务异常:{},{}", DeviceErrorEnum.SYSTEM_LOGOUT_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
                 throw new AuthException(DeviceErrorEnum.SYSTEM_LOGOUT_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(response.getError()));
             } else {
+                log.error("退出显控统一服务异常:{},{}", DeviceErrorEnum.SYSTEM_LOGOUT_FAILED.getCode(), DeviceErrorEnum.SYSTEM_LOGOUT_FAILED.getMsg());
                 throw new AuthException(DeviceErrorEnum.SYSTEM_LOGOUT_FAILED.getCode(), DeviceErrorEnum.SYSTEM_LOGOUT_FAILED.getMsg());
             }
         }
-        return response;
     }
 
 

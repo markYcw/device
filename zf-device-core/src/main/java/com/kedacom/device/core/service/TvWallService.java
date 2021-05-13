@@ -19,6 +19,6 @@ public interface TvWallService {
 
     TvWallPipelineBindResponse configBind(TvWallPipelineBindRequest request);
 
-    TvWallDeleteResponse delete(TvWallDeleteRequest request);
+    void delete(TvWallDeleteRequest request);
 
 }

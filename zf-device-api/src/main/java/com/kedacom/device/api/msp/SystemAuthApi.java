@@ -1,11 +1,10 @@
 package com.kedacom.device.api.msp;
 
+import com.kedacom.BaseResult;
 import com.kedacom.avIntegration.request.RequestBaseParam;
 import com.kedacom.avIntegration.request.auth.SystemLoginRequest;
-import com.kedacom.avIntegration.response.auth.SystemKeepAliveResponse;
-import com.kedacom.avIntegration.response.auth.SystemLogOutResponse;
-import com.kedacom.avIntegration.response.auth.SystemLoginResponse;
-import com.kedacom.avIntegration.response.auth.SystemVersionResponse;
+import com.kedacom.avIntegration.vo.auth.SystemLoginVO;
+import com.kedacom.avIntegration.vo.auth.SystemVersionVO;
 import com.kedacom.device.api.msp.fallback.SystemAuthApiFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +23,7 @@ public interface SystemAuthApi {
      * @return 登录响应
      */
     @PostMapping("login")
-    SystemLoginResponse login(@RequestBody SystemLoginRequest request);
+    BaseResult<SystemLoginVO> login(@RequestBody SystemLoginRequest request);
 
     /**
      * 保活
@@ -34,7 +33,7 @@ public interface SystemAuthApi {
      * @return 响应
      */
     @PostMapping("keepalive")
-    SystemKeepAliveResponse keepAlive(@RequestBody RequestBaseParam request);
+    BaseResult keepAlive(@RequestBody RequestBaseParam request);
 
     /**
      * 显控统一服务API版本号
@@ -43,7 +42,7 @@ public interface SystemAuthApi {
      * @return 响应
      */
     @PostMapping("version")
-    SystemVersionResponse version(@RequestBody RequestBaseParam request);
+    BaseResult<SystemVersionVO> version(@RequestBody RequestBaseParam request);
 
     /**
      * 退出显控统一服务，关闭令牌
@@ -52,5 +51,6 @@ public interface SystemAuthApi {
      * @return 响应
      */
     @PostMapping("logout")
-    SystemLogOutResponse logout(@RequestBody RequestBaseParam request);
+    BaseResult logout(@RequestBody RequestBaseParam request);
+
 }

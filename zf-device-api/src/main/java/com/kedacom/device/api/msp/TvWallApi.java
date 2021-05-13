@@ -1,7 +1,8 @@
 package com.kedacom.device.api.msp;
 
+import com.kedacom.BaseResult;
 import com.kedacom.avIntegration.request.tvwall.*;
-import com.kedacom.avIntegration.response.tvwall.*;
+import com.kedacom.avIntegration.vo.tvwall.*;
 import com.kedacom.device.api.msp.fallback.TvWallApiFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,7 @@ public interface TvWallApi {
      * @return
      */
     @PostMapping("ls")
-    TvWallListResponse ls(@RequestBody TvWallListRequest request);
+    BaseResult<TvWallListVO> ls(@RequestBody TvWallListRequest request);
 
     /**
      * 获取大屏布局，不等分模式下使用
@@ -30,7 +31,7 @@ public interface TvWallApi {
      * @return
      */
     @PostMapping("layout")
-    TvWallLayoutResponse layout(@RequestBody TvWallLayoutRequest request);
+    BaseResult<TvWallLayoutVO> layout(@RequestBody TvWallLayoutRequest request);
 
     /**
      * 主要是查询虚拟屏窗口绑定关系信息和解码通道使用模式（使用显控平台的内置解码通道资源或外部绑定的解码通道资源）
@@ -39,7 +40,7 @@ public interface TvWallApi {
      * @return
      */
     @PostMapping("query")
-    TvWallQueryPipelineResponse query(@RequestBody TvWallQueryPipelineRequest request);
+    BaseResult<TvWallQueryPipelineVO> query(@RequestBody TvWallQueryPipelineRequest request);
 
     /**
      * 配置虚拟屏
@@ -48,7 +49,7 @@ public interface TvWallApi {
      * @return
      */
     @PostMapping("config")
-    TvWallConfigResponse config(@RequestBody TvWallConfigRequest request);
+    BaseResult<TvWallConfigVO> config(@RequestBody TvWallConfigRequest request);
 
     /**
      * 配置虚拟屏窗口与资源的绑定关系、解码通道资源使用模式
@@ -57,7 +58,7 @@ public interface TvWallApi {
      * @return
      */
     @PostMapping("config/bind")
-    TvWallPipelineBindResponse configBind(@RequestBody TvWallPipelineBindRequest request);
+    BaseResult<TvWallPipelineBindVO>  configBind(@RequestBody TvWallPipelineBindRequest request);
 
     /**
      * 拼接屏模式不允许删除，虚拟屏模式全部删除，混合屏模式删除绑定关系
@@ -66,6 +67,6 @@ public interface TvWallApi {
      * @return
      */
     @PostMapping("delete")
-    TvWallDeleteResponse delete(@RequestBody TvWallDeleteRequest request);
+    BaseResult delete(@RequestBody TvWallDeleteRequest request);
 
 }

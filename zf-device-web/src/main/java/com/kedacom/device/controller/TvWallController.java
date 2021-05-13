@@ -124,7 +124,7 @@ public class TvWallController {
     public BaseResult delete(@Valid @RequestBody TvWallDeleteRequest request, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        TvWallDeleteResponse response = tvWallService.delete(request);
+        tvWallService.delete(request);
         return BaseResult.succeed("删除成功");
     }
 

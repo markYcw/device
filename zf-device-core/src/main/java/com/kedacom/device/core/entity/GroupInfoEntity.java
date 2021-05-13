@@ -1,4 +1,4 @@
-package com.kedacom.ums.entity;
+package com.kedacom.device.core.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

@@ -1,7 +1,7 @@
 package com.kedacom.device.core.convert;
 
 import com.kedacom.acl.network.ums.responsevo.UmsAlarmTypeQueryResponseVo;
-import com.kedacom.ums.entity.AlarmTypeEntity;
+import com.kedacom.device.core.entity.AlarmTypeEntity;
 import com.kedacom.ums.responsedto.UmsAlarmTypeQueryResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

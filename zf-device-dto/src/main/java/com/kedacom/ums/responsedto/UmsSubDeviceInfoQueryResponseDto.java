@@ -20,7 +20,7 @@ public class UmsSubDeviceInfoQueryResponseDto implements Serializable {
     private String id;
 
     @ApiModelProperty(value = "统一平台ID")
-    private String umsId;
+    private String parentId;
 
     @ApiModelProperty(value = "设备名")
     private String name;

@@ -1,6 +1,6 @@
 package com.kedacom.device.core.convert;
 
-import com.kedacom.ums.entity.GroupInfoEntity;
+import com.kedacom.device.core.entity.GroupInfoEntity;
 import com.kedacom.ums.responsedto.SelectChildUmsGroupResponseDto;
 import com.kedacom.ums.responsedto.UmsScheduleGroupItemQueryResponseDto;
 import org.mapstruct.Mapper;

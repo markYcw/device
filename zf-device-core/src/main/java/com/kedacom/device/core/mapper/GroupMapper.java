@@ -1,7 +1,7 @@
 package com.kedacom.device.core.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.kedacom.ums.entity.GroupInfoEntity;
+import com.kedacom.device.core.entity.GroupInfoEntity;
 import org.mapstruct.Mapper;
 
 /**

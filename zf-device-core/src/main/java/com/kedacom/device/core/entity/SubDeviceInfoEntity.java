@@ -1,4 +1,4 @@
-package com.kedacom.ums.entity;
+package com.kedacom.device.core.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -23,9 +23,9 @@ public class SubDeviceInfoEntity implements Serializable {
     @ApiModelProperty(value = "设备id")
     private String id;
 
-    @TableField(value = "ums_id")
+    @TableField(value = "parent_id")
     @ApiModelProperty(value = "统一平台ID")
-    private String umsId;
+    private String parentId;
 
     @TableField(value = "name")
     @ApiModelProperty(value = "设备名")

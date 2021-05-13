@@ -1,10 +1,9 @@
-package com.kedacom.ums.entity;
+package com.kedacom.device.core.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Date;
 

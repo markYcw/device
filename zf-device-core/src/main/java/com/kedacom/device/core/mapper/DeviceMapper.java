@@ -1,7 +1,7 @@
 package com.kedacom.device.core.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.kedacom.ums.entity.DeviceInfoEntity;
+import com.kedacom.device.core.entity.DeviceInfoEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

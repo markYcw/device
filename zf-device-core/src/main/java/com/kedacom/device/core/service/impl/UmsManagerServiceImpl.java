@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kedacom.BasePage;
 import com.kedacom.acl.network.ums.requestvo.LoginPlatformRequestVo;
@@ -21,17 +22,16 @@ import com.kedacom.device.core.mapper.GroupMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.core.service.UmsManagerService;
 import com.kedacom.device.core.utils.PinYinUtils;
-import com.kedacom.ums.entity.AlarmTypeEntity;
-import com.kedacom.ums.entity.DeviceInfoEntity;
-import com.kedacom.ums.entity.GroupInfoEntity;
-import com.kedacom.ums.entity.SubDeviceInfoEntity;
+import com.kedacom.device.core.entity.AlarmTypeEntity;
+import com.kedacom.device.core.entity.DeviceInfoEntity;
+import com.kedacom.device.core.entity.GroupInfoEntity;
+import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -171,7 +171,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         deviceMapper.deleteById(umsId);
         //删除统一平台下挂载的子设备
         LambdaQueryWrapper<SubDeviceInfoEntity> deleteWrapper = new LambdaQueryWrapper<>();
-        deleteWrapper.eq(SubDeviceInfoEntity::getUmsId, umsId);
+        deleteWrapper.eq(SubDeviceInfoEntity::getParentId, umsId);
         subDeviceMapper.delete(deleteWrapper);
 
         return true;
@@ -288,7 +288,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         LambdaQueryWrapper<SubDeviceInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
         String umsId = requestDto.getUmsId();
         if (StrUtil.isNotBlank(umsId)) {
-            queryWrapper.eq(SubDeviceInfoEntity::getUmsId, umsId);
+            queryWrapper.eq(SubDeviceInfoEntity::getParentId, umsId);
         }
         String deviceName = requestDto.getDeviceName();
         if (StrUtil.isNotBlank(deviceName)) {
@@ -347,7 +347,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
 
         LambdaQueryWrapper<SubDeviceInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
         if (StrUtil.isNotBlank(umsId)) {
-            queryWrapper.eq(SubDeviceInfoEntity::getUmsId, umsId);
+            queryWrapper.eq(SubDeviceInfoEntity::getParentId, umsId);
         }
         if (StrUtil.isNotBlank(groupId)) {
             queryWrapper.like(SubDeviceInfoEntity::getGroupId, groupId);
@@ -420,16 +420,27 @@ public class UmsManagerServiceImpl implements UmsManagerService {
     public List<UmsAlarmTypeQueryResponseDto> updateUmsAlarmTypeList() {
 
         //调用接口，获取告警类型列表
-        List<UmsAlarmTypeQueryResponseVo> umsAlarmTypeQueryResponseVoList = umsManagerInterface.updateUmsAlarmTypeList();
+        List<UmsAlarmTypeQueryResponseVo> umsAlarmTypeQueryResponseVoList = umsManagerInterface.getUmsAlarmTypeList();
         if (CollectionUtil.isEmpty(umsAlarmTypeQueryResponseVoList)) {
             log.error("从远端获取告警类型列表信息失败");
             throw new UmsManagerException("从远端获取告警类型列表信息失败");
         }
         log.info("从远端获取告警类型列表信息 : [{}]", umsAlarmTypeQueryResponseVoList);
         List<AlarmTypeEntity> entityList = UmsAlarmTypeConvert.INSTANCE.convertAlarmTypeEntityList(umsAlarmTypeQueryResponseVoList);
+        for (AlarmTypeEntity entity : entityList) {
+            LambdaQueryWrapper<AlarmTypeEntity> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(AlarmTypeEntity::getAlarmCode, entity.getAlarmCode());
+            AlarmTypeEntity selectOne = alarmTypeMapper.selectOne(queryWrapper);
+            if (selectOne == null) {
+                alarmTypeMapper.insert(entity);
+            } else {
+                LambdaUpdateWrapper<AlarmTypeEntity> updateWrapper = new LambdaUpdateWrapper<>();
+                updateWrapper.eq(AlarmTypeEntity::getAlarmCode, entity.getAlarmCode());
+                alarmTypeMapper.update(null, updateWrapper);
+            }
+        }
 
-
-        return null;
+        return UmsAlarmTypeConvert.INSTANCE.convertUmsAlarmTypeQueryResponseVoList(umsAlarmTypeQueryResponseVoList);
     }
 
     @Override

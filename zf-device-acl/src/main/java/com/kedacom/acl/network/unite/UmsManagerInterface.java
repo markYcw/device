@@ -30,23 +30,23 @@ public interface UmsManagerInterface {
     Integer logout(@HeadParam String ssid);
 
     /**
-     * 通知第三方服务同步设备列表，第三方同步完成会发送kafka消息
+     * 获取设备信息
      * @param ssid
      * @return
      */
     Boolean notifyThirdServiceSyncData(@HeadParam String ssid);
 
     /**
-     * 手动同步设备数据
+     * 获取统一平台信息
      * @param ssid
      * @return 统一平台信息
      */
     DeviceInfoVo syncDeviceData(@HeadParam String ssid);
 
     /**
-     * 手动触发从远程更新告警类型列表
+     * 获取告警类型列表
      * @return
      */
-    List<UmsAlarmTypeQueryResponseVo> updateUmsAlarmTypeList();
+    List<UmsAlarmTypeQueryResponseVo> getUmsAlarmTypeList();
 
 }

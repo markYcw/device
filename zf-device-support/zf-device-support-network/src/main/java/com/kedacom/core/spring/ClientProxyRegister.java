@@ -37,7 +37,7 @@ import java.util.Set;
  * @date 2021/5/12 7:17
  */
 @Slf4j
-public class CustomScannerRegistrar implements ImportBeanDefinitionRegistrar{
+public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
 
     private NetworkConfig networkConfig;
 

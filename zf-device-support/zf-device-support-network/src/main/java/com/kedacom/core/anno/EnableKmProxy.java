@@ -1,6 +1,6 @@
 package com.kedacom.core.anno;
 
-import com.kedacom.core.spring.CustomScannerRegistrar;
+import com.kedacom.core.spring.ClientProxyRegister;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -13,7 +13,7 @@ import java.lang.annotation.*;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Import(CustomScannerRegistrar.class)
+@Import(ClientProxyRegister.class)
 @Documented
 public @interface EnableKmProxy {
 

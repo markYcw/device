@@ -6,8 +6,16 @@ package com.kedacom.core.pojo;
  */
 public interface Notify {
 
+    /**
+     * 流水号
+     * @return
+     */
     Integer getSsno();
 
+    /**
+     * 命令值，可以理解为通知类型
+     * @return
+     */
     String getCommand();
 
 }

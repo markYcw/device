@@ -2,12 +2,10 @@ package com.kedacom.device.stream.request;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
-import com.kedacom.device.ReqHead;
-import com.kedacom.device.Request;
+import com.kedacom.core.pojo.ReqHead;
+import com.kedacom.core.pojo.Request;
 import com.kedacom.util.NumGen;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**

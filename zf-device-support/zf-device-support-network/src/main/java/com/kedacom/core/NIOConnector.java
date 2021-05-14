@@ -4,12 +4,11 @@ package com.kedacom.core;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.kedacom.core.handler.ProcessRequests;
+import com.kedacom.core.pojo.*;
 import com.kedacom.core.spring.NotifyContext;
-import com.kedacom.device.*;
 import com.kedacom.exception.UnSupportMsgException;
 import com.kedacom.network.niohdl.core.Connector;
 import com.kedacom.util.SingletonFactory;
-import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;

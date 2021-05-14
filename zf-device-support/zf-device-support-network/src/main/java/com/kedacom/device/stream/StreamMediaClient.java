@@ -1,6 +1,7 @@
 package com.kedacom.device.stream;
 
 
+import com.kedacom.core.anno.KmProxy;
 import com.kedacom.device.stream.request.*;
 import com.kedacom.device.stream.response.*;
 
@@ -10,6 +11,7 @@ import com.kedacom.device.stream.response.*;
  * @author van.shu
  * @create 2021/4/26 17:30
  */
+@KmProxy
 public interface StreamMediaClient {
 
     /**

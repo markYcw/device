@@ -1,4 +1,4 @@
-package com.kedacom.core.pojo;
+package com.kedacom.util;
 
 
 import lombok.AllArgsConstructor;

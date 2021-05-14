@@ -1,6 +1,7 @@
 package com.kedacom.device;
 
 import com.alibaba.fastjson.JSON;
+import com.kedacom.core.pojo.RespHead;
 import com.kedacom.device.ums.request.LoginRequest;
 import com.kedacom.device.ums.response.LoginResponse;
 

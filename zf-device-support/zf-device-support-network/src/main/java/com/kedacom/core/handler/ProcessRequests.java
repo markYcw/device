@@ -1,6 +1,6 @@
 package com.kedacom.core.handler;
 
-import com.kedacom.device.Response;
+import com.kedacom.core.pojo.Response;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;

@@ -1,4 +1,4 @@
-package com.kedacom.device;
+package com.kedacom.core.pojo;
 
 import com.alibaba.fastjson.JSONException;
 

@@ -2,8 +2,8 @@ package com.kedacom.device.ums.request;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
-import com.kedacom.device.ReqHead;
-import com.kedacom.device.Request;
+import com.kedacom.core.pojo.ReqHead;
+import com.kedacom.core.pojo.Request;
 import com.kedacom.util.NumGen;
 
 /**

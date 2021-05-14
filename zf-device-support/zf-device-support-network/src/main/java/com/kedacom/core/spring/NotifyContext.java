@@ -1,6 +1,6 @@
 package com.kedacom.core.spring;
 
-import com.kedacom.device.Notify;
+import com.kedacom.core.pojo.Notify;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -11,9 +11,7 @@ public class NotifyContext {
 
     private ApplicationContext applicationContext;
 
-
-    public NotifyContext(ApplicationContext context) {
-
+    public void setApplicationContext(ApplicationContext context) {
         this.applicationContext = context;
     }
 

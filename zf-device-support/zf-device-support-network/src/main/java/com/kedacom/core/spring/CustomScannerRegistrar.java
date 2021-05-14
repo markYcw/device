@@ -1,12 +1,18 @@
 package com.kedacom.core.spring;
 
+import com.kedacom.core.NIOConnector;
 import com.kedacom.core.anno.EnableKmProxy;
 import com.kedacom.core.anno.KmProxy;
+import com.kedacom.core.config.NetworkConfig;
+import com.kedacom.core.pojo.ClientInfo;
 import com.kedacom.core.proxy.NetworkProxy;
+import com.kedacom.exception.KMException;
 import com.kedacom.exception.KMProxyException;
+import com.kedacom.network.niohdl.core.IoContext;
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -17,7 +23,9 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -29,17 +37,24 @@ import java.util.Set;
  * @date 2021/5/12 7:17
  */
 @Slf4j
-public class CustomScannerRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, ApplicationContextAware {
+public class CustomScannerRegistrar implements ImportBeanDefinitionRegistrar{
 
+    private NetworkConfig networkConfig;
 
-    private ResourceLoader resourceLoader;
-
-    private ApplicationContext applicationContext;
+    private NIOConnector connector;
 
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry registry) {
 
+
+        Map<String, Object> attrs = annotationMetadata
+                .getAnnotationAttributes(EnableKmProxy.class.getName(), true);
+
+        if (attrs != null && attrs.containsKey("ipAddr")) {
+            initIoContext();
+            initNetworkConfig((String) attrs.get("ipAddr"));
+        }
 
         Set<String> basePackages = getBasePackages(annotationMetadata);
 
@@ -52,22 +67,17 @@ public class CustomScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
 
             for (Class<?> clazz : typesAnnotatedWith) {
 
-                handlerProxyClient(clazz);
+                handlerProxyClient(clazz,registry);
 
             }
-
-            //扫描包下面的类是否含有@KmProxy注解的接口
-
-            //解析每个方法以及每个方法上的参数和注解，保存相关信息用来映射和解析响应
-
-            //将含有@KmProxy注解的接口生成动态代理对象
-
-            //注入到spring ioc 容器中
-
 
         }
 
 
+    }
+
+    private void initIoContext() {
+        IoContext.initIoSelector();
     }
 
     private Set<String> getBasePackages(AnnotationMetadata annotationMetadata) {
@@ -90,31 +100,81 @@ public class CustomScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
         return basePackages;
     }
 
-    private void handlerProxyClient(Class<?> clazz) {
+    private void handlerProxyClient(Class<?> clazz, BeanDefinitionRegistry registry) {
 
         //这个类必须是接口并且被@KmProxy标注
         checkProxyClient(clazz);
 
         //解析这个类并组装信息
-        resolverClient(clazz);
+        ClientInfo clientInfo = resolverClient(clazz);
 
-        getTarget(clazz);
+        //注册代理类
+        registerProxyClient(registry,clientInfo);
+
+
+    }
+
+    private void registerProxyClient(BeanDefinitionRegistry registry, ClientInfo clientInfo) {
+
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(NetworkProxy.class);
+
+        initConnectorIfNot();
+
+        builder.addConstructorArgValue(connector);
+
+        builder.addConstructorArgValue(clientInfo.getClazz());
+
+        String realBeanName = clientInfo.getClientBeanName() + "." + NetworkProxy.class.getSimpleName();
+
+        clientInfo.setClientBeanName(realBeanName);
+
+        registry.registerBeanDefinition(realBeanName, builder.getBeanDefinition());
+
+    }
+
+    private void initConnectorIfNot() {
+        if (connector == null) {
+            try {
+                connector = NIOConnector.startWith(networkConfig.getServerIp(), networkConfig.getServerPort());
+            } catch (IOException e) {
+                log.error("init socketChannel failed ,", e);
+                throw new KMException("init socketChannel failed");
+            }
+
+        }
+    }
+
+    private void initNetworkConfig(String serverIpAddr) {
+
+        if (StringUtils.isEmpty(serverIpAddr)) {
+
+            networkConfig = new NetworkConfig();
+
+            return;
+            //throw new IllegalArgumentException("ipAddr is empty , cannot init proxy bean");
+        }
+
+        String[] split = serverIpAddr.split(":");
+
+        if (split.length != 2) {
+            throw new IllegalArgumentException("illegal ipAddr : " + serverIpAddr + ", cannot init proxy bean");
+        }
+
+        networkConfig = new NetworkConfig();
+
+        networkConfig.setServerIp(split[0]);
+
+        networkConfig.setServerPort(Integer.parseInt(split[1]));
 
 
     }
 
-    private Object getTarget(Class<?> clazz) {
-
-        //NetworkProxy proxy = new NetworkProxy();
-        return null;
-
-    }
 
     /**
      * 解析操作
      * @param clazz class对象
      */
-    private void resolverClient(Class<?> clazz) {
+    private ClientInfo resolverClient(Class<?> clazz) {
 
         //唯一标识
         String key = clazz.getSimpleName();
@@ -125,30 +185,33 @@ public class CustomScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
             key = attributeNameValue;
         }
 
+        Set<ClientInfo.MethodInfo> methodInfos = new HashSet<>();
+
         //获取接口上的方法
         Method[] methods = clazz.getMethods();
 
+        //这里需要说明一下：这些代理类的参数和返回值都必须是Request和Response类型的，不然会导致请求失败
+
+        ClientInfo.MethodInfo methodInfo;
         for (Method method : methods) {
             Class<?> returnType = method.getReturnType();
-
+            Parameter[] parameters = method.getParameters();
+            methodInfo = ClientInfo.MethodInfo.builder()
+                    .method(method)
+                    .parameters(parameters)
+                    .returnType(returnType)
+                    .build();
+            methodInfos.add(methodInfo);
         }
 
-
+        return ClientInfo.builder()
+                .clazz(clazz)
+                .clientBeanName(key)
+                .methodInfos(methodInfos)
+                .build();
 
     }
 
-
-    private void registerClients() {
-
-    }
-
-
-
-    @Override
-    public void setResourceLoader(ResourceLoader resourceLoader) {
-
-        this.resourceLoader = resourceLoader;
-    }
 
     private void checkProxyClient(Class<?> clazz) {
 
@@ -158,8 +221,4 @@ public class CustomScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
         }
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
 }

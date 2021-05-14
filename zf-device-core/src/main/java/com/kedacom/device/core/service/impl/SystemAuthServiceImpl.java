@@ -36,7 +36,7 @@ public class SystemAuthServiceImpl implements SystemAuthService {
         log.info("登录显控统一服务入参:{}", request);
         SystemLoginResponse response = systemAuthSdk.login(request);
         log.info("登录显控统一服务应答:{}", response);
-        handleRes("登录显控统一服务异常:{},{}", response.getError(), null);
+        handleRes("登录显控统一服务异常:{},{},{}", response.getError(), null);
         return response;
     }
 
@@ -45,7 +45,7 @@ public class SystemAuthServiceImpl implements SystemAuthService {
         log.info("保活入参:{}", request);
         SystemKeepAliveResponse response = systemAuthSdk.keepAlive(request);
         log.info("保活应答:{}", response);
-        handleRes("保活异常:{},{}", response.getError(), null);
+        handleRes("保活异常:{},{},{}", response.getError(), null);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class SystemAuthServiceImpl implements SystemAuthService {
         log.info("显控统一服务API版本号入参:{}", request);
         SystemVersionResponse response = systemAuthSdk.version(request);
         log.info("显控统一服务API版本号应答:{}", response);
-        handleRes("显控统一服务API版本号异常:{},{}", response.getError(), null);
+        handleRes("显控统一服务API版本号异常:{},{},{}", response.getError(), null);
         return response;
     }
 
@@ -62,20 +62,19 @@ public class SystemAuthServiceImpl implements SystemAuthService {
         log.info("退出显控统一服务入参:{}", request);
         SystemLogOutResponse response = systemAuthSdk.logout(request);
         log.info("退出显控统一服务应答:{}", response);
-        handleRes("退出显控统一服务异常:{},{}", response.getError(), null);
+        handleRes("退出显控统一服务异常:{},{},{}", response.getError(), null);
     }
-
-
+    
     private void handleRes(String str, Integer errCode, String errorMsg) {
         if (errCode != DeviceConstants.SUCCESS) {
             if (StrUtil.isNotBlank(errorMsg)) {
-                log.error(str, DeviceErrorEnum.SYSTEM_AUTH_FAILED.getCode(), errorMsg);
+                log.error(str, errCode, DeviceErrorEnum.SYSTEM_AUTH_FAILED.getCode(), errorMsg);
                 throw new AuthException(DeviceErrorEnum.SYSTEM_AUTH_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
             } else if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(errCode))) {
-                log.error(str, DeviceErrorEnum.SYSTEM_AUTH_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
+                log.error(str, errCode, DeviceErrorEnum.SYSTEM_AUTH_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
                 throw new AuthException(DeviceErrorEnum.SYSTEM_AUTH_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
             } else {
-                log.error(str, DeviceErrorEnum.SYSTEM_AUTH_FAILED.getCode(), DeviceErrorEnum.SYSTEM_AUTH_FAILED.getMsg());
+                log.error(str, errCode, DeviceErrorEnum.SYSTEM_AUTH_FAILED.getCode(), DeviceErrorEnum.SYSTEM_AUTH_FAILED.getMsg());
                 throw new AuthException(DeviceErrorEnum.SYSTEM_AUTH_FAILED.getCode(), DeviceErrorEnum.SYSTEM_AUTH_FAILED.getMsg());
             }
         }

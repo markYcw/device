@@ -3,6 +3,7 @@ package com.kedacom.device.core.convert;
 import com.kedacom.acl.network.ums.requestvo.LoginPlatformRequestVo;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
+import com.kedacom.device.ums.request.LoginRequest;
 import com.kedacom.ums.requestdto.UmsDeviceInfoAddRequestDto;
 import com.kedacom.ums.requestdto.UmsDeviceInfoUpdateRequestDto;
 import com.kedacom.ums.responsedto.UmsDeviceInfoSelectResponseDto;
@@ -37,9 +38,9 @@ public interface UmsDeviceConvert {
      */
     DeviceInfoEntity convertDeviceInfoEntityForUpdate(UmsDeviceInfoUpdateRequestDto requestDto);
 
-    LoginPlatformRequestVo convertUmsDeviceInfoAddRequestVo(UmsDeviceInfoAddRequestDto requestDto);
+    LoginRequest convertUmsDeviceInfoAddRequestVo(UmsDeviceInfoAddRequestDto requestDto);
 
-    LoginPlatformRequestVo convertUmsDeviceInfoUpdateRequestVo(UmsDeviceInfoUpdateRequestDto requestDto);
+    LoginRequest convertUmsDeviceInfoUpdateRequestVo(UmsDeviceInfoUpdateRequestDto requestDto);
 
     /* ******** 转换成响应参数 ******** */
     /**

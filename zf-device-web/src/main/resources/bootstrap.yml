@@ -17,6 +17,8 @@ spring:
 zf:
   msp:
     server_addr: 172.16.231.20:38703
+  kmProxy:
+    server_addr: 127.0.0.1:18848
 
 
 feign:

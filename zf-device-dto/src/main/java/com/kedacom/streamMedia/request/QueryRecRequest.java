@@ -15,9 +15,9 @@ import java.io.Serializable;
 @ApiModel("查询录像记录入参")
 public class QueryRecRequest implements Serializable {
 
-    @NotBlank(message = "统一平台Id不能为空")
-    @ApiModelProperty("统一平台Id，必填")
-    private String unitId;
+    @NotBlank(message = "umsId不能为空")
+    @ApiModelProperty(value = "平台id")
+    private String umsId;
 
     @NotBlank(message = "具体设备ID不能为空")
     @ApiModelProperty("具体设备ID")

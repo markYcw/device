@@ -18,9 +18,9 @@ import java.util.List;
 @ApiModel("开始画面合成入参")
 public class StartVideoMixRequest implements Serializable {
 
-    @NotBlank(message = "统一平台Id不能为空")
-    @ApiModelProperty(value = "统一平台Id，必填",required = true)
-    private String unitId;
+    @NotBlank(message = "umsId不能为空")
+    @ApiModelProperty(value = "平台id")
+    private String umsId;
 
     @ApiModelProperty("画面合成风格")
     private Integer layout;

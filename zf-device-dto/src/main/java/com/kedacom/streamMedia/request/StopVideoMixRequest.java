@@ -17,9 +17,9 @@ import java.util.List;
 @ApiModel("停止画面合成入参")
 public class StopVideoMixRequest implements Serializable {
 
-    @NotBlank(message = "统一平台Id不能为空")
-    @ApiModelProperty("统一平台Id，必填")
-    private String unitId;
+    @NotBlank(message = "umsId不能为空")
+    @ApiModelProperty(value = "平台id")
+    private String umsId;
 
     @NotBlank(message = "画面合成设备分组id不能为空")
     @ApiModelProperty("画面合成设备分组id")

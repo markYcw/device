@@ -15,9 +15,9 @@ import java.io.Serializable;
 @ApiModel("停止录像入参")
 public class StopRecRequest implements Serializable {
 
-    @NotBlank(message = "统一平台Id不能为空")
-    @ApiModelProperty("统一平台Id，必填")
-    private String unitId;
+    @NotBlank(message = "umsId不能为空")
+    @ApiModelProperty(value = "平台id")
+    private String umsId;
 
     @NotBlank(message = "录像ID不能为空")
     @ApiModelProperty("录像ID")

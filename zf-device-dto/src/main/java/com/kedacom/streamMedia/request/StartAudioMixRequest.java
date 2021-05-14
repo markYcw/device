@@ -17,9 +17,9 @@ import java.util.List;
 @ApiModel("开启音频混音入参")
 public class StartAudioMixRequest implements Serializable {
 
-    @NotBlank(message = "统一平台Id不能为空")
-    @ApiModelProperty("统一平台Id，必填")
-    private String unitId;
+    @NotBlank(message = "umsId不能为空")
+    @ApiModelProperty(value = "平台id")
+    private String umsId;
 
     @ApiModelProperty("混音列表")
     private List<AudioMixer> mixer_list;

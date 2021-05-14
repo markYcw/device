@@ -37,7 +37,7 @@ public abstract class StreamMediaResponse implements Response {
 
         log.debug("headObj = {}", headObj);
 
-        JSON.parseObject(headObj.toJSONString(), RespHead.class);
+        resp = JSON.parseObject(headObj.toJSONString(), RespHead.class);
 
         return jsonObject;
 

@@ -9,6 +9,10 @@ import org.springframework.context.ApplicationContext;
  */
 public class NotifyContext {
 
+    public NotifyContext() {
+
+    }
+
     private ApplicationContext applicationContext;
 
     public void setApplicationContext(ApplicationContext context) {

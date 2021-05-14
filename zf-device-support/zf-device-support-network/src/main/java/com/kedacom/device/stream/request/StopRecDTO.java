@@ -2,12 +2,16 @@ package com.kedacom.device.stream.request;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @Auther: hxj
  * @Date: 2021/5/13 16:44
  */
+@ToString(callSuper = true)
 @Data
 @ApiModel("停止录像业务交互参数")
 public class StopRecDTO extends StreamMediaDTO {
@@ -24,7 +28,7 @@ public class StopRecDTO extends StreamMediaDTO {
     private String recordId;
 
     @Override
-    String getCommand() {
+    public String getCommand() {
         return COMMAND;
     }
 

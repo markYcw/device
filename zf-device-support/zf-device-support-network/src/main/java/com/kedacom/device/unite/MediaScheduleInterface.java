@@ -144,101 +144,101 @@ public interface MediaScheduleInterface {
      * @return
      */
     String startScheduleGroupVmpMix(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupStartVmpMixRequest request);
-
-    /**
-     * 更新画面合成
-     *
-     * @param request
-     * @return
-     */
-    UmsScheduleGroupUpdateVmpMixResponseDto updateScheduleGroupVmpMix(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupUpdateVmpMixRequest request);
-
-    /**
-     * 停止画面合成
-     *
-     * @param request
-     * @return
-     */
-    Boolean stopScheduleGroupVmpMix(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupStopVmpMixRequest request);
-
-    /**
-     * 查询画面合成
-     *
-     * @param request
-     * @return
-     */
-    UmsScheduleGroupQueryVmpMixResponseDto queryScheduleGroupVmpMix(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupQueryVmpMixRequest request);
-
-    /**
-     * 开始录像
-     *
-     * @param request
-     * @return
-     */
-    UmsStartRecResponseDto startRec(@HeadParam Integer ssid, @RequestBody UmsStartRecRequest request);
-
-    /**
-     * 停止录像
-     *
-     * @param request
-     * @return
-     */
-    Boolean stopRec(@HeadParam Integer ssid, @RequestBody UmsStopRecRequest request);
-
-    /**
-     * 查询录像列表
-     *
-     * @param request
-     * @return
-     */
-    UmsQueryRecListResponseDto queryRecList(@HeadParam Integer ssid, @RequestBody UmsQueryRecListRequest request);
-
-    /**
-     * 呼叫设备上线
-     *
-     * @param request
-     * @return
-     */
-    Boolean callUpSubDevice(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupSubDeviceCallUpRequest request);
-
-    /**
-     * 设置调度组广播源
-     *
-     * @param request
-     * @return
-     */
-    Boolean setScheduleGroupBroadcast(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupSetBroadcastRequest request);
-
-    /**
-     * 取消调度组广播源
-     *
-     * @param request
-     * @return
-     */
-    Boolean cancelScheduleGroupBroadcast(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupCancelBroadcastRequest request);
-
-    /**
-     * 查询调度组广播源
-     *
-     * @param request
-     * @return
-     */
-    UmsScheduleGroupQueryBroadcastResponseDto cancelScheduleGroupBroadcast(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupQueryBroadcastRequest request);
-
-    /**
-     * 设置调度组媒体源
-     *
-     * @param request
-     * @return
-     */
-    Boolean setScheduleGroupMedia(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupSetMediaRequest request);
-
-    /**
-     * 查询调度组媒体源
-     *
-     * @param request
-     * @return
-     */
-    UmsScheduleGroupQueryMediaResponseDto queryScheduleGroupMedia(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupQueryMediaRequest request);
+//
+//    /**
+//     * 更新画面合成
+//     *
+//     * @param request
+//     * @return
+//     */
+//    UmsScheduleGroupUpdateVmpMixResponseDto updateScheduleGroupVmpMix(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupUpdateVmpMixRequest request);
+//
+//    /**
+//     * 停止画面合成
+//     *
+//     * @param request
+//     * @return
+//     */
+//    Boolean stopScheduleGroupVmpMix(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupStopVmpMixRequest request);
+//
+////    /**
+//     * 查询画面合成
+//     *
+//     * @param request
+//     * @return
+//     */
+//    UmsScheduleGroupQueryVmpMixResponseDto queryScheduleGroupVmpMix(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupQueryVmpMixRequest request);
+//
+//    /**
+//     * 开始录像
+//     *
+//     * @param request
+//     * @return
+//     */
+//    UmsStartRecResponseDto startRec(@HeadParam Integer ssid, @RequestBody UmsStartRecRequest request);
+//
+//    /**
+//     * 停止录像
+//     *
+//     * @param request
+//     * @return
+//     */
+//    Boolean stopRec(@HeadParam Integer ssid, @RequestBody UmsStopRecRequest request);
+//
+//    /**
+//     * 查询录像列表
+//     *
+//     * @param request
+//     * @return
+//     */
+//    UmsQueryRecListResponseDto queryRecList(@HeadParam Integer ssid, @RequestBody UmsQueryRecListRequest request);
+//
+//    /**
+//     * 呼叫设备上线
+//     *
+//     * @param request
+//     * @return
+//     */
+//    Boolean callUpSubDevice(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupSubDeviceCallUpRequest request);
+//
+//    /**
+//     * 设置调度组广播源
+//     *
+//     * @param request
+//     * @return
+//     */
+//    Boolean setScheduleGroupBroadcast(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupSetBroadcastRequest request);
+//
+//    /**
+//     * 取消调度组广播源
+//     *
+//     * @param request
+//     * @return
+//     */
+//    Boolean cancelScheduleGroupBroadcast(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupCancelBroadcastRequest request);
+//
+//    /**
+//     * 查询调度组广播源
+//     *
+//     * @param request
+//     * @return
+//     */
+//    UmsScheduleGroupQueryBroadcastResponseDto cancelScheduleGroupBroadcast(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupQueryBroadcastRequest request);
+//
+//    /**
+//     * 设置调度组媒体源
+//     *
+//     * @param request
+//     * @return
+//     */
+//    Boolean setScheduleGroupMedia(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupSetMediaRequest request);
+//
+//    /**
+//     * 查询调度组媒体源
+//     *
+//     * @param request
+//     * @return
+//     */
+//    UmsScheduleGroupQueryMediaResponseDto queryScheduleGroupMedia(@HeadParam Integer ssid, @RequestBody UmsScheduleGroupQueryMediaRequest request);
 
 }

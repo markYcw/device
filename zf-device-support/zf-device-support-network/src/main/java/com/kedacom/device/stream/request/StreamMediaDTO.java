@@ -5,11 +5,17 @@ import com.alibaba.fastjson.JSONException;
 import com.kedacom.device.ReqHead;
 import com.kedacom.device.Request;
 import com.kedacom.util.NumGen;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @Auther: hxj
  * @Date: 2021/5/13 16:18
  */
+@ToString(callSuper = true)
+@Data
 public abstract class StreamMediaDTO implements Request {
 
     ReqHead req;
@@ -22,7 +28,11 @@ public abstract class StreamMediaDTO implements Request {
         this.req = req;
     }
 
-    abstract String getCommand();
+    @Override
+    public String getCommand() {
+        //TODO 子类需要实现
+        return null;
+    }
 
     @Override
     public String buildData(Integer ssid) throws JSONException {
@@ -30,12 +40,16 @@ public abstract class StreamMediaDTO implements Request {
         return JSON.toJSONString(this);
     }
 
-    public int getSsno() {
+
+    @Override
+    public Integer getSsno() {
         return req.getSsno();
     }
+
 
     public int getSsid() {
         return req.getSsid();
     }
+
 
 }

@@ -2,7 +2,10 @@ package com.kedacom.device.stream.request;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 
@@ -10,6 +13,7 @@ import javax.validation.constraints.NotBlank;
  * @Auther: hxj
  * @Date: 2021/5/13 16:44
  */
+@ToString(callSuper = true)
 @Data
 @ApiModel("查询录像记录业务交互参数")
 public class QueryRecDTO extends StreamMediaDTO {
@@ -41,7 +45,7 @@ public class QueryRecDTO extends StreamMediaDTO {
     private String query_type;
 
     @Override
-    String getCommand() {
+    public String getCommand() {
         return COMMAND;
     }
 

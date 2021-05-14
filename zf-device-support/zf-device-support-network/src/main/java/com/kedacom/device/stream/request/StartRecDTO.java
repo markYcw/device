@@ -2,12 +2,16 @@ package com.kedacom.device.stream.request;
 
 import com.kedacom.streamMedia.info.BackgroundPicParam;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @Auther: hxj
  * @Date: 2021/5/13 16:44
  */
+@ToString(callSuper = true)
 @Data
 public class StartRecDTO extends StreamMediaDTO {
 
@@ -38,7 +42,7 @@ public class StartRecDTO extends StreamMediaDTO {
     private BackgroundPicParam background_pic_param;
 
     @Override
-    String getCommand() {
+    public String getCommand() {
         return COMMAND;
     }
 

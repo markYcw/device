@@ -5,6 +5,7 @@ import com.kedacom.streamMedia.info.VideoMixer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * @Auther: hxj
  * @Date: 2021/5/13 16:44
  */
+@ToString(callSuper = true)
 @Data
 @ApiModel("更新画面合成业务交互参数")
 public class UpdateVideoMixDTO extends StreamMediaDTO {
@@ -43,7 +45,7 @@ public class UpdateVideoMixDTO extends StreamMediaDTO {
     private List<VideoMixer> mixer_list;
 
     @Override
-    String getCommand() {
+    public String getCommand() {
         return COMMAND;
     }
 

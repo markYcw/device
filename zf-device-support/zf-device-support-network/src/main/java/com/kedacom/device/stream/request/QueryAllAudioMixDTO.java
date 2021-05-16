@@ -1,5 +1,6 @@
 package com.kedacom.device.stream.request;
 
+import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +13,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @Data
 @ApiModel("查询所有混音业务交互参数")
-public class QueryAllAudioMixDTO extends StreamMediaDTO  {
+public class QueryAllAudioMixDTO extends BaseRequest {
 
     private static final String COMMAND = "queryallaudiomix";
 
@@ -20,7 +21,7 @@ public class QueryAllAudioMixDTO extends StreamMediaDTO  {
     private String GroupID;
 
     @Override
-    public String getCommand() {
+    public String name() {
         return COMMAND;
     }
 

@@ -1,5 +1,6 @@
 package com.kedacom.device.stream.request;
 
+import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import javax.validation.constraints.NotBlank;
 @ToString(callSuper = true)
 @Data
 @ApiModel("查询录像记录业务交互参数")
-public class QueryRecDTO extends StreamMediaDTO {
+public class QueryRecDTO extends BaseRequest {
 
     private static final String COMMAND = "queryrec";
 
@@ -45,7 +46,7 @@ public class QueryRecDTO extends StreamMediaDTO {
     private String query_type;
 
     @Override
-    public String getCommand() {
+    public String name() {
         return COMMAND;
     }
 

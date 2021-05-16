@@ -1,5 +1,6 @@
 package com.kedacom.device.stream.request;
 
+import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.List;
 @ToString(callSuper = true)
 @Data
 @ApiModel("停止画面合成业务交互参数")
-public class StopVideoMixDTO extends StreamMediaDTO {
+public class StopVideoMixDTO extends BaseRequest {
 
     private static final String COMMAND = "stopvideomix";
 
@@ -27,7 +28,7 @@ public class StopVideoMixDTO extends StreamMediaDTO {
     private List<String> mixIDs;
 
     @Override
-    public String getCommand() {
+    public String name() {
         return COMMAND;
     }
 

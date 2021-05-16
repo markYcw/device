@@ -1,5 +1,6 @@
 package com.kedacom.device.stream.request;
 
+import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,7 +15,7 @@ import java.util.List;
 @ToString(callSuper = true)
 @Data
 @ApiModel("停止音频混音业务交互参数")
-public class StopAudioMixDTO extends StreamMediaDTO {
+public class StopAudioMixDTO extends BaseRequest {
 
     private static final String COMMAND = "stopaudiomix";
 
@@ -25,7 +26,7 @@ public class StopAudioMixDTO extends StreamMediaDTO {
     private List<String> mixIDs;
 
     @Override
-    public String getCommand() {
+    public String name() {
         return COMMAND;
     }
 

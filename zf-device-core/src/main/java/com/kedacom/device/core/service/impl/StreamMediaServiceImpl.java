@@ -1,6 +1,7 @@
 package com.kedacom.device.core.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.kedacom.core.pojo.BaseResponse;
 import com.kedacom.device.core.config.KmErrCode;
 import com.kedacom.device.core.convert.StreamMediaConvert;
 import com.kedacom.device.core.data.DeviceConstants;
@@ -42,7 +43,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         StartRecDTO startRecDTO = streamMediaConvert.convertStartRecRequest(request);
         startRecDTO.setAccount_token("123");
         startRecDTO.setRequest_id("321321");
-        startRecDTO.buildData(ssid);
+        startRecDTO.setSsid(ssid);
         log.info("开启录像交互参数:{}", startRecDTO);
         StartRecResponse res = client.startRec(startRecDTO);
         log.info("开启录像应答信息:{}", res);
@@ -59,9 +60,9 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         StopRecDTO stopRecDTO = streamMediaConvert.convertStopRecRequest(request);
         stopRecDTO.setAccount_token("123");
         stopRecDTO.setRequest_id("321321");
-        stopRecDTO.buildData(ssid);
+        stopRecDTO.setSsid(ssid);
         log.info("停止录像交互参数:{}", stopRecDTO);
-        StreamMediaResponse response = client.stopRec(stopRecDTO);
+        BaseResponse response = client.stopRec(stopRecDTO);
         log.info("停止录像应答信息:{}", response);
         String error = "停止录像失败:{},{}";
         handleRes(error, response);
@@ -75,7 +76,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
 
         Integer ssid = 1;
         QueryRecDTO queryRecDTO = streamMediaConvert.convertQueryRecRequest(request);
-        queryRecDTO.buildData(ssid);
+        queryRecDTO.setSsid(ssid);
         log.info("查询录像记录交互参数:{}", queryRecDTO);
         QueryRecResponse res = client.queryRec(queryRecDTO);
         log.info("查询录像记录应答信息:{}", res);
@@ -93,7 +94,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         String groupId = UUID.randomUUID().toString().replace("-", "");
         StartAudioMixDTO startAudioMixDTO = streamMediaConvert.convertStartAudioMixRequest(request);
         startAudioMixDTO.setGroupID(groupId);
-        startAudioMixDTO.buildData(ssid);
+        startAudioMixDTO.setSsid(ssid);
         log.info("开启音频混音交互参数:{}", startAudioMixDTO);
         StartAudioMixResponse res = client.startAudioMix(startAudioMixDTO);
         handleRes(error, res);
@@ -111,9 +112,9 @@ public class StreamMediaServiceImpl implements StreamMediaService {
 
         Integer ssid = 1;
         StopAudioMixDTO stopAudioMixDTO = streamMediaConvert.convertStopAudioMixRequest(request);
-        stopAudioMixDTO.buildData(ssid);
+        stopAudioMixDTO.setSsid(ssid);
         log.info("停止音频混音交互参数:{}", stopAudioMixDTO);
-        StreamMediaResponse res = client.stopAudioMix(stopAudioMixDTO);
+        BaseResponse res = client.stopAudioMix(stopAudioMixDTO);
         log.info("停止音频混音应答信息:{}", res);
         handleRes(error, res);
         return true;
@@ -126,9 +127,9 @@ public class StreamMediaServiceImpl implements StreamMediaService {
 
         Integer ssid = 1;
         UpdateAudioMixDTO updateAudioMixDTO = streamMediaConvert.convertUpdateAudioMixRequest(request);
-        updateAudioMixDTO.buildData(ssid);
+        updateAudioMixDTO.setSsid(ssid);
         log.info("更新音频混音交互参数:{}", updateAudioMixDTO);
-        StreamMediaResponse res = client.updateAudioMix(updateAudioMixDTO);
+        BaseResponse res = client.updateAudioMix(updateAudioMixDTO);
         log.info("更新音频混音应答信息:{}", res);
         handleRes(error, res);
         return true;
@@ -141,7 +142,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         Integer ssid = 1;
 
         QueryAllAudioMixDTO queryAllAudioMixDTO = streamMediaConvert.convertQueryAllAudioMixRequest(request);
-        queryAllAudioMixDTO.buildData(ssid);
+        queryAllAudioMixDTO.setSsid(ssid);
         log.info("查询所有混音交互参数:{}", queryAllAudioMixDTO);
         QueryAllAudioMixResponse res = client.queryAllAudioMix(queryAllAudioMixDTO);
         log.info("查询所有混音应答信息:{}", res);
@@ -156,7 +157,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
 
         Integer ssid = 1;
         QueryAudioMixDTO queryAudioMixDTO = streamMediaConvert.convertQueryAudioMixRequest(request);
-        queryAudioMixDTO.buildData(ssid);
+        queryAudioMixDTO.setSsid(ssid);
         log.info("查询混音信息交互参数:{}", queryAudioMixDTO);
         QueryAudioMixResponse res = client.queryAudioMix(queryAudioMixDTO);
         handleRes(error, res);
@@ -173,7 +174,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         String groupId = UUID.randomUUID().toString().replace("-", "");
         StartVideoMixDTO startVideoMixDTO = streamMediaConvert.convertStartVideoMixRequest(request);
         startVideoMixDTO.setGroupID(groupId);
-        startVideoMixDTO.buildData(ssid);
+        startVideoMixDTO.setSsid(ssid);
         log.info("开始画面合成交互参数:{}", startVideoMixDTO);
         StartVideoMixResponse res = client.startVideoMix(startVideoMixDTO);
         handleRes(error, res);
@@ -192,9 +193,9 @@ public class StreamMediaServiceImpl implements StreamMediaService {
 
         Integer ssid = 1;
         StopVideoMixDTO stopVideoMixDTO = streamMediaConvert.convertStopVideoMixRequest(request);
-        stopVideoMixDTO.buildData(ssid);
+        stopVideoMixDTO.setSsid(ssid);
         log.info("停止画面合成交互参数:{}", stopVideoMixDTO);
-        StreamMediaResponse res = client.stopVideoMix(stopVideoMixDTO);
+        BaseResponse res = client.stopVideoMix(stopVideoMixDTO);
         handleRes(error, res);
         log.info("停止画面合成应答信息:{}", res);
         return true;
@@ -207,9 +208,9 @@ public class StreamMediaServiceImpl implements StreamMediaService {
 
         Integer ssid = 1;
         UpdateVideoMixDTO updateVideoMixDTO = streamMediaConvert.convertUpdateVideoMixRequest(request);
-        updateVideoMixDTO.buildData(ssid);
+        updateVideoMixDTO.setSsid(ssid);
         log.info("更新画面合成交互参数:{}", updateVideoMixDTO);
-        StreamMediaResponse res = client.updateVideoMix(updateVideoMixDTO);
+        BaseResponse res = client.updateVideoMix(updateVideoMixDTO);
         handleRes(error, res);
         log.info("更新画面合成应答信息:{}", res);
         return true;
@@ -222,7 +223,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
 
         Integer ssid = 1;
         QueryAllVideoMixDTO queryAllVideoMixDTO = new QueryAllVideoMixDTO();
-        queryAllVideoMixDTO.buildData(ssid);
+        queryAllVideoMixDTO.setSsid(ssid);
         QueryAllAudioMixResponse res = client.queryAllVideoMix(queryAllVideoMixDTO);
         handleRes(error, res);
         log.info("查询所有画面合成应答信息:{}", res);
@@ -236,7 +237,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
 
         Integer ssid = 1;
         QueryVideoMixDTO queryVideoMixDTO = streamMediaConvert.convertQueryVideoMixRequest(request);
-        queryVideoMixDTO.buildData(ssid);
+        queryVideoMixDTO.setSsid(ssid);
         log.info("查询画面信息交互参数:{}", queryVideoMixDTO);
         QueryVideoMixResponse res = client.queryVideoMix(queryVideoMixDTO);
         handleRes(error, res);
@@ -244,11 +245,11 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         return res.acquireData(QueryVideoMixResponseVO.class);
     }
 
-    private void handleRes(String str, StreamMediaResponse res) {
-        if (res.getErrcode() != DeviceConstants.SUCCESS) {
-            if (StrUtil.isNotBlank(kmErrCode.matchErrMsg(res.getErrcode()))) {
-                log.error(str, DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), kmErrCode.matchErrMsg(res.getErrcode()));
-                throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), kmErrCode.matchErrMsg(res.getErrcode()));
+    private void handleRes(String str, BaseResponse res) {
+        if (res.acquireErrcode() != DeviceConstants.SUCCESS) {
+            if (StrUtil.isNotBlank(kmErrCode.matchErrMsg(res.acquireErrcode()))) {
+                log.error(str, DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
+                throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), kmErrCode.matchErrMsg(res.acquireSsno()));
             } else {
                 log.error(str, DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), DeviceErrorEnum.STREAM_MEDIA_FAILED.getMsg());
                 throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), DeviceErrorEnum.STREAM_MEDIA_FAILED.getMsg());

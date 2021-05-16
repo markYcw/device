@@ -1,5 +1,6 @@
 package com.kedacom.device.stream.request;
 
+import com.kedacom.core.pojo.BaseRequest;
 import com.kedacom.streamMedia.info.DrawText;
 import com.kedacom.streamMedia.info.VideoMixer;
 import io.swagger.annotations.ApiModel;
@@ -18,7 +19,7 @@ import java.util.List;
 @ToString(callSuper = true)
 @Data
 @ApiModel("开始画面合成业务交互参数")
-public class StartVideoMixDTO extends StreamMediaDTO {
+public class StartVideoMixDTO extends BaseRequest {
 
     private static final String COMMAND = "startvideomix";
 
@@ -49,7 +50,7 @@ public class StartVideoMixDTO extends StreamMediaDTO {
     private List<VideoMixer> mixer_list;
 
     @Override
-    public String getCommand() {
+    public String name() {
         return COMMAND;
     }
 

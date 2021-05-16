@@ -1,5 +1,6 @@
 package com.kedacom.device.ums.request;
 
+import com.kedacom.core.pojo.BaseRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @Data
-public class LoginRequest extends UmsRequest {
+public class LoginRequest extends BaseRequest {
 
     private static final String COMMAND = "login";
 
@@ -28,7 +29,7 @@ public class LoginRequest extends UmsRequest {
     private Integer recport;
 
     @Override
-    public String getCommand() {
+    public String name() {
         return COMMAND;
     }
 

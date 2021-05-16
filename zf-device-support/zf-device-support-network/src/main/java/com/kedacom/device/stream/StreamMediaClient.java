@@ -2,6 +2,7 @@ package com.kedacom.device.stream;
 
 
 import com.kedacom.core.anno.KmProxy;
+import com.kedacom.core.pojo.BaseResponse;
 import com.kedacom.device.stream.request.*;
 import com.kedacom.device.stream.response.*;
 
@@ -28,7 +29,7 @@ public interface StreamMediaClient {
      * @param StopRecDTO
      * @return Boolean
      */
-    StreamMediaResponse stopRec(StopRecDTO stoprecDTO);
+    BaseResponse stopRec(StopRecDTO stoprecDTO);
 
     /**
      * 查询录像记录
@@ -52,7 +53,7 @@ public interface StreamMediaClient {
      * @param StopAudioMixDTO
      * @return Boolean
      */
-    StreamMediaResponse stopAudioMix(StopAudioMixDTO stopAudioMixDTO);
+    BaseResponse stopAudioMix(StopAudioMixDTO stopAudioMixDTO);
 
     /**
      * 更新音频混音
@@ -60,7 +61,7 @@ public interface StreamMediaClient {
      * @param UpdateAudioMixDTO
      * @return Boolean
      */
-    StreamMediaResponse updateAudioMix(UpdateAudioMixDTO updateAudioMixDTO);
+    BaseResponse updateAudioMix(UpdateAudioMixDTO updateAudioMixDTO);
 
     /**
      * 查询所有混音
@@ -92,7 +93,7 @@ public interface StreamMediaClient {
      * @param StopVideoMixDTO
      * @return Boolean
      */
-    StreamMediaResponse stopVideoMix(StopVideoMixDTO stopVideoMixDTO);
+    BaseResponse stopVideoMix(StopVideoMixDTO stopVideoMixDTO);
 
     /**
      * 更新画面合成
@@ -100,7 +101,7 @@ public interface StreamMediaClient {
      * @param UpdateVideoMixDTO
      * @return Boolean
      */
-    StreamMediaResponse updateVideoMix(UpdateVideoMixDTO updateVideoMixDTO);
+    BaseResponse updateVideoMix(UpdateVideoMixDTO updateVideoMixDTO);
 
     /**
      * 查询所有画面合成

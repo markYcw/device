@@ -1,5 +1,6 @@
 package com.kedacom.device.stream.request;
 
+import com.kedacom.core.pojo.BaseRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,12 +12,12 @@ import lombok.ToString;
  */
 @ToString(callSuper = true)
 @Data
-public class QueryAllVideoMixDTO extends StreamMediaDTO{
+public class QueryAllVideoMixDTO extends BaseRequest {
 
     private static final String COMMAND = "queryallvideomix";
 
     @Override
-    public String getCommand() {
+    public String name() {
         return COMMAND;
     }
 

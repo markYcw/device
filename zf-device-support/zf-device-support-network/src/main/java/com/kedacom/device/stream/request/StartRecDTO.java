@@ -1,5 +1,6 @@
 package com.kedacom.device.stream.request;
 
+import com.kedacom.core.pojo.BaseRequest;
 import com.kedacom.streamMedia.info.BackgroundPicParam;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.ToString;
  */
 @ToString(callSuper = true)
 @Data
-public class StartRecDTO extends StreamMediaDTO {
+public class StartRecDTO extends BaseRequest {
 
     private static final String COMMAND = "startrec";
 
@@ -42,7 +43,7 @@ public class StartRecDTO extends StreamMediaDTO {
     private BackgroundPicParam background_pic_param;
 
     @Override
-    public String getCommand() {
+    public String name() {
         return COMMAND;
     }
 

@@ -1,5 +1,6 @@
 package com.kedacom.device.stream.response;
 
+import com.kedacom.core.pojo.BaseResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,7 +11,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel("开始画面合成应答")
-public class StartVideoMixResponse extends StreamMediaResponse {
+public class StartVideoMixResponse extends BaseResponse {
 
     @ApiModelProperty("画面合成ID")
     private String mixID;

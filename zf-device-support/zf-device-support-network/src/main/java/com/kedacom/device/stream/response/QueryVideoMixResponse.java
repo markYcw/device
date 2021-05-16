@@ -1,5 +1,6 @@
 package com.kedacom.device.stream.response;
 
+import com.kedacom.core.pojo.BaseResponse;
 import com.kedacom.streamMedia.info.VideoMixInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 @Data
 @ApiModel("查询画面合成信息应答")
-public class QueryVideoMixResponse extends StreamMediaResponse {
+public class QueryVideoMixResponse extends BaseResponse {
 
     @ApiModelProperty("画面合成信息")
     private List<VideoMixInfo> videoMixInfo;

@@ -20,7 +20,7 @@ public class ProcessRequests {
 
     public void complete(Response response) {
 
-        CompletableFuture<Response> future = UNPROCESSED_RESPONSE_FUTURES.remove(response.getSsid());
+        CompletableFuture<Response> future = UNPROCESSED_RESPONSE_FUTURES.remove(response.acquireSsno());
 
         if (null != future) {
             future.complete(response);

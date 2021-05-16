@@ -1,7 +1,6 @@
 package com.kedacom.core;
 
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.kedacom.core.handler.ProcessRequests;
 import com.kedacom.core.pojo.*;
@@ -12,6 +11,7 @@ import com.kedacom.util.SingletonFactory;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
@@ -42,22 +42,22 @@ public class NIOConnector extends Connector {
     @Override
     public void onChannelClosed(SocketChannel channel) {
         super.onChannelClosed(channel);
-        System.out.println("连接已关闭无法读取数据");
+        log.error("连接已关闭无法读取数据");
     }
 
 
     public CompletableFuture<Response> sendRequest(Request request) {
 
-        Integer ssno = request.getSsno();
+        Integer ssno = request.acquireSsno();
 
         //序列化
-        String json = JSON.toJSONString(request);
+        String packet = request.packet();
 
         CompletableFuture<Response> future = new CompletableFuture<>();
 
-        log.info("[ssno:{}]: send msg ------> {}", ssno, json);
+        log.info("[ssno:{}]: send msg ------> {}", ssno, packet);
         //发送请求
-        send(json);
+        send(packet);
 
         putProcessRequests(ssno, future);
 
@@ -118,12 +118,14 @@ public class NIOConnector extends Connector {
 
     }
 
+    BaseResponse response = null;
+
     private void handlerResp(String msg) {
 
-        Object obj = JSONObject.parse(msg);
-
-        if (obj instanceof Response) {
-            processRequests.complete((Response) obj);
+        //Class<?> aClass = map.get(ssno);
+        //response = JSONObject.parseObject(resStr, (Type) aClass);
+        if (response != null) {
+            processRequests.complete(response);
         } else {
             log.error("receive msg data is not resp type :{}", msg);
         }

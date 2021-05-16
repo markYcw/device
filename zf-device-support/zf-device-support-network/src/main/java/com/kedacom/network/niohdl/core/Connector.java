@@ -42,7 +42,7 @@ public class Connector implements Closeable, SocketChannelAdapter.OnChannelStatu
 
 
     protected void onReceiveFromCore(String msg) {
-        System.out.println("connector:"+msg);
+        log.info("receive msg : {}", msg);
     }
 
 

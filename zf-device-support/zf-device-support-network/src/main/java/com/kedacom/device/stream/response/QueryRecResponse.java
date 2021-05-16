@@ -1,5 +1,6 @@
 package com.kedacom.device.stream.response;
 
+import com.kedacom.core.pojo.BaseResponse;
 import com.kedacom.streamMedia.info.RecordInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 @Data
 @ApiModel("查询录像记录应答")
-public class QueryRecResponse extends StreamMediaResponse {
+public class QueryRecResponse extends BaseResponse {
 
     @ApiModelProperty("查询到的录像总数")
    private Integer sum_number;

@@ -9,7 +9,9 @@ import com.alibaba.fastjson.JSONException;
 public interface Response {
 
 
-    Integer getSsid();
+    Integer acquireSsno();
+
+    String acquireName();
 
 
     /**

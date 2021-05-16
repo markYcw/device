@@ -1,5 +1,6 @@
 package com.kedacom.device.stream.request;
 
+import com.kedacom.core.pojo.BaseRequest;
 import com.kedacom.streamMedia.info.AudioMixer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,7 +18,7 @@ import java.util.List;
 @ToString(callSuper = true)
 @Data
 @ApiModel("更新音频混音业务交互参数")
-public class UpdateAudioMixDTO extends StreamMediaDTO {
+public class UpdateAudioMixDTO extends BaseRequest {
 
     private static final String COMMAND = "updateaudiomix";
 
@@ -34,7 +35,7 @@ public class UpdateAudioMixDTO extends StreamMediaDTO {
     private List<AudioMixer> mixer_list;
 
     @Override
-    public String getCommand() {
+    public String name() {
         return COMMAND;
     }
 

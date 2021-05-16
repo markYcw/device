@@ -1,5 +1,6 @@
 package com.kedacom.device.stream.response;
 
+import com.kedacom.core.pojo.BaseResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,7 +11,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel("开启音频混音应答")
-public class StartAudioMixResponse extends StreamMediaResponse {
+public class StartAudioMixResponse extends BaseResponse {
 
     @ApiModelProperty("混音ID")
     private String mixID;

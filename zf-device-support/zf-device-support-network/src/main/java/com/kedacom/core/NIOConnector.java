@@ -31,6 +31,10 @@ public class NIOConnector extends Connector {
         notifyContext = SingletonFactory.getInstance(NotifyContext.class);
     }
 
+    public NotifyContext getNotifyContext() {
+        return this.notifyContext;
+    }
+
 
     @Override
     protected void onReceiveFromCore(String msg) {

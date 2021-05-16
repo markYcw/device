@@ -37,11 +37,13 @@ import java.util.Set;
  * @date 2021/5/12 7:17
  */
 @Slf4j
-public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
+public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,ApplicationContextAware{
 
     private NetworkConfig networkConfig;
 
     private NIOConnector connector;
+
+    private ApplicationContext context;
 
 
     @Override
@@ -136,6 +138,8 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
         if (connector == null) {
             try {
                 connector = NIOConnector.startWith(networkConfig.getServerIp(), networkConfig.getServerPort());
+                NotifyContext notifyContext = connector.getNotifyContext();
+                notifyContext.setApplicationContext(context);
             } catch (IOException e) {
                 log.error("init socketChannel failed ,", e);
                 throw new KMException("init socketChannel failed");
@@ -221,4 +225,8 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
         }
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
 }

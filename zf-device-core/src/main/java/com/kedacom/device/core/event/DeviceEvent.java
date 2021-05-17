@@ -1,21 +1,27 @@
-package com.kedacom.ums.responsedto;
+package com.kedacom.device.core.event;
 
+import com.alibaba.fastjson.JSONException;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
+import com.kedacom.core.anno.KmNotify;
+import com.kedacom.core.pojo.Notify;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.context.ApplicationEvent;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author wangxy
  * @describe
- * @date 2021/5/8
+ * @date 2021/5/17
  */
-@Data
-@ApiModel(value = "分页查询统一平台下子设备信息响应参数类")
-public class UmsSubDeviceInfoQueryResponseDto implements Serializable {
+@Setter
+@Getter
+@ToString(callSuper = true)
+@KmNotify(name = "devstatusnty")
+public class DeviceEvent extends ApplicationEvent implements Notify {
 
     @ApiModelProperty(value = "设备id")
     private String id;
@@ -33,10 +39,10 @@ public class UmsSubDeviceInfoQueryResponseDto implements Serializable {
     private String gbid;
 
     @ApiModelProperty(value = "ip地址")
-    private String deviceIp;
+    private String ipv4;
 
     @ApiModelProperty(value = "厂商名")
-    private String manufactorName;
+    private String manufactorCode_name;
 
     @ApiModelProperty(value = "厂商代码")
     private Integer manufactorCode;
@@ -59,23 +65,23 @@ public class UmsSubDeviceInfoQueryResponseDto implements Serializable {
     @ApiModelProperty(value = "纬度 字符串")
     private String latitudeStr;
 
-    @ApiModelProperty(value = "设备创建时间")
-    private Date createTime;
+    @ApiModelProperty(value = "设备更新时间")
+    private Date updateTime;
 
     @ApiModelProperty(value = "型号")
     private String model;
 
     @ApiModelProperty(value = "行政区域")
-    private String civilName;
+    private String civilCode_name;
 
     @ApiModelProperty(value = "部门名称")
-    private String departmentName;
+    private String departmentCode_name;
 
     @ApiModelProperty(value = "维护人")
-    private String maintainMan;
+    private String mgtMan;
 
     @ApiModelProperty(value = "联系方式")
-    private String maintainContact;
+    private String mgtUnitContact;
 
     @ApiModelProperty(value = "安装地址")
     private String address;
@@ -84,10 +90,31 @@ public class UmsSubDeviceInfoQueryResponseDto implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date installDate;
 
-    @ApiModelProperty(value = "设备模式 0正常 1同步中 2已丢失")
-    private Integer deviceMod;
+    @ApiModelProperty(value = "父国标id")
+    private String parentGbId;
 
     @ApiModelProperty(value = "域ID")
     private String domainId;
 
+    @ApiModelProperty(value = "操作类型 1:状态更新，2:GPS, 3:新增create，4:修改update, 5:删除delete, 6:自动审核通过，7:表示设备与分组关系发生变化")
+    private Integer operateType;
+
+    public DeviceEvent(Object source) {
+        super(source);
+    }
+
+    @Override
+    public Integer acquireSsno() {
+        return null;
+    }
+
+    @Override
+    public String acquireCommand() {
+        return null;
+    }
+
+    @Override
+    public <T> T acquireData(Class<T> clazz) throws JSONException {
+        return null;
+    }
 }

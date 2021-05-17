@@ -154,4 +154,10 @@ public interface UmsManagerService {
      */
     List<UmsScheduleGroupItemQueryResponseDto> selectUmsGroupItemList(UmsScheduleGroupItemQueryRequestDto requestDto);
 
+    /**
+     * 获取所有设备分组
+     * @param umsId
+     */
+    Boolean queryDeviceGroupNotify(String umsId);
+
 }

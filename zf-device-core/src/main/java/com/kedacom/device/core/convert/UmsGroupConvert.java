@@ -1,6 +1,7 @@
 package com.kedacom.device.core.convert;
 
 import com.kedacom.device.core.entity.GroupInfoEntity;
+import com.kedacom.device.ums.DeviceGroupVo;
 import com.kedacom.ums.responsedto.SelectChildUmsGroupResponseDto;
 import com.kedacom.ums.responsedto.UmsScheduleGroupItemQueryResponseDto;
 import org.mapstruct.Mapper;
@@ -21,5 +22,7 @@ public interface UmsGroupConvert {
     List<UmsScheduleGroupItemQueryResponseDto> convertUmsScheduleGroupItemQueryResponseDtoList(List<GroupInfoEntity> groupInfoEntityList);
 
     List<SelectChildUmsGroupResponseDto> convertSelectChildUmsGroupResponseDtoList(List<GroupInfoEntity> groupInfoEntityList);
+
+    List<GroupInfoEntity> convertGroupInfoEntityList(List<DeviceGroupVo> list);
 
 }

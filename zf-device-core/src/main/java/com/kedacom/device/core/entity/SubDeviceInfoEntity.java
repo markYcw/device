@@ -79,6 +79,10 @@ public class SubDeviceInfoEntity implements Serializable {
     @ApiModelProperty(value = "设备创建时间")
     private Date createTime;
 
+    @TableField(value = "update_time")
+    @ApiModelProperty(value = "设备更新时间")
+    private Date updateTime;
+
     @TableField(value = "model")
     @ApiModelProperty(value = "型号")
     private String model;

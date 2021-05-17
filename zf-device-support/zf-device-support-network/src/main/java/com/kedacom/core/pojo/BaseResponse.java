@@ -34,7 +34,7 @@ public class BaseResponse implements Response {
 
     }
 
-    public Integer getSsid(){
+    public Integer acquireSsid() {
         return resp.getSsid();
     }
 

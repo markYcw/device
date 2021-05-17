@@ -90,5 +90,6 @@ CREATE TABLE `ums_new_sub_device`
     `install_date`     datetime       DEFAULT NULL COMMENT '安装时间',
     `domain_id`        varchar(255)   DEFAULT NULL COMMENT '域Id',
     `pinyin`           varchar(255)   DEFAULT NULL COMMENT '设备名称(拼音+首字母)',
+    `update_time`                 timestamp    DEFAULT NULL COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE
 );

@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kedacom.BasePage;
+import com.kedacom.acl.network.ums.responsevo.QuerySubDeviceInfoResponseVo;
 import com.kedacom.device.core.constant.UmsMod;
 import com.kedacom.device.core.convert.UmsAlarmTypeConvert;
 import com.kedacom.device.core.convert.UmsDeviceConvert;
@@ -20,12 +21,16 @@ import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.GroupMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.core.service.UmsManagerService;
+import com.kedacom.device.core.task.UmsDeviceTask;
 import com.kedacom.device.core.utils.PinYinUtils;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.LoginRequest;
 import com.kedacom.device.ums.request.LogoutRequest;
+import com.kedacom.device.ums.request.QueryAllDeviceGroupRequest;
+import com.kedacom.device.ums.request.QueryDeviceRequest;
 import com.kedacom.device.ums.response.LoginResponse;
 import com.kedacom.device.ums.response.LogoutResponse;
+import com.kedacom.device.ums.response.QueryAllDeviceGroupResponse;
 import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.*;
 import lombok.extern.slf4j.Slf4j;
@@ -70,14 +75,14 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         //1、调中间件登录接口，成功返回sessionId
         LoginResponse loginResponse = umsClient.login(loginRequest);
         //TODO 先标志一下异常处理，稍后统一处理
-        if (loginResponse.getSsid() != 0) {
+        if (loginResponse.acquireErrcode() != 0) {
             log.error("登录统一平台异常");
             throw new UmsManagerException("登录统一平台异常");
         }
         //2、调中间件登录成功，将统一平台信息添加到本地
         DeviceInfoEntity deviceInfoEntity = UmsDeviceConvert.INSTANCE.convertDeviceInfoEntityForAdd(requestDto);
         //3、将返回的sessionId存入本地
-        deviceInfoEntity.setSessionId(String.valueOf(loginResponse.getSsid()));
+        deviceInfoEntity.setSessionId(String.valueOf(loginResponse.acquireSsid()));
 
         return deviceMapper.insert(deviceInfoEntity) > 0;
     }
@@ -109,7 +114,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
                 log.error("登录统一平台异常");
                 throw new UmsManagerException("登录统一平台异常");
             }
-            deviceInfoEntity.setSessionId(String.valueOf(loginResponse.getSsid()));
+            deviceInfoEntity.setSessionId(String.valueOf(loginResponse.acquireSsid()));
 
         }
 
@@ -201,17 +206,44 @@ public class UmsManagerServiceImpl implements UmsManagerService {
 //            throw new UmsManagerException("通知第三方服务同步设备列表失败");
 //        }
 
-        return true;
+        return null;
     }
 
     @Override
     public Boolean syncDeviceData(UmsDeviceInfoSyncRequestDto requestDto) {
 
         String umsId = requestDto.getUmsId();
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(umsId);
+        if (deviceInfoEntity == null) {
+            log.error("未查询到统一设备信息，统一设备ID:{}", umsId);
+            throw new UmsManagerException("未查询到统一设备信息");
+        }
 
-//
-//        UmsDeviceTask task = new UmsDeviceTask(umsId);
-//        task.run();
+        //查询最近一次的更新时间
+        String lastSyncThirdDeviceTime = deviceInfoEntity.getLastSyncThirdDeviceTime();
+        SyncSubDeviceRecord syncRecord = SyncSubDeviceRecord.getInstance();
+        Map<String, SyncSubDeviceRecord.Sync> record = syncRecord.getRecord();
+        if (!record.containsKey(umsId)) {
+            SyncSubDeviceRecord.Sync sync = new SyncSubDeviceRecord.Sync();
+            sync.setUmsId(umsId);
+            sync.setLastSyncTime(lastSyncThirdDeviceTime);
+            record.put(umsId, sync);
+        }else {
+            //记录的上一次更新时间
+            String recordLastSyncTime = record.get(umsId).getLastSyncTime();
+
+            //如果记录的上一次更新时间和查询的最近一次更新时间一致，则表明上一次更新还没有完成
+            //此时再发来更新请求，应该直接拒绝
+            if (lastSyncThirdDeviceTime == null || lastSyncThirdDeviceTime.equals(recordLastSyncTime)) {
+                log.error("当前统一设备数据正在同步中，统一设备ID:{}", umsId);
+                throw new UmsManagerException("当前统一设备数据正在同步中");
+            }
+            //设置最新上次更新时间
+            record.get(umsId).setLastSyncTime(lastSyncThirdDeviceTime);
+        }
+
+        UmsDeviceTask task = new UmsDeviceTask(umsId);
+        task.run();
 
         return true;
     }
@@ -581,6 +613,22 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         }
 
         return list;
+    }
+
+    @Override
+    public Boolean queryDeviceGroupNotify(String umsId) {
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(umsId);
+        String sessionId = deviceInfoEntity.getSessionId();
+        QueryAllDeviceGroupRequest queryDeviceRequest = new QueryAllDeviceGroupRequest();
+        queryDeviceRequest.setSsid(Integer.valueOf(sessionId));
+        QueryAllDeviceGroupResponse response = umsClient.getalldevgroup(queryDeviceRequest);
+        if (response.acquireErrcode() != 0) {
+            log.error("请求获取所有设备分组信息入参 : {}", umsId);
+            throw new UmsManagerException("当前统一设备数据正在同步中");
+        }
+
+        return true;
     }
 
 }

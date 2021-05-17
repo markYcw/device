@@ -1,7 +1,7 @@
 package com.kedacom.device.ums;
 
 import com.kedacom.device.ums.request.LoginRequest;
-import com.kedacom.device.ums.response.LoginResponse;
+
 
 /**
  * @author van.shu
@@ -14,7 +14,7 @@ public interface UmsClient {
      * @param request 请求
      * @return 响应
      */
-    LoginResponse login(LoginRequest request);
+   // LoginResponse login(LoginRequest request);
 
 
 

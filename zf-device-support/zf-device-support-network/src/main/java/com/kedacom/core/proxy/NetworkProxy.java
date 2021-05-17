@@ -1,14 +1,17 @@
 package com.kedacom.core.proxy;
 
 import com.kedacom.core.NIOConnector;
+import com.kedacom.core.pojo.ClientInfo;
 import com.kedacom.core.pojo.Request;
 import com.kedacom.core.pojo.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -22,15 +25,19 @@ public class NetworkProxy implements InvocationHandler, FactoryBean<Object> {
 
     private Class<?> type;
 
+    private ClientInfo clientInfo;
+
     public NetworkProxy() {
 
     }
 
-    public NetworkProxy(NIOConnector connector, Class<?> type) {
+    public NetworkProxy(NIOConnector connector, Class<?> type,ClientInfo clientInfo) {
 
         this.connector = connector;
 
         this.type = type;
+
+        this.clientInfo = clientInfo;
 
     }
 
@@ -68,12 +75,20 @@ public class NetworkProxy implements InvocationHandler, FactoryBean<Object> {
 
         log.info("我来代理发请求啦，参数是 args :{}", args);
 
+        Map<Method, ClientInfo.MethodInfo> methodInfos = clientInfo.getMethodInfos();
+
+        if (CollectionUtils.isEmpty(methodInfos)) {
+            throw new IllegalArgumentException("proxy client method info is null");
+        }
+
+
+
         if (args != null) {
             for (Object arg : args) {
                 if (arg instanceof Request) {
-
-                    CompletableFuture<Response> future = connector.sendRequest((Request) arg);
-
+                    ClientInfo.MethodInfo methodInfo = methodInfos.get(method);
+                    Class<?> returnType = methodInfo.getReturnType();
+                    CompletableFuture<Response> future = connector.sendRequest((Request) arg,returnType);
                     return future.get();
                 }
 

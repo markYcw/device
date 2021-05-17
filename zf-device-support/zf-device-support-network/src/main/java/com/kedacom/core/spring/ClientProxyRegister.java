@@ -16,9 +16,7 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
@@ -26,6 +24,7 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -130,6 +129,8 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,Applic
 
         clientInfo.setClientBeanName(realBeanName);
 
+        builder.addConstructorArgValue(clientInfo);
+
         registry.registerBeanDefinition(realBeanName, builder.getBeanDefinition());
 
     }
@@ -189,7 +190,7 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,Applic
             key = attributeNameValue;
         }
 
-        Set<ClientInfo.MethodInfo> methodInfos = new HashSet<>();
+        Map<Method, ClientInfo.MethodInfo> methodInfos = new HashMap<>();
 
         //获取接口上的方法
         Method[] methods = clazz.getMethods();
@@ -201,11 +202,10 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,Applic
             Class<?> returnType = method.getReturnType();
             Parameter[] parameters = method.getParameters();
             methodInfo = ClientInfo.MethodInfo.builder()
-                    .method(method)
                     .parameters(parameters)
                     .returnType(returnType)
                     .build();
-            methodInfos.add(methodInfo);
+            methodInfos.put(method,methodInfo);
         }
 
         return ClientInfo.builder()

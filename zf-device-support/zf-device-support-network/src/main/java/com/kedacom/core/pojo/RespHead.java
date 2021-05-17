@@ -19,6 +19,6 @@ public class RespHead {
 
     private int ssid;
 
-    private int errcode;
+    private int errorcode;
 
 }

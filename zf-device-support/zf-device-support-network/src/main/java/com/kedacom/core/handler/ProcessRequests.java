@@ -14,8 +14,18 @@ public class ProcessRequests {
 
     private static final Map<Integer, CompletableFuture<Response>> UNPROCESSED_RESPONSE_FUTURES = new ConcurrentHashMap<>();
 
+    private static final Map<Integer, Class<?>> RETURN_TYPE_MAP = new ConcurrentHashMap<>();
+
     public void put(Integer requestId, CompletableFuture<Response> future) {
         UNPROCESSED_RESPONSE_FUTURES.put(requestId, future);
+    }
+
+    public void putReturnType(Integer requestId, Class<?> clazz) {
+        RETURN_TYPE_MAP.put(requestId, clazz);
+    }
+
+    public Class<?> getReturnType(Integer requestId) {
+        return RETURN_TYPE_MAP.get(requestId);
     }
 
     public void complete(Response response) {

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.kedacom.core.handler.ProcessRequests;
 import com.kedacom.core.pojo.*;
 import com.kedacom.core.spring.NotifyContext;
+import com.kedacom.exception.ParseDataException;
 import com.kedacom.exception.UnSupportMsgException;
 import com.kedacom.network.niohdl.core.Connector;
 import com.kedacom.util.SingletonFactory;
@@ -50,12 +51,12 @@ public class NIOConnector extends Connector {
     }
 
 
-    public CompletableFuture<Response> sendRequest(Request request) {
-
-        Integer ssno = request.acquireSsno();
+    public CompletableFuture<Response> sendRequest(Request request,Class<?> returnType) {
 
         //序列化
         String packet = request.packet();
+
+        Integer ssno = request.acquireSsno();
 
         CompletableFuture<Response> future = new CompletableFuture<>();
 
@@ -63,15 +64,16 @@ public class NIOConnector extends Connector {
         //发送请求
         send(packet);
 
-        putProcessRequests(ssno, future);
+        putProcessRequests(ssno,returnType, future);
 
         return future;
 
     }
 
-    private void putProcessRequests(Integer requestId, CompletableFuture<Response> future) {
+    private void putProcessRequests(Integer requestId,Class<?> returnType, CompletableFuture<Response> future) {
 
         processRequests.put(requestId, future);
+        processRequests.putReturnType(requestId, returnType);
     }
 
 
@@ -91,7 +93,7 @@ public class NIOConnector extends Connector {
 
             log.info("[ssno:{}]: receive resp ------> {}", respHead.getSsno(), msg);
 
-            handlerResp(msg);
+            handlerResp(msg,respHead);
 
         } else if (jsonObject.containsKey("nty")) {
 
@@ -123,15 +125,19 @@ public class NIOConnector extends Connector {
     }
 
     BaseResponse response = null;
+    private void handlerResp(String msg,RespHead respHead) {
 
-    private void handlerResp(String msg) {
-
-        //Class<?> aClass = map.get(ssno);
-        //response = JSONObject.parseObject(resStr, (Type) aClass);
-        if (response != null) {
-            processRequests.complete(response);
-        } else {
-            log.error("receive msg data is not resp type :{}", msg);
+        try {
+            Class<?> aClass = processRequests.getReturnType(respHead.getSsno());
+            response = JSONObject.parseObject(msg, (Type) aClass);
+            if (response != null) {
+                processRequests.complete(response);
+            } else {
+                log.error("receive msg data is not resp type :{}", msg);
+            }
+        } catch (Exception e) {
+            log.error("parse resp data error ,e: ", e);
+            throw new ParseDataException("parse resp data error");
         }
 
 

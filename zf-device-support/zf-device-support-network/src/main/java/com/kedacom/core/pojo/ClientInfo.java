@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -32,7 +33,11 @@ public class ClientInfo {
      */
     private Class<?> clazz;
 
-    private Set<MethodInfo> methodInfos;
+
+    /**
+     * 方法信息
+     */
+    private Map<Method,MethodInfo> methodInfos;
 
 
     @Data
@@ -41,8 +46,6 @@ public class ClientInfo {
     @ToString
     @Builder
    public static class MethodInfo {
-
-        private Method method;
 
         private Class<?> returnType;
 

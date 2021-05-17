@@ -34,7 +34,7 @@ public class BaseResponse implements Response {
     }
 
     public Integer acquireErrcode() {
-        return resp.getErrcode();
+        return resp.getErrorcode();
     }
 
     @Override

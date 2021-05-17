@@ -1,6 +1,5 @@
 package com.kedacom.device.core.convert;
 
-import com.kedacom.acl.network.ums.requestvo.LoginPlatformRequestVo;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.ums.request.LoginRequest;

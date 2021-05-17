@@ -32,6 +32,8 @@ public @interface EnableKmProxy {
      */
     String[] notifyPackages() default {};
 
+    String[] basePackages() default {};
+
 
     /**
      * 绑定地址 eg: 127.0.0.1:8080

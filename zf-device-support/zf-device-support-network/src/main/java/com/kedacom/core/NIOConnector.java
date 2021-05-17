@@ -39,7 +39,6 @@ public class NIOConnector extends Connector {
         return this.notifyContext;
     }
 
-
     @Override
     protected void onReceiveFromCore(String msg) {
         super.onReceiveFromCore(msg);

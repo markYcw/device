@@ -2,6 +2,7 @@ package com.kedacom.core.spring;
 
 import com.kedacom.core.pojo.Notify;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,10 @@ public class NotifyContext {
 
     public void setApplicationContext(ApplicationContext context) {
         this.applicationContext = context;
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 
     public void setNotifyMap(Map<String, Class<?>> map) {

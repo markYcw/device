@@ -12,11 +12,8 @@ import com.kedacom.exception.KMProxyException;
 import com.kedacom.network.niohdl.core.IoContext;
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.ClassUtils;
@@ -37,7 +34,7 @@ import java.util.Set;
  * @date 2021/5/12 7:17
  */
 @Slf4j
-public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,ApplicationContextAware{
+public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
 
     private NetworkConfig networkConfig;
 
@@ -45,7 +42,6 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,Applic
 
     private Map<String, Class<?>> notifyMap = new HashMap<>();
 
-    private ApplicationContext context;
 
 
     @Override
@@ -163,12 +159,20 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,Applic
 
     }
 
+    private void registerNotifyContext(BeanDefinitionRegistry registry) {
+
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(NotifyContext.class);
+
+
+
+    }
+
     private void initConnectorIfNot() {
         if (connector == null) {
             try {
                 connector = NIOConnector.startWith(networkConfig.getServerIp(), networkConfig.getServerPort());
                 NotifyContext notifyContext = connector.getNotifyContext();
-                notifyContext.setApplicationContext(context);
+               // notifyContext.setApplicationContext(context);
                 notifyContext.setNotifyMap(notifyMap);
             } catch (IOException e) {
                 log.error("init socketChannel failed ,", e);
@@ -254,8 +258,4 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,Applic
         }
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.context = applicationContext;
-    }
 }

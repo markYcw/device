@@ -98,6 +98,12 @@ public class UmsManagerController {
         return BaseResult.failed("删除统一平台信息失败");
     }
 
+    /**
+     * 暂时不去实现
+     * @param requestDto
+     * @param result
+     * @return
+     */
     @ApiOperation("通知第三方服务同步设备列表，第三方同步完成会发送kafka消息")
     @PostMapping("/notify/sync")
     public BaseResult<Boolean> notifyThirdServiceSyncData(@Valid @RequestBody UmsDeviceInfoSyncRequestDto requestDto, BindingResult result) {

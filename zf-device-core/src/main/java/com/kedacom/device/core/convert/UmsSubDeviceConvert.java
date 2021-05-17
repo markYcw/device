@@ -2,8 +2,9 @@ package com.kedacom.device.core.convert;
 
 import com.kedacom.acl.network.ums.responsevo.SubDeviceInfoResponseVo;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
-import com.kedacom.device.ums.request.SetMediaRequest;
-import com.kedacom.ums.requestdto.UmsScheduleGroupSetMediaRequestDto;
+import com.kedacom.device.ums.request.*;
+import com.kedacom.ums.requestdto.*;
+import com.kedacom.ums.responsedto.UmsScheduleGroupQueryMediaResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -21,6 +22,20 @@ public interface UmsSubDeviceConvert {
 
     List<SubDeviceInfoEntity> convertSubDeviceInfoEntityList(List<SubDeviceInfoResponseVo> responseVoList);
 
-    SetMediaRequest convertSetMediaRequest(UmsScheduleGroupSetMediaRequestDto requestDto);
+    SetMediaRequest convertSetMediaRequest(UmsScheduleGroupQueryMediaResponseDto requestDto);
+
+    UpdateVmpMixRequest convertUpdateVmpMixRequest(UmsScheduleGroupUpdateVmpMixRequestDto requestDto);
+
+    StartVmpMixRequest convertStartVmpMixRequest(UmsScheduleGroupStartVmpMixRequestDto requestDto);
+
+    JoinDiscussionGroupRequest convertJoinDiscussionGroupRequest(UmsScheduleGroupJoinDiscussionGroupRequestDto requestDto);
+
+    PtzControlRequest convertPtzControlRequest(UmsScheduleGroupPtzControlRequestDto requestDto);
+
+    SetMuteRequest convetSetMuteRequest(UmsScheduleGroupSetMuteRequestDto requestDto);
+
+    SetSilenceRequest convertSetSilenceRequest(UmsScheduleGroupSetSilenceRequestDto requestDto);
+
+    AddMembersRequest convertAddMembersRequest(UmsScheduleGroupAddMembersRequestDto requestDto);
 
 }

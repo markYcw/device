@@ -1,7 +1,6 @@
 package com.kedacom.ums.responsedto;
 
 import com.kedacom.ums.requestdto.UmsScheduleGroupStartVmpMixAttendMembersRequestDto;
-import com.kedacom.ums.requestdto.UmsScheduleGroupStartVmpMixListenerMembersRequestDto;
 import com.kedacom.ums.requestdto.UmsScheduleGroupStartVmpMixSetStyleRequestDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,7 +20,7 @@ import java.util.List;
 public class UmsScheduleGroupQueryVmpMixResponseDto implements Serializable {
 
     @ApiModelProperty(value = "画面合成资源ID")
-    private String vmpId;
+    private String vmpID;
 
     @ApiModelProperty(value = "默认0-自动风格，>0,定制的画面布局，取值见创建会议 时的布局说明")
     private Integer layout;
@@ -37,6 +36,6 @@ public class UmsScheduleGroupQueryVmpMixResponseDto implements Serializable {
     private List<UmsScheduleGroupStartVmpMixAttendMembersRequestDto> members;
 
     @ApiModelProperty(value = "观看画面合成的成员设备id列表")
-    private List<UmsScheduleGroupStartVmpMixListenerMembersRequestDto> listeners;
+    private List<String> listeners;
 
 }

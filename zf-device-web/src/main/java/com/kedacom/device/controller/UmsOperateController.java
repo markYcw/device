@@ -45,7 +45,7 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.deleteScheduleGroup(requestDto));
     }
 
     @ApiOperation("添加调度组成员设备")
@@ -54,7 +54,7 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.addScheduleGroupMember(requestDto));
     }
 
     @ApiOperation("删除调度组成员设备")
@@ -63,7 +63,7 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.deleteScheduleGroupMember(requestDto));
     }
 
     @ApiOperation("查询调度组集合")
@@ -72,7 +72,7 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.selectScheduleGroupList(requestDto));
     }
 
     @ApiOperation("查询调度组状态，查询成功后会通过kafka通知推送")
@@ -81,7 +81,7 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.queryScheduleGroupStatus(requestDto));
     }
 
     @ApiOperation("设置调度组静音")
@@ -90,7 +90,7 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.setScheduleGroupSilence(requestDto));
     }
 
     @ApiOperation("查询调度组静音")
@@ -99,7 +99,7 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.queryScheduleGroupSilence(requestDto));
     }
 
     @ApiOperation("设置调度组哑音")
@@ -108,7 +108,7 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.setScheduleGroupMute(requestDto));
     }
 
     @ApiOperation("查询调度组哑音")
@@ -117,7 +117,7 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.queryScheduleGroupMute(requestDto));
     }
 
     @ApiOperation("调度组PTZ控制")
@@ -126,16 +126,16 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.controlScheduleGroupPtz(requestDto));
     }
 
     @ApiOperation("加入讨论组")
     @PostMapping("/joinScheduleGroupDiscussionGroup")
-    public BaseResult<List<UmsScheduleGroupJoinDiscussionGroupResponseDto>> joinScheduleGroupDiscussionGroup(@Valid @RequestBody UmsScheduleGroupJoinDiscussionGroupRequestDto requestDto, BindingResult result) {
+    public BaseResult<List<String>> joinScheduleGroupDiscussionGroup(@Valid @RequestBody UmsScheduleGroupJoinDiscussionGroupRequestDto requestDto, BindingResult result) {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.joinScheduleGroupDiscussionGroup(requestDto));
     }
 
     @ApiOperation("离开讨论组")
@@ -144,7 +144,7 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.quitScheduleGroupDiscussionGroup(requestDto));
     }
 
     @ApiOperation("查询讨论组")
@@ -153,7 +153,7 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.queryScheduleGroupDiscussionGroup(requestDto));
     }
 
     @ApiOperation("清空讨论组")
@@ -162,7 +162,7 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.clearScheduleGroupDiscussionGroup(requestDto));
     }
 
     @ApiOperation("开始画面合成")
@@ -171,16 +171,16 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.startScheduleGroupVmpMix(requestDto));
     }
 
     @ApiOperation("更新画面合成")
     @PostMapping("/updateScheduleGroupVmpMix")
-    public BaseResult<UmsScheduleGroupUpdateVmpMixResponseDto> updateScheduleGroupVmpMix(@Valid @RequestBody UmsScheduleGroupUpdateVmpMixRequestDto requestDto, BindingResult result) {
+    public BaseResult<Boolean> updateScheduleGroupVmpMix(@Valid @RequestBody UmsScheduleGroupUpdateVmpMixRequestDto requestDto, BindingResult result) {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.updateScheduleGroupVmpMix(requestDto));
     }
 
     @ApiOperation("停止画面合成")
@@ -189,7 +189,7 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.stopScheduleGroupVmpMix(requestDto));
     }
 
     @ApiOperation("查询画面合成")
@@ -198,34 +198,7 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
-    }
-
-    @ApiOperation("开始录像")
-    @PostMapping("/startRec")
-    public BaseResult<UmsStartRecResponseDto> startRec(@Valid @RequestBody UmsStartRecRequestDto requestDto, BindingResult result) {
-
-        ValidUtils.paramValid(result);
-
-        return BaseResult.succeed(null);
-    }
-
-    @ApiOperation("停止录像")
-    @PostMapping("/stopRec")
-    public BaseResult<Boolean> stopRec(@Valid @RequestBody UmsStopRecRequestDto requestDto, BindingResult result) {
-
-        ValidUtils.paramValid(result);
-
-        return BaseResult.succeed(null);
-    }
-
-    @ApiOperation("查询录像列表")
-    @PostMapping("/queryRecList")
-    public BaseResult<UmsQueryRecListResponseDto> queryRecList(@Valid @RequestBody UmsQueryRecListRequestDto requestDto, BindingResult result) {
-
-        ValidUtils.paramValid(result);
-
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.queryScheduleGroupVmpMix(requestDto));
     }
 
     @ApiOperation("呼叫设备上线")
@@ -234,7 +207,7 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.callUpSubDevice(requestDto));
     }
 
     @ApiOperation("设置调度组广播源")
@@ -243,7 +216,7 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.setScheduleGroupBroadcast(requestDto));
     }
 
     @ApiOperation("取消调度组广播源")
@@ -252,16 +225,16 @@ public class UmsOperateController {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.cancelScheduleGroupBroadcast(requestDto));
     }
 
     @ApiOperation("查询调度组广播源")
     @PostMapping("/cancelScheduleGroupBroadcast")
-    public BaseResult<UmsScheduleGroupQueryBroadcastResponseDto> cancelScheduleGroupBroadcast(@Valid @RequestBody UmsScheduleGroupQueryBroadcastRequestDto requestDto, BindingResult result) {
+    public BaseResult<UmsScheduleGroupQueryBroadcastResponseDto> queryScheduleGroupBroadcast(@Valid @RequestBody UmsScheduleGroupQueryBroadcastRequestDto requestDto, BindingResult result) {
 
         ValidUtils.paramValid(result);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(umsOperateService.queryScheduleGroupBroadcast(requestDto));
     }
 
     @ApiOperation("设置调度组媒体源")
@@ -269,8 +242,11 @@ public class UmsOperateController {
     public BaseResult<Boolean> setScheduleGroupMedia(@Valid @RequestBody UmsScheduleGroupSetMediaRequestDto requestDto, BindingResult result) {
 
         ValidUtils.paramValid(result);
+        if (umsOperateService.setScheduleGroupMedia(requestDto)) {
+            return BaseResult.succeed(true);
+        }
 
-        return BaseResult.succeed(null);
+        return BaseResult.failed("设置调度组媒体源失败");
     }
 
     @ApiOperation("查询调度组媒体源")
@@ -278,8 +254,9 @@ public class UmsOperateController {
     public BaseResult<UmsScheduleGroupQueryMediaResponseDto> queryScheduleGroupMedia(@Valid @RequestBody UmsScheduleGroupQueryMediaRequestDto requestDto, BindingResult result) {
 
         ValidUtils.paramValid(result);
+        UmsScheduleGroupQueryMediaResponseDto responseDto = umsOperateService.queryScheduleGroupMedia(requestDto);
 
-        return BaseResult.succeed(null);
+        return BaseResult.succeed(responseDto);
     }
 
 }

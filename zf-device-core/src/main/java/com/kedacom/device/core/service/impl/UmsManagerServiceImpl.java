@@ -8,9 +8,9 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kedacom.BasePage;
 import com.kedacom.acl.network.ums.requestvo.LoginPlatformRequestVo;
-import com.kedacom.acl.network.ums.responsevo.DeviceInfoVo;
+import com.kedacom.acl.network.ums.requestvo.QuerySubDeviceInfoRequestVo;
+import com.kedacom.acl.network.ums.responsevo.QuerySubDeviceInfoResponseVo;
 import com.kedacom.acl.network.ums.responsevo.UmsAlarmTypeQueryResponseVo;
-import com.kedacom.device.unite.UmsManagerInterface;
 import com.kedacom.device.core.constant.UmsMod;
 import com.kedacom.device.core.convert.UmsAlarmTypeConvert;
 import com.kedacom.device.core.convert.UmsDeviceConvert;
@@ -21,19 +21,29 @@ import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.GroupMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.core.service.UmsManagerService;
+import com.kedacom.device.core.task.UmsDeviceTask;
 import com.kedacom.device.core.utils.PinYinUtils;
 import com.kedacom.device.core.entity.AlarmTypeEntity;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.entity.GroupInfoEntity;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
+import com.kedacom.device.ums.UmsClient;
+import com.kedacom.device.ums.request.LoginRequest;
+import com.kedacom.device.ums.request.LogoutRequest;
+import com.kedacom.device.ums.response.LoginResponse;
+import com.kedacom.device.ums.response.LogoutResponse;
 import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
+import javax.validation.constraints.NotNull;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -44,6 +54,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class UmsManagerServiceImpl implements UmsManagerService {
+
+    @Resource
+    UmsClient umsClient;
 
     @Resource
     GroupMapper groupMapper;
@@ -57,25 +70,22 @@ public class UmsManagerServiceImpl implements UmsManagerService {
     @Resource
     AlarmTypeMapper alarmTypeMapper;
 
-    @Resource
-    UmsManagerInterface umsManagerInterface;
-
     @Override
     public Boolean insertUmsDevice(UmsDeviceInfoAddRequestDto requestDto) {
 
         log.info("新增统一平台信息参数 ： requestDto {}", requestDto);
-        LoginPlatformRequestVo loginPlatformRequestVo = UmsDeviceConvert.INSTANCE.convertUmsDeviceInfoAddRequestVo(requestDto);
+        LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertUmsDeviceInfoAddRequestVo(requestDto);
         //1、调中间件登录接口，成功返回sessionId
-        Integer sessionId = umsManagerInterface.login(loginPlatformRequestVo);
+        LoginResponse loginResponse = umsClient.login(loginRequest);
         //TODO 先标志一下异常处理，稍后统一处理
-        if (sessionId < 0) {
+        if (loginResponse.getSsid() != 0) {
             log.error("登录统一平台异常");
             throw new UmsManagerException("登录统一平台异常");
         }
         //2、调中间件登录成功，将统一平台信息添加到本地
         DeviceInfoEntity deviceInfoEntity = UmsDeviceConvert.INSTANCE.convertDeviceInfoEntityForAdd(requestDto);
         //3、将返回的sessionId存入本地
-        deviceInfoEntity.setSessionId(String.valueOf(sessionId));
+        deviceInfoEntity.setSessionId(String.valueOf(loginResponse.getSsid()));
 
         return deviceMapper.insert(deviceInfoEntity) > 0;
     }
@@ -93,19 +103,21 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         if (!deviceInfo.getDeviceIp().equals(deviceIp) || !deviceInfo.getDevicePort().equals(devicePort)) {
             //1、调用中间件登出接口, 传入对应中间件的sessionId
             String sessionId = deviceInfo.getSessionId();
-            Integer code = umsManagerInterface.logout(sessionId);
-            if (code != 0) {
+            LogoutRequest logoutRequest = new LogoutRequest();
+            logoutRequest.setSsid(Integer.valueOf(sessionId));
+            LogoutResponse response = umsClient.logout(logoutRequest);
+            if (response.acquireErrcode() != 0) {
                 log.error("注销统一平台异常 - umsId : [{}]", id);
                 throw new UmsManagerException("注销统一平台异常");
             }
             //2、调用中间件登录接口, 成功后将获取的sessionId存入本地
-            LoginPlatformRequestVo loginPlatformRequestVo = UmsDeviceConvert.INSTANCE.convertUmsDeviceInfoUpdateRequestVo(requestDto);
-            Integer newSessionId = umsManagerInterface.login(loginPlatformRequestVo);
-            if (newSessionId < 0) {
+            LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertUmsDeviceInfoUpdateRequestVo(requestDto);
+            LoginResponse loginResponse = umsClient.login(loginRequest);
+            if (loginResponse.acquireErrcode() != 0) {
                 log.error("登录统一平台异常");
                 throw new UmsManagerException("登录统一平台异常");
             }
-            deviceInfoEntity.setSessionId(String.valueOf(newSessionId));
+            deviceInfoEntity.setSessionId(String.valueOf(loginResponse.getSsid()));
 
         }
 
@@ -162,8 +174,10 @@ public class UmsManagerServiceImpl implements UmsManagerService {
             return false;
         }
         String sessionId = deviceInfoEntity.getSessionId();
-        Integer code = umsManagerInterface.logout(sessionId);
-        if (code != 0) {
+        LogoutRequest logoutRequest = new LogoutRequest();
+        logoutRequest.setSsid(Integer.valueOf(sessionId));
+        LogoutResponse response = umsClient.logout(logoutRequest);
+        if (response.acquireErrcode() != 0) {
             log.error("注销统一平台异常 - umsId : [{}]", deviceInfoEntity.getId());
             throw new UmsManagerException("注销统一平台异常");
         }
@@ -180,20 +194,20 @@ public class UmsManagerServiceImpl implements UmsManagerService {
     @Override
     public Boolean notifyThirdServiceSyncData(UmsDeviceInfoSyncRequestDto requestDto) {
 
-        String umsId = requestDto.getUmsId();
-        log.info("通知第三方服务同步数据：{}", umsId);
-        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(umsId);
-        if (deviceInfoEntity == null) {
-            log.error("查询统一平台信息为空 - umsId : [{}]", umsId);
-            return false;
-        }
-        String sessionId = deviceInfoEntity.getSessionId();
-        //调用接口，成功即返回信息
-        Boolean aBoolean = umsManagerInterface.notifyThirdServiceSyncData(sessionId);
-        if (!aBoolean) {
-            log.error("通知第三方服务同步设备列表失败");
-            throw new UmsManagerException("通知第三方服务同步设备列表失败");
-        }
+//        String umsId = requestDto.getUmsId();
+//        log.info("通知第三方服务同步数据：{}", umsId);
+//        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(umsId);
+//        if (deviceInfoEntity == null) {
+//            log.error("查询统一平台信息为空 - umsId : [{}]", umsId);
+//            return false;
+//        }
+//        String sessionId = deviceInfoEntity.getSessionId();
+//        //调用接口，成功即返回信息
+//        Boolean aBoolean = umsManagerInterface.notifyThirdServiceSyncData(sessionId);
+//        if (!aBoolean) {
+//            log.error("通知第三方服务同步设备列表失败");
+//            throw new UmsManagerException("通知第三方服务同步设备列表失败");
+//        }
 
         return true;
     }
@@ -202,31 +216,13 @@ public class UmsManagerServiceImpl implements UmsManagerService {
     public Boolean syncDeviceData(UmsDeviceInfoSyncRequestDto requestDto) {
 
         String umsId = requestDto.getUmsId();
-        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(umsId);
-        if (deviceInfoEntity == null) {
-            log.error("查询统一平台信息为空 - umsId : [{}]", umsId);
-            return false;
-        }
-        String sessionId = deviceInfoEntity.getSessionId();
-        DeviceInfoVo deviceInfoVo = umsManagerInterface.syncDeviceData(sessionId);
-        if (deviceInfoVo == null) {
-            log.error("手动同步统一平台信息失败");
-            throw new UmsManagerException("手动同步统一平台信息失败");
-        }
-        deviceInfoEntity.setDeviceType(deviceInfoVo.getDevtype());
-        deviceInfoEntity.setDeviceIp(deviceInfoVo.getDevplatip());
-        deviceInfoEntity.setDevicePort(deviceInfoVo.getDevplatport());
-        deviceInfoEntity.setDeviceNotifyIp(deviceInfoVo.getDevnotifyaip());
-        deviceInfoEntity.setMediaIp(deviceInfoVo.getMediascheduleip());
-        deviceInfoEntity.setMediaPort(deviceInfoVo.getMediascheduleport());
-        deviceInfoEntity.setStreamingMediaIp(deviceInfoVo.getNmediaip());
-        deviceInfoEntity.setStreamingMediaPort(deviceInfoVo.getNmediaport());
-        deviceInfoEntity.setStreamingMediaRecPort(deviceInfoVo.getRecport());
-        deviceInfoEntity.setUpdateTime(new Date());
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-        deviceInfoEntity.setLastSyncThirdDeviceTime(sf.format(new Date()));
 
-        return deviceMapper.updateById(deviceInfoEntity) > 0;
+
+
+        UmsDeviceTask task = new UmsDeviceTask(umsId);
+        task.run();
+
+        return true;
     }
 
     @Override
@@ -420,7 +416,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
     public List<UmsAlarmTypeQueryResponseDto> updateUmsAlarmTypeList() {
 
         //调用接口，获取告警类型列表
-        List<UmsAlarmTypeQueryResponseVo> umsAlarmTypeQueryResponseVoList = umsManagerInterface.getUmsAlarmTypeList();
+        /*List<UmsAlarmTypeQueryResponseVo> umsAlarmTypeQueryResponseVoList = umsClient.getUmsAlarmTypeList();
         if (CollectionUtil.isEmpty(umsAlarmTypeQueryResponseVoList)) {
             log.error("从远端获取告警类型列表信息失败");
             throw new UmsManagerException("从远端获取告警类型列表信息失败");
@@ -440,7 +436,9 @@ public class UmsManagerServiceImpl implements UmsManagerService {
             }
         }
 
-        return UmsAlarmTypeConvert.INSTANCE.convertUmsAlarmTypeQueryResponseVoList(umsAlarmTypeQueryResponseVoList);
+        return UmsAlarmTypeConvert.INSTANCE.convertUmsAlarmTypeQueryResponseVoList(umsAlarmTypeQueryResponseVoList);*/
+
+        return null;
     }
 
     @Override
@@ -462,7 +460,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         if (StrUtil.isBlank(groupId)) {
             groupId = "0";
         }
-        queryWrapper.eq(GroupInfoEntity::getUmsId, umsId)
+        queryWrapper.eq(GroupInfoEntity::getGroupDevId, umsId)
                 .eq(GroupInfoEntity::getParentId, groupId)
                 .orderByAsc(GroupInfoEntity::getSortIndex);
         List<GroupInfoEntity> groupInfoEntityList = groupMapper.selectList(queryWrapper);
@@ -483,7 +481,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         String umsId = requestDto.getUmsId();
         LambdaQueryWrapper<GroupInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
         if (StrUtil.isNotBlank(umsId)) {
-            queryWrapper.eq(GroupInfoEntity::getUmsId, umsId);
+            queryWrapper.eq(GroupInfoEntity::getGroupDevId, umsId);
         }
         //按照字段升序
         queryWrapper.orderByAsc(GroupInfoEntity::getSortIndex);
@@ -592,12 +590,6 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         }
 
         return list;
-    }
-
-    public void dealUmsManageException() {
-
-
-
     }
 
 }

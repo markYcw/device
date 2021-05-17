@@ -16,6 +16,6 @@ import java.io.Serializable;
 public class UmsScheduleGroupQueryMuteResponseDto implements Serializable {
 
     @ApiModelProperty(value = "状态（1:哑音 0:不哑音）")
-    private Integer muteState;
+    private Integer MuteState;
 
 }

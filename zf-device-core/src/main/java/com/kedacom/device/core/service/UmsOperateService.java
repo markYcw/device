@@ -129,7 +129,7 @@ public interface UmsOperateService {
      * @param requestDto
      * @return
      */
-    UmsScheduleGroupUpdateVmpMixResponseDto updateScheduleGroupVmpMix(UmsScheduleGroupUpdateVmpMixRequestDto requestDto);
+    Boolean updateScheduleGroupVmpMix(UmsScheduleGroupUpdateVmpMixRequestDto requestDto);
 
     /**
      * 停止画面合成
@@ -144,27 +144,6 @@ public interface UmsOperateService {
      * @return
      */
     UmsScheduleGroupQueryVmpMixResponseDto queryScheduleGroupVmpMix(UmsScheduleGroupQueryVmpMixRequestDto requestDto);
-
-    /**
-     * 开始录像
-     * @param requestDto
-     * @return
-     */
-    UmsStartRecResponseDto startRec(UmsStartRecRequestDto requestDto);
-
-    /**
-     * 停止录像
-     * @param requestDto
-     * @return
-     */
-    Boolean stopRec(UmsStopRecRequestDto requestDto);
-
-    /**
-     * 查询录像列表
-     * @param requestDto
-     * @return
-     */
-    UmsQueryRecListResponseDto queryRecList(UmsQueryRecListRequestDto requestDto);
 
     /**
      * 呼叫设备上线
@@ -192,7 +171,7 @@ public interface UmsOperateService {
      * @param requestDto
      * @return
      */
-    UmsScheduleGroupQueryBroadcastResponseDto cancelScheduleGroupBroadcast(UmsScheduleGroupQueryBroadcastRequestDto requestDto);
+    UmsScheduleGroupQueryBroadcastResponseDto queryScheduleGroupBroadcast(UmsScheduleGroupQueryBroadcastRequestDto requestDto);
 
     /**
      * 设置调度组媒体源

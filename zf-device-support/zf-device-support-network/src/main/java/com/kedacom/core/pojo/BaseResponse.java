@@ -3,6 +3,7 @@ package com.kedacom.core.pojo;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,10 @@ public class BaseResponse implements Response {
         jsonObject.remove("resp");
         return jsonObject;
 
+    }
+
+    public Integer getSsid(){
+        return resp.getSsid();
     }
 
     public Integer acquireErrcode() {

@@ -18,9 +18,9 @@ public class UmsScheduleGroupSubDeviceCallMembersRequestDto implements Serializa
 
     @ApiModelProperty("设备Id")
     @NotBlank(message = "设备Id不能为空")
-    private String deviceId;
+    private String DeviceID;
 
     @ApiModelProperty("主叫号码、席位号")
-    private String localId;
+    private String LocalID;
 
 }

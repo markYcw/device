@@ -1,5 +1,6 @@
 package com.kedacom.ums.requestdto;
 
+import com.kedacom.ums.responsedto.UmsScheduleGroupQueryMediaResponseDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -21,11 +22,6 @@ public class UmsScheduleGroupSetMediaRequestDto implements Serializable {
     @ApiModelProperty(value = "平台id")
     private String umsId;
 
-    @NotBlank(message = "调度组Id不能为空")
-    @ApiModelProperty(value = "调度组Id")
-    private String groupId;
-
-    @ApiModelProperty(value = "调度组成员设备类型")
-    private List<UmsScheduleGroupMemberSetMediaRequestDto> members;
+    private UmsScheduleGroupQueryMediaResponseDto mediaInfo;
 
 }

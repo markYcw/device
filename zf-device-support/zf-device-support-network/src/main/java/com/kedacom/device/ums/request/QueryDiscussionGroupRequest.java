@@ -13,8 +13,6 @@ import lombok.ToString;
  * @date 2021/5/15
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString(callSuper = true)
 public class QueryDiscussionGroupRequest extends BaseRequest {
 

@@ -3,17 +3,13 @@ package com.kedacom.device.ums.request;
 import com.kedacom.acl.network.anno.KmJsonField;
 import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
  * @author van.shu
  * @create 2021/5/13 14:07
  */
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString(callSuper = true)
 @Data
 public class LoginRequest extends BaseRequest {

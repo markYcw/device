@@ -16,8 +16,6 @@ import java.util.List;
  * @date 2021/5/14
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString(callSuper = true)
 public class CallUpRequest extends BaseRequest {
 

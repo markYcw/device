@@ -103,4 +103,16 @@ public class DeviceAdvice {
         return BaseResult.failed(e.getCode(), e.getMessage());
     }
 
+    /**
+     * 流媒体异常捕获
+     *
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler({StreamMediaException.class})
+    public BaseResult handleException(StreamMediaException e) {
+        return BaseResult.failed(e.getCode(), e.getMessage());
+    }
+
 }

@@ -15,8 +15,6 @@ import java.util.List;
  * @describe
  * @date 2021/5/14
  */
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString(callSuper = true)
 @Data
 public class SetBroadcastRequest extends BaseRequest {

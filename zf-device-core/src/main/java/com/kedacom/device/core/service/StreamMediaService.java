@@ -11,30 +11,30 @@ import java.util.List;
  */
 public interface StreamMediaService {
 
-    StartRecResponseVO startRec(StartRecRequest request);
+    StartRecResponseVO startRec(StartRecDTO request);
 
-    Boolean stopRec(StopRecRequest request);
+    Boolean stopRec(StopRecDTO request);
 
-    QueryRecResponseVO queryRec(QueryRecRequest request);
+    QueryRecResponseVO queryRec(QueryRecDTO request);
 
-    StartAudioMixResponseVO startAudioMix(StartAudioMixRequest request);
+    StartAudioMixResponseVO startAudioMix(StartAudioMixDTO request);
 
-    Boolean stopAudioMix(StopAudioMixRequest request);
+    Boolean stopAudioMix(StopAudioMixDTO request);
 
-    Boolean updateAudioMix(UpdateAudioMixRequest request);
+    Boolean updateAudioMix(UpdateAudioMixDTO request);
 
-    List<String> queryAllAudioMix(QueryAllAudioMixRequest request);
+    List<String> queryAllAudioMix(QueryAllAudioMixDTO request);
 
-    QueryAudioMixResponseVO queryAudioMix(QueryAudioMixRequest request);
+    QueryAudioMixResponseVO queryAudioMix(QueryAudioMixDTO request);
 
-    StartVideoMixResponseVO startVideoMix(StartVideoMixRequest request);
+    StartVideoMixResponseVO startVideoMix(StartVideoMixDTO request);
 
-    Boolean stopVideoMix(StopVideoMixRequest request);
+    Boolean stopVideoMix(StopVideoMixDTO request);
 
-    Boolean updateVideoMix(UpdateVideoMixRequest request);
+    Boolean updateVideoMix(UpdateVideoMixDTO request);
 
     List<String> queryAllVideoMix(String unitId);
 
-    QueryVideoMixResponseVO queryVideoMix(QueryVideoMixRequest request);
+    QueryVideoMixResponseVO queryVideoMix(QueryVideoMixDTO request);
 
 }

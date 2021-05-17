@@ -14,7 +14,7 @@ import lombok.ToString;
  */
 @ToString(callSuper = true)
 @Data
-public class StartRecDTO extends BaseRequest {
+public class StartRecRequest extends BaseRequest {
 
     private static final String COMMAND = "startrec";
 

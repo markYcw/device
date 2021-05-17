@@ -9,18 +9,18 @@ import java.io.Serializable;
 
 /**
  * @Auther: hxj
- * @Date: 2021/4/30 13:51
+ * @Date: 2021/4/29 19:34
  */
 @Data
-@ApiModel("查询所有混音入参")
-public class QueryAllAudioMixRequest implements Serializable {
+@ApiModel("停止录像入参")
+public class StopRecDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")
     @ApiModelProperty(value = "平台id")
     private String umsId;
 
-    @NotBlank(message = "混音设备分组id不能为空")
-    @ApiModelProperty("混音设备分组id")
-    private String GroupID;
+    @NotBlank(message = "录像ID不能为空")
+    @ApiModelProperty("录像ID")
+    private String record_id;
 
 }

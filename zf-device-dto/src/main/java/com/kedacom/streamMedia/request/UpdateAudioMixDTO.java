@@ -1,21 +1,21 @@
 package com.kedacom.streamMedia.request;
 
+import com.kedacom.streamMedia.info.AudioMixer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.List;
 
 /**
  * @Auther: hxj
- * @Date: 2021/4/30 10:28
+ * @Date: 2021/4/30 10:44
  */
 @Data
-@ApiModel("停止音频混音入参")
-public class StopAudioMixRequest implements Serializable {
+@ApiModel("更新音频混音入参")
+public class UpdateAudioMixDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")
     @ApiModelProperty(value = "平台id")
@@ -25,8 +25,14 @@ public class StopAudioMixRequest implements Serializable {
     @ApiModelProperty("混音设备分组id")
     private String GroupID;
 
-    @NotEmpty(message = "混音ID不能为空")
+    @NotBlank(message = "混音ID不能为空")
     @ApiModelProperty("混音ID")
-    private List<String> mixIDs;
+    private String mixID;
+
+    @ApiModelProperty("add-添加  update-更新  delete-删除")
+    private String cmdType;
+
+    @ApiModelProperty("参与混音方列表(最大数目为 16)")
+    private List<AudioMixer> mixer_list;
 
 }

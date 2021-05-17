@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Data
 @ApiModel("开始画面合成入参")
-public class StartVideoMixRequest implements Serializable {
+public class StartVideoMixDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")
     @ApiModelProperty(value = "平台id")

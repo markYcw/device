@@ -14,21 +14,20 @@ import java.util.List;
  */
 @ToString(callSuper = true)
 @Data
-@ApiModel("查询混音信息业务交互参数")
-public class QueryAudioMixDTO extends BaseRequest {
+@ApiModel("停止音频混音业务交互参数")
+public class StopAudioMixRequest extends BaseRequest {
 
-    private static final String COMMAND = "queryaudiomix";
+    private static final String COMMAND = "stopaudiomix";
 
     @ApiModelProperty("音频混音设备组id")
     private String GroupID;
 
-    @ApiModelProperty("混音ID集合")
+    @ApiModelProperty("画面合成ID集合")
     private List<String> mixIDs;
 
     @Override
     public String name() {
         return COMMAND;
     }
-
 
 }

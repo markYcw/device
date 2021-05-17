@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Data
 @ApiModel("停止画面合成入参")
-public class StopVideoMixRequest implements Serializable {
+public class StopVideoMixDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")
     @ApiModelProperty(value = "平台id")

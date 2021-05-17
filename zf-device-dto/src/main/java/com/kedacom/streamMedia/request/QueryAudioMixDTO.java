@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Data
 @ApiModel("查询混音信息入参")
-public class QueryAudioMixRequest implements Serializable {
+public class QueryAudioMixDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")
     @ApiModelProperty(value = "平台id")

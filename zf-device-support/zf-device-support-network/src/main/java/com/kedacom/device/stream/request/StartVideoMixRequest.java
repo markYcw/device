@@ -19,7 +19,7 @@ import java.util.List;
 @ToString(callSuper = true)
 @Data
 @ApiModel("开始画面合成业务交互参数")
-public class StartVideoMixDTO extends BaseRequest {
+public class StartVideoMixRequest extends BaseRequest {
 
     private static final String COMMAND = "startvideomix";
 

@@ -17,7 +17,7 @@ import java.util.List;
 @ToString(callSuper = true)
 @Data
 @ApiModel("停止画面合成业务交互参数")
-public class StopVideoMixDTO extends BaseRequest {
+public class StopVideoMixRequest extends BaseRequest {
 
     private static final String COMMAND = "stopvideomix";
 

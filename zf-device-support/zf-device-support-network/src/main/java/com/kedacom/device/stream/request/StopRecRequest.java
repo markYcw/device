@@ -15,7 +15,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @Data
 @ApiModel("停止录像业务交互参数")
-public class StopRecDTO extends BaseRequest {
+public class StopRecRequest extends BaseRequest {
 
     private static final String COMMAND = "stoprec";
 

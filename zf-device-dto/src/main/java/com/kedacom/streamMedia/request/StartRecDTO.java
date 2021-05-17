@@ -15,7 +15,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel("开启录像入参")
-public class StartRecRequest implements Serializable {
+public class StartRecDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")
     @ApiModelProperty(value = "平台id")

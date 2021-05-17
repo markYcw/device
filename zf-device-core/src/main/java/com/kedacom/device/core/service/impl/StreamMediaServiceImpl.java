@@ -36,16 +36,16 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     private KmErrCode kmErrCode;
 
     @Override
-    public StartRecResponseVO startRec(StartRecRequest request) {
+    public StartRecResponseVO startRec(StartRecDTO request) {
         log.info("开启录像入参信息:{}", request);
 
         Integer ssid = 1;
-        StartRecDTO startRecDTO = streamMediaConvert.convertStartRecRequest(request);
-        startRecDTO.setAccount_token("123");
-        startRecDTO.setRequest_id("321321");
-        startRecDTO.setSsid(ssid);
-        log.info("开启录像交互参数:{}", startRecDTO);
-        StartRecResponse res = client.startRec(startRecDTO);
+        StartRecRequest startRecRequest = streamMediaConvert.convertStartRecRequest(request);
+        startRecRequest.setAccount_token("123");
+        startRecRequest.setRequest_id("321321");
+        startRecRequest.setSsid(ssid);
+        log.info("开启录像交互参数:{}", startRecRequest);
+        StartRecResponse res = client.startRec(startRecRequest);
         log.info("开启录像应答信息:{}", res);
         String errorMsg = "开启录像失败:{},{}";
         handleRes(errorMsg, res);
@@ -53,16 +53,16 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     }
 
     @Override
-    public Boolean stopRec(StopRecRequest request) {
+    public Boolean stopRec(StopRecDTO request) {
         log.info("停止录像入参信息:{}", request);
 
         Integer ssid = 1;
-        StopRecDTO stopRecDTO = streamMediaConvert.convertStopRecRequest(request);
-        stopRecDTO.setAccount_token("123");
-        stopRecDTO.setRequest_id("321321");
-        stopRecDTO.setSsid(ssid);
-        log.info("停止录像交互参数:{}", stopRecDTO);
-        BaseResponse response = client.stopRec(stopRecDTO);
+        StopRecRequest stopRecRequest = streamMediaConvert.convertStopRecRequest(request);
+        stopRecRequest.setAccount_token("123");
+        stopRecRequest.setRequest_id("321321");
+        stopRecRequest.setSsid(ssid);
+        log.info("停止录像交互参数:{}", stopRecRequest);
+        BaseResponse response = client.stopRec(stopRecRequest);
         log.info("停止录像应答信息:{}", response);
         String error = "停止录像失败:{},{}";
         handleRes(error, response);
@@ -70,33 +70,33 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     }
 
     @Override
-    public QueryRecResponseVO queryRec(QueryRecRequest request) {
+    public QueryRecResponseVO queryRec(QueryRecDTO request) {
         String error = "查询录像记录失败:{},{}";
         log.info("查询录像记录入参信息:{}", request);
 
         Integer ssid = 1;
-        QueryRecDTO queryRecDTO = streamMediaConvert.convertQueryRecRequest(request);
-        queryRecDTO.setSsid(ssid);
-        log.info("查询录像记录交互参数:{}", queryRecDTO);
-        QueryRecResponse res = client.queryRec(queryRecDTO);
+        QueryRecRequest queryRecRequest = streamMediaConvert.convertQueryRecRequest(request);
+        queryRecRequest.setSsid(ssid);
+        log.info("查询录像记录交互参数:{}", queryRecRequest);
+        QueryRecResponse res = client.queryRec(queryRecRequest);
         log.info("查询录像记录应答信息:{}", res);
         handleRes(error, res);
         return res.acquireData(QueryRecResponseVO.class);
     }
 
     @Override
-    public StartAudioMixResponseVO startAudioMix(StartAudioMixRequest request) {
+    public StartAudioMixResponseVO startAudioMix(StartAudioMixDTO request) {
         String error = "开启音频混音失败:{},{}";
         log.info("开启音频混音入参信息:{}", request);
 
         Integer ssid = 1;
         // 自定义的分组id
         String groupId = UUID.randomUUID().toString().replace("-", "");
-        StartAudioMixDTO startAudioMixDTO = streamMediaConvert.convertStartAudioMixRequest(request);
-        startAudioMixDTO.setGroupID(groupId);
-        startAudioMixDTO.setSsid(ssid);
-        log.info("开启音频混音交互参数:{}", startAudioMixDTO);
-        StartAudioMixResponse res = client.startAudioMix(startAudioMixDTO);
+        StartAudioMixRequest startAudioMixRequest = streamMediaConvert.convertStartAudioMixRequest(request);
+        startAudioMixRequest.setGroupID(groupId);
+        startAudioMixRequest.setSsid(ssid);
+        log.info("开启音频混音交互参数:{}", startAudioMixRequest);
+        StartAudioMixResponse res = client.startAudioMix(startAudioMixRequest);
         handleRes(error, res);
         StartAudioMixResponseVO response = new StartAudioMixResponseVO();
         response.setMixID(res.getMixID());
@@ -106,77 +106,77 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     }
 
     @Override
-    public Boolean stopAudioMix(StopAudioMixRequest request) {
+    public Boolean stopAudioMix(StopAudioMixDTO request) {
         String error = "停止音频混音失败:{},{}";
         log.info("停止音频混音入参信息:{}", request);
 
         Integer ssid = 1;
-        StopAudioMixDTO stopAudioMixDTO = streamMediaConvert.convertStopAudioMixRequest(request);
-        stopAudioMixDTO.setSsid(ssid);
-        log.info("停止音频混音交互参数:{}", stopAudioMixDTO);
-        BaseResponse res = client.stopAudioMix(stopAudioMixDTO);
+        StopAudioMixRequest stopAudioMixRequest = streamMediaConvert.convertStopAudioMixRequest(request);
+        stopAudioMixRequest.setSsid(ssid);
+        log.info("停止音频混音交互参数:{}", stopAudioMixRequest);
+        BaseResponse res = client.stopAudioMix(stopAudioMixRequest);
         log.info("停止音频混音应答信息:{}", res);
         handleRes(error, res);
         return true;
     }
 
     @Override
-    public Boolean updateAudioMix(UpdateAudioMixRequest request) {
+    public Boolean updateAudioMix(UpdateAudioMixDTO request) {
         String error = "更新音频混音失败:{},{}";
         log.info("更新音频混音入参信息:{}", request);
 
         Integer ssid = 1;
-        UpdateAudioMixDTO updateAudioMixDTO = streamMediaConvert.convertUpdateAudioMixRequest(request);
-        updateAudioMixDTO.setSsid(ssid);
-        log.info("更新音频混音交互参数:{}", updateAudioMixDTO);
-        BaseResponse res = client.updateAudioMix(updateAudioMixDTO);
+        UpdateAudioMixRequest updateAudioMixRequest = streamMediaConvert.convertUpdateAudioMixRequest(request);
+        updateAudioMixRequest.setSsid(ssid);
+        log.info("更新音频混音交互参数:{}", updateAudioMixRequest);
+        BaseResponse res = client.updateAudioMix(updateAudioMixRequest);
         log.info("更新音频混音应答信息:{}", res);
         handleRes(error, res);
         return true;
     }
 
     @Override
-    public List<String> queryAllAudioMix(QueryAllAudioMixRequest request) {
+    public List<String> queryAllAudioMix(QueryAllAudioMixDTO request) {
         String error = "查询所有混音失败:{},{}";
         log.info("查询所有混音入参信息:{}", request);
         Integer ssid = 1;
 
-        QueryAllAudioMixDTO queryAllAudioMixDTO = streamMediaConvert.convertQueryAllAudioMixRequest(request);
-        queryAllAudioMixDTO.setSsid(ssid);
-        log.info("查询所有混音交互参数:{}", queryAllAudioMixDTO);
-        QueryAllAudioMixResponse res = client.queryAllAudioMix(queryAllAudioMixDTO);
+        QueryAllAudioMixRequest queryAllAudioMixRequest = streamMediaConvert.convertQueryAllAudioMixRequest(request);
+        queryAllAudioMixRequest.setSsid(ssid);
+        log.info("查询所有混音交互参数:{}", queryAllAudioMixRequest);
+        QueryAllAudioMixResponse res = client.queryAllAudioMix(queryAllAudioMixRequest);
         log.info("查询所有混音应答信息:{}", res);
         handleRes(error, res);
         return res.acquireData(List.class);
     }
 
     @Override
-    public QueryAudioMixResponseVO queryAudioMix(QueryAudioMixRequest request) {
+    public QueryAudioMixResponseVO queryAudioMix(QueryAudioMixDTO request) {
         String error = "查询混音信息失败:{},{}";
         log.info("查询混音信息入参信息:{}", request);
 
         Integer ssid = 1;
-        QueryAudioMixDTO queryAudioMixDTO = streamMediaConvert.convertQueryAudioMixRequest(request);
-        queryAudioMixDTO.setSsid(ssid);
-        log.info("查询混音信息交互参数:{}", queryAudioMixDTO);
-        QueryAudioMixResponse res = client.queryAudioMix(queryAudioMixDTO);
+        QueryAudioMixRequest queryAudioMixRequest = streamMediaConvert.convertQueryAudioMixRequest(request);
+        queryAudioMixRequest.setSsid(ssid);
+        log.info("查询混音信息交互参数:{}", queryAudioMixRequest);
+        QueryAudioMixResponse res = client.queryAudioMix(queryAudioMixRequest);
         handleRes(error, res);
         log.info("查询混音信息应答信息:{}", res);
         return res.acquireData(QueryAudioMixResponseVO.class);
     }
 
     @Override
-    public StartVideoMixResponseVO startVideoMix(StartVideoMixRequest request) {
+    public StartVideoMixResponseVO startVideoMix(StartVideoMixDTO request) {
         String error = "开始画面合成失败:{},{}";
         log.info("开始画面合成入参信息:{}", request);
 
         Integer ssid = 1;
         String groupId = UUID.randomUUID().toString().replace("-", "");
-        StartVideoMixDTO startVideoMixDTO = streamMediaConvert.convertStartVideoMixRequest(request);
-        startVideoMixDTO.setGroupID(groupId);
-        startVideoMixDTO.setSsid(ssid);
-        log.info("开始画面合成交互参数:{}", startVideoMixDTO);
-        StartVideoMixResponse res = client.startVideoMix(startVideoMixDTO);
+        StartVideoMixRequest startVideoMixRequest = streamMediaConvert.convertStartVideoMixRequest(request);
+        startVideoMixRequest.setGroupID(groupId);
+        startVideoMixRequest.setSsid(ssid);
+        log.info("开始画面合成交互参数:{}", startVideoMixRequest);
+        StartVideoMixResponse res = client.startVideoMix(startVideoMixRequest);
         handleRes(error, res);
         StartVideoMixResponseVO response = new StartVideoMixResponseVO();
         response.setMixID(res.getMixID());
@@ -187,30 +187,30 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     }
 
     @Override
-    public Boolean stopVideoMix(StopVideoMixRequest request) {
+    public Boolean stopVideoMix(StopVideoMixDTO request) {
         String error = "停止画面合成失败:{},{}";
         log.info("停止画面合成入参信息:{}", request);
 
         Integer ssid = 1;
-        StopVideoMixDTO stopVideoMixDTO = streamMediaConvert.convertStopVideoMixRequest(request);
-        stopVideoMixDTO.setSsid(ssid);
-        log.info("停止画面合成交互参数:{}", stopVideoMixDTO);
-        BaseResponse res = client.stopVideoMix(stopVideoMixDTO);
+        StopVideoMixRequest stopVideoMixRequest = streamMediaConvert.convertStopVideoMixRequest(request);
+        stopVideoMixRequest.setSsid(ssid);
+        log.info("停止画面合成交互参数:{}", stopVideoMixRequest);
+        BaseResponse res = client.stopVideoMix(stopVideoMixRequest);
         handleRes(error, res);
         log.info("停止画面合成应答信息:{}", res);
         return true;
     }
 
     @Override
-    public Boolean updateVideoMix(UpdateVideoMixRequest request) {
+    public Boolean updateVideoMix(UpdateVideoMixDTO request) {
         String error = "更新画面合成失败:{},{}";
         log.info("更新画面合成入参信息:{}", request);
 
         Integer ssid = 1;
-        UpdateVideoMixDTO updateVideoMixDTO = streamMediaConvert.convertUpdateVideoMixRequest(request);
-        updateVideoMixDTO.setSsid(ssid);
-        log.info("更新画面合成交互参数:{}", updateVideoMixDTO);
-        BaseResponse res = client.updateVideoMix(updateVideoMixDTO);
+        UpdateVideoMixRequest updateVideoMixRequest = streamMediaConvert.convertUpdateVideoMixRequest(request);
+        updateVideoMixRequest.setSsid(ssid);
+        log.info("更新画面合成交互参数:{}", updateVideoMixRequest);
+        BaseResponse res = client.updateVideoMix(updateVideoMixRequest);
         handleRes(error, res);
         log.info("更新画面合成应答信息:{}", res);
         return true;
@@ -222,24 +222,24 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("查询所有画面合成入参信息 :{}", unitId);
 
         Integer ssid = 1;
-        QueryAllVideoMixDTO queryAllVideoMixDTO = new QueryAllVideoMixDTO();
-        queryAllVideoMixDTO.setSsid(ssid);
-        QueryAllAudioMixResponse res = client.queryAllVideoMix(queryAllVideoMixDTO);
+        QueryAllVideoMixRequest queryAllVideoMixRequest = new QueryAllVideoMixRequest();
+        queryAllVideoMixRequest.setSsid(ssid);
+        QueryAllAudioMixResponse res = client.queryAllVideoMix(queryAllVideoMixRequest);
         handleRes(error, res);
         log.info("查询所有画面合成应答信息:{}", res);
         return res.acquireData(List.class);
     }
 
     @Override
-    public QueryVideoMixResponseVO queryVideoMix(QueryVideoMixRequest request) {
+    public QueryVideoMixResponseVO queryVideoMix(QueryVideoMixDTO request) {
         String error = "查询画面信息失败:{},{}";
         log.info("查询画面信息入参信息:{}", request);
 
         Integer ssid = 1;
-        QueryVideoMixDTO queryVideoMixDTO = streamMediaConvert.convertQueryVideoMixRequest(request);
-        queryVideoMixDTO.setSsid(ssid);
-        log.info("查询画面信息交互参数:{}", queryVideoMixDTO);
-        QueryVideoMixResponse res = client.queryVideoMix(queryVideoMixDTO);
+        QueryVideoMixRequest queryVideoMixRequest = streamMediaConvert.convertQueryVideoMixRequest(request);
+        queryVideoMixRequest.setSsid(ssid);
+        log.info("查询画面信息交互参数:{}", queryVideoMixRequest);
+        QueryVideoMixResponse res = client.queryVideoMix(queryVideoMixRequest);
         handleRes(error, res);
         log.info("查询画面信息应答信息:{}", res);
         return res.acquireData(QueryVideoMixResponseVO.class);

@@ -17,7 +17,7 @@ import java.util.List;
 @ToString(callSuper = true)
 @Data
 @ApiModel("更新画面合成业务交互参数")
-public class UpdateVideoMixDTO extends BaseRequest {
+public class UpdateVideoMixRequest extends BaseRequest {
 
     private static final String COMMAND = "updatevideomix";
 

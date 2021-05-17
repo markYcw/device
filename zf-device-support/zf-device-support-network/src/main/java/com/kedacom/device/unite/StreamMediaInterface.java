@@ -4,7 +4,7 @@ package com.kedacom.device.unite;
 import com.kedacom.acl.network.anno.HeadParam;
 import com.kedacom.acl.network.anno.RequestBody;
 import com.kedacom.acl.network.data.streamMeida.*;
-import com.kedacom.device.stream.request.StartRecDTO;
+import com.kedacom.device.stream.request.StartRecRequest;
 import com.kedacom.streamMedia.response.QueryAudioMixResponseVO;
 import com.kedacom.streamMedia.response.QueryRecResponseVO;
 import com.kedacom.streamMedia.response.QueryVideoMixResponseVO;
@@ -27,7 +27,7 @@ public interface StreamMediaInterface {
      * @param StartRecDTO
      * @return StartrecResponseVO
      */
-    StartRecResponseVO startRec(StartRecDTO startRecDTO);
+    StartRecResponseVO startRec(StartRecRequest startRecRequest);
 
     /**
      * 停止录像

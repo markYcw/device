@@ -21,7 +21,7 @@ public interface StreamMediaClient {
      * @param StartRecDTO
      * @return StartrecResponse
      */
-    StartRecResponse startRec(StartRecDTO startRecDTO);
+    StartRecResponse startRec(StartRecRequest startRecRequest);
 
     /**
      * 停止录像
@@ -29,7 +29,7 @@ public interface StreamMediaClient {
      * @param StopRecDTO
      * @return Boolean
      */
-    BaseResponse stopRec(StopRecDTO stoprecDTO);
+    BaseResponse stopRec(StopRecRequest stoprecRequest);
 
     /**
      * 查询录像记录
@@ -37,7 +37,7 @@ public interface StreamMediaClient {
      * @param QueryRecDTO
      * @return QueryrecResponse
      */
-    QueryRecResponse queryRec(QueryRecDTO queryrecDTO);
+    QueryRecResponse queryRec(QueryRecRequest queryrecRequest);
 
     /**
      * 开启音频混音
@@ -45,7 +45,7 @@ public interface StreamMediaClient {
      * @param StartAudioMixDTO
      * @return StartAudioMixResponse
      */
-    StartAudioMixResponse startAudioMix(StartAudioMixDTO startAudioMixDTO);
+    StartAudioMixResponse startAudioMix(StartAudioMixRequest startAudioMixRequest);
 
     /**
      * 停止音频混音
@@ -53,7 +53,7 @@ public interface StreamMediaClient {
      * @param StopAudioMixDTO
      * @return Boolean
      */
-    BaseResponse stopAudioMix(StopAudioMixDTO stopAudioMixDTO);
+    BaseResponse stopAudioMix(StopAudioMixRequest stopAudioMixRequest);
 
     /**
      * 更新音频混音
@@ -61,7 +61,7 @@ public interface StreamMediaClient {
      * @param UpdateAudioMixDTO
      * @return Boolean
      */
-    BaseResponse updateAudioMix(UpdateAudioMixDTO updateAudioMixDTO);
+    BaseResponse updateAudioMix(UpdateAudioMixRequest updateAudioMixRequest);
 
     /**
      * 查询所有混音
@@ -69,7 +69,7 @@ public interface StreamMediaClient {
      * @param QueryAllAudioMixDTO
      * @return List<String> 混音ID集合
      */
-    QueryAllAudioMixResponse queryAllAudioMix(QueryAllAudioMixDTO queryAllAudioMixDTO);
+    QueryAllAudioMixResponse queryAllAudioMix(QueryAllAudioMixRequest queryAllAudioMixRequest);
 
     /**
      * 查询混音信息
@@ -77,7 +77,7 @@ public interface StreamMediaClient {
      * @param QueryAudioMixDTO
      * @return QueryAudioMixResponse
      */
-    QueryAudioMixResponse queryAudioMix(QueryAudioMixDTO queryAudioMixDTO);
+    QueryAudioMixResponse queryAudioMix(QueryAudioMixRequest queryAudioMixRequest);
 
     /**
      * 开始画面合成
@@ -85,7 +85,7 @@ public interface StreamMediaClient {
      * @param StartVideoMixDTO
      * @return StartVideoMixResponse
      */
-    StartVideoMixResponse startVideoMix(StartVideoMixDTO startVideoMixDTO);
+    StartVideoMixResponse startVideoMix(StartVideoMixRequest startVideoMixRequest);
 
     /**
      * 停止画面合成
@@ -93,7 +93,7 @@ public interface StreamMediaClient {
      * @param StopVideoMixDTO
      * @return Boolean
      */
-    BaseResponse stopVideoMix(StopVideoMixDTO stopVideoMixDTO);
+    BaseResponse stopVideoMix(StopVideoMixRequest stopVideoMixRequest);
 
     /**
      * 更新画面合成
@@ -101,7 +101,7 @@ public interface StreamMediaClient {
      * @param UpdateVideoMixDTO
      * @return Boolean
      */
-    BaseResponse updateVideoMix(UpdateVideoMixDTO updateVideoMixDTO);
+    BaseResponse updateVideoMix(UpdateVideoMixRequest updateVideoMixRequest);
 
     /**
      * 查询所有画面合成
@@ -109,15 +109,15 @@ public interface StreamMediaClient {
      * @param ssid
      * @return List<String> 合成ID集合
      */
-    QueryAllAudioMixResponse queryAllVideoMix(QueryAllVideoMixDTO queryAllVideoMixDTO);
+    QueryAllAudioMixResponse queryAllVideoMix(QueryAllVideoMixRequest queryAllVideoMixRequest);
 
     /**
      * 查询画面信息
      *
      * @param ssid
-     * @param queryVideoMixDTO
+     * @param queryVideoMixRequest
      * @return QueryVideoMixResponse
      */
-    QueryVideoMixResponse queryVideoMix(QueryVideoMixDTO queryVideoMixDTO);
+    QueryVideoMixResponse queryVideoMix(QueryVideoMixRequest queryVideoMixRequest);
 
 }

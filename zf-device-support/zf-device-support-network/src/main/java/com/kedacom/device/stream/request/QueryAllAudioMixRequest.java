@@ -3,12 +3,8 @@ package com.kedacom.device.stream.request;
 import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.util.List;
 
 /**
  * @Auther: hxj
@@ -16,13 +12,13 @@ import java.util.List;
  */
 @ToString(callSuper = true)
 @Data
-@ApiModel("查询画面合成信息业务交互参数")
-public class QueryVideoMixDTO extends BaseRequest {
+@ApiModel("查询所有混音业务交互参数")
+public class QueryAllAudioMixRequest extends BaseRequest {
 
-    private static final String COMMAND = "queryvideomix";
+    private static final String COMMAND = "queryallaudiomix";
 
-    @ApiModelProperty("合成ID集合")
-    private List<String> mixIDs;
+    @ApiModelProperty("音频混音设备组id")
+    private String GroupID;
 
     @Override
     public String name() {

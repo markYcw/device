@@ -14,28 +14,28 @@ public interface StreamMediaConvert {
 
     StreamMediaConvert INSTANCE = Mappers.getMapper(StreamMediaConvert.class);
 
-    StartRecDTO convertStartRecRequest(StartRecRequest request);
+    StartRecRequest convertStartRecRequest(StartRecDTO request);
 
-    StopRecDTO convertStopRecRequest(StopRecRequest request);
+    StopRecRequest convertStopRecRequest(StopRecDTO request);
 
-    QueryRecDTO convertQueryRecRequest(QueryRecRequest request);
+    QueryRecRequest convertQueryRecRequest(QueryRecDTO request);
 
-    StartAudioMixDTO convertStartAudioMixRequest(StartAudioMixRequest request);
+    StartAudioMixRequest convertStartAudioMixRequest(StartAudioMixDTO request);
 
-    StopAudioMixDTO convertStopAudioMixRequest(StopAudioMixRequest request);
+    StopAudioMixRequest convertStopAudioMixRequest(StopAudioMixDTO request);
 
-    UpdateAudioMixDTO convertUpdateAudioMixRequest(UpdateAudioMixRequest request);
+    UpdateAudioMixRequest convertUpdateAudioMixRequest(UpdateAudioMixDTO request);
 
-    QueryAllAudioMixDTO convertQueryAllAudioMixRequest(QueryAllAudioMixRequest request);
+    QueryAllAudioMixRequest convertQueryAllAudioMixRequest(QueryAllAudioMixDTO request);
 
-    QueryAudioMixDTO convertQueryAudioMixRequest(QueryAudioMixRequest request);
+    QueryAudioMixRequest convertQueryAudioMixRequest(QueryAudioMixDTO request);
 
-    StartVideoMixDTO convertStartVideoMixRequest(StartVideoMixRequest request);
+    StartVideoMixRequest convertStartVideoMixRequest(StartVideoMixDTO request);
 
-    StopVideoMixDTO convertStopVideoMixRequest(StopVideoMixRequest request);
+    StopVideoMixRequest convertStopVideoMixRequest(StopVideoMixDTO request);
 
-    UpdateVideoMixDTO convertUpdateVideoMixRequest(UpdateVideoMixRequest request);
+    UpdateVideoMixRequest convertUpdateVideoMixRequest(UpdateVideoMixDTO request);
 
-    QueryVideoMixDTO convertQueryVideoMixRequest(QueryVideoMixRequest request);
+    QueryVideoMixRequest convertQueryVideoMixRequest(QueryVideoMixDTO request);
 
 }

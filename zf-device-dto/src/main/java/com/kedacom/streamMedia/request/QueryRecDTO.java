@@ -1,26 +1,25 @@
-package com.kedacom.device.stream.request;
+package com.kedacom.streamMedia.request;
 
-import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 /**
  * @Auther: hxj
- * @Date: 2021/5/13 16:44
+ * @Date: 2021/4/29 19:44
  */
-@ToString(callSuper = true)
 @Data
-@ApiModel("查询录像记录业务交互参数")
-public class QueryRecDTO extends BaseRequest {
+@ApiModel("查询录像记录入参")
+public class QueryRecDTO implements Serializable {
 
-    private static final String COMMAND = "queryrec";
+    @NotBlank(message = "umsId不能为空")
+    @ApiModelProperty(value = "平台id")
+    private String umsId;
 
+    @NotBlank(message = "具体设备ID不能为空")
     @ApiModelProperty("具体设备ID")
     private String DeviceID;
 
@@ -29,6 +28,7 @@ public class QueryRecDTO extends BaseRequest {
             "若nmedia_id=0或不填，表示交换节点所在的流媒体微服务和目标视频源在同一网络中，通过本流媒体微服务上交换节点即可获取到目标设备的音视频码流")
     private String nmedia_id;
 
+    @NotBlank(message = "查询录像的开始时间不能为空")
     @ApiModelProperty("查询录像的开始时间，日期格式为:YYYY-MM-DDThh:mm:ss，如：2020-10-01T00:00:00(建议每次查询的录像时间段不大于2天)")
     private String start_time;
 
@@ -45,11 +45,4 @@ public class QueryRecDTO extends BaseRequest {
     @ApiModelProperty("按事件类型查询:all-所有类型(默认);alarm-告警录像;manual-手动录像;plan-计划录像;time-定时录像")
     private String query_type;
 
-    @Override
-    public String name() {
-        return COMMAND;
-    }
-
 }
-
-

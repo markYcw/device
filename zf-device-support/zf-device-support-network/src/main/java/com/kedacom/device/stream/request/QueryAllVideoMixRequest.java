@@ -12,7 +12,7 @@ import lombok.ToString;
  */
 @ToString(callSuper = true)
 @Data
-public class QueryAllVideoMixDTO extends BaseRequest {
+public class QueryAllVideoMixRequest extends BaseRequest {
 
     private static final String COMMAND = "queryallvideomix";
 

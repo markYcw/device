@@ -1,6 +1,7 @@
 package com.kedacom.device.ums;
 
 import com.kedacom.acl.network.ums.responsevo.QuerySubDeviceInfoResponseVo;
+import com.kedacom.core.anno.KmProxy;
 import com.kedacom.device.ums.request.*;
 import com.kedacom.device.ums.response.*;
 
@@ -8,6 +9,7 @@ import com.kedacom.device.ums.response.*;
  * @author van.shu
  * @create 2021/5/13 14:14
  */
+@KmProxy
 public interface UmsClient {
 
     /**

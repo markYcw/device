@@ -18,10 +18,20 @@ import java.lang.annotation.*;
 public @interface EnableKmProxy {
 
     /**
-     * 包扫描路径
+     * 代理接口扫描路径
+     * @see KmProxy
      * @return 路径数组
      */
-    String[] basePackages() default {};
+    String[] proxyPackages() default {};
+
+
+    /**
+     * 通知类扫描路径
+     * @return 路径数组
+     * @see KmNotify
+     */
+    String[] notifyPackages() default {};
+
 
     /**
      * 绑定地址 eg: 127.0.0.1:8080

@@ -4,7 +4,7 @@ package com.kedacom.exception;
  * @author van.shu
  * @create 2021/5/17 11:12
  */
-public class ParseDataException extends RuntimeException{
+public class ParseDataException extends KMException{
 
     public ParseDataException(String message) {
         super(message);

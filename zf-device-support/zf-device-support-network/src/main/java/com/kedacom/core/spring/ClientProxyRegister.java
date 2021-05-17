@@ -2,6 +2,7 @@ package com.kedacom.core.spring;
 
 import com.kedacom.core.NIOConnector;
 import com.kedacom.core.anno.EnableKmProxy;
+import com.kedacom.core.anno.KmNotify;
 import com.kedacom.core.anno.KmProxy;
 import com.kedacom.core.config.NetworkConfig;
 import com.kedacom.core.pojo.ClientInfo;
@@ -42,6 +43,8 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,Applic
 
     private NIOConnector connector;
 
+    private Map<String, Class<?>> notifyMap = new HashMap<>();
+
     private ApplicationContext context;
 
 
@@ -57,7 +60,31 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,Applic
             initNetworkConfig((String) attrs.get("ipAddr"));
         }
 
-        Set<String> basePackages = getBasePackages(annotationMetadata);
+
+
+        Set<String> notifyPackages = getBasePackages(annotationMetadata, "notifyPackages");
+
+        for (String notifyPackage : notifyPackages) {
+            Reflections reflections = new Reflections(notifyPackage);
+            //获取带有KmNotify注解的类
+            Set<Class<?>> typesAnnotatedWith = reflections.getTypesAnnotatedWith(KmNotify.class);
+            for (Class<?> clazz : typesAnnotatedWith) {
+
+                KmNotify kmNotify = clazz.getAnnotation(KmNotify.class);
+
+                //name值必须唯一且不能为空
+                String name = kmNotify.name();
+
+                if (StringUtils.isEmpty(name)) {
+                    log.error("@KmNotify name properties can not be null class is : {}", clazz);
+                    throw new IllegalArgumentException("@KmNotify name properties can not be null");
+                }
+
+                notifyMap.put(name, clazz);
+            }
+        }
+
+        Set<String> basePackages = getBasePackages(annotationMetadata, "proxyPackages");
 
         for (String basePackage : basePackages) {
 
@@ -81,13 +108,14 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,Applic
         IoContext.initIoSelector();
     }
 
-    private Set<String> getBasePackages(AnnotationMetadata annotationMetadata) {
+    private Set<String> getBasePackages(AnnotationMetadata annotationMetadata,String attributeName) {
 
         Map<String, Object> attributes = annotationMetadata.getAnnotationAttributes(EnableKmProxy.class.getCanonicalName());
 
         Set<String> basePackages = new HashSet<>();
 
-        for (String pkg : (String[]) attributes.get("basePackages")) {
+        for (String pkg : (String[]) attributes.get(attributeName)) {
+
             if (StringUtils.hasText(pkg)) {
                 basePackages.add(pkg);
             }
@@ -141,6 +169,7 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,Applic
                 connector = NIOConnector.startWith(networkConfig.getServerIp(), networkConfig.getServerPort());
                 NotifyContext notifyContext = connector.getNotifyContext();
                 notifyContext.setApplicationContext(context);
+                notifyContext.setNotifyMap(notifyMap);
             } catch (IOException e) {
                 log.error("init socketChannel failed ,", e);
                 throw new KMException("init socketChannel failed");

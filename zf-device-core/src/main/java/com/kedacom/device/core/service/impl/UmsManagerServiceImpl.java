@@ -4,29 +4,23 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kedacom.BasePage;
-import com.kedacom.acl.network.ums.requestvo.LoginPlatformRequestVo;
-import com.kedacom.acl.network.ums.requestvo.QuerySubDeviceInfoRequestVo;
-import com.kedacom.acl.network.ums.responsevo.QuerySubDeviceInfoResponseVo;
-import com.kedacom.acl.network.ums.responsevo.UmsAlarmTypeQueryResponseVo;
 import com.kedacom.device.core.constant.UmsMod;
 import com.kedacom.device.core.convert.UmsAlarmTypeConvert;
 import com.kedacom.device.core.convert.UmsDeviceConvert;
 import com.kedacom.device.core.convert.UmsGroupConvert;
+import com.kedacom.device.core.entity.AlarmTypeEntity;
+import com.kedacom.device.core.entity.DeviceInfoEntity;
+import com.kedacom.device.core.entity.GroupInfoEntity;
+import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.core.exception.UmsManagerException;
 import com.kedacom.device.core.mapper.AlarmTypeMapper;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.GroupMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.core.service.UmsManagerService;
-import com.kedacom.device.core.task.UmsDeviceTask;
 import com.kedacom.device.core.utils.PinYinUtils;
-import com.kedacom.device.core.entity.AlarmTypeEntity;
-import com.kedacom.device.core.entity.DeviceInfoEntity;
-import com.kedacom.device.core.entity.GroupInfoEntity;
-import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.LoginRequest;
 import com.kedacom.device.ums.request.LogoutRequest;
@@ -38,12 +32,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotNull;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -217,10 +209,9 @@ public class UmsManagerServiceImpl implements UmsManagerService {
 
         String umsId = requestDto.getUmsId();
 
-
-
-        UmsDeviceTask task = new UmsDeviceTask(umsId);
-        task.run();
+//
+//        UmsDeviceTask task = new UmsDeviceTask(umsId);
+//        task.run();
 
         return true;
     }
@@ -502,7 +493,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         }
         long count = deviceQueryDtoList.stream().filter(x -> !UmsMod.EXIST.equals(x.getDeviceMod())).count();
         log.info("ordinary count is:{}", deviceQueryDtoList.size());
-        log.info("filter count is {}",count);
+        log.info("filter count is {}", count);
         Map<String, List<UmsSubDeviceQueryDto>> listMap = deviceQueryDtoList.stream().filter(x -> !UmsMod.EXIST.equals(x.getDeviceMod())).collect(Collectors.groupingBy(UmsSubDeviceQueryDto::getGroupId, Collectors.toList()));
         //统一设备这边一个设备可以在多个分组下，多个分组之间用“|”来分割，所以这里要处理一下
         Set<String> multiSet = listMap.keySet().stream().filter(x -> x.contains("|")).collect(Collectors.toSet());
@@ -531,9 +522,9 @@ public class UmsManagerServiceImpl implements UmsManagerService {
                 long deviceOfflineNum = umsSubDeviceQueryDtoList.stream().filter(x -> x.getStatus() == 1).count();
 
                 responseDto.setDeviceTotalNum(deviceTotalNum);
-                responseDto.setDeviceFaultNum((int)deviceFaultNum);
-                responseDto.setDeviceOnlineNum((int)deviceOnlineNum);
-                responseDto.setDeviceOfflineNum((int)deviceOfflineNum);
+                responseDto.setDeviceFaultNum((int) deviceFaultNum);
+                responseDto.setDeviceOnlineNum((int) deviceOnlineNum);
+                responseDto.setDeviceOfflineNum((int) deviceOfflineNum);
 
                 allTotal += deviceTotalNum;
                 allOnline += deviceOnlineNum;

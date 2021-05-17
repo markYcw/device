@@ -3,9 +3,7 @@ package com.kedacom.device.ums.request;
 import com.kedacom.core.pojo.BaseRequest;
 import com.kedacom.ums.requestdto.UmsScheduleGroupMembersRequestDto;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
@@ -16,8 +14,6 @@ import java.util.List;
  * @date 2021/5/15
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString(callSuper = true)
 public class AddMembersRequest extends BaseRequest {
 

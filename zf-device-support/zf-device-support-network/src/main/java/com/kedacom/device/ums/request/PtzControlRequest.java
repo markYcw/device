@@ -16,8 +16,6 @@ import javax.validation.constraints.NotNull;
  * @date 2021/5/15
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString(callSuper = true)
 public class PtzControlRequest extends BaseRequest {
 

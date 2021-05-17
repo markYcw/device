@@ -2,9 +2,7 @@ package com.kedacom.device.ums.request;
 
 import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -13,8 +11,6 @@ import lombok.ToString;
  * @date 2021/5/15
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString(callSuper = true)
 public class QuitDiscussionGroupRequest extends BaseRequest {
 

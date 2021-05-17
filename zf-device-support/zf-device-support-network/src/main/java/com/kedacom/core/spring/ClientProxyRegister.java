@@ -2,6 +2,7 @@ package com.kedacom.core.spring;
 
 import com.kedacom.core.NIOConnector;
 import com.kedacom.core.anno.EnableKmProxy;
+import com.kedacom.core.anno.KmNotify;
 import com.kedacom.core.anno.KmProxy;
 import com.kedacom.core.config.NetworkConfig;
 import com.kedacom.core.pojo.ClientInfo;
@@ -11,11 +12,8 @@ import com.kedacom.exception.KMProxyException;
 import com.kedacom.network.niohdl.core.IoContext;
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.ClassUtils;
@@ -36,13 +34,14 @@ import java.util.Set;
  * @date 2021/5/12 7:17
  */
 @Slf4j
-public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,ApplicationContextAware{
+public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
 
     private NetworkConfig networkConfig;
 
     private NIOConnector connector;
 
-    private ApplicationContext context;
+    private Map<String, Class<?>> notifyMap = new HashMap<>();
+
 
 
     @Override
@@ -57,7 +56,31 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,Applic
             initNetworkConfig((String) attrs.get("ipAddr"));
         }
 
-        Set<String> basePackages = getBasePackages(annotationMetadata);
+
+
+        Set<String> notifyPackages = getBasePackages(annotationMetadata, "notifyPackages");
+
+        for (String notifyPackage : notifyPackages) {
+            Reflections reflections = new Reflections(notifyPackage);
+            //获取带有KmNotify注解的类
+            Set<Class<?>> typesAnnotatedWith = reflections.getTypesAnnotatedWith(KmNotify.class);
+            for (Class<?> clazz : typesAnnotatedWith) {
+
+                KmNotify kmNotify = clazz.getAnnotation(KmNotify.class);
+
+                //name值必须唯一且不能为空
+                String name = kmNotify.name();
+
+                if (StringUtils.isEmpty(name)) {
+                    log.error("@KmNotify name properties can not be null class is : {}", clazz);
+                    throw new IllegalArgumentException("@KmNotify name properties can not be null");
+                }
+
+                notifyMap.put(name, clazz);
+            }
+        }
+
+        Set<String> basePackages = getBasePackages(annotationMetadata, "proxyPackages");
 
         for (String basePackage : basePackages) {
 
@@ -81,13 +104,14 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,Applic
         IoContext.initIoSelector();
     }
 
-    private Set<String> getBasePackages(AnnotationMetadata annotationMetadata) {
+    private Set<String> getBasePackages(AnnotationMetadata annotationMetadata,String attributeName) {
 
         Map<String, Object> attributes = annotationMetadata.getAnnotationAttributes(EnableKmProxy.class.getCanonicalName());
 
         Set<String> basePackages = new HashSet<>();
 
-        for (String pkg : (String[]) attributes.get("basePackages")) {
+        for (String pkg : (String[]) attributes.get(attributeName)) {
+
             if (StringUtils.hasText(pkg)) {
                 basePackages.add(pkg);
             }
@@ -135,12 +159,21 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,Applic
 
     }
 
+    private void registerNotifyContext(BeanDefinitionRegistry registry) {
+
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(NotifyContext.class);
+
+
+
+    }
+
     private void initConnectorIfNot() {
         if (connector == null) {
             try {
                 connector = NIOConnector.startWith(networkConfig.getServerIp(), networkConfig.getServerPort());
                 NotifyContext notifyContext = connector.getNotifyContext();
-                notifyContext.setApplicationContext(context);
+               // notifyContext.setApplicationContext(context);
+                notifyContext.setNotifyMap(notifyMap);
             } catch (IOException e) {
                 log.error("init socketChannel failed ,", e);
                 throw new KMException("init socketChannel failed");
@@ -225,8 +258,4 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar,Applic
         }
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.context = applicationContext;
-    }
 }

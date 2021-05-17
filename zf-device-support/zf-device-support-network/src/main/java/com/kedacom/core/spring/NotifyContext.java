@@ -2,6 +2,10 @@ package com.kedacom.core.spring;
 
 import com.kedacom.core.pojo.Notify;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author van.shu
@@ -15,8 +19,22 @@ public class NotifyContext {
 
     private ApplicationContext applicationContext;
 
+    private Map<String, Class<?>> notifyMap = new HashMap<>();
+
     public void setApplicationContext(ApplicationContext context) {
         this.applicationContext = context;
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+
+    public void setNotifyMap(Map<String, Class<?>> map) {
+        this.notifyMap = map;
+    }
+
+    public  Map<String, Class<?>> getNotifyMap() {
+        return notifyMap;
     }
 
     /**

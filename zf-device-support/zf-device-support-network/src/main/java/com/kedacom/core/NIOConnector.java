@@ -5,17 +5,20 @@ import com.alibaba.fastjson.JSONObject;
 import com.kedacom.core.handler.ProcessRequests;
 import com.kedacom.core.pojo.*;
 import com.kedacom.core.spring.NotifyContext;
+import com.kedacom.exception.KMProxyException;
 import com.kedacom.exception.ParseDataException;
 import com.kedacom.exception.UnSupportMsgException;
 import com.kedacom.network.niohdl.core.Connector;
 import com.kedacom.util.SingletonFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -35,7 +38,6 @@ public class NIOConnector extends Connector {
     public NotifyContext getNotifyContext() {
         return this.notifyContext;
     }
-
 
     @Override
     protected void onReceiveFromCore(String msg) {
@@ -101,7 +103,7 @@ public class NIOConnector extends Connector {
 
             log.info("[ssno:{}]: receive nty ------> {}", ntyHead.getSsno(), msg);
 
-            handlerNty(msg);
+            handlerNty(msg, ntyHead);
 
         } else {
             log.error("cannot read the msg !");
@@ -110,21 +112,39 @@ public class NIOConnector extends Connector {
 
     }
 
-    private void handlerNty(String msg) {
+    Notify notify = null;
+    private void handlerNty(String msg, NotifyHead notifyHead) {
 
-        Object nty = JSONObject.parse(msg);
+        String name = notifyHead.getName();
 
-        if (nty instanceof Notify) {
-            //发布通知
-            notifyContext.publishNotify((Notify) nty);
-        }else {
-            log.error("receive msg data is not nty type :{}", msg);
+        Map<String, Class<?>> notifyMap = notifyContext.getNotifyMap();
+
+        if (!CollectionUtils.isEmpty(notifyMap)) {
+            throw new KMProxyException("@KmNotify not init !");
+        }
+
+        Class<?> clazz = notifyMap.get(name);
+
+        if (clazz == null) {
+            throw new KMProxyException(name + " can not match the Class");
+        }
+
+        try {
+            notify = JSONObject.parseObject(msg, (Type) clazz);
+
+            if (notify != null) {
+                notifyContext.publishNotify(notify);
+
+            }
+        } catch (Exception e) {
+            log.error("parse nty data error ,e: ", e);
+            throw new ParseDataException("parse nty data error");
         }
 
 
     }
 
-    BaseResponse response = null;
+    Response response = null;
     private void handlerResp(String msg,RespHead respHead) {
 
         try {

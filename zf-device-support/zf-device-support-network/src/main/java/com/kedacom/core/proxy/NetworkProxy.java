@@ -4,8 +4,12 @@ import com.kedacom.core.NIOConnector;
 import com.kedacom.core.pojo.ClientInfo;
 import com.kedacom.core.pojo.Request;
 import com.kedacom.core.pojo.Response;
+import com.kedacom.core.spring.NotifyContext;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.InvocationHandler;
@@ -19,13 +23,15 @@ import java.util.concurrent.CompletableFuture;
  * @date 2021/5/12 7:59
  */
 @Slf4j
-public class NetworkProxy implements InvocationHandler, FactoryBean<Object> {
+public class NetworkProxy implements InvocationHandler, FactoryBean<Object>, ApplicationContextAware {
 
     private NIOConnector connector;
 
     private Class<?> type;
 
     private ClientInfo clientInfo;
+
+    private ApplicationContext context;
 
     public NetworkProxy() {
 
@@ -99,6 +105,11 @@ public class NetworkProxy implements InvocationHandler, FactoryBean<Object> {
 
     @Override
     public Object getObject() throws Exception {
+        NotifyContext notifyContext = connector.getNotifyContext();
+
+        if (notifyContext.getApplicationContext() == null) {
+            notifyContext.setApplicationContext(context);
+        }
 
         Object proxy = newInstance();
         log.info("proxy = {}", proxy);
@@ -110,4 +121,8 @@ public class NetworkProxy implements InvocationHandler, FactoryBean<Object> {
         return type;
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
 }

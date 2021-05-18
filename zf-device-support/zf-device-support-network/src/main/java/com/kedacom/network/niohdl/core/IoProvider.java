@@ -3,8 +3,20 @@ package com.kedacom.network.niohdl.core;
 import java.nio.channels.SocketChannel;
 
 public interface IoProvider {
+    /**
+     * 从channel中接收数据
+     * @param channel
+     * @param inputHandler
+     * @return
+     */
     boolean registerInput(SocketChannel channel, InputHandler inputHandler);
 
+    /**
+     * 发送数据到channel
+     * @param channel
+     * @param outputHandler
+     * @return
+     */
     boolean registerOutput(SocketChannel channel, OutputHandler outputHandler);
 
     void unRegisterInput(SocketChannel channel);

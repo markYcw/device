@@ -17,54 +17,56 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class IoSelectorProvider implements IoProvider {
-    private final Selector readSelector;
-    private final Selector writeSelector;
+
+    private final Selector readDataFromChannelSelector;
+    private final Selector writeDataToChannelSelector;
 
     private final AtomicBoolean isClosed = new AtomicBoolean(false);
     // 是否处于输入通道的注册过程
-    private final AtomicBoolean inRegInput = new AtomicBoolean(false);
+    private final AtomicBoolean readLocker = new AtomicBoolean(false);
     // 是否处于输出通道的注册过程
-    private final AtomicBoolean inRegOutput = new AtomicBoolean(false);
+    private final AtomicBoolean writeLocker = new AtomicBoolean(false);
 
     private final HashMap<SelectionKey, Runnable> handlerMap = new HashMap<>();
 
-    private final ExecutorService inputHandlePool;
-    private final ExecutorService outputHandlePool;
+    private final ExecutorService readDataFromChannelHanlerPool;
+    private final ExecutorService writeDataToChannelHandlerPool;
 
     public IoSelectorProvider() throws IOException {
-        this.readSelector = Selector.open();
-        this.writeSelector = Selector.open();
+        this.readDataFromChannelSelector = Selector.open();
+        this.writeDataToChannelSelector = Selector.open();
 
         //建立线程池
-        inputHandlePool = Executors.newFixedThreadPool(2,
+        readDataFromChannelHanlerPool = Executors.newFixedThreadPool(2,
                 new IoProviderThreadFactory("IoProvider-Input-Thread-"));
-        outputHandlePool = Executors.newFixedThreadPool(2,
+        writeDataToChannelHandlerPool = Executors.newFixedThreadPool(2,
                 new IoProviderThreadFactory("IoProvider-Output-Thread-"));
 
         //建立两个线程，执行输入和输出的select
-        startRead();
-        startWrite();
+        startReadDataFromChannel();
+        startWriteDataToChannel();
 
     }
 
-    private void startRead() {
+    private void startReadDataFromChannel() {
         Thread thread = new Thread("ioProvider ReadSelector Thread") {
             //private Boolean done = false;
             @Override
             public void run() {
-                super.run();
+                AtomicBoolean locker = readLocker;
                 try {
-
                     while (!isClosed.get()) {
-                        if (readSelector.select() == 0) {
+                        if (readDataFromChannelSelector.select() == 0) {
                             //这里有一个等待操作，等待注册结束
-                            waitSelection(inRegInput);
+                            waitSelection(readLocker);
                             continue;
+                        } else if (locker.get()) {
+                            waitSelection(readLocker);
                         }
 
-
-                        Iterator<SelectionKey> iterator = readSelector.selectedKeys().iterator();
+                        Iterator<SelectionKey> iterator = readDataFromChannelSelector.selectedKeys().iterator();
                         //System.out.println("selectedKeys数量："+readSelector.selectedKeys().size());
+
                         while (iterator.hasNext()) {
                             SelectionKey key = iterator.next();
                             iterator.remove();//此处格外重要
@@ -72,9 +74,8 @@ public class IoSelectorProvider implements IoProvider {
                                 // 取消继续对keyOps的监听
                                 key.interestOps(key.readyOps() & ~SelectionKey.OP_READ);
 
-
                                 //线程池执行read操作
-                                inputHandlePool.execute(handlerMap.get(key));
+                                readDataFromChannelHanlerPool.execute(handlerMap.get(key));
                             }
                         }
                     }
@@ -88,24 +89,30 @@ public class IoSelectorProvider implements IoProvider {
         thread.start();
     }
 
-    private void startWrite() {
+    private void startWriteDataToChannel() {
         Thread thread = new Thread("Clink IoSelectorProvider WriteSelector Thread") {
             @Override
             public void run() {
                 while (!isClosed.get()) {
+                    AtomicBoolean locker = writeLocker;
                     try {
-                        if (writeSelector.select() == 0) {
-                            waitSelection(inRegOutput);
+                        //TODO 加上不为0的处理，locker.get()==true 直接要处理完
+                        if (writeDataToChannelSelector.select() == 0) {
+                            waitSelection(writeLocker);
                             continue;
+                        } else if (locker.get()) {
+                            waitSelection(writeLocker);
                         }
 
-                        Set<SelectionKey> selectionKeys = writeSelector.selectedKeys();
-                        //System.out.println(selectionKeys.size()+"个通道就绪...");
-                        for (SelectionKey selectionKey : selectionKeys) {
+                        Set<SelectionKey> selectionKeys = writeDataToChannelSelector.selectedKeys();
+                        //TODO 改为迭代器
+                        Iterator<SelectionKey> iterator = selectionKeys.iterator();
+                        while (iterator.hasNext()){
+                            SelectionKey selectionKey = iterator.next();
                             if (selectionKey.isValid()) {
                                 selectionKey.interestOps(selectionKey.readyOps() & ~SelectionKey.OP_WRITE);
 
-                                outputHandlePool.execute(handlerMap.get(selectionKey));
+                                writeDataToChannelHandlerPool.execute(handlerMap.get(selectionKey));
                             }
                         }
                         selectionKeys.clear();
@@ -122,37 +129,37 @@ public class IoSelectorProvider implements IoProvider {
     public void close() {
         //compareAndSet方法：当布尔值为expect，则将其换成update，成功返回true
         if (isClosed.compareAndSet(false, true)) {
-            inputHandlePool.shutdown();
-            outputHandlePool.shutdown();
+            readDataFromChannelHanlerPool.shutdown();
+            writeDataToChannelHandlerPool.shutdown();
 
             handlerMap.clear();
 
-            readSelector.wakeup();
-            writeSelector.wakeup();
-            CloseUtil.close(readSelector, writeSelector);
+            readDataFromChannelSelector.wakeup();
+            writeDataToChannelSelector.wakeup();
+            CloseUtil.close(readDataFromChannelSelector, writeDataToChannelSelector);
         }
     }
 
     @Override
     public boolean registerInput(SocketChannel channel, InputHandler inputHandler) {
 
-        return register(channel, readSelector, inRegInput, inputHandler, handlerMap, SelectionKey.OP_READ) != null;
+        return register(channel, readDataFromChannelSelector, readLocker, inputHandler, handlerMap, SelectionKey.OP_READ) != null;
     }
 
     @Override
     public boolean registerOutput(SocketChannel channel, OutputHandler outputHandler) {
 
-        return register(channel, writeSelector, inRegOutput, outputHandler, handlerMap, SelectionKey.OP_WRITE) != null;
+        return register(channel, writeDataToChannelSelector, writeLocker, outputHandler, handlerMap, SelectionKey.OP_WRITE) != null;
     }
 
     @Override
     public void unRegisterInput(SocketChannel channel) {
-        unRegister(channel, readSelector, handlerMap);
+        unRegister(channel, readDataFromChannelSelector, handlerMap);
     }
 
     @Override
     public void unRegisterOutput(SocketChannel channel) {
-        unRegister(channel, writeSelector, handlerMap);
+        unRegister(channel, writeDataToChannelSelector, handlerMap);
     }
 
     private static void waitSelection(final AtomicBoolean locker) {
@@ -189,6 +196,7 @@ public class IoSelectorProvider implements IoProvider {
                 }
                 //（注册write）如果已注册过read，还没注册write，此时key为null
                 if (key == null) {
+                    //TODO
                     key = channel.register(selector, ops);
                     map.put(key, ioCallback);
                 }

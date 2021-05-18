@@ -131,12 +131,12 @@ public class StreamMediaController {
 
     @ApiOperation("查询所有画面合成:返回mixIDs 合成ID集合")
     @PostMapping("/queryAllVideoMix")
-    public BaseResult<List<String>> queryAllVideoMix(@RequestParam("unitId") String unitId) {
-        if (StrUtil.isBlank(unitId)) {
+    public BaseResult<List<String>> queryAllVideoMix(@RequestParam("umsId") String umsId) {
+        if (StrUtil.isBlank(umsId)) {
             log.error("统一平台id为空");
             return BaseResult.failed("统一平台id为空");
         }
-        List<String> mixIDs = streamMediaService.queryAllVideoMix(unitId);
+        List<String> mixIDs = streamMediaService.queryAllVideoMix(umsId);
         return BaseResult.succeed(mixIDs);
     }
 

@@ -229,7 +229,7 @@ public class UmsOperateController {
     }
 
     @ApiOperation("查询调度组广播源")
-    @PostMapping("/cancelScheduleGroupBroadcast")
+    @PostMapping("/queryScheduleGroupBroadcast")
     public BaseResult<UmsScheduleGroupQueryBroadcastResponseDto> queryScheduleGroupBroadcast(@Valid @RequestBody UmsScheduleGroupQueryBroadcastRequestDto requestDto, BindingResult result) {
 
         ValidUtils.paramValid(result);

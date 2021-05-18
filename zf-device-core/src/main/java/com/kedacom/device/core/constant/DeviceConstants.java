@@ -1,4 +1,4 @@
-package com.kedacom.device.core.data;
+package com.kedacom.device.core.constant;
 
 /**
  * @Auther: hxj

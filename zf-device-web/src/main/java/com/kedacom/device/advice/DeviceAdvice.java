@@ -3,7 +3,7 @@ package com.kedacom.device.advice;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.exception.AuthException;
 import com.kedacom.device.common.exception.ParamException;
-import com.kedacom.device.core.data.DeviceErrorEnum;
+import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

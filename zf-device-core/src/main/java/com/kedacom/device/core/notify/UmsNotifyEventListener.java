@@ -10,18 +10,20 @@ import com.kedacom.device.core.entity.GroupInfoEntity;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.core.event.DeviceAndGroupEvent;
 import com.kedacom.device.core.event.DeviceEvent;
+import com.kedacom.device.core.event.DeviceGroupEvent;
 import com.kedacom.device.core.event.DeviceStateEvent;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.GroupMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.ums.DeviceGroupVo;
-import com.kedacom.device.core.event.DeviceGroupEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * @author wangxy
@@ -41,35 +43,72 @@ public class UmsNotifyEventListener {
     @Resource
     SubDeviceMapper subDeviceMapper;
 
+    private final ConcurrentHashMap<String, NotifyCallback> listenerMap = new ConcurrentHashMap<>();
+
+    private final ConcurrentHashMap<String, List<GroupInfoEntity>> deviceGroupMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Integer> num = new ConcurrentHashMap<>();
+
+    public void setListenerCallback(String callbackName, NotifyCallback listenerCallback) {
+        listenerMap.put(callbackName, listenerCallback);
+    }
+
     @EventListener(DeviceGroupEvent.class)
     public void deviceGroupNotify(DeviceGroupEvent deviceGroupEvent) {
+        Integer ssid = null;
 
         List<DeviceGroupVo> result = deviceGroupEvent.getResult();
         if (CollectionUtil.isEmpty(result)) {
             log.error("获取设备分组通知信息为空");
         }
         log.info("获取设备分组通知信息 ： {}", result);
-        Integer ssid = deviceGroupEvent.getNty().getSsid();
+        ssid = deviceGroupEvent.getNty().getSsid();
         LambdaQueryWrapper<DeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(DeviceInfoEntity::getSessionId, ssid);
         String umsId = deviceMapper.selectOne(wrapper).getId();
         List<GroupInfoEntity> entityList = UmsGroupConvert.INSTANCE.convertGroupInfoEntityList(result);
         entityList.forEach(entity -> entity.setGroupDevId(umsId));
-
-        LambdaQueryWrapper<GroupInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
-        LambdaUpdateWrapper<GroupInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
-        for (GroupInfoEntity umsGroupEntity : entityList) {
-            queryWrapper.eq(GroupInfoEntity::getGroupId, umsGroupEntity.getGroupId());
-            GroupInfoEntity checkUmsGroup = groupMapper.selectOne(queryWrapper);
-            if (checkUmsGroup != null) {
-                updateWrapper.eq(GroupInfoEntity::getGroupId, umsGroupEntity.getGroupId());
-                groupMapper.update(umsGroupEntity, updateWrapper);
-                updateWrapper.clear();
-            }else {
-                groupMapper.insert(umsGroupEntity);
-            }
-            queryWrapper.clear();
+        List<GroupInfoEntity> groupInfoEntities = deviceGroupMap.get(ssid + "_" + deviceGroupEvent.getNty().getSsno());
+        // 存入内存
+        if (CollectionUtil.isNotEmpty(groupInfoEntities)) {
+            groupInfoEntities.addAll(entityList);
+            deviceGroupMap.put(ssid + "_" + deviceGroupEvent.getNty().getSsno(), groupInfoEntities);
+        } else {
+            deviceGroupMap.put(ssid + "_" + deviceGroupEvent.getNty().getSsno(), entityList);
         }
+        try {
+            if (deviceGroupEvent.getEnd() == 1) {
+                List<GroupInfoEntity> infoEntityList = deviceGroupMap.get(ssid + "_" + deviceGroupEvent.getNty().getSsno());
+                List<String> groupIds = infoEntityList.stream().map(groupInfoEntity -> groupInfoEntity.getGroupId()).collect(Collectors.toList());
+                LambdaQueryWrapper<GroupInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
+                LambdaUpdateWrapper<GroupInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
+                // 查询本次同步不在notify中的分组，并删除
+                queryWrapper.ne(GroupInfoEntity::getGroupId, groupIds);
+                List<GroupInfoEntity> list = groupMapper.selectList(queryWrapper);
+                if (CollectionUtil.isNotEmpty(list)) groupMapper.deleteBatchIds(list);
+                queryWrapper.clear();
+                // 同步分组
+                for (GroupInfoEntity umsGroupEntity : infoEntityList) {
+                    queryWrapper.eq(GroupInfoEntity::getGroupId, umsGroupEntity.getGroupId());
+                    GroupInfoEntity checkUmsGroup = groupMapper.selectOne(queryWrapper);
+                    if (checkUmsGroup != null) {
+                        updateWrapper.eq(GroupInfoEntity::getGroupId, umsGroupEntity.getGroupId());
+                        groupMapper.update(umsGroupEntity, updateWrapper);
+                    } else {
+                        groupMapper.insert(umsGroupEntity);
+                    }
+                    updateWrapper.clear();
+                    queryWrapper.clear();
+                }
+                NotifyCallback notifyCallback = listenerMap.get(ssid + "_" + deviceGroupEvent.getNty().getSsno());
+                if (notifyCallback != null) notifyCallback.success();
+            }
+        } catch (Exception e) {
+            NotifyCallback notifyCallback = listenerMap.get(ssid + "_" + deviceGroupEvent.getNty().getSsno());
+            if (notifyCallback != null) notifyCallback.failure();
+            deviceGroupMap.clear();
+            log.info("deviceGroupNotify failure:{}", ssid + "_" + deviceGroupEvent.getNty().getSsno());
+        }
+
     }
 
     @EventListener(DeviceStateEvent.class)

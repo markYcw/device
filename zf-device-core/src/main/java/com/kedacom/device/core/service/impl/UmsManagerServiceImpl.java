@@ -19,8 +19,11 @@ import com.kedacom.device.core.mapper.AlarmTypeMapper;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.GroupMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
+import com.kedacom.device.core.notify.NotifyCallback;
+import com.kedacom.device.core.notify.UmsNotifyEventListener;
 import com.kedacom.device.core.service.UmsManagerService;
 import com.kedacom.device.core.task.UmsDeviceTask;
+import com.kedacom.device.core.task.UmsNotifyQueryTask;
 import com.kedacom.device.core.utils.PinYinUtils;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.LoginRequest;
@@ -32,6 +35,7 @@ import com.kedacom.device.ums.response.QueryAllDeviceGroupResponse;
 import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -39,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -65,6 +70,15 @@ public class UmsManagerServiceImpl implements UmsManagerService {
     @Resource
     AlarmTypeMapper alarmTypeMapper;
 
+    @Autowired
+    private UmsNotifyEventListener listener;
+
+    private final ConcurrentHashMap<String, UmsNotifyQueryTask> map = new ConcurrentHashMap<>();
+
+
+    private ExecutorService executorService = new ThreadPoolExecutor(2, 2, 0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>(20));
+
     @Override
     public Boolean insertUmsDevice(UmsDeviceInfoAddRequestDto requestDto) {
 
@@ -74,7 +88,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         LoginResponse loginResponse = umsClient.login(loginRequest);
         //TODO 先标志一下异常处理，稍后统一处理
         if (loginResponse.acquireErrcode() != 0) {
-            log.error("登录统一平台异常:{}",loginResponse);
+            log.error("登录统一平台异常:{}", loginResponse);
             throw new UmsManagerException("登录统一平台异常");
         }
         //2、调中间件登录成功，将统一平台信息添加到本地
@@ -226,7 +240,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
             sync.setUmsId(umsId);
             sync.setLastSyncTime(lastSyncThirdDeviceTime);
             record.put(umsId, sync);
-        }else {
+        } else {
             //记录的上一次更新时间
             String recordLastSyncTime = record.get(umsId).getLastSyncTime();
 
@@ -615,7 +629,6 @@ public class UmsManagerServiceImpl implements UmsManagerService {
 
     @Override
     public Boolean queryDeviceGroupNotify(String umsId) {
-
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(umsId);
         String sessionId = deviceInfoEntity.getSessionId();
         QueryAllDeviceGroupRequest queryDeviceRequest = new QueryAllDeviceGroupRequest();
@@ -623,8 +636,29 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         QueryAllDeviceGroupResponse response = umsClient.getalldevgroup(queryDeviceRequest);
         if (response.acquireErrcode() != 0) {
             log.error("请求获取所有设备分组信息入参 : {}", umsId);
+            log.error("请求获取所有设备分组信息应答 : {}", response);
             throw new UmsManagerException("当前统一设备数据正在同步中");
         }
+        executorService.submit(() -> {
+            listener.setListenerCallback(response.getResp().getSsid() + "_" + response.getResp().getSsno(), new NotifyCallback() {
+                @Override
+                public Boolean success() {
+                    log.info("同步统一设备数据成功");
+                    return true;
+                }
+
+                @Override
+                public Boolean failure() {
+                    log.error("同步统一设备数据失败:{}", umsId);
+                    UmsNotifyQueryTask notifyQueryTask = map.get(sessionId);
+                    if (notifyQueryTask == null) {
+                        UmsNotifyQueryTask task = new UmsNotifyQueryTask(umsId);
+                        task.run();
+                    }
+                    return false;
+                }
+            });
+        });
 
         return true;
     }

@@ -132,7 +132,7 @@ public class UmsDeviceTask implements Runnable {
 
         if (shouldDistribute) {
             syncResult = distribute(totalPage, pageSize, umsSubDeviceManager);
-        }else {
+        } else {
             syncResult = doAlone(curPage, pageSize, umsSubDeviceManager);
         }
 
@@ -150,8 +150,8 @@ public class UmsDeviceTask implements Runnable {
             //如果此时查询远程服务异常，则降级使用同步前获取到的total来代替
             checkTotal = total;
 
-        }else {
-             checkTotal = responseVo1.getQuerycount();
+        } else {
+            checkTotal = responseVo1.getQuerycount();
         }
 
         log.info("checkResult total: {}", checkTotal);
@@ -239,7 +239,7 @@ public class UmsDeviceTask implements Runnable {
                     }
                     return true;
 
-                }else {
+                } else {
                     log.error("本次更新过程中有任务丢失，" +
                                     "expectedCompletedTaskCount:{} ; " +
                                     "actualCompletedTaskCount:{}",
@@ -309,8 +309,9 @@ public class UmsDeviceTask implements Runnable {
 
     /**
      * 从第三方获取统一设备下子设备
+     *
      * @param umsDeviceId 统一设备id
-     * @param pageSize 每一页大小
+     * @param pageSize    每一页大小
      * @return 结果
      */
     private QuerySubDeviceInfoResponseVo getUmsSubDeviceFromThird(String umsDeviceId, Integer pageSize) {
@@ -325,13 +326,14 @@ public class UmsDeviceTask implements Runnable {
         queryDeviceRequest.setF_eq_parentid(umsDeviceId);
         queryDeviceRequest.setQuerycount(pageSize);
 
-       return umsClient.querydev(queryDeviceRequest);
+        return umsClient.querydev(queryDeviceRequest);
     }
 
     /**
      * 从本地服务获取统一设备下的子设备
+     *
      * @param umsDeviceId 统一设备id
-     * @param pageSize 每一页大小
+     * @param pageSize    每一页大小
      * @return 结果
      */
     private BasePage<UmsSubDeviceInfoQueryResponseDto> getUmsSubDeviceFromLocal(String umsDeviceId, Integer pageSize) {
@@ -349,6 +351,7 @@ public class UmsDeviceTask implements Runnable {
 
     /**
      * 更新最近一次同步时间
+     *
      * @param umsDeviceId 统一平台id
      */
     private void setSyncThirdTime(String umsDeviceId) {
@@ -377,10 +380,11 @@ public class UmsDeviceTask implements Runnable {
 
     /**
      * 这个方法的参数设定会根据线上具体的情况验证后来设定
+     *
      * @param totalPage 总页数
      */
     private void setPoolSize(int totalPage) {
-        if ( totalPage <= 50) {
+        if (totalPage <= 50) {
             return;
         }
 
@@ -407,7 +411,7 @@ public class UmsDeviceTask implements Runnable {
     /**
      * 自定义线程UncaughtException处理
      */
-    static class UmsSyncUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler{
+    static class UmsSyncUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
         @Override
         public void uncaughtException(Thread t, Throwable e) {
@@ -437,7 +441,7 @@ public class UmsDeviceTask implements Runnable {
                         boolean terminated = executorService.isTerminated();
                         long completedTaskCount = executorService.getCompletedTaskCount();
                         log.info("executorService:{} corePoolSize:{} largestPoolSize:{} maximumPoolSize:{} activeCount:{} poolSize:{} taskCount:{} completedTaskCount:{} shutdown:{} terminated:{}",
-                                executorService,corePoolSize, largestPoolSize, maximumPoolSize, activeCount, poolSize, taskCount, completedTaskCount, shutdown, terminated);
+                                executorService, corePoolSize, largestPoolSize, maximumPoolSize, activeCount, poolSize, taskCount, completedTaskCount, shutdown, terminated);
 
                         try {
                             Thread.sleep(1000);

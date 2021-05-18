@@ -130,7 +130,7 @@ public class NIOConnector extends Connector {
 
         Map<String, Class<?>> notifyMap = notifyContext.getNotifyMap();
 
-        if (!CollectionUtils.isEmpty(notifyMap)) {
+        if (CollectionUtils.isEmpty(notifyMap)) {
             throw new KMProxyException("@KmNotify not init !");
         }
 

@@ -25,7 +25,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("ums/manager")
-@Api(value = "统一设备管理接口",tags = "统一设备管理接口")
+@Api(value = "统一设备管理接口", tags = "统一设备管理接口")
 public class UmsManagerController {
 
     @Autowired
@@ -100,6 +100,7 @@ public class UmsManagerController {
 
     /**
      * 暂时不去实现
+     *
      * @param requestDto
      * @param result
      * @return
@@ -250,5 +251,15 @@ public class UmsManagerController {
 
         return BaseResult.succeed(responseDtoList);
     }
+
+
+    @ApiOperation("获取分组")
+    @PostMapping("/getGroup")
+    public BaseResult<Boolean> getGroup(@RequestParam("umsId") String umsId) {
+
+        Boolean aBoolean = umsManagerService.queryDeviceGroupNotify(umsId);
+        return BaseResult.succeed(aBoolean);
+    }
+
 
 }

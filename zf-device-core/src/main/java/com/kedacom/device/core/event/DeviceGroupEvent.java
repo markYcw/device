@@ -8,10 +8,8 @@ import com.kedacom.core.pojo.Notify;
 import com.kedacom.core.pojo.NotifyHead;
 import com.kedacom.device.ums.DeviceGroupVo;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
-import org.springframework.context.ApplicationEvent;
 
 import java.util.List;
 
@@ -20,11 +18,10 @@ import java.util.List;
  * @describe
  * @date 2021/5/17
  */
-@Setter
-@Getter
+@Data
 @ToString(callSuper = true)
 @KmNotify(name = "devgroupnty")
-public class DeviceGroupEvent extends ApplicationEvent implements Notify {
+public class DeviceGroupEvent implements Notify {
 
     private NotifyHead nty;
 
@@ -35,10 +32,6 @@ public class DeviceGroupEvent extends ApplicationEvent implements Notify {
     private Integer end;
 
     private List<DeviceGroupVo> result;
-
-    public DeviceGroupEvent(Object source) {
-        super(source);
-    }
 
     private JSONObject removeHead() {
 

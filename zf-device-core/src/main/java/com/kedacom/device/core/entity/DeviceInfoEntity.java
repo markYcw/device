@@ -56,10 +56,6 @@ public class DeviceInfoEntity implements Serializable {
     @TableField(value = "group_id")
     private String groupId;
 
-    @ApiModelProperty(value = "设备状态订阅信息",example = "172.16.1.1:8080,172.16.1.2:9099")
-    @TableField(value = "kafka_addr")
-    private String kafkaAddr;
-
     @ApiModelProperty(value = "流媒体服务IP")
     @TableField(value = "streaming_media_ip")
     private String streamingMediaIp;

@@ -44,6 +44,7 @@ public class NotifyContext {
     public void publishNotify(Notify notify) {
 
         applicationContext.publishEvent(notify);
+
     }
 
 

@@ -49,6 +49,13 @@ public class NIOConnector extends Connector {
         return this.notifyContext;
     }
 
+
+    @Override
+    public void close() throws IOException {
+        super.close();
+        //processRequests.shutdown();
+    }
+
     @Override
     protected void onReceiveFromCore(String msg) {
         super.onReceiveFromCore(msg);
@@ -130,7 +137,7 @@ public class NIOConnector extends Connector {
 
         Map<String, Class<?>> notifyMap = notifyContext.getNotifyMap();
 
-        if (!CollectionUtils.isEmpty(notifyMap)) {
+        if (CollectionUtils.isEmpty(notifyMap)) {
             throw new KMProxyException("@KmNotify not init !");
         }
 

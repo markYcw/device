@@ -16,7 +16,7 @@ public class ProcessRequests {
 
     private static final Map<Integer, Class<?>> RETURN_TYPE_MAP = new ConcurrentHashMap<>();
 
-    public void put(Integer requestId, CompletableFuture<Response> future) {
+    public void putFuture(Integer requestId, CompletableFuture<Response> future) {
         UNPROCESSED_RESPONSE_FUTURES.put(requestId, future);
     }
 

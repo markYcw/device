@@ -5,7 +5,7 @@ import lombok.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Map;
-import java.util.Set;
+
 
 /**
  * @author van.shu
@@ -32,6 +32,12 @@ public class ClientInfo {
      * 类型
      */
     private Class<?> clazz;
+
+
+    /**
+     * 请求超时时间
+     */
+    private Long timeout;
 
 
     /**

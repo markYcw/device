@@ -5,6 +5,8 @@ import com.kedacom.core.pojo.ClientInfo;
 import com.kedacom.core.pojo.Request;
 import com.kedacom.core.pojo.Response;
 import com.kedacom.core.spring.NotifyContext;
+import com.kedacom.exception.KMException;
+import com.kedacom.exception.KMTimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
@@ -17,6 +19,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author van.shu
@@ -95,7 +100,15 @@ public class NetworkProxy implements InvocationHandler, FactoryBean<Object>, App
                     ClientInfo.MethodInfo methodInfo = methodInfos.get(method);
                     Class<?> returnType = methodInfo.getReturnType();
                     CompletableFuture<Response> future = connector.sendRequest((Request) arg,returnType);
-                    return future.get();
+                    try {
+                        return future.get(clientInfo.getTimeout(), TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException | ExecutionException e) {
+                        log.error("execute request error ,e", e);
+                        throw new KMException("execute request error", e);
+                    } catch (TimeoutException e) {
+                        log.error("execute request timeout ! wait time is [{}]  ms ,and caused by : ", clientInfo.getTimeout(), e);
+                        throw new KMTimeoutException("execute request timeout ! wait time is " + clientInfo.getTimeout() + " ms");
+                    }
                 }
 
             }

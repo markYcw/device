@@ -28,11 +28,21 @@ public class NIOConnector extends Connector {
 
     private NotifyContext notifyContext;
 
+    private NIOConnMonitor connMonitor;
+
+    /**
+     * 默认初始化为未连接状态
+     */
+    private volatile ConnStatus status = ConnStatus.DIS_CONNECT;
+
+
+
     NIOConnector(SocketChannel socketChannel) throws IOException {
 
         setup(socketChannel);
         processRequests = SingletonFactory.getInstance(ProcessRequests.class);
         notifyContext = SingletonFactory.getInstance(NotifyContext.class);
+
     }
 
     public NotifyContext getNotifyContext() {
@@ -66,6 +76,7 @@ public class NIOConnector extends Connector {
         //发送请求
         send(packet);
 
+
         putProcessRequests(ssno,returnType, future);
 
         return future;
@@ -74,7 +85,7 @@ public class NIOConnector extends Connector {
 
     private void putProcessRequests(Integer requestId,Class<?> returnType, CompletableFuture<Response> future) {
 
-        processRequests.put(requestId, future);
+        processRequests.putFuture(requestId, future);
         processRequests.putReturnType(requestId, returnType);
     }
 
@@ -88,7 +99,6 @@ public class NIOConnector extends Connector {
 
         JSONObject jsonObject = JSONObject.parseObject(msg);
 
-
         if (jsonObject.containsKey("resp")) {
             //响应处理
             RespHead respHead = jsonObject.getObject("resp", RespHead.class);
@@ -96,6 +106,7 @@ public class NIOConnector extends Connector {
             log.info("[ssno:{}]: receive resp ------> {}", respHead.getSsno(), msg);
 
             handlerResp(msg,respHead);
+           // handlerNty(msg, null);
 
         } else if (jsonObject.containsKey("nty")) {
 
@@ -148,6 +159,10 @@ public class NIOConnector extends Connector {
     private void handlerResp(String msg,RespHead respHead) {
 
         try {
+
+            //测试超时
+           // Thread.sleep(10000);
+
             Class<?> aClass = processRequests.getReturnType(respHead.getSsno());
             response = JSONObject.parseObject(msg, (Type) aClass);
             if (response != null) {
@@ -160,19 +175,39 @@ public class NIOConnector extends Connector {
             throw new ParseDataException("parse resp data error");
         }
 
-
     }
-
 
     public static NIOConnector startWith(String serverIp, int serverPort) throws IOException {
-        SocketChannel socketChannel = SocketChannel.open();
-        socketChannel.connect(new InetSocketAddress(InetAddress.getByName(serverIp), serverPort));
 
-        System.out.println("客户端信息：" + socketChannel.getLocalAddress().toString() + ":" + socketChannel.socket().getLocalPort());
-        System.out.println("服务器信息：" + socketChannel.getRemoteAddress().toString() + ":" + socketChannel.socket().getPort());
+        SocketChannel socketChannel = SocketChannel.open();
+
+//      NIOConnMonitor connMonitor = new NIOConnMonitor(socketChannel);
+//      connMonitor.start(serverIp, serverPort);
+
+        socketChannel.connect(new InetSocketAddress(InetAddress.getByName(serverIp), serverPort));
+        log.info("客户端信息：" + socketChannel.getLocalAddress().toString() + ":" + socketChannel.socket().getLocalPort());
+        log.info("服务器信息：" + socketChannel.getRemoteAddress().toString() + ":" + socketChannel.socket().getPort());
 
         return new NIOConnector(socketChannel);
+
     }
+
+    public static void connect(SocketChannel socketChannel, String serverIp, int serverPort) throws IOException {
+
+        try {
+
+            socketChannel.connect(new InetSocketAddress(InetAddress.getByName(serverIp), serverPort));
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+        log.info("客户端信息：" + socketChannel.getLocalAddress().toString() + ":" + socketChannel.socket().getLocalPort());
+        log.info("服务器信息：" + socketChannel.getRemoteAddress().toString() + ":" + socketChannel.socket().getPort());
+
+    }
+
+
 
 
 }

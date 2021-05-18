@@ -159,20 +159,11 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
 
     }
 
-    private void registerNotifyContext(BeanDefinitionRegistry registry) {
-
-        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(NotifyContext.class);
-
-
-
-    }
-
     private void initConnectorIfNot() {
         if (connector == null) {
             try {
                 connector = NIOConnector.startWith(networkConfig.getServerIp(), networkConfig.getServerPort());
                 NotifyContext notifyContext = connector.getNotifyContext();
-               // notifyContext.setApplicationContext(context);
                 notifyContext.setNotifyMap(notifyMap);
             } catch (IOException e) {
                 log.error("init socketChannel failed ,", e);
@@ -244,6 +235,7 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
         return ClientInfo.builder()
                 .clazz(clazz)
                 .clientBeanName(key)
+                .timeout(networkConfig.getTimeout())
                 .methodInfos(methodInfos)
                 .build();
 

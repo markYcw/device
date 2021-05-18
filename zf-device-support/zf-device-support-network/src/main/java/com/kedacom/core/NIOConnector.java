@@ -49,6 +49,13 @@ public class NIOConnector extends Connector {
         return this.notifyContext;
     }
 
+
+    @Override
+    public void close() throws IOException {
+        super.close();
+        //processRequests.shutdown();
+    }
+
     @Override
     protected void onReceiveFromCore(String msg) {
         super.onReceiveFromCore(msg);
@@ -73,9 +80,9 @@ public class NIOConnector extends Connector {
         CompletableFuture<Response> future = new CompletableFuture<>();
 
         log.info("[ssno:{}]: send msg ------> {}", ssno, packet);
+
         //发送请求
         send(packet);
-
 
         putProcessRequests(ssno,returnType, future);
 
@@ -85,8 +92,8 @@ public class NIOConnector extends Connector {
 
     private void putProcessRequests(Integer requestId,Class<?> returnType, CompletableFuture<Response> future) {
 
-        processRequests.putFuture(requestId, future);
-        processRequests.putReturnType(requestId, returnType);
+        processRequests.putFuture(requestId, future, returnType);
+       // processRequests.putReturnType(requestId, returnType);
     }
 
 
@@ -118,7 +125,7 @@ public class NIOConnector extends Connector {
 
         } else {
             log.error("cannot read the msg !");
-            throw new UnSupportMsgException("unknown the msg");
+           // throw new UnSupportMsgException("unknown the msg");
         }
 
     }
@@ -149,7 +156,7 @@ public class NIOConnector extends Connector {
             }
         } catch (Exception e) {
             log.error("parse nty data error ,e: ", e);
-            throw new ParseDataException("parse nty data error");
+           // throw new ParseDataException("parse nty data error");
         }
 
 
@@ -172,7 +179,8 @@ public class NIOConnector extends Connector {
             }
         } catch (Exception e) {
             log.error("parse resp data error ,e: ", e);
-            throw new ParseDataException("parse resp data error");
+            processRequests.exception(new ParseDataException(e.getMessage(), e), respHead.getSsno());
+           // throw new ParseDataException("parse resp data error");
         }
 
     }

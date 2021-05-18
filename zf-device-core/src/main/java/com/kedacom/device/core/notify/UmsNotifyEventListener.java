@@ -116,6 +116,7 @@ public class UmsNotifyEventListener {
     public void deviceStatusNotify(DeviceEvent event) {
 
         Integer operateType = event.getOperateType();
+        //TODO 暂时只做了 设备的新增，修改，删除
         if (Event.OPERATETYPETYPE3.equals(operateType)) {
             SubDeviceInfoEntity subDeviceInfoEntity = toSubDeviceInfoEntity(event);
             subDeviceMapper.insert(subDeviceInfoEntity);

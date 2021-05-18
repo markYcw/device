@@ -34,12 +34,8 @@ public class UmsDeviceInfoAddRequestDto implements Serializable {
     @Max(value = 65536, message = "设备端口号参数不正确")
     private Integer devicePort;
 
-    @ApiModelProperty(value = "设备状态订阅IP",notes = "已经被kafkaAddr字段取代，没用了")
+    @ApiModelProperty(value = "设备状态订阅IP")
     private String deviceNotifyIp;
-
-    @ApiModelProperty(value = "设备状态订阅信息",example = "172.16.1.1:8080,172.16.1.2:9099")
-    @NotNull(message = "设备状态订阅信息不能为空")
-    private String kafkaAddr;
 
     @ApiModelProperty(value = "媒体调度服务IP")
     @Pattern(regexp = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$", message = "IP地址参数不合法")

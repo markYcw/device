@@ -4,6 +4,7 @@ import com.kedacom.core.pojo.BaseResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * @Auther: hxj
@@ -11,6 +12,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel("开始画面合成应答")
+@ToString(callSuper = true)
 public class StartVideoMixResponse extends BaseResponse {
 
     @ApiModelProperty("画面合成ID")

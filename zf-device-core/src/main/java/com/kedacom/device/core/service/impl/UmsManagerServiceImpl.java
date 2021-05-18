@@ -6,7 +6,6 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kedacom.BasePage;
-import com.kedacom.acl.network.ums.responsevo.QuerySubDeviceInfoResponseVo;
 import com.kedacom.device.core.constant.UmsMod;
 import com.kedacom.device.core.convert.UmsAlarmTypeConvert;
 import com.kedacom.device.core.convert.UmsDeviceConvert;
@@ -27,7 +26,6 @@ import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.LoginRequest;
 import com.kedacom.device.ums.request.LogoutRequest;
 import com.kedacom.device.ums.request.QueryAllDeviceGroupRequest;
-import com.kedacom.device.ums.request.QueryDeviceRequest;
 import com.kedacom.device.ums.response.LoginResponse;
 import com.kedacom.device.ums.response.LogoutResponse;
 import com.kedacom.device.ums.response.QueryAllDeviceGroupResponse;
@@ -76,7 +74,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         LoginResponse loginResponse = umsClient.login(loginRequest);
         //TODO 先标志一下异常处理，稍后统一处理
         if (loginResponse.acquireErrcode() != 0) {
-            log.error("登录统一平台异常");
+            log.error("登录统一平台异常:{}",loginResponse);
             throw new UmsManagerException("登录统一平台异常");
         }
         //2、调中间件登录成功，将统一平台信息添加到本地

@@ -5,6 +5,7 @@ import com.kedacom.streamMedia.info.RecordInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
  */
 @Data
 @ApiModel("查询录像记录应答")
+@ToString(callSuper = true)
 public class QueryRecResponse extends BaseResponse {
 
     @ApiModelProperty("查询到的录像总数")

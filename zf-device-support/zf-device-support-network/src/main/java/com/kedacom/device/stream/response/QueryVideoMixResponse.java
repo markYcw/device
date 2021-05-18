@@ -5,6 +5,7 @@ import com.kedacom.streamMedia.info.VideoMixInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
  */
 @Data
 @ApiModel("查询画面合成信息应答")
+@ToString(callSuper = true)
 public class QueryVideoMixResponse extends BaseResponse {
 
     @ApiModelProperty("画面合成信息")

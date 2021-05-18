@@ -1,6 +1,5 @@
 package com.kedacom.device.controller;
 
-import cn.hutool.core.util.StrUtil;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.StreamMediaService;
@@ -11,7 +10,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -22,7 +24,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("device/streamMedia")
-@Api(value = "流媒体",tags = "流媒体")
+@Api(value = "流媒体", tags = "流媒体")
 @Slf4j
 public class StreamMediaController {
 
@@ -131,13 +133,11 @@ public class StreamMediaController {
 
     @ApiOperation("查询所有画面合成:返回mixIDs 合成ID集合")
     @PostMapping("/queryAllVideoMix")
-    public BaseResult<List<String>> queryAllVideoMix(@RequestParam("umsId") String umsId) {
-        if (StrUtil.isBlank(umsId)) {
-            log.error("统一平台id为空");
-            return BaseResult.failed("统一平台id为空");
-        }
-        List<String> mixIDs = streamMediaService.queryAllVideoMix(umsId);
-        return BaseResult.succeed(mixIDs);
+    public BaseResult<QueryAllAudioMixVO> queryAllVideoMix(@Valid @RequestBody QueryAllVideoMixDTO queryAllVideoMixDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        QueryAllAudioMixVO queryAllVideoMix = streamMediaService.queryAllVideoMix(queryAllVideoMixDTO);
+        return BaseResult.succeed(queryAllVideoMix);
     }
 
     @ApiOperation("查询画面合成信息")

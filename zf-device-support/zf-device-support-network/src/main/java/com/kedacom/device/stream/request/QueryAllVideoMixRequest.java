@@ -1,9 +1,8 @@
 package com.kedacom.device.stream.request;
 
 import com.kedacom.core.pojo.BaseRequest;
-import lombok.AllArgsConstructor;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -15,6 +14,9 @@ import lombok.ToString;
 public class QueryAllVideoMixRequest extends BaseRequest {
 
     private static final String COMMAND = "queryallvideomix";
+
+    @ApiModelProperty("画面合成设备分组id")
+    private String GroupID;
 
     @Override
     public String name() {

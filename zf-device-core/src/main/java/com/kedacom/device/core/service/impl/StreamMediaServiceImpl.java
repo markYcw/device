@@ -3,9 +3,9 @@ package com.kedacom.device.core.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.kedacom.core.pojo.BaseResponse;
 import com.kedacom.device.core.config.KmErrCode;
-import com.kedacom.device.core.convert.StreamMediaConvert;
 import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
+import com.kedacom.device.core.convert.StreamMediaConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.exception.StreamMediaException;
 import com.kedacom.device.core.mapper.DeviceMapper;
@@ -244,19 +244,20 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     }
 
     @Override
-    public List<String> queryAllVideoMix(String umsId) {
+    public QueryAllAudioMixVO queryAllVideoMix(QueryAllVideoMixDTO request) {
         String error = "查询所有画面合成失败:{},{}";
-        log.info("查询所有画面合成入参信息 :{}", umsId);
+        log.info("查询所有画面合成入参信息 :{}", request);
 
-        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(umsId);
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         QueryAllVideoMixRequest queryAllVideoMixRequest = new QueryAllVideoMixRequest();
         queryAllVideoMixRequest.setSsid(ssid);
+        queryAllVideoMixRequest.setGroupID(request.getGroupID());
         QueryAllAudioMixResponse res = client.queryAllVideoMix(queryAllVideoMixRequest);
         handleRes(error, res);
         log.info("查询所有画面合成应答信息:{}", res);
-        return res.acquireData(List.class);
+        return res.acquireData(QueryAllAudioMixVO.class);
     }
 
     @Override
@@ -280,7 +281,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         if (res.acquireErrcode() != DeviceConstants.SUCCESS) {
             if (StrUtil.isNotBlank(kmErrCode.matchErrMsg(res.acquireErrcode()))) {
                 log.error(str, DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
-                throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), kmErrCode.matchErrMsg(res.acquireSsno()));
+                throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
             } else {
                 log.error(str, DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), DeviceErrorEnum.STREAM_MEDIA_FAILED.getMsg());
                 throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), DeviceErrorEnum.STREAM_MEDIA_FAILED.getMsg());

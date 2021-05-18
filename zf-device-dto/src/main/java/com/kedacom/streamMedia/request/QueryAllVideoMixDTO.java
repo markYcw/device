@@ -5,17 +5,15 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @Auther: hxj
- * @Date: 2021/4/30 15:03
+ * @Date: 2021/5/18 15:03
  */
 @Data
-@ApiModel("查询画面合成信息入参")
-public class QueryVideoMixDTO implements Serializable {
+@ApiModel("查询所有画面合成信息入参")
+public class QueryAllVideoMixDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")
     @ApiModelProperty(value = "平台id")
@@ -24,9 +22,5 @@ public class QueryVideoMixDTO implements Serializable {
     @NotBlank(message = "画面合成设备分组id不能为空")
     @ApiModelProperty("画面合成设备分组id")
     private String GroupID;
-
-    @NotEmpty(message = "画面合成ID不能为空")
-    @ApiModelProperty("画面合成ID")
-    private List<String> mixIDs;
 
 }

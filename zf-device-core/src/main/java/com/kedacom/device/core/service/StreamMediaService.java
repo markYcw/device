@@ -33,7 +33,7 @@ public interface StreamMediaService {
 
     Boolean updateVideoMix(UpdateVideoMixDTO request);
 
-    List<String> queryAllVideoMix(String umsId);
+    QueryAllAudioMixVO queryAllVideoMix(QueryAllVideoMixDTO umsId);
 
     QueryVideoMixResponseVO queryVideoMix(QueryVideoMixDTO request);
 

@@ -5,9 +5,8 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.kedacom.acl.network.ums.requestvo.QuerySubDeviceInfoRequestVo;
-import com.kedacom.acl.network.ums.responsevo.QuerySubDeviceInfoResponseVo;
-import com.kedacom.acl.network.ums.responsevo.SubDeviceInfoResponseVo;
+import com.kedacom.device.ums.response.QuerySubDeviceInfoResponse;
+import com.kedacom.ums.responsedto.SubDeviceInfoResponseVo;
 import com.kedacom.device.core.constant.UmsMod;
 import com.kedacom.device.core.convert.UmsSubDeviceConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
@@ -48,10 +47,9 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
         String sessionId = deviceInfoEntity.getSessionId();
         QueryDeviceRequest requestVo = new QueryDeviceRequest();
         requestVo.setSsid(Integer.valueOf(sessionId));
-        requestVo.setF_eq_parentid(umsDeviceId);
         requestVo.setQueryindex(curPage);
         requestVo.setQuerycount(pageSize);
-        QuerySubDeviceInfoResponseVo responseVo = umsClient.querydev(requestVo);
+        QuerySubDeviceInfoResponse responseVo = umsClient.querydev(requestVo);
 
 
 //        if (!(UdmsCodeResult.SUCCESS.equals(baseResponseVo.getCode()) && Boolean.TRUE.equals(baseResponseVo.isRet()))) {
@@ -63,7 +61,7 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
 
         log.info("当前第{}页查询到的数据条数是{}", curPage, responseVoList.size());
 
-        if (CollUtil.isEmpty(responseVoList)) {
+        if (CollUtil.isEmpty(responseVoList) && curPage != 1) {
             return Integer.MAX_VALUE;
         }
 
@@ -80,11 +78,18 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
 
             if (umsSubDeviceInfoEntity != null && StrUtil.isNotBlank(umsSubDeviceInfoEntity.getId())) {
 
+                umsSubDeviceInfoEntity.setParentId(umsDeviceId);
                 if (subDeviceInfoMapper.selectById(umsSubDeviceInfoEntity.getId()) != null) {
-                   // log.info("已存在Id为:{}", umsSubDeviceInfoEntity.getId());
-                    subDeviceInfoMapper.updateById(umsSubDeviceInfoEntity);
+                    log.info("已存在Id为:{}", umsSubDeviceInfoEntity.getId());
+                    int i = subDeviceInfoMapper.updateById(umsSubDeviceInfoEntity);
+                    if (i <= 0) {
+                        log.error("设备id:{},更新失败", umsSubDeviceInfoEntity.getId());
+                    }
                 }else {
-                    subDeviceInfoMapper.insert(umsSubDeviceInfoEntity);
+                    int insert = subDeviceInfoMapper.insert(umsSubDeviceInfoEntity);
+                    if (insert <= 0) {
+                        log.error("设备id:{},插入失败", umsSubDeviceInfoEntity.getId());
+                    }
                 }
             }
         }

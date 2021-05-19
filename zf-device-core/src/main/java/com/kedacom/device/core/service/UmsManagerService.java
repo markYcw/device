@@ -18,14 +18,14 @@ public interface UmsManagerService {
      * @param requestDto
      * @return
      */
-    Boolean insertUmsDevice(UmsDeviceInfoAddRequestDto requestDto);
+    String insertUmsDevice(UmsDeviceInfoAddRequestDto requestDto);
 
     /**
      * 更新统一平台信息
      * @param requestDto
      * @return
      */
-    Boolean updateUmsDevice(UmsDeviceInfoUpdateRequestDto requestDto);
+    String updateUmsDevice(UmsDeviceInfoUpdateRequestDto requestDto);
 
     /**
      * 统一平台名称判重
@@ -70,7 +70,7 @@ public interface UmsManagerService {
      * @param requestDto
      * @return
      */
-    Boolean syncDeviceData(UmsDeviceInfoSyncRequestDto requestDto);
+    void syncDeviceData(UmsDeviceInfoSyncRequestDto requestDto);
 
     /**
      * 获取当前服务统一设备最近一次同步设备时间

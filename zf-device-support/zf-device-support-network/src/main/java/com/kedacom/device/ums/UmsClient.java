@@ -1,6 +1,6 @@
 package com.kedacom.device.ums;
 
-import com.kedacom.acl.network.ums.responsevo.QuerySubDeviceInfoResponseVo;
+import com.kedacom.device.ums.response.QuerySubDeviceInfoResponse;
 import com.kedacom.core.anno.KmProxy;
 import com.kedacom.device.ums.request.*;
 import com.kedacom.device.ums.response.*;
@@ -31,7 +31,7 @@ public interface UmsClient {
      * @param request 请求
      * @return 响应
      */
-    QuerySubDeviceInfoResponseVo querydev(QueryDeviceRequest request);
+    QuerySubDeviceInfoResponse querydev(QueryDeviceRequest request);
 
     /**
      * 获取所有设备分组

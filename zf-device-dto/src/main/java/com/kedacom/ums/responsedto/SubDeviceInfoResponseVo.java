@@ -1,4 +1,4 @@
-package com.kedacom.acl.network.ums.responsevo;
+package com.kedacom.ums.responsedto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

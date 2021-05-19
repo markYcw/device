@@ -1,6 +1,6 @@
 package com.kedacom.device.core.convert;
 
-import com.kedacom.acl.network.ums.responsevo.SubDeviceInfoResponseVo;
+import com.kedacom.ums.responsedto.SubDeviceInfoResponseVo;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.ums.request.*;
 import com.kedacom.ums.requestdto.*;

@@ -1,5 +1,7 @@
-package com.kedacom.acl.network.ums.responsevo;
+package com.kedacom.device.ums.response;
 
+import com.kedacom.core.pojo.BaseResponse;
+import com.kedacom.ums.responsedto.SubDeviceInfoResponseVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,7 +16,7 @@ import java.util.List;
  */
 @Data
 @ApiModel
-public class QuerySubDeviceInfoResponseVo implements Serializable {
+public class QuerySubDeviceInfoResponse extends BaseResponse implements Serializable {
 
     @ApiModelProperty(value = "查询结果数")
     private Integer querycount;

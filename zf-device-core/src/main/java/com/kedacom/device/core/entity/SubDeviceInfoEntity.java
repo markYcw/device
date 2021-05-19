@@ -63,7 +63,7 @@ public class SubDeviceInfoEntity implements Serializable {
     @ApiModelProperty(value = "经度")
     private Double longitude;
 
-    @TableField(value = "longitude_tr")
+    @TableField(value = "longitude_Str")
     @ApiModelProperty(value = "经度 字符串")
     private String longitudeStr;
 

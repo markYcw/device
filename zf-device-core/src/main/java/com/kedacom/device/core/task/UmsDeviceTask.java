@@ -3,7 +3,7 @@ package com.kedacom.device.core.task;
 import cn.hutool.core.date.DateUtil;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.kedacom.BasePage;
-import com.kedacom.acl.network.ums.responsevo.QuerySubDeviceInfoResponseVo;
+import com.kedacom.device.ums.response.QuerySubDeviceInfoResponse;
 import com.kedacom.device.core.constant.UmsMod;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.manager.UmsSubDeviceManager;
@@ -93,22 +93,13 @@ public class UmsDeviceTask implements Runnable {
     private void process() {
 
         log.info("开始执行任务.....,统一设备平台Id为:[{}]", umsDeviceId);
-
-        int pageSize = 100;
-
-        int curPage = 1;
-
-        QuerySubDeviceInfoResponseVo responseVo = getUmsSubDeviceFromThird(umsDeviceId, pageSize);
-
-//        checkConnection(baseResponseVo);
-
+        int queryindex = 1;
+        int querycount = 100;
+        Integer total = queryCountOfSubDeviceFromThird(umsDeviceId, queryindex, querycount);
         if (!keepConnection) {
             log.error("远程服务连接异常.....");
             return;
         }
-
-        int total = responseVo.getQuerycount();
-
         if (total == 0) {
             log.error("查询到的子设备数量为0，统一设备Id:[{}]", umsDeviceId);
             return;
@@ -119,55 +110,46 @@ public class UmsDeviceTask implements Runnable {
         log.info("连接正常,开始查询入库,总数为:[{}]", total);
 
         //这里有一个非常基础但是容易被忽视的问题:整数相除会造成进度丢失，先转成double类型
-        int totalPage = (int) Math.ceil((double) total / pageSize);
-
+        int totalPage = (int) Math.ceil((double) total / querycount);
         setPoolSize(totalPage);
-
         //将正常状态的数据设置为同步中
         umsSubDeviceManager.updateUmsSubDeviceMod(UmsMod.NORMAL, UmsMod.UPGRADING);
-
         log.info("开始更新同步。。。。");
-
         boolean syncResult;
-
         if (shouldDistribute) {
-            syncResult = distribute(totalPage, pageSize, umsSubDeviceManager);
-        } else {
-            syncResult = doAlone(curPage, pageSize, umsSubDeviceManager);
+            syncResult = distribute(totalPage, querycount, umsSubDeviceManager);
+        }else {
+            syncResult = doAlone(0, querycount, umsSubDeviceManager);
         }
 
         //同步完成，判断是否同步正常
         //此时查询自己的数据库，判断当前设备总数是否和远程一致
-
         int checkTotal;
-
-        QuerySubDeviceInfoResponseVo responseVo1 = getUmsSubDeviceFromThird(umsDeviceId, pageSize);
-
+//        Integer count = queryCountOfSubDeviceFromThird(umsDeviceId, queryindex, querycount);
 //        checkConnection(checkResult);
 
-        if (!keepConnection) {
-            log.error("同步完成后校验设备数量时，远程服务连接异常.....");
-            //如果此时查询远程服务异常，则降级使用同步前获取到的total来代替
-            checkTotal = total;
+//        if (!keepConnection) {
+//            log.error("同步完成后校验设备数量时，远程服务连接异常.....");
+//            //如果此时查询远程服务异常，则降级使用同步前获取到的total来代替
+//            checkTotal = total;
+//
+//        } else {
+//            checkTotal = count;
+//        }
 
-        } else {
-            checkTotal = responseVo1.getQuerycount();
-        }
+        BasePage<UmsSubDeviceInfoQueryResponseDto> localResult = getUmsSubDeviceFromLocal(umsDeviceId, querycount);
 
-        log.info("checkResult total: {}", checkTotal);
-
-        BasePage<UmsSubDeviceInfoQueryResponseDto> localResult = getUmsSubDeviceFromLocal(umsDeviceId, pageSize);
-
-        long localTotal = localResult.getTotal();
+        long localTotal = localResult.getData().size();
 
         log.info("localResult total: {}", localTotal);
 
         //如果总数一样并且同步过程正常，修改同步状态
-        if ((checkTotal == localTotal) && syncResult) {
+        if ((total == localTotal) && syncResult) {
+
+            log.info("---------同步成功---------");
 
             syncStatus.compareAndSet(false, true);
         }
-
     }
 
     //任务分发
@@ -184,13 +166,12 @@ public class UmsDeviceTask implements Runnable {
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(),
                 namedThreadFactory
-
         );
 
         //期望完成的任务数量
         long expectedCompletedTaskCount = totalPage + 1;
 
-        //monitor(executorService);
+        monitor(executorService);
 
         for (int i = 1; i <= totalPage + 1; i++) {
 
@@ -229,7 +210,6 @@ public class UmsDeviceTask implements Runnable {
                         if (!umsGroupResult) {
                             log.error("获取所有设备分组信息失败，统一设备Id为:[{}]", umsDeviceId);
                         }
-                        //TODO 实现感知设备分组信息成功
 
                         log.info("获取设备分组信息完成。。。统一设备Id为:[{}]", umsDeviceId);
                     } catch (Exception e) {
@@ -263,9 +243,7 @@ public class UmsDeviceTask implements Runnable {
         while (true) {
 
             Integer code = umsSubDeviceManager.selectAndInsertSubDeviceFromAvFeign(umsDeviceId, curPage, pageSize);
-
             log.info("返回的code数据为:[{}]", code);
-
             if (code == Integer.MAX_VALUE) {
 
                 //到这里说明所有设备已经更新完成，那么模式还是同步中的设备则说明这次没有同步到，将模式改为未同步到
@@ -279,42 +257,55 @@ public class UmsDeviceTask implements Runnable {
                     log.error("远程调用统一设备分组接口失败或者未获取到统一设备分组信息,统一设备Id为:[{}]", umsDeviceId);
                     return false;
                 }
-                //TODO 实现感知设备分组信息成功
 
                 return true;
             }
 
-            if (curPage == (code)) {
-                retryTime++;
-
-                if (retryTime >= MAX_RETRY_TIME) {
-                    log.error("第{}页数据查询已达到最大查询失败次数:[{}]次,请检查远程服务连接是否正常！！!", code, retryTime);
-                    return false;
-                }
-
-                log.error("第{}页数据第{}次查询失败", code, retryTime);
-                continue;
-            }
-
+//            if (curPage == (code)) {
+//                retryTime++;
+//                if (retryTime >= MAX_RETRY_TIME) {
+//                    log.error("第{}页数据查询已达到最大查询失败次数:[{}]次,请检查远程服务连接是否正常！！!", code, retryTime);
+//                    return false;
+//                }
+//                log.error("第{}页数据第{}次查询失败", code, retryTime);
+//                continue;
+//            }
             //重试次数复位
             if (retryTime != 0) {
                 retryTime = 0;
             }
-
             curPage++;
+        }
+    }
 
+    private Integer queryCountOfSubDeviceFromThird(String umsDeviceId, Integer queryindex, Integer querycount) {
+
+        int countNum = 0;
+        for (int i = 0; i <= countNum; i++) {
+            QuerySubDeviceInfoResponse umsSubDeviceFromThird = getUmsSubDeviceFromThird(umsDeviceId, queryindex, querycount);
+            Integer resultCount = umsSubDeviceFromThird.getQuerycount();
+            if (resultCount < querycount) {
+                if (queryindex == 1) {
+                    return resultCount;
+                }
+                return queryindex * querycount + resultCount;
+            }
+            countNum ++;
+            queryindex ++;
         }
 
+        return 0;
     }
 
     /**
-     * 从第三方获取统一设备下子设备
+     * 从远端获取统一设备下子设备
      *
      * @param umsDeviceId 统一设备id
-     * @param pageSize    每一页大小
+     * @param queryindex 查询起始数
+     * @param querycount 查询总数
      * @return 结果
      */
-    private QuerySubDeviceInfoResponseVo getUmsSubDeviceFromThird(String umsDeviceId, Integer pageSize) {
+    private QuerySubDeviceInfoResponse getUmsSubDeviceFromThird(String umsDeviceId, Integer queryindex, Integer querycount) {
 
         UmsClient umsClient = getBean(UmsClient.class);
 
@@ -323,8 +314,8 @@ public class UmsDeviceTask implements Runnable {
 
         QueryDeviceRequest queryDeviceRequest = new QueryDeviceRequest();
         queryDeviceRequest.setSsid(Integer.valueOf(sessionId));
-        queryDeviceRequest.setF_eq_parentid(umsDeviceId);
-        queryDeviceRequest.setQuerycount(pageSize);
+        queryDeviceRequest.setQueryindex(queryindex);
+        queryDeviceRequest.setQuerycount(querycount);
 
         return umsClient.querydev(queryDeviceRequest);
     }
@@ -341,8 +332,6 @@ public class UmsDeviceTask implements Runnable {
         UmsManagerService umsManagerService = getBean(UmsManagerService.class);
 
         UmsSubDeviceInfoQueryRequestDto requestVo = new UmsSubDeviceInfoQueryRequestDto();
-
-        requestVo.setUmsId(umsDeviceId);
 
         requestVo.setPageSize(pageSize);
 
@@ -366,17 +355,17 @@ public class UmsDeviceTask implements Runnable {
 
     //检查连接
     //TODO 检测链接暂时先不要
-//    public void checkConnection(BaseResponseVo baseResponseVo) {
-//
-//        if (!(UdmsCodeResult.SUCCESS.equals(baseResponseVo.getCode()) &&
-//                Boolean.TRUE.equals(baseResponseVo.isRet()))) {
-//
-//            log.error("远程连接错误，错误信息为:[{}]", baseResponseVo.getMessage());
-//            keepConnection = false;
-//        } else {
-//            keepConnection = true;
-//        }
-//    }
+/*    public void checkConnection(BaseResponseVo baseResponseVo) {
+
+        if (!(UdmsCodeResult.SUCCESS.equals(baseResponseVo.getCode()) &&
+                Boolean.TRUE.equals(baseResponseVo.isRet()))) {
+
+            log.error("远程连接错误，错误信息为:[{}]", baseResponseVo.getMessage());
+            keepConnection = false;
+        } else {
+            keepConnection = true;
+        }
+    }*/
 
     /**
      * 这个方法的参数设定会根据线上具体的情况验证后来设定
@@ -384,7 +373,7 @@ public class UmsDeviceTask implements Runnable {
      * @param totalPage 总页数
      */
     private void setPoolSize(int totalPage) {
-        if (totalPage <= 50) {
+        if ( totalPage <= 50) {
             return;
         }
 

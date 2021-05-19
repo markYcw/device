@@ -36,6 +36,7 @@ import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -80,7 +81,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
             new LinkedBlockingQueue<Runnable>(20));
 
     @Override
-    public Boolean insertUmsDevice(UmsDeviceInfoAddRequestDto requestDto) {
+    public String insertUmsDevice(UmsDeviceInfoAddRequestDto requestDto) {
 
         log.info("新增统一平台信息参数 ： requestDto {}", requestDto);
         LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertUmsDeviceInfoAddRequestVo(requestDto);
@@ -95,12 +96,13 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         DeviceInfoEntity deviceInfoEntity = UmsDeviceConvert.INSTANCE.convertDeviceInfoEntityForAdd(requestDto);
         //3、将返回的sessionId存入本地
         deviceInfoEntity.setSessionId(String.valueOf(loginResponse.acquireSsid()));
+        deviceMapper.insert(deviceInfoEntity);
 
-        return deviceMapper.insert(deviceInfoEntity) > 0;
+        return  deviceInfoEntity.getId();
     }
 
     @Override
-    public Boolean updateUmsDevice(UmsDeviceInfoUpdateRequestDto requestDto) {
+    public String updateUmsDevice(UmsDeviceInfoUpdateRequestDto requestDto) {
 
         log.info("更新统一平台信息参数 ： requestDto {}", requestDto);
         String id = requestDto.getId();
@@ -129,8 +131,9 @@ public class UmsManagerServiceImpl implements UmsManagerService {
             deviceInfoEntity.setSessionId(String.valueOf(loginResponse.acquireSsid()));
 
         }
+        deviceMapper.updateById(deviceInfoEntity);
 
-        return deviceMapper.updateById(deviceInfoEntity) > 0;
+        return  deviceInfoEntity.getId();
     }
 
     @Override
@@ -139,7 +142,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         LambdaQueryWrapper<DeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(DeviceInfoEntity::getName, name);
         if (id != null) {
-            wrapper.eq(DeviceInfoEntity::getId, id);
+            wrapper.ne(DeviceInfoEntity::getId, id);
         }
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectOne(wrapper);
 
@@ -152,7 +155,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         LambdaQueryWrapper<DeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(DeviceInfoEntity::getDeviceIp, deviceIp);
         if (id != null) {
-            wrapper.eq(DeviceInfoEntity::getId, id);
+            wrapper.ne(DeviceInfoEntity::getId, id);
         }
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectOne(wrapper);
 
@@ -165,7 +168,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         LambdaQueryWrapper<DeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(DeviceInfoEntity::getDevicePort, devicePort);
         if (id != null) {
-            wrapper.eq(DeviceInfoEntity::getId, id);
+            wrapper.ne(DeviceInfoEntity::getId, id);
         }
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectOne(wrapper);
 
@@ -222,7 +225,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
     }
 
     @Override
-    public Boolean syncDeviceData(UmsDeviceInfoSyncRequestDto requestDto) {
+    public void syncDeviceData(UmsDeviceInfoSyncRequestDto requestDto) {
 
         String umsId = requestDto.getUmsId();
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(umsId);
@@ -240,7 +243,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
             sync.setUmsId(umsId);
             sync.setLastSyncTime(lastSyncThirdDeviceTime);
             record.put(umsId, sync);
-        } else {
+        }else {
             //记录的上一次更新时间
             String recordLastSyncTime = record.get(umsId).getLastSyncTime();
 
@@ -257,7 +260,6 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         UmsDeviceTask task = new UmsDeviceTask(umsId);
         task.run();
 
-        return true;
     }
 
     @Override

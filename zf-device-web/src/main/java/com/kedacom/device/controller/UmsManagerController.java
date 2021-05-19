@@ -1,6 +1,7 @@
 package com.kedacom.device.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
@@ -40,7 +41,7 @@ public class UmsManagerController {
 
     @ApiOperation(value = "添加统一平台信息", tags = "默认添加的设备类型为UMS，建议填写具体设备类型字段")
     @PostMapping("/insertUmsDevice")
-    public BaseResult<Boolean> insertUmsDevice(@Valid @RequestBody UmsDeviceInfoAddRequestDto requestDto, BindingResult result) {
+    public BaseResult<String> insertUmsDevice(@Valid @RequestBody UmsDeviceInfoAddRequestDto requestDto, BindingResult result) {
 
         ValidUtils.paramValid(result);
         if (umsManagerService.isRepeatForName(null, requestDto.getName())) {
@@ -55,35 +56,37 @@ public class UmsManagerController {
             log.error("新增统一平台信息失败 ： 设备端口重复");
             return BaseResult.failed("设备端口重复，请重新填写");
         }
-        if (umsManagerService.insertUmsDevice(requestDto)) {
-            return BaseResult.succeed(true);
+        String umsId = umsManagerService.insertUmsDevice(requestDto);
+        if (StrUtil.isBlank(umsId)) {
+            return BaseResult.failed("添加统一平台信息失败");
         }
 
-        return BaseResult.failed("添加统一平台信息失败");
+        return BaseResult.succeed("添加统一平台信息成功", umsId);
     }
 
     @ApiOperation("更新统一平台信息")
     @PostMapping("/updateUmsDevice")
-    public BaseResult<Boolean> updateUmsDevice(@Valid @RequestBody UmsDeviceInfoUpdateRequestDto requestDto, BindingResult result) {
+    public BaseResult<String> updateUmsDevice(@Valid @RequestBody UmsDeviceInfoUpdateRequestDto requestDto, BindingResult result) {
 
         ValidUtils.paramValid(result);
         if (umsManagerService.isRepeatForName(requestDto.getId(), requestDto.getName())) {
-            log.error("新增统一平台信息失败 ： 设备名称重复");
+            log.error("更新统一平台信息失败 ： 设备名称重复");
             return BaseResult.failed("设备名称重复，请重新填写");
         }
         if (umsManagerService.isRepeatForDeviceIp(requestDto.getId(), requestDto.getDeviceIp())) {
-            log.error("新增统一平台信息失败 ： 设备IP重复");
+            log.error("更新统一平台信息失败 ： 设备IP重复");
             return BaseResult.failed("设备IP重复，请重新填写");
         }
         if (umsManagerService.isRepeatForDevicePort(requestDto.getId(), requestDto.getDevicePort())) {
-            log.error("新增统一平台信息失败 ： 设备端口重复");
+            log.error("更新统一平台信息失败 ： 设备端口重复");
             return BaseResult.failed("设备端口重复，请重新填写");
         }
-        if (umsManagerService.updateUmsDevice(requestDto)) {
-            return BaseResult.succeed(true);
+        String umsId = umsManagerService.updateUmsDevice(requestDto);
+        if (StrUtil.isBlank(umsId)) {
+            return BaseResult.failed("更新统一平台信息失败");
         }
 
-        return BaseResult.failed("更新统一平台信息失败");
+        return BaseResult.succeed("更新统一平台信息成功", umsId);
     }
 
     @ApiOperation("删除统一平台信息")
@@ -92,7 +95,7 @@ public class UmsManagerController {
 
         ValidUtils.paramValid(result);
         if (umsManagerService.deleteUmsDevice(requestDto)) {
-            return BaseResult.succeed(true);
+            return BaseResult.succeed("统一平台信息删除成功");
         }
 
         return BaseResult.failed("删除统一平台信息失败");
@@ -107,11 +110,11 @@ public class UmsManagerController {
      */
     @ApiOperation("通知第三方服务同步设备列表，第三方同步完成会发送kafka消息")
     @PostMapping("/notify/sync")
-    public BaseResult<Boolean> notifyThirdServiceSyncData(@Valid @RequestBody UmsDeviceInfoSyncRequestDto requestDto, BindingResult result) {
+    public BaseResult<String> notifyThirdServiceSyncData(@Valid @RequestBody UmsDeviceInfoSyncRequestDto requestDto, BindingResult result) {
 
         ValidUtils.paramValid(result);
         if (umsManagerService.notifyThirdServiceSyncData(requestDto)) {
-            return BaseResult.succeed(true);
+            return BaseResult.succeed("通知第三方服务同步设备列表成功");
         }
 
         return BaseResult.failed("通知第三方服务同步设备列表失败");
@@ -119,14 +122,12 @@ public class UmsManagerController {
 
     @ApiOperation("手动同步设备数据")
     @PostMapping("/syncDeviceData")
-    public BaseResult<Boolean> syncDeviceData(@Valid @RequestBody UmsDeviceInfoSyncRequestDto requestDto, BindingResult result) {
+    public BaseResult<String> syncDeviceData(@Valid @RequestBody UmsDeviceInfoSyncRequestDto requestDto, BindingResult result) {
 
         ValidUtils.paramValid(result);
-        if (umsManagerService.syncDeviceData(requestDto)) {
-            return BaseResult.succeed(true);
-        }
+        umsManagerService.syncDeviceData(requestDto);
 
-        return BaseResult.failed("手动同步设备数据失败");
+        return BaseResult.succeed("当前统一设备开启同步成功");
     }
 
     @ApiOperation("获取当前服务统一设备最近一次同步设备时间")
@@ -195,17 +196,17 @@ public class UmsManagerController {
 
     @ApiOperation("删除统一平台下的子设备")
     @PostMapping("/deleteUmsSubDevice")
-    public BaseResult<Boolean> deleteUmsSubDevice(@RequestBody UmsSubDeviceInfoDeleteRequestDto requestDto) {
+    public BaseResult<String> deleteUmsSubDevice(@RequestBody UmsSubDeviceInfoDeleteRequestDto requestDto) {
 
         List<String> ids = requestDto.getIds();
         if (CollectionUtil.isEmpty(ids)) {
             return BaseResult.failed("删除统一平台下的子设备参数id为空");
         }
         if (umsManagerService.deleteUmsSubDevice(requestDto)) {
-            return BaseResult.succeed(true);
+            return BaseResult.succeed("统一平台下的子设备删除成功");
         }
 
-        return BaseResult.failed("删除统一平台下的子设备失败");
+        return BaseResult.failed("统一平台下的子设备删除失败");
     }
 
     @ApiOperation("查询告警类型列表")
@@ -242,7 +243,6 @@ public class UmsManagerController {
         return BaseResult.succeed(responseDtoList);
     }
 
-
     @ApiOperation("根据子设备条件查询统一平台下分组中设备状况信息")
     @PostMapping("/selectUmsGroupItemList")
     public BaseResult<List<UmsScheduleGroupItemQueryResponseDto>> selectUmsGroupItemList(@RequestBody UmsScheduleGroupItemQueryRequestDto requestDto) {
@@ -252,7 +252,6 @@ public class UmsManagerController {
         return BaseResult.succeed(responseDtoList);
     }
 
-
     @ApiOperation("获取分组")
     @PostMapping("/getGroup")
     public BaseResult<Boolean> getGroup(@RequestParam("umsId") String umsId) {
@@ -260,6 +259,5 @@ public class UmsManagerController {
         Boolean aBoolean = umsManagerService.queryDeviceGroupNotify(umsId);
         return BaseResult.succeed(aBoolean);
     }
-
 
 }

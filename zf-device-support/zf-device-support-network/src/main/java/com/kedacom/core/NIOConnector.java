@@ -5,9 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.kedacom.core.handler.ProcessRequests;
 import com.kedacom.core.pojo.*;
 import com.kedacom.core.spring.NotifyContext;
+import com.kedacom.exception.ConnectionException;
 import com.kedacom.exception.KMProxyException;
 import com.kedacom.exception.ParseDataException;
-import com.kedacom.exception.UnSupportMsgException;
 import com.kedacom.network.niohdl.core.Connector;
 import com.kedacom.util.SingletonFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -30,22 +30,100 @@ public class NIOConnector extends Connector {
 
     private NIOConnMonitor connMonitor;
 
+    private SocketChannel socketChannel;
+
+    private String serverIp;
+
+    private Integer serverPort;
+
+
+
     /**
      * 默认初始化为未连接状态
      */
     private volatile ConnStatus status = ConnStatus.DIS_CONNECT;
 
 
-
-    NIOConnector(SocketChannel socketChannel) throws IOException {
-
-        setup(socketChannel);
-        processRequests = SingletonFactory.getInstance(ProcessRequests.class);
-        notifyContext = SingletonFactory.getInstance(NotifyContext.class);
+    public NIOConnector(){
 
     }
 
+
+    public synchronized NIOConnector initConnector(String serverIp, int serverPort) throws IOException {
+
+        processRequests = SingletonFactory.getInstance(ProcessRequests.class);
+
+        notifyContext = SingletonFactory.getInstance(NotifyContext.class);
+
+       // socketChannel = SocketChannel.open();
+
+        this.serverIp = serverIp;
+
+        this.serverPort = serverPort;
+
+        initConnMonitor(serverIp, serverPort);
+
+        //初始化连接状态为正在连接中
+        status = ConnStatus.CONNECTING;
+
+//        NIOConnMonitor connMonitor = new NIOConnMonitor(socketChannel, this);
+//
+//        connMonitor.start(serverIp, serverPort);
+
+//        socketChannel.connect(new InetSocketAddress(InetAddress.getByName(serverIp), serverPort));
+//        log.info("客户端信息：" + socketChannel.getLocalAddress().toString() + ":" + socketChannel.socket().getLocalPort());
+//        log.info("服务器信息：" + socketChannel.getRemoteAddress().toString() + ":" + socketChannel.socket().getPort());
+
+        return this;
+
+    }
+
+    /**
+     * 初始化连接监控组件
+     * @param serverIp 服务端IP
+     * @param serverPort 服务端端口
+     */
+    private synchronized void initConnMonitor(String serverIp, int serverPort) {
+
+        log.info("initConnMonitor");
+        if (connMonitor == null || !connMonitor.isConnected()) {
+            connMonitor = new NIOConnMonitor( this);
+            log.info("start ConnMonitor");
+            connMonitor.start(serverIp, serverPort);
+        }
+
+    }
+
+    /**
+     * 真正进行网络连接的方法
+     * @param serverIp 服务端IP
+     * @param serverPort 服务端端口
+     * @throws IOException
+     */
+    public boolean connect(String serverIp, int serverPort) throws IOException {
+
+        try {
+            socketChannel = SocketChannel.open();
+            socketChannel.connect(new InetSocketAddress(InetAddress.getByName(serverIp), serverPort));
+        } catch (IOException e) {
+            log.error("connect to server failed ,serverIp {} serverPort {} ,caused by ", serverIp, serverPort, e);
+            return false;
+        }
+
+        //只有网络连接成功之后才可以setup
+        setup(socketChannel);
+
+        log.info("客户端信息：" + socketChannel.getLocalAddress().toString() + ":" + socketChannel.socket().getLocalPort());
+        log.info("服务器信息：" + socketChannel.getRemoteAddress().toString() + ":" + socketChannel.socket().getPort());
+
+        //连接成功
+        status = ConnStatus.CONNECTED;
+
+        return true;
+    }
+
     public NotifyContext getNotifyContext() {
+
         return this.notifyContext;
     }
 
@@ -53,6 +131,10 @@ public class NIOConnector extends Connector {
     @Override
     public void close() throws IOException {
         super.close();
+        if (connMonitor != null) {
+            connMonitor.close();
+        }
+        log.info("close network resources");
         //processRequests.shutdown();
     }
 
@@ -65,12 +147,28 @@ public class NIOConnector extends Connector {
 
     @Override
     public void onChannelClosed(SocketChannel channel) {
+
         super.onChannelClosed(channel);
-        log.error("连接已关闭无法读取数据");
+        log.error("channel is closed ,cannot read the data ,ready retry to connect serverIp {} serverPort {}", serverIp, serverPort);
+        //将连接置为未连接状态
+        status = ConnStatus.DIS_CONNECT;
+
+        if (connMonitor != null) {
+            connMonitor.close();
+        }
+
+        //开始重新初始化连接监控组件
+        initConnMonitor(serverIp, serverPort);
     }
 
 
     public CompletableFuture<Response> sendRequest(Request request,Class<?> returnType) {
+
+        // 判断连接状态
+        if (ConnStatus.CONNECTED != status) {
+            log.error("cur connect status is {}", status);
+            throw new ConnectionException("connection is not connected  serverIp " + serverIp + " serverPort " + serverPort);
+        }
 
         //序列化
         String packet = request.packet();
@@ -144,7 +242,9 @@ public class NIOConnector extends Connector {
         Class<?> clazz = notifyMap.get(name);
 
         if (clazz == null) {
-            throw new KMProxyException(name + " can not match the Class");
+           // throw new KMProxyException(name + " can not match the Class");
+            log.error("{} can not match the Class , nty {}", name, msg);
+            return;
         }
 
         try {
@@ -156,6 +256,7 @@ public class NIOConnector extends Connector {
             }
         } catch (Exception e) {
             log.error("parse nty data error ,e: ", e);
+            //TODO 发布异常处理
            // throw new ParseDataException("parse nty data error");
         }
 
@@ -169,8 +270,8 @@ public class NIOConnector extends Connector {
 
             //测试超时
            // Thread.sleep(10000);
-
             Class<?> aClass = processRequests.getReturnType(respHead.getSsno());
+
             response = JSONObject.parseObject(msg, (Type) aClass);
             if (response != null) {
                 processRequests.complete(response);
@@ -185,35 +286,7 @@ public class NIOConnector extends Connector {
 
     }
 
-    public static NIOConnector startWith(String serverIp, int serverPort) throws IOException {
 
-        SocketChannel socketChannel = SocketChannel.open();
-
-//      NIOConnMonitor connMonitor = new NIOConnMonitor(socketChannel);
-//      connMonitor.start(serverIp, serverPort);
-
-        socketChannel.connect(new InetSocketAddress(InetAddress.getByName(serverIp), serverPort));
-        log.info("客户端信息：" + socketChannel.getLocalAddress().toString() + ":" + socketChannel.socket().getLocalPort());
-        log.info("服务器信息：" + socketChannel.getRemoteAddress().toString() + ":" + socketChannel.socket().getPort());
-
-        return new NIOConnector(socketChannel);
-
-    }
-
-    public static void connect(SocketChannel socketChannel, String serverIp, int serverPort) throws IOException {
-
-        try {
-
-            socketChannel.connect(new InetSocketAddress(InetAddress.getByName(serverIp), serverPort));
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
-        log.info("客户端信息：" + socketChannel.getLocalAddress().toString() + ":" + socketChannel.socket().getLocalPort());
-        log.info("服务器信息：" + socketChannel.getRemoteAddress().toString() + ":" + socketChannel.socket().getPort());
-
-    }
 
 
 

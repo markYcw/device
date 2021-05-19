@@ -3,9 +3,8 @@ package com.kedacom.core;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 连接监控组件
@@ -16,28 +15,36 @@ import java.nio.channels.SocketChannel;
 @Slf4j
 public class NIOConnMonitor {
 
-    private SocketChannel channel;
+    /**
+     * 连接重试间隔 15s
+     */
+    public static final long CONNECT_RETRY_INTERVAL = 15 * 1000;
 
     /**
-     * 初始化状态为未连接
+     * 心跳间隔 15S
      */
-    private volatile ConnStatus status = ConnStatus.DIS_CONNECT;
+    public static final long HEART_BEAT_INTERVAL = 15 * 1000;
 
-    public NIOConnMonitor(SocketChannel channel) {
-        this.channel = channel;
+    private NIOConnector connector;
+
+
+    public NIOConnMonitor( NIOConnector connector) {
+
+        this.connector = connector;
     }
 
-
     private MonitorThread task;
+
+    private static volatile AtomicBoolean isConnected = new AtomicBoolean(false);
 
 
     /**
      * 启动连接监控组件
      */
-    public void start(String serverIp, Integer serverPort) {
+    public synchronized void start(String serverIp, Integer serverPort) {
 
         if (task == null) {
-            task = new MonitorThread(channel, serverIp, serverPort);
+            task = new MonitorThread(serverIp, serverPort);
             task.setName("Conn-Monitor");
             task.setDaemon(true);
             task.start();
@@ -45,8 +52,17 @@ public class NIOConnMonitor {
 
     }
 
-    public void close() {
+    public boolean isConnected() {
 
+        return isConnected.get();
+    }
+
+    /**
+     * 关闭方法
+     */
+    public void close() {
+        isConnected.set(false);
+        task.interrupt();
     }
 
 
@@ -54,16 +70,13 @@ public class NIOConnMonitor {
      * 连接监控线程
      */
 
-    private  class MonitorThread extends Thread {
-
-        private SocketChannel channel;
+    private class MonitorThread extends Thread {
 
         private String serverIp;
 
         private Integer serverPort;
 
-        public MonitorThread(SocketChannel channel,String serverIp,Integer serverPort) {
-            this.channel = channel;
+        public MonitorThread( String serverIp, Integer serverPort) {
             this.serverIp = serverIp;
             this.serverPort = serverPort;
         }
@@ -71,34 +84,31 @@ public class NIOConnMonitor {
         @Override
         public void run() {
 
-            //如果状态是未连接，则开始连接
-            if (status.equals(ConnStatus.DIS_CONNECT)) {
+            //开始连接
+            do {
                 try {
-                    connect(channel, serverIp, serverPort);
-                } catch (IOException ignored) {
-                    //ignored ex
+                    if (connector.connect(serverIp, serverPort)) {
+                        isConnected.compareAndSet(false, true);
+                    }else {
+                        //连接失败，等待15s后继续重试
+                        Thread.sleep(CONNECT_RETRY_INTERVAL);
+                    }
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                    //连接失败，等待15s后继续重试
+                    try {
+                        Thread.sleep(CONNECT_RETRY_INTERVAL);
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
                 }
-            }
+            } while (!isConnected.get());
 
             //定时发送心跳请求
 
-
         }
 
-        public void connect(SocketChannel socketChannel, String serverIp, int serverPort) throws IOException {
 
-            do {
-                try {
-                    socketChannel.connect(new InetSocketAddress(InetAddress.getByName(serverIp), serverPort));
-                    status = ConnStatus.CONNECTED;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } while (status.equals(ConnStatus.DIS_CONNECT));
-
-            log.info("客户端信息：" + socketChannel.getLocalAddress().toString() + ":" + socketChannel.socket().getLocalPort());
-            log.info("服务器信息：" + socketChannel.getRemoteAddress().toString() + ":" + socketChannel.socket().getPort());
-        }
     }
 
 

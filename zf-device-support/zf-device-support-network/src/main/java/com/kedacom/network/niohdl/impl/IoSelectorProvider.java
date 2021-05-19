@@ -216,8 +216,10 @@ public class IoSelectorProvider implements IoProvider {
     private static void unRegister(SocketChannel channel, Selector selector, HashMap<SelectionKey, Runnable> map) {
         if (channel.isRegistered()) {
             SelectionKey key = channel.keyFor(selector);
-            key.cancel();
-            map.remove(key);
+            if (key != null) {
+                key.cancel();
+                map.remove(key);
+            }
             selector.wakeup();
         }
     }

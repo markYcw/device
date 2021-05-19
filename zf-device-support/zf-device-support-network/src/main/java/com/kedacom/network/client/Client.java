@@ -19,7 +19,8 @@ public class Client {
         int ServerPort = 8008;
 
         try {
-            NIOConnector connector = NIOConnector.startWith(ServerIp,ServerPort);
+            NIOConnector connector = new NIOConnector();
+            connector = connector.initConnector(ServerIp,ServerPort);
             //connector.send("hello");
             write(connector);
         }catch (Exception e){

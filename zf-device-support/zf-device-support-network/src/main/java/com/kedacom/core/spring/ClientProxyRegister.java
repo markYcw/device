@@ -57,7 +57,6 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
         }
 
 
-
         Set<String> notifyPackages = getBasePackages(annotationMetadata, "notifyPackages");
 
         for (String notifyPackage : notifyPackages) {
@@ -159,10 +158,11 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
 
     }
 
-    private void initConnectorIfNot() {
+    private synchronized void initConnectorIfNot() {
         if (connector == null) {
             try {
-                connector = NIOConnector.startWith(networkConfig.getServerIp(), networkConfig.getServerPort());
+                connector = new NIOConnector();
+                connector.initConnector(networkConfig.getServerIp(), networkConfig.getServerPort());
                 NotifyContext notifyContext = connector.getNotifyContext();
                 notifyContext.setNotifyMap(notifyMap);
             } catch (IOException e) {

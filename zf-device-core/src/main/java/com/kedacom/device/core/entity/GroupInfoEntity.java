@@ -1,13 +1,11 @@
 package com.kedacom.device.core.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author wangxy
@@ -35,19 +33,25 @@ public class GroupInfoEntity implements Serializable {
     private String groupName;
 
     @ApiModelProperty(value = "分组目录")
-    @TableField(value = "group_name")
+    @TableField(value = "group_catalog")
     private String groupCatalog;
 
     @ApiModelProperty(value = "分组码")
-    @TableField(value = "group_cata_log")
+    @TableField(value = "group_code")
     private String groupCode;
 
     @ApiModelProperty(value = "分组排序字段")
-    @TableField(value = "group_code")
+    @TableField(value = "sort_index")
     private Integer sortIndex;
 
     @ApiModelProperty(value = "分组所在设备Id")
-    @TableField(value = "group_devid")
+    @TableField(value = "group_devId")
     private String groupDevId;
+
+    @TableField(fill = FieldFill.INSERT)
+    private Date createTime;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Date updateTime;
 
 }

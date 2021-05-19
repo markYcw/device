@@ -1,8 +1,6 @@
-use
-bmp_new_udms;
+use bmp_new_udms;
 SET NAMES utf8mb4;
-SET
-FOREIGN_KEY_CHECKS = 0;
+SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS `ums_new_device`;
 CREATE TABLE `ums_new_device`
@@ -52,16 +50,16 @@ CREATE TABLE `ums_new_alarm_type`
 DROP TABLE IF EXISTS `ums_new_group`;
 CREATE TABLE `ums_new_group`
 (
-    `id`             varchar(128) NOT NULL COMMENT '数据库Id',
-    `group_id`       varchar(128) DEFAULT NULL COMMENT '分组Id',
-    `parent_id`      varchar(128) DEFAULT '0' COMMENT '父分组Id',
-    `group_name`     varchar(128) DEFAULT NULL COMMENT '分组名称',
-    `group_name`     varchar(128) DEFAULT NULL COMMENT '分组名称',
-    `group_cata_log` varchar(128) DEFAULT NULL COMMENT '分组目录',
-    `group_code`     varchar(128) DEFAULT NULL COMMENT '分组码',
-    `sort_index`     int          DEFAULT '0' COMMENT '分组排序',
-    `create_time`    timestamp    DEFAULT NULL COMMENT '创建时间',
-    `update_time`    timestamp    DEFAULT NULL COMMENT '修改时间',
+    `id`          varchar(128) NOT NULL COMMENT '数据库Id',
+    `group_id`    varchar(128) DEFAULT NULL COMMENT '分组Id',
+    `parent_id`   varchar(128) DEFAULT NULL DEFAULT '0' COMMENT '父分组Id',
+    `group_name`  varchar(128) DEFAULT NULL COMMENT '分组名称',
+    `group_devId` varchar(64)  DEFAULT NULL COMMENT '分组所在设备Id',
+    `group_catalog` varchar(128) DEFAULT NULL COMMENT '分组目录',
+    `group_code`    varchar(128) DEFAULT NULL COMMENT '分组码',
+    `sort_index`  int          DEFAULT '0' COMMENT '分组排序',
+    `create_time` timestamp    DEFAULT NULL COMMENT '创建时间',
+    `update_time` timestamp    DEFAULT NULL COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE
 );
 
@@ -93,6 +91,6 @@ CREATE TABLE `ums_new_sub_device`
     `install_date`     datetime       DEFAULT NULL COMMENT '安装时间',
     `domain_id`        varchar(255)   DEFAULT NULL COMMENT '域Id',
     `pinyin`           varchar(255)   DEFAULT NULL COMMENT '设备名称(拼音+首字母)',
-    `update_time`      timestamp      DEFAULT NULL COMMENT '修改时间',
+    `update_time`                 timestamp    DEFAULT NULL COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE
 );

@@ -222,7 +222,7 @@ public class NIOConnector extends Connector {
             handlerNty(msg, ntyHead);
 
         } else {
-            log.error("cannot read the msg !");
+            log.error("cannot read the msg ! msg is {}", msg);
            // throw new UnSupportMsgException("unknown the msg");
         }
 

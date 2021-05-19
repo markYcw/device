@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class DeviceGroupVo implements Serializable {
 
     @ApiModelProperty(value = "分组Id")
-    private String groupId;
+    private String id;
 
     @ApiModelProperty(value = "分组父Id")
     private String parentId;

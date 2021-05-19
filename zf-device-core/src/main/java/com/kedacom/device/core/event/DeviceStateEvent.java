@@ -4,21 +4,18 @@ import com.alibaba.fastjson.JSONException;
 import com.kedacom.core.anno.KmNotify;
 import com.kedacom.core.pojo.Notify;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
-import org.springframework.context.ApplicationEvent;
 
 /**
  * @author wangxy
  * @describe
  * @date 2021/5/17
  */
-@Setter
-@Getter
+@Data
 @ToString(callSuper = true)
 @KmNotify(name = "devgroupstatusnty")
-public class DeviceStateEvent extends ApplicationEvent implements Notify {
+public class DeviceStateEvent implements Notify {
 
     @ApiModelProperty(value = "分组ID")
     private String id;
@@ -43,10 +40,6 @@ public class DeviceStateEvent extends ApplicationEvent implements Notify {
 
     @ApiModelProperty(value = "操作类型 10:分组增加修改，11:分组删除")
     private Integer operateType;
-
-    public DeviceStateEvent(Object source) {
-        super(source);
-    }
 
     @Override
     public Integer acquireSsno() {

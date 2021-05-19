@@ -5,10 +5,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kedacom.core.anno.KmNotify;
 import com.kedacom.core.pojo.Notify;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
-import org.springframework.context.ApplicationEvent;
 
 import java.util.Date;
 
@@ -17,11 +15,10 @@ import java.util.Date;
  * @describe
  * @date 2021/5/17
  */
-@Setter
-@Getter
+@Data
 @ToString(callSuper = true)
 @KmNotify(name = "devstatusnty")
-public class DeviceEvent extends ApplicationEvent implements Notify {
+public class DeviceEvent  implements Notify {
 
     @ApiModelProperty(value = "设备id")
     private String id;
@@ -99,9 +96,6 @@ public class DeviceEvent extends ApplicationEvent implements Notify {
     @ApiModelProperty(value = "操作类型 1:状态更新，2:GPS, 3:新增create，4:修改update, 5:删除delete, 6:自动审核通过，7:表示设备与分组关系发生变化")
     private Integer operateType;
 
-    public DeviceEvent(Object source) {
-        super(source);
-    }
 
     @Override
     public Integer acquireSsno() {

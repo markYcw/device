@@ -9,19 +9,23 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Auther: hxj
  * @Date: 2021/5/18 20:17
  */
 @Slf4j
-public class UmsNotifyQueryTask implements Runnable{
+public class UmsNotifyQueryTask implements Runnable {
 
     private String umsId;
+
+    private static AtomicInteger anInt = new AtomicInteger(0);
 
     public UmsNotifyQueryTask(String umsId) {
         this.umsId = umsId;
     }
+
     static Retryer<Boolean> retryer;
 
     static {
@@ -39,8 +43,9 @@ public class UmsNotifyQueryTask implements Runnable{
             retryer.call(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
-                        UmsManagerService umsManagerService = SpringUtil.getBean(UmsManagerService.class);
-                        return umsManagerService.queryDeviceGroupNotify(umsId);
+                    log.info("queryDeviceGroupNotify retry,umsId:{},times:{}", umsId, anInt.incrementAndGet());
+                    UmsManagerService umsManagerService = SpringUtil.getBean(UmsManagerService.class);
+                    return umsManagerService.queryDeviceGroupNotify(umsId);
                 }
             });
         } catch (ExecutionException e) {

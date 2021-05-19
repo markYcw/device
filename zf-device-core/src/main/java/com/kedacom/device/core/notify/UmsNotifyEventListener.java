@@ -18,7 +18,6 @@ import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.ums.DeviceGroupVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -53,17 +52,14 @@ public class UmsNotifyEventListener {
         listenerMap.put(callbackName, listenerCallback);
     }
 
-    @Async
     @EventListener(DeviceGroupEvent.class)
     public void deviceGroupNotify(DeviceGroupEvent deviceGroupEvent) {
-        Integer ssid = null;
-
+        log.info("deviceGroupNotify 设备分组通知:{}", deviceGroupEvent);
         List<DeviceGroupVo> result = deviceGroupEvent.getResult();
         if (CollectionUtil.isEmpty(result)) {
             log.error("获取设备分组通知信息为空");
         }
-        log.info("获取设备分组通知信息 ： {}", result);
-        ssid = deviceGroupEvent.getNty().getSsid();
+        Integer ssid = deviceGroupEvent.getNty().getSsid();
         LambdaQueryWrapper<DeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(DeviceInfoEntity::getSessionId, ssid);
         String umsId = deviceMapper.selectOne(wrapper).getId();
@@ -79,17 +75,13 @@ public class UmsNotifyEventListener {
         }
         try {
             if (deviceGroupEvent.getEnd() == 1) {
-                List<GroupInfoEntity> infoEntityList = deviceGroupMap.get(ssid + "_" + deviceGroupEvent.getNty().getSsno());
-                List<String> groupIds = infoEntityList.stream().map(groupInfoEntity -> groupInfoEntity.getGroupId()).collect(Collectors.toList());
+                log.info("deviceGroupNotify 设备分组通知开始同步数据库count:{}.data:{}", groupInfoEntities.size(), groupInfoEntities);
+                List<String> groupIds = groupInfoEntities.stream().map(GroupInfoEntity::getGroupId).collect(Collectors.toList());
+                log.info("deviceGroupNotify 设备分组通知开始同步数据库-分组id:{}", groupIds);
                 LambdaQueryWrapper<GroupInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
                 LambdaUpdateWrapper<GroupInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
-                // 查询本次同步不在notify中的分组，并删除
-                queryWrapper.ne(GroupInfoEntity::getGroupId, groupIds);
-                List<GroupInfoEntity> list = groupMapper.selectList(queryWrapper);
-                if (CollectionUtil.isNotEmpty(list)) groupMapper.deleteBatchIds(list);
-                queryWrapper.clear();
                 // 同步分组
-                for (GroupInfoEntity umsGroupEntity : infoEntityList) {
+                for (GroupInfoEntity umsGroupEntity : groupInfoEntities) {
                     queryWrapper.eq(GroupInfoEntity::getGroupId, umsGroupEntity.getGroupId());
                     GroupInfoEntity checkUmsGroup = groupMapper.selectOne(queryWrapper);
                     if (checkUmsGroup != null) {
@@ -101,14 +93,20 @@ public class UmsNotifyEventListener {
                     updateWrapper.clear();
                     queryWrapper.clear();
                 }
+                // 查询本次同步不在notify中的分组id，并删除
+                updateWrapper.clear();
+                updateWrapper.notIn(GroupInfoEntity::getGroupId, groupIds);
+                groupMapper.delete(updateWrapper);
+                queryWrapper.clear();
                 NotifyCallback notifyCallback = listenerMap.get(ssid + "_" + deviceGroupEvent.getNty().getSsno());
                 if (notifyCallback != null) notifyCallback.success();
             }
         } catch (Exception e) {
+            log.error("deviceGroupNotify  failure:{},retry,exception:{}", ssid + "_" + deviceGroupEvent.getNty().getSsno(), e);
             NotifyCallback notifyCallback = listenerMap.get(ssid + "_" + deviceGroupEvent.getNty().getSsno());
             if (notifyCallback != null) notifyCallback.failure();
             deviceGroupMap.clear();
-            log.info("deviceGroupNotify failure:{}", ssid + "_" + deviceGroupEvent.getNty().getSsno());
+            log.error("deviceGroupNotify finally failure:{}", ssid + "_" + deviceGroupEvent.getNty().getSsno());
         }
 
     }

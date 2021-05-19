@@ -639,27 +639,24 @@ public class UmsManagerServiceImpl implements UmsManagerService {
             log.error("请求获取所有设备分组信息应答 : {}", response);
             throw new UmsManagerException("当前统一设备数据正在同步中");
         }
-        executorService.submit(() -> {
-            listener.setListenerCallback(response.getResp().getSsid() + "_" + response.getResp().getSsno(), new NotifyCallback() {
-                @Override
-                public Boolean success() {
-                    log.info("同步统一设备数据成功");
-                    return true;
-                }
+        listener.setListenerCallback(response.getResp().getSsid() + "_" + response.getResp().getSsno(), new NotifyCallback() {
+            @Override
+            public Boolean success() {
+                log.info("同步统一设备数据成功");
+                return true;
+            }
 
-                @Override
-                public Boolean failure() {
-                    log.error("同步统一设备数据失败:{}", umsId);
-                    UmsNotifyQueryTask notifyQueryTask = map.get(sessionId);
-                    if (notifyQueryTask == null) {
-                        UmsNotifyQueryTask task = new UmsNotifyQueryTask(umsId);
-                        task.run();
-                    }
-                    return false;
+            @Override
+            public Boolean failure() {
+                log.error("同步统一设备数据失败:{}", umsId);
+                UmsNotifyQueryTask notifyQueryTask = map.get(sessionId);
+                if (notifyQueryTask == null) {
+                    UmsNotifyQueryTask task = new UmsNotifyQueryTask(umsId);
+                    task.run();
                 }
-            });
+                return false;
+            }
         });
-
         return true;
     }
 

@@ -18,6 +18,7 @@ import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.ums.DeviceGroupVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -52,6 +53,7 @@ public class UmsNotifyEventListener {
         listenerMap.put(callbackName, listenerCallback);
     }
 
+    @Async
     @EventListener(DeviceGroupEvent.class)
     public void deviceGroupNotify(DeviceGroupEvent deviceGroupEvent) {
         Integer ssid = null;

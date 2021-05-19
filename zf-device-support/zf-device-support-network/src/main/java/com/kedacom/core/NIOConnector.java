@@ -63,9 +63,6 @@ public class NIOConnector extends Connector {
 
         initConnMonitor(serverIp, serverPort);
 
-        //初始化连接状态为正在连接中
-        status = ConnStatus.CONNECTING;
-
 //        NIOConnMonitor connMonitor = new NIOConnMonitor(socketChannel, this);
 //
 //        connMonitor.start(serverIp, serverPort);
@@ -86,6 +83,10 @@ public class NIOConnector extends Connector {
     private synchronized void initConnMonitor(String serverIp, int serverPort) {
 
         log.info("initConnMonitor");
+
+        //初始化连接状态为正在连接中
+        status = ConnStatus.CONNECTING;
+
         if (connMonitor == null || !connMonitor.isConnected()) {
             connMonitor = new NIOConnMonitor( this);
             log.info("start ConnMonitor");

@@ -20,7 +20,7 @@ public class DeviceGroupVo implements Serializable {
     private String parentId;
 
     @ApiModelProperty(value = "分组名称")
-    private String groupName;
+    private String name;
 
     @ApiModelProperty(value = "分组类型：0-新媒体分组，1-自定义分组")
     private Integer type;

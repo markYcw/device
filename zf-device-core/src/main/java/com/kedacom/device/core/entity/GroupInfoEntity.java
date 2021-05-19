@@ -34,12 +34,20 @@ public class GroupInfoEntity implements Serializable {
     @TableField(value = "group_name")
     private String groupName;
 
+    @ApiModelProperty(value = "分组目录")
+    @TableField(value = "group_name")
+    private String groupCatalog;
+
+    @ApiModelProperty(value = "分组码")
+    @TableField(value = "group_cata_log")
+    private String groupCode;
+
+    @ApiModelProperty(value = "分组排序字段")
+    @TableField(value = "group_code")
+    private Integer sortIndex;
+
     @ApiModelProperty(value = "分组所在设备Id")
     @TableField(value = "group_devid")
     private String groupDevId;
-
-    @ApiModelProperty(value = "分组排序字段")
-    @TableField(value = "sort_index")
-    private Integer sortIndex;
 
 }

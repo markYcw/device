@@ -26,6 +26,7 @@ public interface UmsGroupConvert {
     List<SelectChildUmsGroupResponseDto> convertSelectChildUmsGroupResponseDtoList(List<GroupInfoEntity> groupInfoEntityList);
 
     @Mappings({@Mapping(source = "id", target = "groupId"),
+            @Mapping(source = "name",target = "groupName"),
             @Mapping(target = "id", ignore = true)})
     GroupInfoEntity groupVOToInfo(DeviceGroupVo groupVo);
 

@@ -279,11 +279,11 @@ public class NIOConnector extends Connector {
             if (response != null) {
                 processRequests.complete(response);
             } else {
-                log.error("receive msg data is not resp type :{}", msg);
+                log.error("receive msg data is not resp type ssno is [{}] msg :{}", respHead.getSsno(), msg);
             }
         } catch (Exception e) {
-            log.error("parse resp data error ,e: ", e);
-            processRequests.exception(new ParseDataException(e.getMessage(), e), respHead.getSsno());
+            log.error("parse resp data error ssno is [{}], e: ", respHead.getSsno(), e);
+            processRequests.exception(new ParseDataException("[ ssno : "+respHead.getSsno() +" ] "+ e.getMessage(), e), respHead.getSsno());
            // throw new ParseDataException("parse resp data error");
         }
 

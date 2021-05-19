@@ -99,16 +99,15 @@ public class NetworkProxy implements InvocationHandler, FactoryBean<Object>, App
                 if (arg instanceof Request) {
                     ClientInfo.MethodInfo methodInfo = methodInfos.get(method);
                     Class<?> returnType = methodInfo.getReturnType();
-                    Integer ssno = ((Request) arg).acquireSsno();
                     CompletableFuture<Response> future = connector.sendRequest((Request) arg,returnType);
                     try {
                         return future.get(clientInfo.getTimeout(), TimeUnit.MILLISECONDS);
                     } catch (InterruptedException | ExecutionException e) {
-                        log.error("execute request error , request ssno [{}] ,e", ssno, e);
+                        log.error("execute request error , e ", e);
                         throw new KMException("execute request error", e);
                     } catch (TimeoutException e) {
-                        log.error("execute request timeout ! request ssno is [{}] wait time is [{}]  ms ,and caused by : ", clientInfo.getTimeout(), ssno, e);
-                        throw new KMTimeoutException("execute request timeout ! request ssno is "+ssno+" and wait time is " + clientInfo.getTimeout() + " ms");
+                        log.error("execute request timeout !  wait time is [{}]  ms ,and caused by : ", clientInfo.getTimeout(), e);
+                        throw new KMTimeoutException("execute request timeout ! and wait time is " + clientInfo.getTimeout() + " ms");
                     }
                 }
 

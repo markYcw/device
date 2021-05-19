@@ -236,7 +236,9 @@ public class NIOConnector extends Connector {
         Map<String, Class<?>> notifyMap = notifyContext.getNotifyMap();
 
         if (CollectionUtils.isEmpty(notifyMap)) {
-            throw new KMProxyException("@KmNotify not init !");
+            log.error("@KmNotify not init ! and nty {}", msg);
+            return;
+            //throw new KMProxyException("@KmNotify not init !");
         }
 
         Class<?> clazz = notifyMap.get(name);

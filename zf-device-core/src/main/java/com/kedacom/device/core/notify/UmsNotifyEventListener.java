@@ -9,21 +9,25 @@ import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.entity.GroupInfoEntity;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.core.event.DeviceAndGroupEvent;
-import com.kedacom.device.core.event.DeviceStateEvent;
+import com.kedacom.device.core.event.DeviceEvent;
 import com.kedacom.device.core.event.DeviceGroupEvent;
-import com.kedacom.device.core.event.DeviceGroupStateEvent;
+import com.kedacom.device.core.event.DeviceStateEvent;
+import com.kedacom.device.core.kafka.UmsSubDeviceStatusModel;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.GroupMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
+import com.kedacom.device.core.message.UmsKafkaMessageProducer;
 import com.kedacom.device.ums.DeviceGroupVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +47,12 @@ public class UmsNotifyEventListener {
 
     @Resource
     SubDeviceMapper subDeviceMapper;
+
+    @Resource
+    UmsKafkaMessageProducer umsKafkaMessageProducer;
+
+    private ExecutorService executorService = new ThreadPoolExecutor(2,5,0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>(20));
 
     private final ConcurrentHashMap<String, NotifyCallback> listenerMap = new ConcurrentHashMap<>();
 
@@ -116,27 +126,27 @@ public class UmsNotifyEventListener {
 
     }
 
-    @EventListener(DeviceGroupStateEvent.class)
-    public void deviceStateNotify(DeviceGroupStateEvent event) {
-        log.info("设备分组状态变更通知:{}", event);
-        Integer operateType = event.getOperateType();
+    @EventListener(DeviceStateEvent.class)
+    public void deviceStateNotify(DeviceStateEvent deviceStateEvent) {
+        log.info("deviceStateNotify deviceStateEvent:{}", deviceStateEvent);
+        Integer operateType = deviceStateEvent.getOperateType();
         LambdaQueryWrapper<GroupInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(GroupInfoEntity::getGroupId, event.getId());
+        queryWrapper.eq(GroupInfoEntity::getGroupId, deviceStateEvent.getId());
         //设备状态 - 10 ： 分组的添加修改； 11 ： 分组的删除
         if (Event.OPERATETYPE.equals(operateType)) {
             GroupInfoEntity groupInfoEntity = groupMapper.selectOne(queryWrapper);
             if (groupInfoEntity == null) {
                 GroupInfoEntity entity = new GroupInfoEntity();
-                entity.setGroupId(event.getId());
-                entity.setParentId(event.getParentId());
-                entity.setGroupName(event.getName());
-                entity.setSortIndex(event.getSortIndex());
+                entity.setGroupId(deviceStateEvent.getId());
+                entity.setParentId(deviceStateEvent.getParentId());
+                entity.setGroupName(deviceStateEvent.getName());
+                entity.setSortIndex(deviceStateEvent.getSortIndex());
                 groupMapper.insert(entity);
             } else {
-                groupInfoEntity.setGroupId(event.getId());
-                groupInfoEntity.setGroupName(event.getName());
-                groupInfoEntity.setParentId(event.getParentId());
-                groupInfoEntity.setSortIndex(event.getSortIndex());
+                groupInfoEntity.setGroupId(deviceStateEvent.getId());
+                groupInfoEntity.setGroupName(deviceStateEvent.getName());
+                groupInfoEntity.setParentId(deviceStateEvent.getParentId());
+                groupInfoEntity.setSortIndex(deviceStateEvent.getSortIndex());
                 groupMapper.updateById(groupInfoEntity);
             }
         } else {
@@ -146,17 +156,19 @@ public class UmsNotifyEventListener {
 
     @EventListener(DeviceAndGroupEvent.class)
     public void deviceStateNotify(DeviceAndGroupEvent event) {
-        log.info("设备与分组关联状态变更通知:{}", event);
+
+        log.info("设备与分组关心状态变更通知 ： {}", event);
         LambdaUpdateWrapper<SubDeviceInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(SubDeviceInfoEntity::getId, event.getId())
                 .set(SubDeviceInfoEntity::getGbid, event.getGbid())
                 .set(SubDeviceInfoEntity::getGroupId, event.getGroupId());
         subDeviceMapper.update(null, updateWrapper);
+
     }
 
-    @EventListener(DeviceStateEvent.class)
-    public void deviceStatusNotify(DeviceStateEvent event) {
-        log.info("设备状态变更通知:{}", event);
+    @EventListener(DeviceEvent.class)
+    public void deviceStatusNotify(DeviceEvent event) {
+
         Integer operateType = event.getOperateType();
         //TODO 暂时只做了 设备的新增，修改，删除
         if (Event.OPERATETYPETYPE3.equals(operateType)) {
@@ -171,9 +183,28 @@ public class UmsNotifyEventListener {
             subDeviceMapper.deleteById(event.getId());
         }
 
+        executorService.submit(() -> {
+            UmsSubDeviceStatusModel umsSubDeviceStatusModel = UmsSubDeviceStatusModel.builder()
+                    .devId(event.getId())
+                    .devStatus(event.getStatus())
+                    .parentId(event.getParentId())
+                    .timeStamp(System.currentTimeMillis())
+                    .build();
+            umsKafkaMessageProducer.deviceStatusUpdate(umsSubDeviceStatusModel.toString()).addCallback(new ListenableFutureCallback<SendResult<Object, Object>>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    log.error("ID为{}的设备状态变更消息发送失败，失败信息为：{}", event.getId(), throwable);
+                }
+
+                @Override
+                public void onSuccess(SendResult<Object, Object> objectObjectSendResult) {
+                    log.info("ID为{}的设备状态变更消息发送成功，成功信息为：{}", event.getId(), objectObjectSendResult);
+                }
+            });
+        });
     }
 
-    private SubDeviceInfoEntity toSubDeviceInfoEntity(DeviceStateEvent event) {
+    private SubDeviceInfoEntity toSubDeviceInfoEntity(DeviceEvent event) {
 
         SubDeviceInfoEntity subDeviceInfoEntity = new SubDeviceInfoEntity();
         subDeviceInfoEntity.setAddress(event.getAddress());

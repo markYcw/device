@@ -4,8 +4,11 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.kedacom.device.core.convert.UmsDeviceConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
+import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.core.mapper.DeviceMapper;
+import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.core.service.UmsManagerService;
+import com.kedacom.device.core.utils.PinYinUtils;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.LoginRequest;
 import com.kedacom.device.ums.response.LoginResponse;
@@ -16,6 +19,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,11 +29,15 @@ import java.util.List;
 @Component
 @Slf4j
 public class DeviceStartListen implements ApplicationListener<ApplicationStartedEvent> {
+    @Resource
+    private UmsClient umsClient;
 
     @Resource
     private DeviceMapper deviceMapper;
+
     @Resource
-    private UmsClient umsClient;
+    private SubDeviceMapper subDeviceMapper;
+
     @Resource
     private UmsManagerService umsManagerService;
 
@@ -59,6 +67,21 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
             }
         } catch (Exception e) {
             log.error("统一设备项目初始化设备和设备分组失败:{}", e.getMessage());
+        }
+
+        LambdaQueryWrapper<SubDeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
+        List<SubDeviceInfoEntity> selectList = subDeviceMapper.selectList(wrapper);
+        if (CollectionUtil.isNotEmpty(selectList)) {
+            log.info("统一设备项目项目初始化监听事件登录后， 设备名称拼音转化");
+            for (SubDeviceInfoEntity entity : selectList) {
+                String name = entity.getName();
+                String hanZiPinYin = PinYinUtils.getHanZiPinYin(name);
+                String hanZiInitial = PinYinUtils.getHanZiInitials(name);
+                String lowerCase = PinYinUtils.StrToLowerCase(hanZiInitial);
+                entity.setPinyin(hanZiPinYin + "&&" + lowerCase);
+                subDeviceMapper.updateById(entity);
+            }
+            log.info("设备名称拼音转化完成");
         }
     }
 

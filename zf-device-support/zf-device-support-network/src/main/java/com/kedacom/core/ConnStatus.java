@@ -8,7 +8,7 @@ package com.kedacom.core;
 public enum ConnStatus {
 
     /**
-     * 未连接
+     * 未连接/连接断开
      */
     DIS_CONNECT,
 
@@ -21,5 +21,10 @@ public enum ConnStatus {
      * 已连接
      */
     CONNECTED,
+
+    /**
+     * 连接失败
+     */
+    FAILED_CONNECT,
     ;
 }

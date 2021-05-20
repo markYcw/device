@@ -113,7 +113,7 @@ public class ConnectorListenerManager {
                         2,
                         10,
                         TimeUnit.SECONDS,
-                        new LinkedBlockingQueue<>(),
+                        new LinkedBlockingQueue<>(10),
                         new ConnListenerThreadFactory("publish-connector-event-thread-")
                 );
             }

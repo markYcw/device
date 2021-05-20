@@ -283,6 +283,10 @@ public class UmsDeviceTask implements Runnable {
         int countNum = 0;
         for (int i = 0; i <= countNum; i++) {
             QuerySubDeviceInfoResponse umsSubDeviceFromThird = getUmsSubDeviceFromThird(umsDeviceId, queryindex, querycount);
+            if (umsSubDeviceFromThird == null) {
+                log.error("从远端获取设备信息为空");
+                return 0;
+            }
             Integer resultCount = umsSubDeviceFromThird.getQuerycount();
             if (resultCount < querycount) {
                 if (queryindex == 1) {

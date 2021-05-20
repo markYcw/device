@@ -56,4 +56,7 @@ public interface UmsDeviceConvert {
      */
     List<UmsSubDeviceInfoQueryResponseDto> convertUmsSubDeviceInfoQueryResponseDtoList(List<SubDeviceInfoEntity> subDeviceInfoEntityList);
 
+    LoginRequest convertDeviceInfo(DeviceInfoEntity deviceInfoEntity);
+
+
 }

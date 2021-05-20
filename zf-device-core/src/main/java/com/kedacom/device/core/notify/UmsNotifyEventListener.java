@@ -18,6 +18,7 @@ import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.ums.DeviceGroupVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -46,15 +47,17 @@ public class UmsNotifyEventListener {
     private final ConcurrentHashMap<String, NotifyCallback> listenerMap = new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<String, List<GroupInfoEntity>> deviceGroupMap = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, Integer> num = new ConcurrentHashMap<>();
 
     public void setListenerCallback(String callbackName, NotifyCallback listenerCallback) {
         listenerMap.put(callbackName, listenerCallback);
     }
 
+    @Async
     @EventListener(DeviceGroupEvent.class)
     public void deviceGroupNotify(DeviceGroupEvent deviceGroupEvent) {
-        log.info("deviceGroupNotify 设备分组通知:{}", deviceGroupEvent);
+        if (log.isDebugEnabled()) {
+            log.info("deviceGroupNotify 设备分组通知:{}", deviceGroupEvent);
+        }
         List<DeviceGroupVo> result = deviceGroupEvent.getResult();
         if (CollectionUtil.isEmpty(result)) {
             log.error("获取设备分组通知信息为空");
@@ -75,9 +78,11 @@ public class UmsNotifyEventListener {
         }
         try {
             if (deviceGroupEvent.getEnd() == 1) {
-                log.info("deviceGroupNotify 设备分组通知开始同步数据库count:{}.data:{}", groupInfoEntities.size(), groupInfoEntities);
                 List<String> groupIds = groupInfoEntities.stream().map(GroupInfoEntity::getGroupId).collect(Collectors.toList());
-                log.info("deviceGroupNotify 设备分组通知开始同步数据库-分组id:{}", groupIds);
+                if (log.isDebugEnabled()) {
+                    log.info("deviceGroupNotify 设备分组通知开始同步数据库count:{}.data:{}", groupInfoEntities.size(), groupInfoEntities);
+                }
+                log.info("deviceGroupNotify 设备分组通知开始同步数据库-count:{},分组id:{}", groupIds.size(), groupIds);
                 LambdaQueryWrapper<GroupInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
                 LambdaUpdateWrapper<GroupInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
                 // 同步分组
@@ -113,7 +118,7 @@ public class UmsNotifyEventListener {
 
     @EventListener(DeviceStateEvent.class)
     public void deviceStateNotify(DeviceStateEvent deviceStateEvent) {
-
+        log.info("deviceStateNotify deviceStateEvent:{}", deviceStateEvent);
         Integer operateType = deviceStateEvent.getOperateType();
         LambdaQueryWrapper<GroupInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GroupInfoEntity::getGroupId, deviceStateEvent.getId());

@@ -8,6 +8,8 @@ public enum DeviceErrorEnum {
 
     PARAM_ERROR(1001, ""),
 
+    UMS_SERVICE_ERROR(2000,"统一设备服务失败"),
+
     STREAM_MEDIA_FAILED(2010, "流媒体服务失败"),
 
 

@@ -36,7 +36,6 @@ import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -644,13 +643,12 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         listener.setListenerCallback(response.getResp().getSsid() + "_" + response.getResp().getSsno(), new NotifyCallback() {
             @Override
             public Boolean success() {
-                log.info("同步统一设备数据成功");
+                log.info("同步统一设备分组数据成功");
                 return true;
             }
 
             @Override
             public Boolean failure() {
-                log.error("同步统一设备数据失败:{}", umsId);
                 UmsNotifyQueryTask notifyQueryTask = map.get(sessionId);
                 if (notifyQueryTask == null) {
                     UmsNotifyQueryTask task = new UmsNotifyQueryTask(umsId);

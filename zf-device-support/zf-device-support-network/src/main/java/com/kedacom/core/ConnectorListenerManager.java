@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class ConnectorListenerManager {
 
-    private static volatile ConcurrentHashSet<ConnectorListener> LISTENERS = new ConcurrentHashSet<>();
+    private static ConcurrentHashSet<ConnectorListener> LISTENERS = new ConcurrentHashSet<>();
 
     /**
      * 最近一次未发布的连接事件

@@ -114,7 +114,7 @@ public class ConnectorListenerManager {
                         10,
                         TimeUnit.SECONDS,
                         new LinkedBlockingQueue<>(),
-                        new ConnctorListenerThreadFactory("publish-connector-event-thread-")
+                        new ConnListenerThreadFactory("publish-connector-event-thread-")
                 );
             }
 
@@ -212,12 +212,12 @@ public class ConnectorListenerManager {
 
 
 
-    static class ConnctorListenerThreadFactory implements ThreadFactory {
+    static class ConnListenerThreadFactory implements ThreadFactory {
         private final ThreadGroup group;
         private final AtomicInteger threadNumber = new AtomicInteger(1);
         private final String namePrefix;
 
-        ConnctorListenerThreadFactory(String namePrefix) {
+        ConnListenerThreadFactory(String namePrefix) {
             SecurityManager s = System.getSecurityManager();
             this.group = (s != null) ? s.getThreadGroup() :
                     Thread.currentThread().getThreadGroup();

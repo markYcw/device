@@ -33,7 +33,7 @@ public class TvWallServiceImpl implements TvWallService {
         log.info("获取所有大屏配置入参:{}", request);
         TvWallListResponse response = tvWallManageSdk.ls(request);
         log.info("获取所有大屏配置应答:{}", response);
-        handleRes("获取所有大屏配置异常:{},{},{}", response.getError(), null);
+        handleRes("获取所有大屏配置异常:{},{},{}", DeviceErrorEnum.TV_WALL_LIST_FAILED, response.getError(), null);
         return response;
     }
 
@@ -42,7 +42,7 @@ public class TvWallServiceImpl implements TvWallService {
         log.info("获取大屏布局入参:{}", request);
         TvWallLayoutResponse response = tvWallManageSdk.layout(request);
         log.info("获取大屏布局应答:{}", response);
-        handleRes("获取大屏布局异常:{},{},{}", response.getError(), null);
+        handleRes("获取大屏布局异常:{},{},{}", DeviceErrorEnum.TV_WALL_LAYOUT_FAILED, response.getError(), null);
         return response;
     }
 
@@ -51,7 +51,7 @@ public class TvWallServiceImpl implements TvWallService {
         log.info("查询虚拟屏入参:{}", request);
         TvWallQueryPipelineResponse response = tvWallManageSdk.query(request);
         log.info("查询虚拟屏应答:{}", response);
-        handleRes("查询虚拟屏异常:{},{},{}", response.getError(), null);
+        handleRes("查询虚拟屏异常:{},{},{}", DeviceErrorEnum.TV_WALL_QUERY_PIPELINE_FAILED, response.getError(), null);
         return response;
     }
 
@@ -60,7 +60,7 @@ public class TvWallServiceImpl implements TvWallService {
         log.info("配置虚拟屏入参:{}", request);
         TvWallConfigResponse response = tvWallManageSdk.config(request);
         log.info("配置虚拟屏应答:{}", response);
-        handleRes("配置虚拟屏异常:{},{},{}", response.getError(), null);
+        handleRes("配置虚拟屏异常:{},{},{}", DeviceErrorEnum.TV_WALL_CONFIG_FAILED, response.getError(), null);
         return response;
     }
 
@@ -69,7 +69,7 @@ public class TvWallServiceImpl implements TvWallService {
         log.info("配置虚拟屏窗口与资源的绑定关系入参:{}", request);
         TvWallPipelineBindResponse response = tvWallManageSdk.configBind(request);
         log.info("配置虚拟屏窗口与资源的绑定关系应答-:{}", response);
-        handleRes("配置虚拟屏窗口与资源的绑定关系异常:{},{},{}", response.getError(), null);
+        handleRes("配置虚拟屏窗口与资源的绑定关系异常:{},{},{}", DeviceErrorEnum.TV_WALL_PIPELINE_BIND_FAILED, response.getError(), null);
         return response;
     }
 
@@ -78,20 +78,20 @@ public class TvWallServiceImpl implements TvWallService {
         log.info("大屏删除入参:{}", request);
         TvWallDeleteResponse response = tvWallManageSdk.delete(request);
         log.info("大屏删除应答:{}", response);
-        handleRes("获取所有大屏配置异常:{},{},{}", response.getError(), null);
+        handleRes("获取所有大屏配置异常:{},{},{}", DeviceErrorEnum.TV_WALL_DELETE_FAILED, response.getError(), null);
     }
 
-    private void handleRes(String str, Integer errCode, String errorMsg) {
+    private void handleRes(String str, DeviceErrorEnum errorEnum, Integer errCode, String errorMsg) {
         if (errCode != DeviceConstants.SUCCESS) {
             if (StrUtil.isNotBlank(errorMsg)) {
-                log.error(str, errCode, DeviceErrorEnum.TV_WALL_FAILED.getCode(), errorMsg);
-                throw new TvWallException(DeviceErrorEnum.TV_WALL_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
+                log.error(str, errCode, errorEnum.getCode(), errorMsg);
+                throw new TvWallException(errorEnum.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
             } else if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(errCode))) {
-                log.error(str, errCode, DeviceErrorEnum.TV_WALL_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
-                throw new TvWallException(DeviceErrorEnum.TV_WALL_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
+                log.error(str, errCode, errorEnum.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
+                throw new TvWallException(errorEnum.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
             } else {
-                log.error(str, errCode, DeviceErrorEnum.TV_WALL_FAILED.getCode(), DeviceErrorEnum.TV_WALL_FAILED.getMsg());
-                throw new TvWallException(DeviceErrorEnum.TV_WALL_FAILED.getCode(), DeviceErrorEnum.TV_WALL_FAILED.getMsg());
+                log.error(str, errCode, errorEnum.getCode(), errorEnum.getMsg());
+                throw new TvWallException(errorEnum.getCode(), errorEnum.getMsg());
             }
         }
     }

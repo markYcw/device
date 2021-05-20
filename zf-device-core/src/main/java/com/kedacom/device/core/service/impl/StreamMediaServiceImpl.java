@@ -55,7 +55,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         StartRecResponse res = client.startRec(startRecRequest);
         log.info("开启录像应答信息:{}", res);
         String errorMsg = "开启录像失败:{},{}";
-        handleRes(errorMsg, res);
+        handleRes(errorMsg, DeviceErrorEnum.START_REC_FAILED, res);
         return res.acquireData(StartRecResponseVO.class);
     }
 
@@ -74,7 +74,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         BaseResponse response = client.stopRec(stopRecRequest);
         log.info("停止录像应答信息:{}", response);
         String error = "停止录像失败:{},{}";
-        handleRes(error, response);
+        handleRes(error, DeviceErrorEnum.STOP_REC_FAILED, response);
         return true;
     }
 
@@ -91,7 +91,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("查询录像记录交互参数:{}", queryRecRequest);
         QueryRecResponse res = client.queryRec(queryRecRequest);
         log.info("查询录像记录应答信息:{}", res);
-        handleRes(error, res);
+        handleRes(error, DeviceErrorEnum.QUERY_REC__FAILED, res);
         return res.acquireData(QueryRecResponseVO.class);
     }
 
@@ -110,7 +110,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         startAudioMixRequest.setSsid(ssid);
         log.info("开启音频混音交互参数:{}", startAudioMixRequest);
         StartAudioMixResponse res = client.startAudioMix(startAudioMixRequest);
-        handleRes(error, res);
+        handleRes(error, DeviceErrorEnum.START_AUDIO_MIX_FAILED, res);
         StartAudioMixResponseVO response = new StartAudioMixResponseVO();
         response.setMixID(res.getMixID());
         response.setGroupID(groupId);
@@ -131,7 +131,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("停止音频混音交互参数:{}", stopAudioMixRequest);
         BaseResponse res = client.stopAudioMix(stopAudioMixRequest);
         log.info("停止音频混音应答信息:{}", res);
-        handleRes(error, res);
+        handleRes(error, DeviceErrorEnum.STOP_AUDIO_MIX_FAILED, res);
         return true;
     }
 
@@ -148,7 +148,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("更新音频混音交互参数:{}", updateAudioMixRequest);
         BaseResponse res = client.updateAudioMix(updateAudioMixRequest);
         log.info("更新音频混音应答信息:{}", res);
-        handleRes(error, res);
+        handleRes(error, DeviceErrorEnum.UPDATE_AUDIO_MIX_FAILED, res);
         return true;
     }
 
@@ -165,7 +165,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("查询所有混音交互参数:{}", queryAllAudioMixRequest);
         QueryAllAudioMixResponse res = client.queryAllAudioMix(queryAllAudioMixRequest);
         log.info("查询所有混音应答信息:{}", res);
-        handleRes(error, res);
+        handleRes(error, DeviceErrorEnum.QUERY_ALL_AUDIO_MIX_FAILED, res);
         return res.acquireData(List.class);
     }
 
@@ -181,7 +181,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         queryAudioMixRequest.setSsid(ssid);
         log.info("查询混音信息交互参数:{}", queryAudioMixRequest);
         QueryAudioMixResponse res = client.queryAudioMix(queryAudioMixRequest);
-        handleRes(error, res);
+        handleRes(error, DeviceErrorEnum.QUERY_AUDIO_MIX_FAILED, res);
         log.info("查询混音信息应答信息:{}", res);
         return res.acquireData(QueryAudioMixResponseVO.class);
     }
@@ -200,12 +200,11 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         startVideoMixRequest.setSsid(ssid);
         log.info("开始画面合成交互参数:{}", startVideoMixRequest);
         StartVideoMixResponse res = client.startVideoMix(startVideoMixRequest);
-        handleRes(error, res);
+        handleRes(error, DeviceErrorEnum.START_VIDEO_MIX_FAILED, res);
         StartVideoMixResponseVO response = new StartVideoMixResponseVO();
         response.setMixID(res.getMixID());
         response.setGroupID(groupId);
         log.info("开始画面合成应答:{}", response);
-        handleRes(error, res);
         return response;
     }
 
@@ -221,7 +220,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         stopVideoMixRequest.setSsid(ssid);
         log.info("停止画面合成交互参数:{}", stopVideoMixRequest);
         BaseResponse res = client.stopVideoMix(stopVideoMixRequest);
-        handleRes(error, res);
+        handleRes(error, DeviceErrorEnum.STOP_VIDEO_MIX_FAILED, res);
         log.info("停止画面合成应答信息:{}", res);
         return true;
     }
@@ -238,7 +237,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         updateVideoMixRequest.setSsid(ssid);
         log.info("更新画面合成交互参数:{}", updateVideoMixRequest);
         BaseResponse res = client.updateVideoMix(updateVideoMixRequest);
-        handleRes(error, res);
+        handleRes(error, DeviceErrorEnum.UPDATE_VIDEO_MIX_FAILED, res);
         log.info("更新画面合成应答信息:{}", res);
         return true;
     }
@@ -255,7 +254,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         queryAllVideoMixRequest.setSsid(ssid);
         queryAllVideoMixRequest.setGroupID(request.getGroupID());
         QueryAllAudioMixResponse res = client.queryAllVideoMix(queryAllVideoMixRequest);
-        handleRes(error, res);
+        handleRes(error, DeviceErrorEnum.QUERY_ALL_VIDEO_MIX_FAILED, res);
         log.info("查询所有画面合成应答信息:{}", res);
         return res.acquireData(QueryAllAudioMixVO.class);
     }
@@ -272,19 +271,19 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         queryVideoMixRequest.setSsid(ssid);
         log.info("查询画面信息交互参数:{}", queryVideoMixRequest);
         QueryVideoMixResponse res = client.queryVideoMix(queryVideoMixRequest);
-        handleRes(error, res);
+        handleRes(error, DeviceErrorEnum.QUERY_VIDEO_MIX_FAILED, res);
         log.info("查询画面信息应答信息:{}", res);
         return res.acquireData(QueryVideoMixResponseVO.class);
     }
 
-    private void handleRes(String str, BaseResponse res) {
+    private void handleRes(String str, DeviceErrorEnum errorEnum, BaseResponse res) {
         if (res.acquireErrcode() != DeviceConstants.SUCCESS) {
             if (StrUtil.isNotBlank(kmErrCode.matchErrMsg(res.acquireErrcode()))) {
-                log.error(str, DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
-                throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
+                log.error(str, errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
+                throw new StreamMediaException(errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
             } else {
-                log.error(str, DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), DeviceErrorEnum.STREAM_MEDIA_FAILED.getMsg());
-                throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), DeviceErrorEnum.STREAM_MEDIA_FAILED.getMsg());
+                log.error(str, errorEnum.getCode(), errorEnum.getMsg());
+                throw new StreamMediaException(errorEnum.getCode(), errorEnum.getMsg());
             }
         }
     }

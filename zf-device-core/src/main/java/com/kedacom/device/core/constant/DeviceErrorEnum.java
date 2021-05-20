@@ -8,13 +8,26 @@ public enum DeviceErrorEnum {
 
     PARAM_ERROR(1001, ""),
 
-    UMS_SERVICE_ERROR(2000,"统一设备服务失败"),
+    UMS_SERVICE_ERROR(2000, "统一设备服务失败"),
 
-    DEVICE_SYNCHRONIZATION_FAILED(2010,"统一设备同步失败"),
-    DEVICE_NOTIFY_FAILED(2011,"设备同步失败"),
-    DEVICE_GROUP_NOTIFY_FAILED(2012,"设备分组同步失败"),
+    DEVICE_SYNCHRONIZATION_FAILED(2010, "统一设备同步失败"),
+    DEVICE_NOTIFY_FAILED(2011, "设备同步失败"),
+    DEVICE_GROUP_NOTIFY_FAILED(2012, "设备分组同步失败"),
 
     STREAM_MEDIA_FAILED(2020, "流媒体服务失败"),
+    START_REC_FAILED(2021, "开启录像失败"),
+    STOP_REC_FAILED(2022, "停止录像失败"),
+    QUERY_REC__FAILED(2023, "查询录像失败"),
+    START_AUDIO_MIX_FAILED(2024, "开启音频混音失败"),
+    STOP_AUDIO_MIX_FAILED(2025, "停止音频混音失败"),
+    UPDATE_AUDIO_MIX_FAILED(2026, "更新音频混音失败"),
+    QUERY_ALL_AUDIO_MIX_FAILED(2027, "查询所有混音失败"),
+    QUERY_AUDIO_MIX_FAILED(2027, "查询混音信息失败"),
+    START_VIDEO_MIX_FAILED(2027, "开始画面合成失败"),
+    STOP_VIDEO_MIX_FAILED(2027, "停止画面合成失败"),
+    UPDATE_VIDEO_MIX_FAILED(2027, "更新画面合成失败"),
+    QUERY_ALL_VIDEO_MIX_FAILED(2027, "查询所有画面合成失败"),
+    QUERY_VIDEO_MIX_FAILED(2027, "查询画面信息失败"),
 
 
     MSP_REMOTE_ERROR(3001, "调用拼控服务远程接口错误"),

@@ -34,7 +34,7 @@ public class SchemeServiceImpl implements SchemeService {
         log.info("预案的画面布局配置入参:{}", request);
         SchemeConfigResponse response = schemeManageSdk.config(request);
         log.info("预案的画面布局配置应答:{}", response);
-        handleRes("预案的画面布局配置异常:{},{},{}", response.getError(), null);
+        handleRes("预案的画面布局配置异常:{},{},{}", DeviceErrorEnum.SCHEME_CONFIG_FAILED, response.getError(), null);
         return response;
     }
 
@@ -43,21 +43,21 @@ public class SchemeServiceImpl implements SchemeService {
         log.info("查询预案布局，窗口位置信息入参:{}", request);
         SchemeQueryResponse response = schemeManageSdk.query(request);
         log.info("查询预案布局，窗口位置信息应答:{}", response);
-        handleRes("查询预案布局，窗口位置信息异常:{},{},{}", response.getError(), null);
+        handleRes("查询预案布局，窗口位置信息异常:{},{},{}", DeviceErrorEnum.SCHEME_QUERY_FAILED, response.getError(), null);
         return response;
     }
 
-    private void handleRes(String str, Integer errCode, String errorMsg) {
+    private void handleRes(String str, DeviceErrorEnum errorEnum, Integer errCode, String errMsg) {
         if (errCode != DeviceConstants.SUCCESS) {
-            if (StrUtil.isNotBlank(errorMsg)) {
-                log.error(str, errCode, DeviceErrorEnum.SCHEME_FAILED.getCode(), errorMsg);
-                throw new SchemeException(DeviceErrorEnum.SCHEME_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
+            if (StrUtil.isNotBlank(errMsg)) {
+                log.error(str, errCode, errorEnum.getCode(), errMsg);
+                throw new SchemeException(errorEnum.getCode(), errMsg);
             } else if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(errCode))) {
-                log.error(str,errCode, DeviceErrorEnum.SCHEME_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
-                throw new SchemeException(DeviceErrorEnum.SCHEME_FAILED.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
+                log.error(str, errCode, errorEnum.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
+                throw new SchemeException(errorEnum.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
             } else {
-                log.error(str, errCode,DeviceErrorEnum.SCHEME_FAILED.getCode(), DeviceErrorEnum.SCHEME_FAILED.getMsg());
-                throw new SchemeException(DeviceErrorEnum.SCHEME_FAILED.getCode(), DeviceErrorEnum.SCHEME_FAILED.getMsg());
+                log.error(str, errCode, errorEnum.getCode(), errorEnum.getMsg());
+                throw new SchemeException(errorEnum.getCode(), errorEnum.getMsg());
             }
         }
     }

@@ -115,6 +115,20 @@ public class DeviceAdvice {
         return BaseResult.failed(e.getCode(), e.getMessage());
     }
 
+
+    /**
+     * ums异常捕获
+     *
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler({UmsNotifyException.class})
+    public BaseResult handleException(UmsNotifyException e) {
+        return BaseResult.failed(e.getCode(), e.getMessage());
+    }
+
+
     /**
      * ums异常捕获
      *

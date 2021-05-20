@@ -10,7 +10,11 @@ public enum DeviceErrorEnum {
 
     UMS_SERVICE_ERROR(2000,"统一设备服务失败"),
 
-    STREAM_MEDIA_FAILED(2010, "流媒体服务失败"),
+    DEVICE_SYNCHRONIZATION_FAILED(2010,"统一设备同步失败"),
+    DEVICE_NOTIFY_FAILED(2011,"设备同步失败"),
+    DEVICE_GROUP_NOTIFY_FAILED(2012,"设备分组同步失败"),
+
+    STREAM_MEDIA_FAILED(2020, "流媒体服务失败"),
 
 
     MSP_REMOTE_ERROR(3001, "调用拼控服务远程接口错误"),

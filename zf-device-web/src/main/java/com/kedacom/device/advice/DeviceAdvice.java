@@ -115,29 +115,29 @@ public class DeviceAdvice {
         return BaseResult.failed(e.getCode(), e.getMessage());
     }
 
-//    /**
-//     * ums异常捕获
-//     *
-//     * @param e
-//     * @return
-//     */
-//    @ResponseStatus(HttpStatus.OK)
-//    @ExceptionHandler({UmsManagerException.class})
-//    public BaseResult handleException(UmsManagerException e) {
-//        return BaseResult.failed(DeviceErrorEnum.UMS_SERVICE_ERROR.getCode(), DeviceErrorEnum.UMS_SERVICE_ERROR.getMsg());
-//    }
-//
-//
-//    /**
-//     * 统一设备异常捕获
-//     *
-//     * @param e
-//     * @return
-//     */
-//    @ResponseStatus(HttpStatus.OK)
-//    @ExceptionHandler({Exception.class})
-//    public BaseResult handleException(Exception e) {
-//        return BaseResult.failed(DeviceErrorEnum.UMS_SERVICE_ERROR.getCode(), DeviceErrorEnum.UMS_SERVICE_ERROR.getMsg());
-//    }
+    /**
+     * ums异常捕获
+     *
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler({UmsManagerException.class})
+    public BaseResult handleException(UmsManagerException e) {
+        return BaseResult.failed(DeviceErrorEnum.UMS_SERVICE_ERROR.getCode(), DeviceErrorEnum.UMS_SERVICE_ERROR.getMsg());
+    }
+
+
+    /**
+     * 统一设备异常捕获
+     *
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler({Exception.class})
+    public BaseResult handleException(Exception e) {
+        return BaseResult.failed(DeviceErrorEnum.UMS_SERVICE_ERROR.getCode(), DeviceErrorEnum.UMS_SERVICE_ERROR.getMsg());
+    }
 
 }

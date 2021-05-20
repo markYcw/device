@@ -37,24 +37,28 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
     public void onApplicationEvent(ApplicationStartedEvent event) {
         LambdaQueryWrapper<DeviceInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
         List<DeviceInfoEntity> beforeLoginList = deviceMapper.selectList(queryWrapper);
-        if (CollectionUtil.isNotEmpty(beforeLoginList)) {
-            log.info("统一设备项目项目初始化监听事件登录前 DeviceInfoEntity:{}", beforeLoginList);
-            for (DeviceInfoEntity deviceInfoEntity : beforeLoginList) {
-                LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertDeviceInfo(deviceInfoEntity);
-                LoginResponse response = umsClient.login(loginRequest);
-                deviceInfoEntity.setSessionId(String.valueOf(response.acquireSsid()));
-                deviceMapper.updateById(deviceInfoEntity);
+        try {
+            if (CollectionUtil.isNotEmpty(beforeLoginList)) {
+                log.info("统一设备项目项目初始化-设备登录前 DeviceInfoEntity:{}", beforeLoginList);
+                for (DeviceInfoEntity deviceInfoEntity : beforeLoginList) {
+                    LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertDeviceInfo(deviceInfoEntity);
+                    LoginResponse response = umsClient.login(loginRequest);
+                    deviceInfoEntity.setSessionId(String.valueOf(response.acquireSsid()));
+                    deviceMapper.updateById(deviceInfoEntity);
+                }
             }
-        }
 
-        List<DeviceInfoEntity> afterLoginList = deviceMapper.selectList(queryWrapper);
-        if (CollectionUtil.isNotEmpty(afterLoginList)) {
-            log.info("统一设备项目项目初始化监听事件登录后 DeviceInfoEntity:{}", afterLoginList);
-            for (DeviceInfoEntity deviceInfoEntity : afterLoginList) {
-                UmsDeviceInfoSyncRequestDto request = new UmsDeviceInfoSyncRequestDto();
-                request.setUmsId(deviceInfoEntity.getId());
-                umsManagerService.syncDeviceData(request);
+            List<DeviceInfoEntity> afterLoginList = deviceMapper.selectList(queryWrapper);
+            if (CollectionUtil.isNotEmpty(afterLoginList)) {
+                log.info("统一设备项目项目初始化-设备登录后 DeviceInfoEntity:{}", afterLoginList);
+                for (DeviceInfoEntity deviceInfoEntity : afterLoginList) {
+                    UmsDeviceInfoSyncRequestDto request = new UmsDeviceInfoSyncRequestDto();
+                    request.setUmsId(deviceInfoEntity.getId());
+                    umsManagerService.syncDeviceData(request);
+                }
             }
+        } catch (Exception e) {
+            log.error("统一设备项目初始化失败:{}", e.getMessage());
         }
     }
 

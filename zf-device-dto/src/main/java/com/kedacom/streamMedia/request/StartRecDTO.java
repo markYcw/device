@@ -22,15 +22,15 @@ public class StartRecDTO implements Serializable {
     private String umsId;
 
     @NotBlank(message = "设备ID不能为空")
-    @ApiModelProperty("具体设备ID")
+    @ApiModelProperty(value = "监控设备填国标id、会议或者虚拟终端填设备id(此时background_pic_param里面需要填设备类型)、其余填资源id",required = true)
     private String device_id;
 
     @NotNull(message = "录像保存天数不能为空")
-    @ApiModelProperty("录像保存天数")
+    @ApiModelProperty(value = "录像保存天数",required = true)
     private Integer valid_day;
 
     @NotBlank(message = "分辨率不能为空")
-    @ApiModelProperty("分辨率(1080P/720P)")
+    @ApiModelProperty(value = "分辨率(1080P/720P)",required = true)
     private String resolution;
 
     @ApiModelProperty("MIX、MIX_AUDIO、MIX_ALL")

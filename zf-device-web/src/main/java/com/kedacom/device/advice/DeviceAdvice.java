@@ -1,7 +1,6 @@
 package com.kedacom.device.advice;
 
 import com.kedacom.BaseResult;
-import com.kedacom.device.common.exception.AuthException;
 import com.kedacom.device.common.exception.ParamException;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.exception.*;
@@ -44,62 +43,14 @@ public class DeviceAdvice {
     }
 
     /**
-     * 鉴权异常捕获
-     *
-     * @param e
-     * @return
-     */
-    @ResponseStatus(HttpStatus.OK)
-    @ExceptionHandler({AuthException.class})
-    public BaseResult handleException(AuthException e) {
-        return BaseResult.failed(e.getCode(), e.getMessage());
-    }
-
-    /**
-     * 大屏异常捕获
-     *
-     * @param e
-     * @return
-     */
-    @ResponseStatus(HttpStatus.OK)
-    @ExceptionHandler({TvWallException.class})
-    public BaseResult handleException(TvWallException e) {
-        return BaseResult.failed(e.getCode(), e.getMessage());
-    }
-
-    /**
-     * 窗口浏览异常捕获
-     *
-     * @param e
-     * @return
-     */
-    @ResponseStatus(HttpStatus.OK)
-    @ExceptionHandler({TvPlayException.class})
-    public BaseResult handleException(TvPlayException e) {
-        return BaseResult.failed(e.getCode(), e.getMessage());
-    }
-
-    /**
-     * 预案布局异常捕获
-     *
-     * @param e
-     * @return
-     */
-    @ResponseStatus(HttpStatus.OK)
-    @ExceptionHandler({SchemeException.class})
-    public BaseResult handleException(SchemeException e) {
-        return BaseResult.failed(e.getCode(), e.getMessage());
-    }
-
-    /**
      * 解码通道异常捕获
      *
      * @param e
      * @return
      */
     @ResponseStatus(HttpStatus.OK)
-    @ExceptionHandler({DecoderException.class})
-    public BaseResult handleException(DecoderException e) {
+    @ExceptionHandler({MspException.class})
+    public BaseResult handleException(MspException e) {
         return BaseResult.failed(e.getCode(), e.getMessage());
     }
 

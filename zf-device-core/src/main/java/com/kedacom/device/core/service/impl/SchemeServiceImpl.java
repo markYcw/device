@@ -1,16 +1,13 @@
 package com.kedacom.device.core.service.impl;
 
-import cn.hutool.core.util.StrUtil;
 import com.kedacom.acl.network.data.avIntegration.scheme.SchemeConfigResponse;
 import com.kedacom.acl.network.data.avIntegration.scheme.SchemeQueryResponse;
 import com.kedacom.avIntegration.request.scheme.SchemeConfigRequest;
 import com.kedacom.avIntegration.request.scheme.SchemeQueryRequest;
-import com.kedacom.device.core.config.AvIntegrationErrCode;
-import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
-import com.kedacom.device.core.exception.SchemeException;
 import com.kedacom.device.core.msp.SchemeManageSdk;
 import com.kedacom.device.core.service.SchemeService;
+import com.kedacom.device.core.utils.HandleResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,16 +22,15 @@ public class SchemeServiceImpl implements SchemeService {
 
     @Autowired
     private SchemeManageSdk schemeManageSdk;
-
     @Autowired
-    private AvIntegrationErrCode avIntegrationErrCode;
+    private HandleResponseUtil responseUtil;
 
     @Override
     public SchemeConfigResponse config(SchemeConfigRequest request) {
         log.info("预案的画面布局配置入参:{}", request);
         SchemeConfigResponse response = schemeManageSdk.config(request);
         log.info("预案的画面布局配置应答:{}", response);
-        handleRes("预案的画面布局配置异常:{},{},{}", DeviceErrorEnum.SCHEME_CONFIG_FAILED, response.getError(), null);
+        responseUtil.handleMSPRes("预案的画面布局配置异常:{},{},{}", DeviceErrorEnum.SCHEME_CONFIG_FAILED, response.getError(), null);
         return response;
     }
 
@@ -43,22 +39,9 @@ public class SchemeServiceImpl implements SchemeService {
         log.info("查询预案布局，窗口位置信息入参:{}", request);
         SchemeQueryResponse response = schemeManageSdk.query(request);
         log.info("查询预案布局，窗口位置信息应答:{}", response);
-        handleRes("查询预案布局，窗口位置信息异常:{},{},{}", DeviceErrorEnum.SCHEME_QUERY_FAILED, response.getError(), null);
+        responseUtil.handleMSPRes("查询预案布局，窗口位置信息异常:{},{},{}", DeviceErrorEnum.SCHEME_QUERY_FAILED, response.getError(), null);
         return response;
     }
 
-    private void handleRes(String str, DeviceErrorEnum errorEnum, Integer errCode, String errMsg) {
-        if (errCode != DeviceConstants.SUCCESS) {
-            if (StrUtil.isNotBlank(errMsg)) {
-                log.error(str, errCode, errorEnum.getCode(), errMsg);
-                throw new SchemeException(errorEnum.getCode(), errMsg);
-            } else if (StrUtil.isNotBlank(avIntegrationErrCode.matchErrMsg(errCode))) {
-                log.error(str, errCode, errorEnum.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
-                throw new SchemeException(errorEnum.getCode(), avIntegrationErrCode.matchErrMsg(errCode));
-            } else {
-                log.error(str, errCode, errorEnum.getCode(), errorEnum.getMsg());
-                throw new SchemeException(errorEnum.getCode(), errorEnum.getMsg());
-            }
-        }
-    }
+
 }

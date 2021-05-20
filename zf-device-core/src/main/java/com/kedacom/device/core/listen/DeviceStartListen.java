@@ -39,7 +39,7 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
         List<DeviceInfoEntity> beforeLoginList = deviceMapper.selectList(queryWrapper);
         try {
             if (CollectionUtil.isNotEmpty(beforeLoginList)) {
-                log.info("统一设备项目项目初始化-设备登录前 DeviceInfoEntity:{}", beforeLoginList);
+                log.info("统一设备项目初始化-设备登录前 DeviceInfoEntity:{}", beforeLoginList);
                 for (DeviceInfoEntity deviceInfoEntity : beforeLoginList) {
                     LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertDeviceInfo(deviceInfoEntity);
                     LoginResponse response = umsClient.login(loginRequest);
@@ -50,7 +50,7 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
 
             List<DeviceInfoEntity> afterLoginList = deviceMapper.selectList(queryWrapper);
             if (CollectionUtil.isNotEmpty(afterLoginList)) {
-                log.info("统一设备项目项目初始化-设备登录后 DeviceInfoEntity:{}", afterLoginList);
+                log.info("统一设备项目初始化-设备登录后 DeviceInfoEntity:{}", afterLoginList);
                 for (DeviceInfoEntity deviceInfoEntity : afterLoginList) {
                     UmsDeviceInfoSyncRequestDto request = new UmsDeviceInfoSyncRequestDto();
                     request.setUmsId(deviceInfoEntity.getId());
@@ -58,7 +58,7 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
                 }
             }
         } catch (Exception e) {
-            log.error("统一设备项目初始化失败:{}", e.getMessage());
+            log.error("统一设备项目初始化设备和设备分组失败:{}", e.getMessage());
         }
     }
 

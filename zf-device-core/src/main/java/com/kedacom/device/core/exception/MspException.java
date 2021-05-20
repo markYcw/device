@@ -3,12 +3,12 @@ package com.kedacom.device.core.exception;
 import com.kedacom.device.common.exception.DeviceException;
 
 /**
- * 窗口浏览异常异常
+ * 拼控服务服务异常
  *
  * @Auther: hxj
- * @Date: 2021/5/10 17:33
+ * @Date: 2021/5/11 13:24
  */
-public class TvPlayException extends DeviceException {
+public class MspException extends DeviceException {
 
     private Integer code;
 
@@ -23,8 +23,9 @@ public class TvPlayException extends DeviceException {
         return message;
     }
 
-    public TvPlayException(Integer code, String message) {
+    public MspException(Integer code, String message) {
         this.message = message;
         this.code = code;
     }
+
 }

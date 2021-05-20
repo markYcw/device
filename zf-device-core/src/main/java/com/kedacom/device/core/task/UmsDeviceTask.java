@@ -126,30 +126,12 @@ public class UmsDeviceTask implements Runnable {
 
         //同步完成，判断是否同步正常
         //此时查询自己的数据库，判断当前设备总数是否和远程一致
-        int checkTotal;
-//        Integer count = queryCountOfSubDeviceFromThird(umsDeviceId, queryindex, querycount);
-//        checkConnection(checkResult);
-
-//        if (!keepConnection) {
-//            log.error("同步完成后校验设备数量时，远程服务连接异常.....");
-//            //如果此时查询远程服务异常，则降级使用同步前获取到的total来代替
-//            checkTotal = total;
-//
-//        } else {
-//            checkTotal = count;
-//        }
-
-        BasePage<UmsSubDeviceInfoQueryResponseDto> localResult = getUmsSubDeviceFromLocal(umsDeviceId, querycount);
-
+        BasePage<UmsSubDeviceInfoQueryResponseDto> localResult = getUmsSubDeviceFromLocal(querycount);
         long localTotal = localResult.getData().size();
-
         log.info("localResult total: {}", localTotal);
-
         //如果总数一样并且同步过程正常，修改同步状态
         if ((total == localTotal) && syncResult) {
-
             log.info("---------同步成功---------");
-
             syncStatus.compareAndSet(false, true);
         }
     }
@@ -193,26 +175,21 @@ public class UmsDeviceTask implements Runnable {
 
                 //此时还需要检查一下线程池的完成任务数是否和期望的任务数一致
                 long completedTaskCount = executorService.getCompletedTaskCount();
-
                 log.info("expectedCompletedTaskCount:{} ; actualCompletedTaskCount:{}",
                         expectedCompletedTaskCount,
                         completedTaskCount);
-
                 if (expectedCompletedTaskCount == completedTaskCount) {
                     //到这里说明所有设备已经更新完成，那么模式还是同步中的设备则说明这次没有同步到，将模式改为未同步到
-//                    umsSubDeviceManager.updateUmsSubDeviceMod(UmsMod.UPGRADING, UmsMod.EXIST);
-
+                    umsSubDeviceManager.updateUmsSubDeviceMod(UmsMod.UPGRADING, UmsMod.EXIST);
                     //开始同步分组信息
                     try {
                         log.info("本次更新所有统一设备模式已更正。。。。");
                         UmsManagerService umsManagerService = getBean(UmsManagerService.class);
                         log.info("开始获取设备分组信息，统一平台id为[{}]", umsDeviceId);
                         Boolean umsGroupResult = umsManagerService.queryDeviceGroupNotify(umsDeviceId);
-
                         if (!umsGroupResult) {
                             log.error("获取所有设备分组信息失败，统一设备Id为:[{}]", umsDeviceId);
                         }
-
                         log.info("获取设备分组信息完成。。。统一设备Id为:[{}]", umsDeviceId);
                     } catch (Exception e) {
                         log.error("同步设备分组信息异常。。。统一设备Id为:[{}]，e:", umsDeviceId, e);
@@ -220,7 +197,6 @@ public class UmsDeviceTask implements Runnable {
                         return false;
                     }
                     return true;
-
                 } else {
                     log.error("本次更新过程中有任务丢失，" +
                                     "expectedCompletedTaskCount:{} ; " +
@@ -247,22 +223,17 @@ public class UmsDeviceTask implements Runnable {
             Integer code = umsSubDeviceManager.selectAndInsertSubDeviceFromAvFeign(umsDeviceId, curPage, pageSize);
             log.info("返回的code数据为:[{}]", code);
             if (code == Integer.MAX_VALUE) {
-
                 //到这里说明所有设备已经更新完成，那么模式还是同步中的设备则说明这次没有同步到，将模式改为未同步到
-//                umsSubDeviceManager.updateUmsSubDeviceMod(UmsMod.UPGRADING, UmsMod.EXIST);
-
+                umsSubDeviceManager.updateUmsSubDeviceMod(UmsMod.UPGRADING, UmsMod.EXIST);
                 UmsManagerService umsManagerService = getBean(UmsManagerService.class);
                 log.info("开始获取设备分组信息，统一平台id为{}", umsDeviceId);
                 Boolean umsGroupResult = umsManagerService.queryDeviceGroupNotify(umsDeviceId);
-
                 if (!umsGroupResult) {
                     log.error("远程调用统一设备分组接口失败或者未获取到统一设备分组信息,统一设备Id为:[{}]", umsDeviceId);
                     return false;
                 }
-
                 return true;
             }
-
 //            if (curPage == (code)) {
 //                retryTime++;
 //                if (retryTime >= MAX_RETRY_TIME) {
@@ -329,11 +300,10 @@ public class UmsDeviceTask implements Runnable {
     /**
      * 从本地服务获取统一设备下的子设备
      *
-     * @param umsDeviceId 统一设备id
      * @param pageSize    每一页大小
      * @return 结果
      */
-    private BasePage<UmsSubDeviceInfoQueryResponseDto> getUmsSubDeviceFromLocal(String umsDeviceId, Integer pageSize) {
+    private BasePage<UmsSubDeviceInfoQueryResponseDto> getUmsSubDeviceFromLocal(Integer pageSize) {
 
         UmsManagerService umsManagerService = getBean(UmsManagerService.class);
 

@@ -30,6 +30,8 @@ public class NIOConnector extends Connector {
 
     private NIOConnMonitor connMonitor;
 
+    private ConnectorListenerManager listenerManager;
+
     private SocketChannel socketChannel;
 
     private String serverIp;
@@ -54,6 +56,8 @@ public class NIOConnector extends Connector {
         processRequests = SingletonFactory.getInstance(ProcessRequests.class);
 
         notifyContext = SingletonFactory.getInstance(NotifyContext.class);
+
+        listenerManager = ConnectorListenerManager.getInstance();
 
        // socketChannel = SocketChannel.open();
 
@@ -108,6 +112,12 @@ public class NIOConnector extends Connector {
             socketChannel.connect(new InetSocketAddress(InetAddress.getByName(serverIp), serverPort));
         } catch (IOException e) {
             log.error("connect to server failed ,serverIp {} serverPort {} ,caused by ", serverIp, serverPort, e);
+
+            status = ConnStatus.FAILED_CONNECT;
+
+            //发布连接失败通知
+            publishConnectEvent(status, serverIp, serverPort);
+
             return false;
         }
 
@@ -119,6 +129,9 @@ public class NIOConnector extends Connector {
 
         //连接成功
         status = ConnStatus.CONNECTED;
+
+        //发布连接成功事件
+        publishConnectEvent(status, serverIp, serverPort);
 
         return true;
     }
@@ -158,8 +171,29 @@ public class NIOConnector extends Connector {
             connMonitor.close();
         }
 
+        //发布断开连接事件
+        publishConnectEvent(status, serverIp, serverPort);
+
         //开始重新初始化连接监控组件
         initConnMonitor(serverIp, serverPort);
+    }
+
+    /**
+     * 发布通知
+     * @param status 连接状态
+     * @param serverIp 服务端IP
+     * @param serverPort 服务端Port
+     */
+    private void publishConnectEvent(ConnStatus status, String serverIp, Integer serverPort) {
+        try {
+            if (null != listenerManager) {
+                listenerManager.publish(status, serverIp + ":" + serverPort);
+            }
+        } catch (Exception e) {
+
+            log.error("publish connStatus event failed status [{}] ! e", status.toString(), e);
+        }
+
     }
 
 

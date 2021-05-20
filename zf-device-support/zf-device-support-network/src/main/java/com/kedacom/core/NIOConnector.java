@@ -50,7 +50,6 @@ public class NIOConnector extends Connector {
 
     }
 
-
     public synchronized NIOConnector initConnector(String serverIp, int serverPort) throws IOException {
 
         processRequests = SingletonFactory.getInstance(ProcessRequests.class);

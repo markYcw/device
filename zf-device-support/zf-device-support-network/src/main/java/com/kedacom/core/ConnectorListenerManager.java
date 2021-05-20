@@ -1,6 +1,7 @@
 package com.kedacom.core;
 
 import cn.hutool.core.collection.ConcurrentHashSet;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
@@ -17,6 +18,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ConnectorListenerManager {
 
     private static volatile ConcurrentHashSet<ConnectorListener> LISTENERS = new ConcurrentHashSet<>();
+
+    /**
+     * 最近一次未发布的连接事件
+     */
+    private static volatile LastConnEvent lastConnEvent;
 
 
     private ExecutorService executorService;
@@ -55,6 +61,11 @@ public class ConnectorListenerManager {
 
         LISTENERS.add(listener);
 
+        //发布一次最近已连接的事件(因为连接失败会一直重试)
+        if (lastConnEvent != null && ConnStatus.CONNECTED == lastConnEvent.getStatus()) {
+            publish(lastConnEvent.getStatus(), lastConnEvent.getServerAddr());
+        }
+
     }
 
 
@@ -84,8 +95,12 @@ public class ConnectorListenerManager {
      */
     protected void publish(ConnStatus status,String serverAddr) {
 
+        //监听器为空，则暂时将这次通知保存到最近一次状态事件中
         if (CollectionUtils.isEmpty(LISTENERS)) {
             log.info("listeners is empty !");
+            lastConnEvent = new LastConnEvent();
+            lastConnEvent.setServerAddr(serverAddr);
+            lastConnEvent.setStatus(status);
             return;
         }
 
@@ -183,6 +198,16 @@ public class ConnectorListenerManager {
             }
 
         }
+    }
+
+
+    @Data
+    static class LastConnEvent{
+
+        private String serverAddr;
+
+        private ConnStatus status;
+
     }
 
 

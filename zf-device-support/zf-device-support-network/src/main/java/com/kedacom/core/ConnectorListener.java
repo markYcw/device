@@ -12,6 +12,7 @@ package com.kedacom.core;
  * 目前无法单独反馈某一个ssid是否可用
  * @author van.shu
  * @create 2021/5/17 9:50
+ * @see ConnStatus
  */
 public interface ConnectorListener {
 
@@ -19,6 +20,7 @@ public interface ConnectorListener {
     /**
      * 连接成功通知
      * @param serverAddr 服务端信息
+     * @see ConnStatus#CONNECTED
      */
     void onConnected(String serverAddr);
 
@@ -26,18 +28,21 @@ public interface ConnectorListener {
     /**
      * 连接失败通知
      * @param serverAddr 服务端信息
+     * @see ConnStatus#FAILED_CONNECT
      */
     void onConnectFailed(String serverAddr);
 
 
     /**
      * 正在连接中通知
+     * @see ConnStatus#CONNECTING
      */
     void onConnecting(String serverAddr);
 
 
     /**
      * 断链通知
+     * @see ConnStatus#DIS_CONNECT
      */
     void onClosed(String serverAddr);
 

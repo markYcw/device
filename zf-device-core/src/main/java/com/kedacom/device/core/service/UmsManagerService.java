@@ -59,13 +59,6 @@ public interface UmsManagerService {
     Boolean deleteUmsDevice(UmsDeviceInfoDeleteRequestDto requestDto);
 
     /**
-     * 通知第三方服务同步设备列表，第三方同步完成会发送kafka消息
-     * @param requestDto
-     * @return
-     */
-    Boolean notifyThirdServiceSyncData(UmsDeviceInfoSyncRequestDto requestDto);
-
-    /**
      * 手动同步设备数据
      * @param requestDto
      * @return
@@ -157,6 +150,7 @@ public interface UmsManagerService {
     /**
      * 获取所有设备分组
      * @param umsId
+     * @return
      */
     Boolean queryDeviceGroupNotify(String umsId);
 

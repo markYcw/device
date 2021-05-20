@@ -12,18 +12,22 @@ import com.kedacom.device.core.event.DeviceAndGroupEvent;
 import com.kedacom.device.core.event.DeviceEvent;
 import com.kedacom.device.core.event.DeviceGroupEvent;
 import com.kedacom.device.core.event.DeviceStateEvent;
+import com.kedacom.device.core.kafka.UmsSubDeviceStatusModel;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.GroupMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
+import com.kedacom.device.core.message.UmsKafkaMessageProducer;
 import com.kedacom.device.ums.DeviceGroupVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +47,12 @@ public class UmsNotifyEventListener {
 
     @Resource
     SubDeviceMapper subDeviceMapper;
+
+    @Resource
+    UmsKafkaMessageProducer umsKafkaMessageProducer;
+
+    private ExecutorService executorService = new ThreadPoolExecutor(2,5,0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>(20));
 
     private final ConcurrentHashMap<String, NotifyCallback> listenerMap = new ConcurrentHashMap<>();
 
@@ -173,6 +183,25 @@ public class UmsNotifyEventListener {
             subDeviceMapper.deleteById(event.getId());
         }
 
+        executorService.submit(() -> {
+            UmsSubDeviceStatusModel umsSubDeviceStatusModel = UmsSubDeviceStatusModel.builder()
+                    .devId(event.getId())
+                    .devStatus(event.getStatus())
+                    .parentId(event.getParentId())
+                    .timeStamp(System.currentTimeMillis())
+                    .build();
+            umsKafkaMessageProducer.deviceStatusUpdate(umsSubDeviceStatusModel.toString()).addCallback(new ListenableFutureCallback<SendResult<Object, Object>>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    log.error("ID为{}的设备状态变更消息发送失败，失败信息为：{}", event.getId(), throwable);
+                }
+
+                @Override
+                public void onSuccess(SendResult<Object, Object> objectObjectSendResult) {
+                    log.info("ID为{}的设备状态变更消息发送成功，成功信息为：{}", event.getId(), objectObjectSendResult);
+                }
+            });
+        });
     }
 
     private SubDeviceInfoEntity toSubDeviceInfoEntity(DeviceEvent event) {

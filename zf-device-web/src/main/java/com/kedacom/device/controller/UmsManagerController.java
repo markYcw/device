@@ -101,25 +101,6 @@ public class UmsManagerController {
         return BaseResult.failed("删除统一平台信息失败");
     }
 
-    /**
-     * 暂时不去实现
-     *
-     * @param requestDto
-     * @param result
-     * @return
-     */
-    @ApiOperation("通知第三方服务同步设备列表，第三方同步完成会发送kafka消息")
-    @PostMapping("/notify/sync")
-    public BaseResult<String> notifyThirdServiceSyncData(@Valid @RequestBody UmsDeviceInfoSyncRequestDto requestDto, BindingResult result) {
-
-        ValidUtils.paramValid(result);
-        if (umsManagerService.notifyThirdServiceSyncData(requestDto)) {
-            return BaseResult.succeed("通知第三方服务同步设备列表成功");
-        }
-
-        return BaseResult.failed("通知第三方服务同步设备列表失败");
-    }
-
     @ApiOperation("手动同步设备数据")
     @PostMapping("/syncDeviceData")
     public BaseResult<String> syncDeviceData(@Valid @RequestBody UmsDeviceInfoSyncRequestDto requestDto, BindingResult result) {
@@ -216,6 +197,7 @@ public class UmsManagerController {
         return BaseResult.succeed(umsManagerService.selectUmsAlarmTypeList());
     }
 
+    //TODO 开发文档没有过去告警类型的接口(无效接口)
     @ApiOperation("手动触发从远程更新告警类型列表并返回")
     @PostMapping("/updateUmsAlarmTypeList")
     public BaseResult<List<UmsAlarmTypeQueryResponseDto>> updateUmsAlarmTypeList() {
@@ -252,6 +234,7 @@ public class UmsManagerController {
         return BaseResult.succeed(responseDtoList);
     }
 
+    //TODO 发送获取设备分组同步数据的请求（做测试用）
     @ApiOperation("获取分组")
     @PostMapping("/getGroup")
     public BaseResult<Boolean> getGroup(@RequestParam("umsId") String umsId) {

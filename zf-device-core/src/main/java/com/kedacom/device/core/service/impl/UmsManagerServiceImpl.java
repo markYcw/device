@@ -124,7 +124,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
             logoutRequest.setSsid(Integer.valueOf(sessionId));
             LogoutResponse response = umsClient.logout(logoutRequest);
             if (response.acquireErrcode() != 0) {
-                log.error("注销统一平台异常 - umsId : [{}]", id);
+                log.error("注销统一平台异常 - umsId : {}", id);
                 throw new UmsManagerException("注销统一平台异常");
             }
             //2、调用中间件登录接口, 成功后将获取的sessionId存入本地
@@ -207,27 +207,6 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         subDeviceMapper.delete(deleteWrapper);
 
         return true;
-    }
-
-    @Override
-    public Boolean notifyThirdServiceSyncData(UmsDeviceInfoSyncRequestDto requestDto) {
-
-//        String umsId = requestDto.getUmsId();
-//        log.info("通知第三方服务同步数据：{}", umsId);
-//        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(umsId);
-//        if (deviceInfoEntity == null) {
-//            log.error("查询统一平台信息为空 - umsId : [{}]", umsId);
-//            return false;
-//        }
-//        String sessionId = deviceInfoEntity.getSessionId();
-//        //调用接口，成功即返回信息
-//        Boolean aBoolean = umsManagerInterface.notifyThirdServiceSyncData(sessionId);
-//        if (!aBoolean) {
-//            log.error("通知第三方服务同步设备列表失败");
-//            throw new UmsManagerException("通知第三方服务同步设备列表失败");
-//        }
-
-        return null;
     }
 
     @Override
@@ -423,7 +402,9 @@ public class UmsManagerServiceImpl implements UmsManagerService {
 
         List<String> gbIds = requestDto.getGbIds();
         log.info("根据国标id查询设备信息入参 : [{}]", gbIds);
-        List<SubDeviceInfoEntity> subDeviceInfoEntities = subDeviceMapper.selectBatchIds(gbIds);
+        LambdaQueryWrapper<SubDeviceInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(SubDeviceInfoEntity::getGbid, gbIds);
+        List<SubDeviceInfoEntity> subDeviceInfoEntities = subDeviceMapper.selectList(queryWrapper);
         if (CollectionUtil.isEmpty(subDeviceInfoEntities)) {
             log.error("根据国标id查询设备信息为空");
             return null;

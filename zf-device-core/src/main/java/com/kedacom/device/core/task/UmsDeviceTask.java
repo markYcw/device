@@ -1,6 +1,8 @@
 package com.kedacom.device.core.task;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.kedacom.BasePage;
 import com.kedacom.device.ums.response.QuerySubDeviceInfoResponse;
@@ -118,7 +120,7 @@ public class UmsDeviceTask implements Runnable {
         boolean syncResult;
         if (shouldDistribute) {
             syncResult = distribute(totalPage, querycount, umsSubDeviceManager);
-        }else {
+        } else {
             syncResult = doAlone(0, querycount, umsSubDeviceManager);
         }
 
@@ -283,7 +285,7 @@ public class UmsDeviceTask implements Runnable {
         int countNum = 0;
         for (int i = 0; i <= countNum; i++) {
             QuerySubDeviceInfoResponse umsSubDeviceFromThird = getUmsSubDeviceFromThird(umsDeviceId, queryindex, querycount);
-            if (umsSubDeviceFromThird == null) {
+            if (ObjectUtil.isNull(umsSubDeviceFromThird.getQuerycount()) || CollectionUtil.isEmpty(umsSubDeviceFromThird.getDevinfo())) {
                 log.error("从远端获取设备信息为空");
                 return 0;
             }
@@ -294,8 +296,8 @@ public class UmsDeviceTask implements Runnable {
                 }
                 return queryindex * querycount + resultCount;
             }
-            countNum ++;
-            queryindex ++;
+            countNum++;
+            queryindex++;
         }
 
         return 0;
@@ -305,8 +307,8 @@ public class UmsDeviceTask implements Runnable {
      * 从远端获取统一设备下子设备
      *
      * @param umsDeviceId 统一设备id
-     * @param queryindex 查询起始数
-     * @param querycount 查询总数
+     * @param queryindex  查询起始数
+     * @param querycount  查询总数
      * @return 结果
      */
     private QuerySubDeviceInfoResponse getUmsSubDeviceFromThird(String umsDeviceId, Integer queryindex, Integer querycount) {
@@ -377,7 +379,7 @@ public class UmsDeviceTask implements Runnable {
      * @param totalPage 总页数
      */
     private void setPoolSize(int totalPage) {
-        if ( totalPage <= 50) {
+        if (totalPage <= 50) {
             return;
         }
 

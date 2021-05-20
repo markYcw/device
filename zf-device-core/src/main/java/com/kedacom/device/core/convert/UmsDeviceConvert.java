@@ -23,8 +23,10 @@ public interface UmsDeviceConvert {
     UmsDeviceConvert INSTANCE = Mappers.getMapper(UmsDeviceConvert.class);
 
     /* ******** 请求参数的转换 ******** */
+
     /**
      * 新增统一平台信息
+     *
      * @param requestDto
      * @return
      */
@@ -32,6 +34,7 @@ public interface UmsDeviceConvert {
 
     /**
      * 更新统一平台信息
+     *
      * @param requestDto
      * @return
      */
@@ -42,8 +45,10 @@ public interface UmsDeviceConvert {
     LoginRequest convertUmsDeviceInfoUpdateRequestVo(UmsDeviceInfoUpdateRequestDto requestDto);
 
     /* ******** 转换成响应参数 ******** */
+
     /**
      * ums实体转换响应参数类
+     *
      * @param deviceInfoEntityList
      * @return
      */
@@ -51,6 +56,7 @@ public interface UmsDeviceConvert {
 
     /**
      * 子设备信息转换响应参数类
+     *
      * @param subDeviceInfoEntityList
      * @return
      */

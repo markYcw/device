@@ -28,6 +28,7 @@ public enum DeviceErrorEnum {
     UPDATE_VIDEO_MIX_FAILED(2027, "更新画面合成失败"),
     QUERY_ALL_VIDEO_MIX_FAILED(2027, "查询所有画面合成失败"),
     QUERY_VIDEO_MIX_FAILED(2027, "查询画面信息失败"),
+    SEND_TRANS_DATA_FAILED(2028, "发送透明通道失败"),
 
 
     MSP_REMOTE_ERROR(3001, "调用拼控服务远程接口错误"),

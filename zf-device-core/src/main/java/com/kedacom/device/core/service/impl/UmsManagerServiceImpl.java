@@ -6,9 +6,6 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kedacom.BasePage;
-import com.kedacom.core.pojo.BaseResponse;
-import com.kedacom.device.core.config.KmErrCode;
-import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.constant.UmsMod;
 import com.kedacom.device.core.convert.UmsAlarmTypeConvert;
@@ -19,7 +16,6 @@ import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.entity.GroupInfoEntity;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.core.exception.UmsManagerException;
-import com.kedacom.device.core.exception.UmsNotifyException;
 import com.kedacom.device.core.mapper.AlarmTypeMapper;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.GroupMapper;
@@ -29,6 +25,7 @@ import com.kedacom.device.core.notify.UmsNotifyEventListener;
 import com.kedacom.device.core.service.UmsManagerService;
 import com.kedacom.device.core.task.UmsDeviceTask;
 import com.kedacom.device.core.task.UmsNotifyQueryTask;
+import com.kedacom.device.core.utils.HandleResponseUtil;
 import com.kedacom.device.core.utils.PinYinUtils;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.LoginRequest;
@@ -78,7 +75,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
     @Autowired
     private UmsNotifyEventListener listener;
     @Autowired
-    private KmErrCode kmErrCode;
+    private HandleResponseUtil responseUtil;
 
     private final ConcurrentHashMap<String, UmsNotifyQueryTask> map = new ConcurrentHashMap<>();
 
@@ -644,8 +641,8 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         queryDeviceRequest.setSsid(Integer.valueOf(sessionId));
         QueryAllDeviceGroupResponse response = umsClient.getalldevgroup(queryDeviceRequest);
         log.info("请求获取所有设备分组信息应答:{}", response);
-        String error = "请求获取所有设备分组信息失败:{},{}";
-        handleRes(error, response);
+        String error = "请求获取所有设备分组信息失败:{},{},{}";
+        responseUtil.handleUMSNotifyRes(error, DeviceErrorEnum.DEVICE_GROUP_NOTIFY_FAILED, response);
         listener.setListenerCallback(response.getResp().getSsid() + "_" + response.getResp().getSsno(), new NotifyCallback() {
             @Override
             public Boolean success() {
@@ -666,15 +663,5 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         return true;
     }
 
-    private void handleRes(String str, BaseResponse res) {
-        if (res.acquireErrcode() != DeviceConstants.SUCCESS) {
-            if (StrUtil.isNotBlank(kmErrCode.matchErrMsg(res.acquireErrcode()))) {
-                log.error(str, DeviceErrorEnum.DEVICE_SYNCHRONIZATION_FAILED.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
-                throw new UmsNotifyException(DeviceErrorEnum.DEVICE_SYNCHRONIZATION_FAILED.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
-            } else {
-                log.error(str, DeviceErrorEnum.DEVICE_SYNCHRONIZATION_FAILED.getCode(), DeviceErrorEnum.DEVICE_SYNCHRONIZATION_FAILED.getMsg());
-                throw new UmsNotifyException(DeviceErrorEnum.DEVICE_SYNCHRONIZATION_FAILED.getCode(), DeviceErrorEnum.DEVICE_SYNCHRONIZATION_FAILED.getMsg());
-            }
-        }
-    }
+
 }

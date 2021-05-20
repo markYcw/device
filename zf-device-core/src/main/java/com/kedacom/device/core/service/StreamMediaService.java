@@ -37,4 +37,6 @@ public interface StreamMediaService {
 
     QueryVideoMixResponseVO queryVideoMix(QueryVideoMixDTO request);
 
+    Boolean sendTransData(SendTransDataDTO request);
+
 }

@@ -35,9 +35,9 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
 
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
-        LambdaQueryWrapper<DeviceInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
-        List<DeviceInfoEntity> beforeLoginList = deviceMapper.selectList(queryWrapper);
         try {
+            LambdaQueryWrapper<DeviceInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
+            List<DeviceInfoEntity> beforeLoginList = deviceMapper.selectList(queryWrapper);
             if (CollectionUtil.isNotEmpty(beforeLoginList)) {
                 log.info("统一设备项目初始化-设备登录前 DeviceInfoEntity:{}", beforeLoginList);
                 for (DeviceInfoEntity deviceInfoEntity : beforeLoginList) {

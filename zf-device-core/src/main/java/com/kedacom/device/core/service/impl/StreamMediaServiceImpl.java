@@ -51,7 +51,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("开启录像交互参数:{}", startRecRequest);
         StartRecResponse res = client.startRec(startRecRequest);
         log.info("开启录像应答信息:{}", res);
-        String errorMsg = "开启录像失败:{},{}";
+        String errorMsg = "开启录像失败:{},{},{}";
         responseUtil.handleSMSRes(errorMsg, DeviceErrorEnum.START_REC_FAILED, res);
         return res.acquireData(StartRecResponseVO.class);
     }
@@ -70,14 +70,14 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("停止录像交互参数:{}", stopRecRequest);
         BaseResponse response = client.stopRec(stopRecRequest);
         log.info("停止录像应答信息:{}", response);
-        String error = "停止录像失败:{},{}";
+        String error = "停止录像失败:{},{},{}";
         responseUtil.handleSMSRes(error, DeviceErrorEnum.STOP_REC_FAILED, response);
         return true;
     }
 
     @Override
     public QueryRecResponseVO queryRec(QueryRecDTO request) {
-        String error = "查询录像记录失败:{},{}";
+        String error = "查询录像记录失败:{},{},{}";
         log.info("查询录像记录入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
@@ -94,7 +94,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
 
     @Override
     public StartAudioMixResponseVO startAudioMix(StartAudioMixDTO request) {
-        String error = "开启音频混音失败:{},{}";
+        String error = "开启音频混音失败:{},{},{}";
         log.info("开启音频混音入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
@@ -107,17 +107,17 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         startAudioMixRequest.setSsid(ssid);
         log.info("开启音频混音交互参数:{}", startAudioMixRequest);
         StartAudioMixResponse res = client.startAudioMix(startAudioMixRequest);
+        log.info("开启音频混音返参:{}", res);
         responseUtil.handleSMSRes(error, DeviceErrorEnum.START_AUDIO_MIX_FAILED, res);
         StartAudioMixResponseVO response = new StartAudioMixResponseVO();
         response.setMixID(res.getMixID());
         response.setGroupID(groupId);
-        log.info("开启音频混音返参:{}", response);
         return response;
     }
 
     @Override
     public Boolean stopAudioMix(StopAudioMixDTO request) {
-        String error = "停止音频混音失败:{},{}";
+        String error = "停止音频混音失败:{},{},{}";
         log.info("停止音频混音入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
@@ -134,7 +134,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
 
     @Override
     public Boolean updateAudioMix(UpdateAudioMixDTO request) {
-        String error = "更新音频混音失败:{},{}";
+        String error = "更新音频混音失败:{},{},{}";
         log.info("更新音频混音入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
@@ -151,7 +151,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
 
     @Override
     public List<String> queryAllAudioMix(QueryAllAudioMixDTO request) {
-        String error = "查询所有混音失败:{},{}";
+        String error = "查询所有混音失败:{},{},{}";
         log.info("查询所有混音入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
@@ -168,7 +168,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
 
     @Override
     public QueryAudioMixResponseVO queryAudioMix(QueryAudioMixDTO request) {
-        String error = "查询混音信息失败:{},{}";
+        String error = "查询混音信息失败:{},{},{}";
         log.info("查询混音信息入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
@@ -178,14 +178,14 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         queryAudioMixRequest.setSsid(ssid);
         log.info("查询混音信息交互参数:{}", queryAudioMixRequest);
         QueryAudioMixResponse res = client.queryAudioMix(queryAudioMixRequest);
-        responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_AUDIO_MIX_FAILED, res);
         log.info("查询混音信息应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_AUDIO_MIX_FAILED, res);
         return res.acquireData(QueryAudioMixResponseVO.class);
     }
 
     @Override
     public StartVideoMixResponseVO startVideoMix(StartVideoMixDTO request) {
-        String error = "开始画面合成失败:{},{}";
+        String error = "开始画面合成失败:{},{},{}";
         log.info("开始画面合成入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
@@ -197,17 +197,17 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         startVideoMixRequest.setSsid(ssid);
         log.info("开始画面合成交互参数:{}", startVideoMixRequest);
         StartVideoMixResponse res = client.startVideoMix(startVideoMixRequest);
+        log.info("开始画面合成应答:{}", res);
         responseUtil.handleSMSRes(error, DeviceErrorEnum.START_VIDEO_MIX_FAILED, res);
         StartVideoMixResponseVO response = new StartVideoMixResponseVO();
         response.setMixID(res.getMixID());
         response.setGroupID(groupId);
-        log.info("开始画面合成应答:{}", response);
         return response;
     }
 
     @Override
     public Boolean stopVideoMix(StopVideoMixDTO request) {
-        String error = "停止画面合成失败:{},{}";
+        String error = "停止画面合成失败:{},{},{}";
         log.info("停止画面合成入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
@@ -217,14 +217,14 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         stopVideoMixRequest.setSsid(ssid);
         log.info("停止画面合成交互参数:{}", stopVideoMixRequest);
         BaseResponse res = client.stopVideoMix(stopVideoMixRequest);
-        responseUtil.handleSMSRes(error, DeviceErrorEnum.STOP_VIDEO_MIX_FAILED, res);
         log.info("停止画面合成应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.STOP_VIDEO_MIX_FAILED, res);
         return true;
     }
 
     @Override
     public Boolean updateVideoMix(UpdateVideoMixDTO request) {
-        String error = "更新画面合成失败:{},{}";
+        String error = "更新画面合成失败:{},{},{}";
         log.info("更新画面合成入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
@@ -234,14 +234,14 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         updateVideoMixRequest.setSsid(ssid);
         log.info("更新画面合成交互参数:{}", updateVideoMixRequest);
         BaseResponse res = client.updateVideoMix(updateVideoMixRequest);
-        responseUtil.handleSMSRes(error, DeviceErrorEnum.UPDATE_VIDEO_MIX_FAILED, res);
         log.info("更新画面合成应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.UPDATE_VIDEO_MIX_FAILED, res);
         return true;
     }
 
     @Override
     public QueryAllAudioMixVO queryAllVideoMix(QueryAllVideoMixDTO request) {
-        String error = "查询所有画面合成失败:{},{}";
+        String error = "查询所有画面合成失败:{},{},{}";
         log.info("查询所有画面合成入参信息 :{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
@@ -251,14 +251,14 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         queryAllVideoMixRequest.setSsid(ssid);
         queryAllVideoMixRequest.setGroupID(request.getGroupID());
         QueryAllAudioMixResponse res = client.queryAllVideoMix(queryAllVideoMixRequest);
-        responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_ALL_VIDEO_MIX_FAILED, res);
         log.info("查询所有画面合成应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_ALL_VIDEO_MIX_FAILED, res);
         return res.acquireData(QueryAllAudioMixVO.class);
     }
 
     @Override
     public QueryVideoMixResponseVO queryVideoMix(QueryVideoMixDTO request) {
-        String error = "查询画面信息失败:{},{}";
+        String error = "查询画面信息失败:{},{},{}";
         log.info("查询画面信息入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
@@ -268,10 +268,25 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         queryVideoMixRequest.setSsid(ssid);
         log.info("查询画面信息交互参数:{}", queryVideoMixRequest);
         QueryVideoMixResponse res = client.queryVideoMix(queryVideoMixRequest);
-        responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_VIDEO_MIX_FAILED, res);
         log.info("查询画面信息应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_VIDEO_MIX_FAILED, res);
         return res.acquireData(QueryVideoMixResponseVO.class);
     }
 
+    @Override
+    public Boolean sendTransData(SendTransDataDTO request) {
+        String error = "发送透明通道数据失败:{},{},{}";
+        log.info("发送透明通道数据入参信息:{}", request);
 
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        SendTransDataRequest sendTransDataRequest = streamMediaConvert.convertSendTransDataDTO(request);
+        sendTransDataRequest.setSsid(ssid);
+        log.info("发送透明通道数据交互参数:{}", sendTransDataRequest);
+        SendTransDataResponse res = client.sendTransData(sendTransDataRequest);
+        log.info("发送透明通道数据应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.SEND_TRANS_DATA_FAILED, res);
+        return true;
+    }
 }

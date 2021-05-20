@@ -149,4 +149,14 @@ public class StreamMediaController {
         return BaseResult.succeed(queryVideoMixResponseVO);
     }
 
+    @ApiOperation("发送透明通道数据")
+    @PostMapping("/sendTransData")
+    public BaseResult<Boolean> sendTransData(@Valid @RequestBody SendTransDataDTO sendTransDataDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean aBoolean = streamMediaService.sendTransData(sendTransDataDTO);
+        return BaseResult.succeed("发送成功", aBoolean);
+    }
+
+
 }

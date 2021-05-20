@@ -1,5 +1,7 @@
 package com.kedacom.device.core.convert;
 
+import com.kedacom.device.core.entity.TransDataEntity;
+import com.kedacom.device.core.event.TransDataNotifyEvent;
 import com.kedacom.device.stream.request.*;
 import com.kedacom.streamMedia.request.*;
 import org.mapstruct.Mapper;
@@ -37,5 +39,9 @@ public interface StreamMediaConvert {
     UpdateVideoMixRequest convertUpdateVideoMixRequest(UpdateVideoMixDTO request);
 
     QueryVideoMixRequest convertQueryVideoMixRequest(QueryVideoMixDTO request);
+
+    SendTransDataRequest convertSendTransDataDTO(SendTransDataDTO request);
+
+    TransDataEntity convertTransDataNotifyEvent(TransDataNotifyEvent event);
 
 }

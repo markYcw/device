@@ -119,4 +119,12 @@ public interface StreamMediaClient {
      */
     QueryVideoMixResponse queryVideoMix(QueryVideoMixRequest queryVideoMixRequest);
 
+    /**
+     * 发送透明通道数据
+     *
+     * @param sendTransDataRequest
+     * @return SendTransDataResponse
+     */
+    SendTransDataResponse sendTransData(SendTransDataRequest sendTransDataRequest);
+
 }

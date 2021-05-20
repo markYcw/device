@@ -8,6 +8,7 @@ import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.exception.MspException;
 import com.kedacom.device.core.exception.StreamMediaException;
+import com.kedacom.device.core.exception.UmsNotifyException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -59,11 +60,30 @@ public class HandleResponseUtil {
     public void handleSMSRes(String str, DeviceErrorEnum errorEnum, BaseResponse res) {
         if (res.acquireErrcode() != DeviceConstants.SUCCESS) {
             if (StrUtil.isNotBlank(kmErrCode.matchErrMsg(res.acquireErrcode()))) {
-                log.error(str, errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
+                log.error(str, res.acquireErrcode(), errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
                 throw new StreamMediaException(errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
             } else {
-                log.error(str, errorEnum.getCode(), errorEnum.getMsg());
+                log.error(str, res.acquireErrcode(), errorEnum.getCode(), errorEnum.getMsg());
                 throw new StreamMediaException(errorEnum.getCode(), errorEnum.getMsg());
+            }
+        }
+    }
+
+    /**
+     * 处理ums通知异常
+     *
+     * @param str
+     * @param errorEnum
+     * @param res
+     */
+    public void handleUMSNotifyRes(String str, DeviceErrorEnum errorEnum, BaseResponse res) {
+        if (res.acquireErrcode() != DeviceConstants.SUCCESS) {
+            if (StrUtil.isNotBlank(kmErrCode.matchErrMsg(res.acquireErrcode()))) {
+                log.error(str, res.acquireErrcode(), errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
+                throw new UmsNotifyException(errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
+            } else {
+                log.error(str, res.acquireErrcode(), errorEnum.getCode(), errorEnum.getMsg());
+                throw new UmsNotifyException(errorEnum.getCode(), errorEnum.getMsg());
             }
         }
     }

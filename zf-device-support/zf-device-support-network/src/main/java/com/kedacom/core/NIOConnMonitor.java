@@ -34,7 +34,7 @@ public class NIOConnMonitor {
 
     private MonitorThread task;
 
-    private static volatile AtomicBoolean isConnected = new AtomicBoolean(false);
+    private static AtomicBoolean isConnected = new AtomicBoolean(false);
 
 
     /**

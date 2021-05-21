@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * @Auther: hxj
@@ -88,10 +87,10 @@ public class StreamMediaController {
 
     @ApiOperation("查询所有混音 返回混音ID集合")
     @PostMapping("/queryAllAudioMix")
-    public BaseResult<List<String>> queryAllAudioMix(@Valid @RequestBody QueryAllAudioMixDTO queryAllAudioMixDTO, BindingResult br) {
+    public BaseResult<QueryAllAudioMixVO> queryAllAudioMix(@Valid @RequestBody QueryAllAudioMixDTO queryAllAudioMixDTO, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        List<String> queryAllAudioMix = streamMediaService.queryAllAudioMix(queryAllAudioMixDTO);
+        QueryAllAudioMixVO queryAllAudioMix = streamMediaService.queryAllAudioMix(queryAllAudioMixDTO);
         return BaseResult.succeed(queryAllAudioMix);
     }
 

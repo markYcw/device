@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class SendTransDataDTO implements Serializable {
 
     @NotBlank(message = "平台id不能为空")
-    @ApiModelProperty(value = "平台id")
+    @ApiModelProperty(value = "平台id",required = true)
     private String umsId;
 
     @NotBlank(message = "设备国标id不能为空")

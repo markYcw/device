@@ -3,8 +3,6 @@ package com.kedacom.device.core.service;
 import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
 
-import java.util.List;
-
 /**
  * @Auther: hxj
  * @Date: 2021/4/29 16:34
@@ -23,7 +21,7 @@ public interface StreamMediaService {
 
     Boolean updateAudioMix(UpdateAudioMixDTO request);
 
-    List<String> queryAllAudioMix(QueryAllAudioMixDTO request);
+    QueryAllAudioMixVO queryAllAudioMix(QueryAllAudioMixDTO request);
 
     QueryAudioMixResponseVO queryAudioMix(QueryAudioMixDTO request);
 

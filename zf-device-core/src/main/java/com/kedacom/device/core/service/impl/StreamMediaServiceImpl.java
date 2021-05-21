@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -150,7 +149,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     }
 
     @Override
-    public List<String> queryAllAudioMix(QueryAllAudioMixDTO request) {
+    public QueryAllAudioMixVO queryAllAudioMix(QueryAllAudioMixDTO request) {
         String error = "查询所有混音失败:{},{},{}";
         log.info("查询所有混音入参信息:{}", request);
 
@@ -163,7 +162,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         QueryAllAudioMixResponse res = client.queryAllAudioMix(queryAllAudioMixRequest);
         log.info("查询所有混音应答信息:{}", res);
         responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_ALL_AUDIO_MIX_FAILED, res);
-        return res.acquireData(List.class);
+        return res.acquireData(QueryAllAudioMixVO.class);
     }
 
     @Override

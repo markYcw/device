@@ -52,18 +52,18 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
         requestVo.setQuerycount(pageSize);
         QuerySubDeviceInfoResponse responseVo = umsClient.querydev(requestVo);
 
-        if (responseVo.getResp().getErrorcode() != 0) {
-            for (int i = 0; i < REQUEST3; i ++) {
-                responseVo = umsClient.querydev(requestVo);
-                if (responseVo.getResp().getErrorcode() == 0) {
-                    break;
-                }
-                if (i == 2) {
-                    log.error("手动同步设备第{}页异常，同步数据为{}条", curPage, pageSize);
-                    return 0;
-                }
-            }
-        }
+//        if (responseVo.getResp().getErrorcode() != 0) {
+//            for (int i = 0; i < REQUEST3; i ++) {
+//                responseVo = umsClient.querydev(requestVo);
+//                if (responseVo.getResp().getErrorcode() == 0) {
+//                    break;
+//                }
+//                if (i == 2) {
+//                    log.error("手动同步设备第{}页异常，同步数据为{}条", curPage, pageSize);
+//                    return 0;
+//                }
+//            }
+//        }
         List<SubDeviceInfoResponseVo> responseVoList = responseVo.getDevinfo();
         log.info("当前第{}页查询到的数据条数是{}", curPage, responseVoList.size());
         if (CollUtil.isEmpty(responseVoList) && curPage != 1) {
@@ -81,7 +81,7 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
                 umsSubDeviceInfoEntity.setPinyin(hanZiPinYin + "&&" + lowerCase);
                 umsSubDeviceInfoEntity.setParentId(umsDeviceId);
                 if (subDeviceInfoMapper.selectById(umsSubDeviceInfoEntity.getId()) != null) {
-                    log.info("已存在Id为:{}", umsSubDeviceInfoEntity.getId());
+//                    log.info("已存在Id为:{}", umsSubDeviceInfoEntity.getId());
                     int i = subDeviceInfoMapper.updateById(umsSubDeviceInfoEntity);
                     if (i <= 0) {
                         log.error("设备id:{},更新失败", umsSubDeviceInfoEntity.getId());

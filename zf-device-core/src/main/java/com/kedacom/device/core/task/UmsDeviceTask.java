@@ -127,7 +127,7 @@ public class UmsDeviceTask implements Runnable {
         //同步完成，判断是否同步正常
         //此时查询自己的数据库，判断当前设备总数是否和远程一致
         BasePage<UmsSubDeviceInfoQueryResponseDto> localResult = getUmsSubDeviceFromLocal(querycount);
-        long localTotal = localResult.getData().size();
+        long localTotal = localResult.getTotal();
         log.info("localResult total: {}", localTotal);
         //如果总数一样并且同步过程正常，修改同步状态
         if ((total == localTotal) && syncResult) {

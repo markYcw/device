@@ -4,9 +4,7 @@ import com.kedacom.core.pojo.BaseRequest;
 import com.kedacom.streamMedia.info.AudioMixer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
@@ -30,7 +28,7 @@ public class StartAudioMixRequest extends BaseRequest {
 
     @Override
     public String name() {
-        return null;
+        return COMMAND;
     }
 
 }

@@ -46,7 +46,7 @@ public class StreamMediaController {
         ValidUtils.paramValid(br);
 
         Boolean stopRec = streamMediaService.stopRec(stoprecDTO);
-        return BaseResult.succeed(stopRec);
+        return BaseResult.succeed("停止成功", stopRec);
     }
 
     @ApiOperation("查询录像记录")
@@ -73,7 +73,7 @@ public class StreamMediaController {
         ValidUtils.paramValid(br);
 
         Boolean stopAudioMix = streamMediaService.stopAudioMix(stopAudioMixDTO);
-        return BaseResult.succeed(stopAudioMix);
+        return BaseResult.succeed("停止成功", stopAudioMix);
     }
 
     @ApiOperation("更新音频混音")
@@ -119,7 +119,7 @@ public class StreamMediaController {
         ValidUtils.paramValid(br);
 
         Boolean stopVideoMix = streamMediaService.stopVideoMix(stopVideoMixDTO);
-        return BaseResult.succeed(stopVideoMix);
+        return BaseResult.succeed("停止成功", stopVideoMix);
     }
 
     @ApiOperation("更新画面合成")

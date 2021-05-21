@@ -24,4 +24,12 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>nexus</id>
+            <name>*</name>
+            <url>http://172.16.6.154:9081/repository/zfsyb-rep-release/</url>
+        </repository>
+    </distributionManagement>
+
 </project>

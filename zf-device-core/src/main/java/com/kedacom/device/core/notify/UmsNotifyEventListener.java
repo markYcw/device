@@ -127,7 +127,7 @@ public class UmsNotifyEventListener {
     }
 
     @EventListener(DeviceGroupStateEvent.class)
-    public void deviceStateNotify(DeviceGroupStateEvent event) {
+    public void deviceGroupStateNotify(DeviceGroupStateEvent event) {
         log.info("设备分组状态变更通知:{}", event);
         Integer operateType = event.getOperateType();
         LambdaQueryWrapper<GroupInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
@@ -168,7 +168,15 @@ public class UmsNotifyEventListener {
     public void deviceStatusNotify(DeviceStateEvent event) {
         log.info("设备状态变更通知:{}", event);
         Integer operateType = event.getOperateType();
-        //TODO 暂时只做了 设备的新增，修改，删除
+        //TODO 暂时只做了 设备的状态的更新，新增，修改，删除
+        if (Event.OPERATETYPETYPE1.equals(operateType)) {
+            LambdaUpdateWrapper<SubDeviceInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(SubDeviceInfoEntity::getId, event.getId())
+                    .set(SubDeviceInfoEntity::getDeviceStatus, event.getStatus());
+            subDeviceMapper.update(null, updateWrapper);
+            //当只是设备状态变更的时候做kafka的推送
+            sendKafka(event);
+        }
         if (Event.OPERATETYPETYPE3.equals(operateType)) {
             SubDeviceInfoEntity subDeviceInfoEntity = toSubDeviceInfoEntity(event);
             subDeviceMapper.insert(subDeviceInfoEntity);
@@ -180,6 +188,9 @@ public class UmsNotifyEventListener {
         if (Event.OPERATETYPETYPE5.equals(operateType)) {
             subDeviceMapper.deleteById(event.getId());
         }
+    }
+
+    private void sendKafka(DeviceStateEvent event) {
 
         executorService.submit(() -> {
             UmsSubDeviceStatusModel umsSubDeviceStatusModel = UmsSubDeviceStatusModel.builder()
@@ -200,6 +211,7 @@ public class UmsNotifyEventListener {
                 }
             });
         });
+
     }
 
     private SubDeviceInfoEntity toSubDeviceInfoEntity(DeviceStateEvent event) {

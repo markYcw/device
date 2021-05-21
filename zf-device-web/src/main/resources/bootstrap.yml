@@ -4,30 +4,21 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: 127.0.0.1:18848
       config:
-        server-addr: 127.0.0.1:8848
-  datasource:
-    username: root
-    password: kedacom#123
-    url: jdbc:mysql://172.16.129.214:23306/bmp_new_udms?createDatabaseIfNotExist=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-
-zf:
-  msp:
-    server_addr: 172.16.231.20:38703
-  kmProxy:
-    server_addr: 172.16.129.214:45670
-
-
-feign:
-  client:
-    config:
-      default:
-        connectTimeout: 30000 # 连接超时时间
-        readTimeout: 30000  # 读超时时间
-  hystrix:
-    enabled: true
+        server-addr: 127.0.0.1:18848
+        group: DEFAULT_GROUP
+        file-extension: yml
+        shared-configs:
+          - dataId: druid.yml
+            refresh: true
+          - dataId: mysql.yml
+            refresh: true
+          - dataId: redis.yml
+            refresh: true
+          - dataId: kafka-producer.yml
+            refresh: true
+          - dataId: ribbon-feign-hystrix.yml
+            refresh: true
 
 

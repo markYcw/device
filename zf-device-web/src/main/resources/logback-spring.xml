@@ -18,13 +18,13 @@
     <!--输出到文件-->
     <appender name="file_info" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${log.path}/info/${log.name.prefix}-info.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            　　　　　  <fileNamePattern>${log.path}/info/${log.name.prefix}-info.%i.log.zip</fileNamePattern>
-            　　　　　　    <minIndex>1</minIndex>
-            　　　　　　　　<maxIndex>20</maxIndex>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">　
+            <fileNamePattern>${log.path}/info/${log.name.prefix}-info.%i.log.zip</fileNamePattern>　　　　　　
+            <minIndex>1</minIndex>　　　　　　　　
+            <maxIndex>100</maxIndex>
         </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            　　　　　　<maxFileSize>10MB</maxFileSize>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">　　　　　　
+            <maxFileSize>100MB</maxFileSize>
         </triggeringPolicy>
         <encoder>
             <pattern>${log.pattern}</pattern>
@@ -38,13 +38,13 @@
 
     <appender name="file_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${log.path}/error/${log.name.prefix}-error.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            　　　　　  <fileNamePattern>${log.path}/error/${log.name.prefix}-error.%i.log.zip</fileNamePattern>
-            　　　　　　    <minIndex>1</minIndex>
-            　　　　　　　　<maxIndex>20</maxIndex>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">　　　　　
+            <fileNamePattern>${log.path}/error/${log.name.prefix}-error.%i.log.zip</fileNamePattern>　　　　　　
+            <minIndex>1</minIndex>　　　　　　　　
+            <maxIndex>20</maxIndex>
         </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            　　　　　　<maxFileSize>10MB</maxFileSize>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">　　　　　　
+            <maxFileSize>10MB</maxFileSize>
         </triggeringPolicy>
         <encoder>
             <pattern>${log.pattern}</pattern>
@@ -56,7 +56,7 @@
         </filter>
     </appender>
 
-    <logger name="org.apache.kafka" level="error" />
+    <logger name="org.apache.kafka" level="error"/>
     <root level="debug">
         <appender-ref ref="console"/>
     </root>
@@ -64,6 +64,5 @@
     <root level="info">
         <appender-ref ref="file_info"/>
         <appender-ref ref="file_error"/>
-<!--        <appender-ref ref="file_debug"/>-->
     </root>
 </configuration>

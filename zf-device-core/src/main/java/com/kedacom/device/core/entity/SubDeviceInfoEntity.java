@@ -1,9 +1,6 @@
 package com.kedacom.device.core.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -75,14 +72,6 @@ public class SubDeviceInfoEntity implements Serializable {
     @ApiModelProperty(value = "纬度 字符串")
     private String latitudeStr;
 
-    @TableField(value = "create_time")
-    @ApiModelProperty(value = "设备创建时间")
-    private Date createTime;
-
-    @TableField(value = "update_time")
-    @ApiModelProperty(value = "设备更新时间")
-    private Date updateTime;
-
     @TableField(value = "model")
     @ApiModelProperty(value = "型号")
     private String model;
@@ -122,5 +111,13 @@ public class SubDeviceInfoEntity implements Serializable {
     @TableField(value = "pinyin")
     @ApiModelProperty(value = "设备名称(拼音+首字母)")
     private String pinyin;
+
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
+    @ApiModelProperty(value = "设备创建时间")
+    private Date createTime;
+
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    @ApiModelProperty(value = "设备更新时间")
+    private Date updateTime;
 
 }

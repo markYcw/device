@@ -19,7 +19,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,6 +52,7 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
                     LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertDeviceInfo(deviceInfoEntity);
                     LoginResponse response = umsClient.login(loginRequest);
                     deviceInfoEntity.setSessionId(String.valueOf(response.acquireSsid()));
+                    deviceInfoEntity.setUpdateTime(new Date());
                     deviceMapper.updateById(deviceInfoEntity);
                 }
             }
@@ -65,23 +66,24 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
                     umsManagerService.syncDeviceData(request);
                 }
             }
-        } catch (Exception e) {
-            log.error("统一设备项目初始化设备和设备分组失败:{}", e.getMessage());
-        }
 
-        LambdaQueryWrapper<SubDeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
-        List<SubDeviceInfoEntity> selectList = subDeviceMapper.selectList(wrapper);
-        if (CollectionUtil.isNotEmpty(selectList)) {
-            log.info("统一设备项目项目初始化监听事件登录后， 设备名称拼音转化");
-            for (SubDeviceInfoEntity entity : selectList) {
-                String name = entity.getName();
-                String hanZiPinYin = PinYinUtils.getHanZiPinYin(name);
-                String hanZiInitial = PinYinUtils.getHanZiInitials(name);
-                String lowerCase = PinYinUtils.StrToLowerCase(hanZiInitial);
-                entity.setPinyin(hanZiPinYin + "&&" + lowerCase);
-                subDeviceMapper.updateById(entity);
+            LambdaQueryWrapper<SubDeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
+            List<SubDeviceInfoEntity> selectList = subDeviceMapper.selectList(wrapper);
+            if (CollectionUtil.isNotEmpty(selectList)) {
+                log.info("统一设备项目项目初始化监听事件登录后， 设备名称拼音转化");
+                for (SubDeviceInfoEntity entity : selectList) {
+                    String name = entity.getName();
+                    String hanZiPinYin = PinYinUtils.getHanZiPinYin(name);
+                    String hanZiInitial = PinYinUtils.getHanZiInitials(name);
+                    String lowerCase = PinYinUtils.StrToLowerCase(hanZiInitial);
+                    entity.setPinyin(hanZiPinYin + "&&" + lowerCase);
+                    entity.setUpdateTime(new Date());
+                    subDeviceMapper.updateById(entity);
+                }
+                log.info("设备名称拼音转化完成");
             }
-            log.info("设备名称拼音转化完成");
+        } catch (Exception e) {
+            log.error("统一设备项目初始化设备、设备分组和设备名称拼音转化失败:{}", e.getMessage());
         }
     }
 

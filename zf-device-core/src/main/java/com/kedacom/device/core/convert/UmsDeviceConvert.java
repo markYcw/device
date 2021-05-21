@@ -8,6 +8,8 @@ import com.kedacom.ums.requestdto.UmsDeviceInfoUpdateRequestDto;
 import com.kedacom.ums.responsedto.UmsDeviceInfoSelectResponseDto;
 import com.kedacom.ums.responsedto.UmsSubDeviceInfoQueryResponseDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -53,6 +55,12 @@ public interface UmsDeviceConvert {
      * @return
      */
     List<UmsDeviceInfoSelectResponseDto> convertUmsDeviceInfoSelectResponseDtoList(List<DeviceInfoEntity> deviceInfoEntityList);
+
+
+
+    @Mappings({@Mapping(source = "deviceStatus",target = "status"),
+    @Mapping(source = "deviceModel",target = "model")})
+    UmsSubDeviceInfoQueryResponseDto covertSubDeviceInfoQueryResponseDto(SubDeviceInfoEntity subDeviceInfoEntity);
 
     /**
      * 子设备信息转换响应参数类

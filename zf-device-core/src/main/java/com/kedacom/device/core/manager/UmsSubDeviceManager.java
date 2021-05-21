@@ -5,24 +5,25 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kedacom.device.core.utils.PinYinUtils;
+import com.kedacom.device.ums.request.QueryScheduleGroupRequest;
+import com.kedacom.device.ums.response.QuerySubDeviceInfoResponse;
+import com.kedacom.ums.responsedto.SubDeviceInfoResponseVo;
 import com.kedacom.device.core.constant.UmsMod;
 import com.kedacom.device.core.convert.UmsSubDeviceConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
-import com.kedacom.device.core.utils.PinYinUtils;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.QueryDeviceRequest;
-import com.kedacom.device.ums.response.QuerySubDeviceInfoResponse;
-import com.kedacom.ums.responsedto.SubDeviceInfoResponseVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.kedacom.device.core.constant.DeviceConstants.REQUEST3;
+import static com.kedacom.device.core.constant.DeviceConstants.*;
 
 /**
  * @author van.shu
@@ -51,18 +52,18 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
         requestVo.setQuerycount(pageSize);
         QuerySubDeviceInfoResponse responseVo = umsClient.querydev(requestVo);
 
-        if (responseVo.getResp().getErrorcode() != 0) {
-            for (int i = 0; i < REQUEST3; i ++) {
-                responseVo = umsClient.querydev(requestVo);
-                if (responseVo.getResp().getErrorcode() == 0) {
-                    break;
-                }
-                if (i == 2) {
-                    log.error("手动同步设备第{}页异常，同步数据为{}条", curPage, pageSize);
-                    return 0;
-                }
-            }
-        }
+//        if (responseVo.getResp().getErrorcode() != 0) {
+//            for (int i = 0; i < REQUEST3; i ++) {
+//                responseVo = umsClient.querydev(requestVo);
+//                if (responseVo.getResp().getErrorcode() == 0) {
+//                    break;
+//                }
+//                if (i == 2) {
+//                    log.error("手动同步设备第{}页异常，同步数据为{}条", curPage, pageSize);
+//                    return 0;
+//                }
+//            }
+//        }
         List<SubDeviceInfoResponseVo> responseVoList = responseVo.getDevinfo();
         log.info("当前第{}页查询到的数据条数是{}", curPage, responseVoList.size());
         if (CollUtil.isEmpty(responseVoList) && curPage != 1) {
@@ -80,9 +81,7 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
                 umsSubDeviceInfoEntity.setPinyin(hanZiPinYin + "&&" + lowerCase);
                 umsSubDeviceInfoEntity.setParentId(umsDeviceId);
                 if (subDeviceInfoMapper.selectById(umsSubDeviceInfoEntity.getId()) != null) {
-                    if (log.isDebugEnabled()){
-                        log.info("已存在Id为:{}", umsSubDeviceInfoEntity.getId());
-                    }
+//                    log.info("已存在Id为:{}", umsSubDeviceInfoEntity.getId());
                     int i = subDeviceInfoMapper.updateById(umsSubDeviceInfoEntity);
                     if (i <= 0) {
                         log.error("设备id:{},更新失败", umsSubDeviceInfoEntity.getId());

@@ -16,7 +16,7 @@ import com.kedacom.device.core.kafka.UmsSubDeviceStatusModel;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.GroupMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
-import com.kedacom.device.core.message.UmsKafkaMessageProducer;
+import com.kedacom.device.core.kafka.UmsKafkaMessageProducer;
 import com.kedacom.device.ums.DeviceGroupVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

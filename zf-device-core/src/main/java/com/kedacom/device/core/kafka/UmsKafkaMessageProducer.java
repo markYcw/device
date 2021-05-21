@@ -11,15 +11,28 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 /**
- * @Auther: hxj
- * @Date: 2021/5/20 16:13
+ * @author wangxy
+ * @describe
+ * @date 2021/5/20
  */
-@Component
 @Slf4j
-public class DeviceKafkaProduceService {
+@Component
+public class UmsKafkaMessageProducer {
 
     @Autowired
     private KafkaTemplate<Object, Object> kafkaTemplate;
+
+    /**
+     * 设备状态改变通知
+     *
+     * @param umsSubDeviceStatusModelStr
+     * @return
+     */
+    public ListenableFuture<SendResult<Object, Object>> deviceStatusUpdate(String umsSubDeviceStatusModelStr) {
+
+        log.info("--------kafka开始推送设备状态改变通知--------");
+        return kafkaTemplate.send(UmsProducerTopic.DEVICE_STATUS_CHANGE, umsSubDeviceStatusModelStr);
+    }
 
     public void sendTransDataNotifyKafka(TransDataEntity entity) {
         log.info("接收透明通道数据通知进行推送:{}", entity);
@@ -38,3 +51,5 @@ public class DeviceKafkaProduceService {
         });
     }
 }
+
+

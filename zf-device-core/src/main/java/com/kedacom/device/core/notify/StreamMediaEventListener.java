@@ -3,7 +3,7 @@ package com.kedacom.device.core.notify;
 import com.kedacom.device.core.convert.StreamMediaConvert;
 import com.kedacom.device.core.entity.TransDataEntity;
 import com.kedacom.device.core.event.TransDataNotifyEvent;
-import com.kedacom.device.core.kafka.DeviceKafkaProduceService;
+import com.kedacom.device.core.kafka.UmsKafkaMessageProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -20,7 +20,7 @@ public class StreamMediaEventListener {
     @Autowired
     private StreamMediaConvert streamMediaConvert;
     @Autowired
-    private DeviceKafkaProduceService kafkaProduceService;
+    private UmsKafkaMessageProducer kafkaMessageProducer;
 
     @EventListener
     public void transDataNotify(TransDataNotifyEvent event) {
@@ -28,7 +28,7 @@ public class StreamMediaEventListener {
 
         TransDataEntity entity = streamMediaConvert.convertTransDataNotifyEvent(event);
 
-        kafkaProduceService.sendTransDataNotifyKafka(entity);
+        kafkaMessageProducer.sendTransDataNotifyKafka(entity);
     }
 
 }

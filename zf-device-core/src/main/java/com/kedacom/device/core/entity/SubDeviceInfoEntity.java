@@ -21,7 +21,7 @@ public class SubDeviceInfoEntity implements Serializable {
     private String id;
 
     @TableField(value = "parent_id")
-    @ApiModelProperty(value = "统一平台ID")
+    @ApiModelProperty(value = "上级")
     private String parentId;
 
     @TableField(value = "name")
@@ -52,9 +52,9 @@ public class SubDeviceInfoEntity implements Serializable {
     @ApiModelProperty(value = "分组Id")
     private String groupId;
 
-    @TableField(value = "status")
+    @TableField(value = "device_status")
     @ApiModelProperty(value = "设备状态（0：在线 1：离线 2：故障）")
-    private Integer status;
+    private Integer deviceStatus;
 
     @TableField(value = "longitude")
     @ApiModelProperty(value = "经度")
@@ -72,9 +72,9 @@ public class SubDeviceInfoEntity implements Serializable {
     @ApiModelProperty(value = "纬度 字符串")
     private String latitudeStr;
 
-    @TableField(value = "model")
+    @TableField(value = "device_model")
     @ApiModelProperty(value = "型号")
-    private String model;
+    private String deviceModel;
 
     @TableField(value = "civil_name")
     @ApiModelProperty(value = "行政区域")

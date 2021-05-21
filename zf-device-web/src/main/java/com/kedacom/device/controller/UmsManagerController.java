@@ -197,16 +197,6 @@ public class UmsManagerController {
         return BaseResult.succeed(umsManagerService.selectUmsAlarmTypeList());
     }
 
-    //TODO 开发文档没有过去告警类型的接口(无效接口)
-    @ApiOperation("手动触发从远程更新告警类型列表并返回")
-    @PostMapping("/updateUmsAlarmTypeList")
-    public BaseResult<List<UmsAlarmTypeQueryResponseDto>> updateUmsAlarmTypeList() {
-
-        List<UmsAlarmTypeQueryResponseDto> responseDtoList = umsManagerService.updateUmsAlarmTypeList();
-
-        return BaseResult.succeed(responseDtoList);
-    }
-
     @ApiOperation("查询统一平台分组集合信息接口")
     @PostMapping("/selectUmsGroupList")
     public BaseResult<List<UmsScheduleGroupItemQueryResponseDto>> selectUmsGroupList(@RequestBody UmsScheduleGroupQueryRequestDto requestDto) {
@@ -232,15 +222,6 @@ public class UmsManagerController {
         List<UmsScheduleGroupItemQueryResponseDto> responseDtoList = umsManagerService.selectUmsGroupItemList(requestDto);
 
         return BaseResult.succeed(responseDtoList);
-    }
-
-    //TODO 发送获取设备分组同步数据的请求（做测试用）
-    @ApiOperation("获取分组")
-    @PostMapping("/getGroup")
-    public BaseResult<Boolean> getGroup(@RequestParam("umsId") String umsId) {
-
-        Boolean aBoolean = umsManagerService.queryDeviceGroupNotify(umsId);
-        return BaseResult.succeed(aBoolean);
     }
 
 }

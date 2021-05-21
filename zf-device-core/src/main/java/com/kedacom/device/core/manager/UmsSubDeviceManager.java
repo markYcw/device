@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kedacom.device.core.utils.PinYinUtils;
 import com.kedacom.device.ums.request.QueryScheduleGroupRequest;
 import com.kedacom.device.ums.response.QuerySubDeviceInfoResponse;
 import com.kedacom.ums.responsedto.SubDeviceInfoResponseVo;
@@ -73,6 +74,11 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
         umsSubDeviceInfoEntityList.forEach(x -> x.setDeviceMod(UmsMod.NORMAL));
         for (SubDeviceInfoEntity umsSubDeviceInfoEntity : umsSubDeviceInfoEntityList) {
             if (umsSubDeviceInfoEntity != null && StrUtil.isNotBlank(umsSubDeviceInfoEntity.getId())) {
+                String name = umsSubDeviceInfoEntity.getName();
+                String hanZiPinYin = PinYinUtils.getHanZiPinYin(name);
+                String hanZiInitial = PinYinUtils.getHanZiInitials(name);
+                String lowerCase = PinYinUtils.StrToLowerCase(hanZiInitial);
+                umsSubDeviceInfoEntity.setPinyin(hanZiPinYin + "&&" + lowerCase);
                 umsSubDeviceInfoEntity.setParentId(umsDeviceId);
                 if (subDeviceInfoMapper.selectById(umsSubDeviceInfoEntity.getId()) != null) {
                     log.info("已存在Id为:{}", umsSubDeviceInfoEntity.getId());

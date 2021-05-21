@@ -180,7 +180,7 @@ public class UmsDeviceTask implements Runnable {
                         completedTaskCount);
                 if (expectedCompletedTaskCount == completedTaskCount) {
                     //到这里说明所有设备已经更新完成，那么模式还是同步中的设备则说明这次没有同步到，将模式改为未同步到
-                    umsSubDeviceManager.updateUmsSubDeviceMod(UmsMod.UPGRADING, UmsMod.EXIST);
+//                    umsSubDeviceManager.updateUmsSubDeviceMod(UmsMod.UPGRADING, UmsMod.EXIST);
                     //开始同步分组信息
                     try {
                         log.info("本次更新所有统一设备模式已更正。。。。");
@@ -224,7 +224,7 @@ public class UmsDeviceTask implements Runnable {
             log.info("返回的code数据为:[{}]", code);
             if (code == Integer.MAX_VALUE) {
                 //到这里说明所有设备已经更新完成，那么模式还是同步中的设备则说明这次没有同步到，将模式改为未同步到
-                umsSubDeviceManager.updateUmsSubDeviceMod(UmsMod.UPGRADING, UmsMod.EXIST);
+//                umsSubDeviceManager.updateUmsSubDeviceMod(UmsMod.UPGRADING, UmsMod.EXIST);
                 UmsManagerService umsManagerService = getBean(UmsManagerService.class);
                 log.info("开始获取设备分组信息，统一平台id为{}", umsDeviceId);
                 Boolean umsGroupResult = umsManagerService.queryDeviceGroupNotify(umsDeviceId);

@@ -223,10 +223,10 @@ public class UmsNotifyEventListener {
         subDeviceInfoEntity.setMaintainMan(event.getMgtMan());
         subDeviceInfoEntity.setManufactorCode(event.getManufactorCode());
         subDeviceInfoEntity.setManufactorName(event.getManufactorCode_name());
-        subDeviceInfoEntity.setModel(event.getModel());
+        subDeviceInfoEntity.setDeviceModel(event.getModel());
         subDeviceInfoEntity.setName(event.getName());
         subDeviceInfoEntity.setParentId(event.getParentId());
-        subDeviceInfoEntity.setStatus(event.getStatus());
+        subDeviceInfoEntity.setDeviceStatus(event.getStatus());
 
         return subDeviceInfoEntity;
     }

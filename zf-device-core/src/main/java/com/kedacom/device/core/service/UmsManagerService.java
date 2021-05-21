@@ -121,12 +121,6 @@ public interface UmsManagerService {
     List<UmsAlarmTypeQueryResponseDto> selectUmsAlarmTypeList();
 
     /**
-     * 手动触发从远程更新告警类型列表并返回
-     * @return
-     */
-    List<UmsAlarmTypeQueryResponseDto> updateUmsAlarmTypeList();
-
-    /**
      * 查询统一设备平台分组集合信息接口
      * @param requestDto
      * @return

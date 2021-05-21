@@ -6,6 +6,8 @@ import com.kedacom.device.ums.request.*;
 import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.UmsScheduleGroupQueryMediaResponseDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -19,6 +21,17 @@ import java.util.List;
 public interface UmsSubDeviceConvert {
 
     UmsSubDeviceConvert INSTANCE = Mappers.getMapper(UmsSubDeviceConvert.class);
+
+    @Mappings({@Mapping(source = "ipv4", target = "deviceIp"),
+            @Mapping(source = "manufactorCode_name",target = "manufactorName"),
+            @Mapping(source = "status",target = "deviceStatus"),
+            @Mapping(source = "model",target = "deviceModel"),
+            @Mapping(source = "civilCode_name",target = "civilName"),
+            @Mapping(source = "departmentCode_name",target = "departmentName"),
+            @Mapping(source = "mgtMan",target = "maintainMan"),
+            @Mapping(source = "mgtUnitContact",target = "maintainContact")
+    })
+    SubDeviceInfoEntity convertSubDeviceInfoEntity(SubDeviceInfoResponseVo responseVo);
 
     List<SubDeviceInfoEntity> convertSubDeviceInfoEntityList(List<SubDeviceInfoResponseVo> responseVoList);
 

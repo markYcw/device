@@ -331,7 +331,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         }
         Integer status = requestDto.getStatus();
         if (status != null) {
-            queryWrapper.eq(SubDeviceInfoEntity::getStatus, status);
+            queryWrapper.eq(SubDeviceInfoEntity::getDeviceStatus, status);
         }
         queryWrapper.orderByAsc(SubDeviceInfoEntity::getCreateTime).orderByAsc(SubDeviceInfoEntity::getGbid);
         Page<SubDeviceInfoEntity> entityPage = subDeviceMapper.selectPage(page, queryWrapper);
@@ -431,35 +431,6 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         }
 
         return UmsAlarmTypeConvert.INSTANCE.convertUmsAlarmTypeQueryResponseDtoList(alarmTypeEntityList);
-    }
-
-    @Override
-    public List<UmsAlarmTypeQueryResponseDto> updateUmsAlarmTypeList() {
-
-        //调用接口，获取告警类型列表
-        /*List<UmsAlarmTypeQueryResponseVo> umsAlarmTypeQueryResponseVoList = umsClient.getUmsAlarmTypeList();
-        if (CollectionUtil.isEmpty(umsAlarmTypeQueryResponseVoList)) {
-            log.error("从远端获取告警类型列表信息失败");
-            throw new UmsManagerException("从远端获取告警类型列表信息失败");
-        }
-        log.info("从远端获取告警类型列表信息 : [{}]", umsAlarmTypeQueryResponseVoList);
-        List<AlarmTypeEntity> entityList = UmsAlarmTypeConvert.INSTANCE.convertAlarmTypeEntityList(umsAlarmTypeQueryResponseVoList);
-        for (AlarmTypeEntity entity : entityList) {
-            LambdaQueryWrapper<AlarmTypeEntity> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(AlarmTypeEntity::getAlarmCode, entity.getAlarmCode());
-            AlarmTypeEntity selectOne = alarmTypeMapper.selectOne(queryWrapper);
-            if (selectOne == null) {
-                alarmTypeMapper.insert(entity);
-            } else {
-                LambdaUpdateWrapper<AlarmTypeEntity> updateWrapper = new LambdaUpdateWrapper<>();
-                updateWrapper.eq(AlarmTypeEntity::getAlarmCode, entity.getAlarmCode());
-                alarmTypeMapper.update(null, updateWrapper);
-            }
-        }
-
-        return UmsAlarmTypeConvert.INSTANCE.convertUmsAlarmTypeQueryResponseVoList(umsAlarmTypeQueryResponseVoList);*/
-
-        return null;
     }
 
     @Override
@@ -586,7 +557,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         }
         Integer deviceStatus = requestDto.getDeviceStatus();
         if (deviceStatus != null) {
-            queryWrapper.eq(SubDeviceInfoEntity::getStatus, deviceStatus);
+            queryWrapper.eq(SubDeviceInfoEntity::getDeviceStatus, deviceStatus);
         }
         List<String> deviceTypeList = requestDto.getDeviceTypeList();
         if (CollectionUtil.isNotEmpty(deviceTypeList)) {
@@ -603,7 +574,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
             UmsSubDeviceQueryDto umsSubDeviceQueryDto = new UmsSubDeviceQueryDto();
             umsSubDeviceQueryDto.setId(subDeviceInfoEntity.getId());
             umsSubDeviceQueryDto.setName(subDeviceInfoEntity.getName());
-            umsSubDeviceQueryDto.setStatus(subDeviceInfoEntity.getStatus());
+            umsSubDeviceQueryDto.setStatus(subDeviceInfoEntity.getDeviceStatus());
             umsSubDeviceQueryDto.setGroupId(subDeviceInfoEntity.getGroupId());
             umsSubDeviceQueryDto.setDeviceMod(subDeviceInfoEntity.getDeviceMod());
             umsSubDeviceQueryDto.setDeviceType(subDeviceInfoEntity.getDeviceType());

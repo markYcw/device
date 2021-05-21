@@ -20,13 +20,13 @@ public class DeviceTypeEntity implements Serializable {
     @ApiModelProperty(value = "id")
     private String id;
 
-    @TableField(value = "code")
+    @TableField(value = "device_code")
     @ApiModelProperty(value = "类型编码")
-    private String code;
+    private String deviceCode;
 
-    @TableField(value = "value")
+    @TableField(value = "device_value")
     @ApiModelProperty(value = "设备类型")
-    private String value;
+    private String deviceValue;
 
     @TableField(value = "device_type_desc")
     @ApiModelProperty(value = "设备类型描述")

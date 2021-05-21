@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -222,6 +223,28 @@ public class UmsManagerController {
         List<UmsScheduleGroupItemQueryResponseDto> responseDtoList = umsManagerService.selectUmsGroupItemList(requestDto);
 
         return BaseResult.succeed(responseDtoList);
+    }
+
+    @PostMapping("childGroupAndSubDevice")
+    @ApiOperation(value = "根据当前分组查询子分组和子设备")
+    public BaseResult<UmsChildGroupAndSubDeviceInfoResponseVo> selectChildUmsGroupAndSubDeviceInfo(@Valid @RequestBody UmsChildGroupAndSubDeviceInfoRequestDto requestDto, BindingResult result) {
+
+        ValidUtils.paramValid(result);
+        String umsId = requestDto.getUmsId();
+        String groupId = requestDto.getGroupId();
+        UmsChildGroupAndSubDeviceInfoResponseVo umsChildGroupAndSubDeviceInfoResponseVo = new UmsChildGroupAndSubDeviceInfoResponseVo();
+        SelectChildUmsGroupRequestDto selectChildUmsGroupRequestDto = new SelectChildUmsGroupRequestDto();
+        selectChildUmsGroupRequestDto.setUmsId(umsId);
+        selectChildUmsGroupRequestDto.setGroupId(groupId);
+        List<SelectChildUmsGroupResponseDto> umsChildGroupList = umsManagerService.selectChildUmsGroupList(selectChildUmsGroupRequestDto);
+        umsChildGroupAndSubDeviceInfoResponseVo.setChildGroupList(umsChildGroupList);
+        UmsSubDeviceInfoQueryByGroupIdRequestDto umsSubDeviceInfoQueryByGroupIdRequestDto = new UmsSubDeviceInfoQueryByGroupIdRequestDto();
+        umsSubDeviceInfoQueryByGroupIdRequestDto.setUmsId(umsId);
+        umsSubDeviceInfoQueryByGroupIdRequestDto.setGroupId(groupId);
+        List<UmsSubDeviceInfoQueryResponseDto> umsSubDeviceList = umsManagerService.selectUmsSubDeviceByGroupId(umsSubDeviceInfoQueryByGroupIdRequestDto);
+        umsChildGroupAndSubDeviceInfoResponseVo.setSubDeviceList(umsSubDeviceList);
+
+        return BaseResult.succeed( "查询成功", umsChildGroupAndSubDeviceInfoResponseVo);
     }
 
 }

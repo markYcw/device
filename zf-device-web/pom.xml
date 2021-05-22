@@ -30,10 +30,6 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
@@ -47,8 +43,24 @@
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>org.flywaydb</groupId>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.kedacom</groupId>
             <artifactId>flyway-core</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kedacom</groupId>
+            <artifactId>kingbase8</artifactId>
+            <version>8.2.0</version>
+        </dependency>
+        <!--        达梦的驱动-->
+        <dependency>
+            <groupId>com.kedacom</groupId>
+            <artifactId>DmJdbcDriver</artifactId>
+            <version>18</version>
         </dependency>
     </dependencies>
 
@@ -79,6 +91,18 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.kedacom</groupId>
+                <artifactId>switchsql</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>switchsql</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

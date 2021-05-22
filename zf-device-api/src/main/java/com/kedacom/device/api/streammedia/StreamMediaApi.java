@@ -8,8 +8,6 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.List;
-
 /**
  * @Auther: hxj
  * @Date: 2021/5/10 10:19
@@ -87,7 +85,7 @@ public interface StreamMediaApi {
      * @return
      */
     @PostMapping("/queryAllAudioMix")
-    BaseResult<List<String>> queryAllAudioMix(@RequestBody QueryAllAudioMixDTO queryAllAudioMixDTO);
+    BaseResult<QueryAllAudioMixVO> queryAllAudioMix(@RequestBody QueryAllAudioMixDTO queryAllAudioMixDTO);
 
     /**
      * 查询混音信息

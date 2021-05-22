@@ -6,8 +6,6 @@ import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
 import feign.hystrix.FallbackFactory;
 
-import java.util.List;
-
 /**
  * @Auther: hxj
  * @Date: 2021/5/10 10:24
@@ -47,7 +45,7 @@ public class StreamMediaApiFallbackFactory implements FallbackFactory<StreamMedi
             }
 
             @Override
-            public BaseResult<List<String>> queryAllAudioMix(QueryAllAudioMixDTO queryAllAudioMixDTO) {
+            public BaseResult<QueryAllAudioMixVO> queryAllAudioMix(QueryAllAudioMixDTO queryAllAudioMixDTO) {
                 return BaseResult.failed("服务出错，请稍后重试");
             }
 

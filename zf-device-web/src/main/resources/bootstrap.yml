@@ -14,9 +14,15 @@ spring:
         shared-configs:
           - dataId: druid.yml
             refresh: true
-#          - dataId: mysql.yml
-#            refresh: true
+          - dataId: sql.yml
+            refresh: true
+          - dataId: mysql.yml
+            refresh: true
           - dataId: rdjc.yml
+            refresh: true
+          - dataId: hg.yml
+            refresh: true
+          - dataId: dm.yml
             refresh: true
           - dataId: redis.yml
             refresh: true

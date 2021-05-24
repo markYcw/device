@@ -3,21 +3,27 @@ package com.kedacom.device.core.task;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.kedacom.BasePage;
-import com.kedacom.device.ums.response.QuerySubDeviceInfoResponse;
 import com.kedacom.device.core.constant.UmsMod;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
+import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.core.manager.UmsSubDeviceManager;
 import com.kedacom.device.core.mapper.DeviceMapper;
+import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.core.service.UmsManagerService;
+import com.kedacom.device.core.utils.PinYinUtils;
 import com.kedacom.device.core.utils.SpringUtil;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.QueryDeviceRequest;
+import com.kedacom.device.ums.response.QuerySubDeviceInfoResponse;
 import com.kedacom.ums.requestdto.UmsSubDeviceInfoQueryRequestDto;
 import com.kedacom.ums.responsedto.UmsSubDeviceInfoQueryResponseDto;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -133,6 +139,22 @@ public class UmsDeviceTask implements Runnable {
         if ((total == localTotal) && syncResult) {
             log.info("---------同步成功---------");
             syncStatus.compareAndSet(false, true);
+            SubDeviceMapper subDeviceMapper = getBean(SubDeviceMapper.class);
+            LambdaQueryWrapper<SubDeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
+            List<SubDeviceInfoEntity> selectList = subDeviceMapper.selectList(wrapper);
+            if (CollectionUtil.isNotEmpty(selectList)) {
+                log.info("统一设备项目设备同步成功后,设备名称拼音转化");
+                for (SubDeviceInfoEntity entity : selectList) {
+                    String name = entity.getName();
+                    String hanZiPinYin = PinYinUtils.getHanZiPinYin(name);
+                    String hanZiInitial = PinYinUtils.getHanZiInitials(name);
+                    String lowerCase = PinYinUtils.StrToLowerCase(hanZiInitial);
+                    entity.setPinyin(hanZiPinYin + "&&" + lowerCase);
+                    entity.setUpdateTime(new Date());
+                    subDeviceMapper.updateById(entity);
+                }
+                log.info("设备名称拼音转化完成");
+            }
         }
     }
 

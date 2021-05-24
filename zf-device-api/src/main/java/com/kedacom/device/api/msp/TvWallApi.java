@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @Auther: hxj
  * @Date: 2021/5/6 18:57
  */
-@FeignClient(contextId = "tvWallApi", path = "/api/v1/manage/tvwall", fallbackFactory = TvWallApiFallbackFactory.class)
+@FeignClient(value = "device-server", contextId = "tvWallApi", path = "/api/v1/manage/tvwall", fallbackFactory = TvWallApiFallbackFactory.class)
 public interface TvWallApi {
 
     /**
@@ -58,7 +58,7 @@ public interface TvWallApi {
      * @return
      */
     @PostMapping("config/bind")
-    BaseResult<TvWallPipelineBindVO>  configBind(@RequestBody TvWallPipelineBindRequest request);
+    BaseResult<TvWallPipelineBindVO> configBind(@RequestBody TvWallPipelineBindRequest request);
 
     /**
      * 拼接屏模式不允许删除，虚拟屏模式全部删除，混合屏模式删除绑定关系

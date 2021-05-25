@@ -17,12 +17,12 @@ import java.util.List;
 public class TvWallLayoutVO implements Serializable {
 
     @ApiModelProperty(value = "大屏id")
-    private Integer tvid;
+    private Integer id;
 
     @ApiModelProperty(value = "大屏个数")
     private Integer number;
 
     @ApiModelProperty(value = "布局窗口信息")
-    private List<CellInfo> cellInfos;
+    private List<CellInfo> cells;
 
 }

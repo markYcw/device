@@ -20,6 +20,6 @@ public class TvWallListVO implements Serializable {
     private Integer number;
 
     @ApiModelProperty(value = "大屏信息")
-    private List<TvWallInfo> list;
+    private List<TvWallInfo> tvinfo;
 
 }

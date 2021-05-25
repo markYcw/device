@@ -36,9 +36,9 @@ public class TvWallInfo implements Serializable {
     private Integer module;
 
     @ApiModelProperty(value = "是否规则等分布局 - 默认是")
-    private boolean isequant;
+    private Boolean isequant;
 
     @ApiModelProperty(value = "是否可以编辑 - 默认是")
-    private boolean isedit;
+    private Boolean isedit;
 
 }

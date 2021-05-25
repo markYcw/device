@@ -6,9 +6,13 @@ import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.entity.UmsPair;
 import com.kedacom.device.core.mapper.DeviceMapper;
+import com.kedacom.device.core.service.UmsManagerService;
 import com.kedacom.device.core.task.UmsDeviceTask;
+import com.kedacom.device.core.utils.ThreadPoolUtil;
+import com.kedacom.ums.requestdto.UmsDeviceInfoSyncRequestDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -23,7 +27,7 @@ import java.util.concurrent.*;
  */
 @Component
 @Slf4j
-public class UmsDeviceRunner {
+public class UmsDeviceRunner /*implements CommandLineRunner*/ {
 
     /**
      * 去掉定时同步任务
@@ -37,6 +41,9 @@ public class UmsDeviceRunner {
 
     @Autowired
     private DeviceMapper deviceMapper;
+
+    @Autowired
+    private UmsManagerService umsManagerService;
 
 
     public void notifyUmsChange(DeviceInfoEntity deviceInfoEntity, Integer umsChangeType) {
@@ -117,4 +124,19 @@ public class UmsDeviceRunner {
         }
 
     }
+
+    public void syncDeviceInfo(DeviceInfoEntity deviceInfoEntity) {
+
+        UmsDeviceInfoSyncRequestDto request = new UmsDeviceInfoSyncRequestDto();
+        request.setUmsId(deviceInfoEntity.getId());
+        ThreadPoolUtil.getInstance().submit(new Runnable() {
+            @Override
+            public void run() {
+                umsManagerService.syncDeviceData(request);
+            }
+        });
+
+    }
+
+
 }

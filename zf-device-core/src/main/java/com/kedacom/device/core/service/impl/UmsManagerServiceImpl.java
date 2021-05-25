@@ -107,7 +107,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         deviceMapper.insert(deviceInfoEntity);
 
         //平台信息添加成功，开启自动获取远端设备及分组信息任务
-        umsDeviceRunner.notifyUmsChange(deviceInfoEntity, DeviceConstants.ADD_UMS);
+        umsDeviceRunner.syncDeviceInfo(deviceInfoEntity);
 
         return deviceInfoEntity.getId();
     }

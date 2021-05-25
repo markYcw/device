@@ -225,7 +225,7 @@ public class UmsManagerController {
         return BaseResult.succeed(responseDtoList);
     }
 
-    @PostMapping("childGroupAndSubDevice")
+    @PostMapping("/childGroupAndSubDevice")
     @ApiOperation(value = "根据当前分组查询子分组和子设备")
     public BaseResult<UmsChildGroupAndSubDeviceInfoResponseVo> selectChildUmsGroupAndSubDeviceInfo(@Valid @RequestBody UmsChildGroupAndSubDeviceInfoRequestDto requestDto, BindingResult result) {
 

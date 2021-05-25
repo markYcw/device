@@ -21,6 +21,9 @@ public class UmsScheduleGroupItemQueryResponseDto implements Serializable {
     @ApiModelProperty(value = "平台Id")
     private String umsId;
 
+    @ApiModelProperty(value = "分组父Id")
+    private String parentId;
+
     @ApiModelProperty(value = "分组名称")
     private String groupName;
 

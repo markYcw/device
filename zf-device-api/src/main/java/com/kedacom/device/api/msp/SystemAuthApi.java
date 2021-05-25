@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @Auther: hxj
  * @Date: 2021/5/6 17:08
  */
-@FeignClient(value = "device-server", contextId = "systemAuthApi", path = "/api/v1/manage/system", fallbackFactory = SystemAuthApiFallbackFactory.class)
+@FeignClient(value = "device-server", contextId = "systemAuthApi", path = "/api-device/api/v1/manage/system", fallbackFactory = SystemAuthApiFallbackFactory.class)
 public interface SystemAuthApi {
     /**
      * 登录显控服务

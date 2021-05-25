@@ -17,7 +17,7 @@ import java.util.List;
  * @describe
  * @date 2021/5/21
  */
-@FeignClient(value = "device-server", contextId = "UmsManageApi", path = "ums/manager", fallbackFactory = UmsManageApiFallBackFactory.class)
+@FeignClient(value = "device-server", contextId = "UmsManageApi", path = "/api-device/ums/manager", fallbackFactory = UmsManageApiFallBackFactory.class)
 public interface UmsManageApi {
 
     @ApiOperation(value = "添加统一平台信息", tags = "默认添加的设备类型为UMS，建议填写具体设备类型字段")

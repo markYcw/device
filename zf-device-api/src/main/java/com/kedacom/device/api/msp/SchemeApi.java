@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @Auther: hxj
  * @Date: 2021/5/6 19:19
  */
-@FeignClient(value = "device-server", contextId = "schemeManageApi", path = "/api/v1/manage/scheme", fallbackFactory = SchemeApiFallbackFactory.class)
+@FeignClient(value = "device-server", contextId = "schemeManageApi", path = "/api-device/api/v1/manage/scheme", fallbackFactory = SchemeApiFallbackFactory.class)
 public interface SchemeApi {
 
     /**

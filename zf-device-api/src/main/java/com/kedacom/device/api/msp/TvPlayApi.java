@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @Auther: hxj
  * @Date: 2021/5/10 09:52
  */
-@FeignClient(value = "device-server", contextId = "tvPlayApi", path = "/api/v1/manage/tvplay", fallbackFactory = TvPlayApiFallbackFactory.class)
+@FeignClient(value = "device-server", contextId = "tvPlayApi", path = "/api-device/api/v1/manage/tvplay", fallbackFactory = TvPlayApiFallbackFactory.class)
 public interface TvPlayApi {
 
     /**

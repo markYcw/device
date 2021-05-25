@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @Auther: hxj
  * @Date: 2021/5/6 18:57
  */
-@FeignClient(value = "device-server", contextId = "tvWallApi", path = "/api/v1/manage/tvwall", fallbackFactory = TvWallApiFallbackFactory.class)
+@FeignClient(value = "device-server", contextId = "tvWallApi", path = "/api-device/api/v1/manage/tvwall", fallbackFactory = TvWallApiFallbackFactory.class)
 public interface TvWallApi {
 
     /**

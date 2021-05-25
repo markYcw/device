@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @Auther: hxj
  * @Date: 2021/5/13 10:18
  */
-@FeignClient(value = "device-server", contextId = "decoderApi", path = "/api/v1/manage/decoder", fallbackFactory = DecoderApiFallbackFactory.class)
+@FeignClient(value = "device-server", contextId = "decoderApi", path = "/api-device/api/v1/manage/decoder", fallbackFactory = DecoderApiFallbackFactory.class)
 public interface DecoderApi {
 
     /**

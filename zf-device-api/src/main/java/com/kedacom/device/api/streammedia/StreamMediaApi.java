@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @Auther: hxj
  * @Date: 2021/5/10 10:19
  */
-@FeignClient(value = "device-server", contextId = "streamMediaApi", path = "device/streamMedia", fallbackFactory = StreamMediaApiFallbackFactory.class)
+@FeignClient(value = "device-server", contextId = "streamMediaApi", path = "/api-device/device/streamMedia", fallbackFactory = StreamMediaApiFallbackFactory.class)
 public interface StreamMediaApi {
 
 

@@ -142,6 +142,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
                 throw new UmsManagerException("登录统一平台异常");
             }
             deviceInfoEntity.setSessionId(String.valueOf(loginResponse.acquireSsid()));
+            deviceInfoEntity.setDeviceType("UMS");
 
         }
         deviceMapper.updateById(deviceInfoEntity);

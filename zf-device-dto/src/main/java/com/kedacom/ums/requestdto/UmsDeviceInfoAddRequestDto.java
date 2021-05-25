@@ -22,7 +22,7 @@ public class UmsDeviceInfoAddRequestDto implements Serializable {
     private String name;
 
     @ApiModelProperty(value = "统一设备IP地址")
-    @Pattern(regexp = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$", message = "IP地址参数不合法")
+    @Pattern(regexp = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$", message = "统一设备IP地址不合法")
     private String deviceIp;
 
     @ApiModelProperty(value = "统一设备端口")
@@ -34,7 +34,7 @@ public class UmsDeviceInfoAddRequestDto implements Serializable {
     private String deviceNotifyIp;
 
     @ApiModelProperty(value = "媒体调度服务IP")
-    @Pattern(regexp = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$", message = "IP地址参数不合法")
+    @Pattern(regexp = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$", message = "媒体调度服务IP地址不合法")
     private String mediaIp;
 
     @ApiModelProperty(value = "媒体调度服务端口")
@@ -43,7 +43,7 @@ public class UmsDeviceInfoAddRequestDto implements Serializable {
     private Integer mediaPort;
 
     @ApiModelProperty(value = "流媒体服务IP")
-    @Pattern(regexp = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$", message = "IP地址参数不合法")
+    @Pattern(regexp = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$", message = "流媒体服务IP地址不合法")
     private String streamingMediaIp;
 
     @ApiModelProperty(value = "流媒体服务端口")

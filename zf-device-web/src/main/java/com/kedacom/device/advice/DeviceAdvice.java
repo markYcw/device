@@ -27,6 +27,7 @@ public class DeviceAdvice {
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler({ParamException.class})
     public BaseResult handleException(ParamException e) {
+        log.error("参数异常捕获:{}", e.getMessage());
         return BaseResult.failed(DeviceErrorEnum.PARAM_ERROR.getCode(), e.getMessage());
     }
 
@@ -39,11 +40,12 @@ public class DeviceAdvice {
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler({MspRemoteCallException.class})
     public BaseResult handleException(MspRemoteCallException e) {
+        log.error("远程调用接口异常捕获:{}", e.getMessage());
         return BaseResult.failed(DeviceErrorEnum.MSP_REMOTE_ERROR.getCode(), DeviceErrorEnum.MSP_REMOTE_ERROR.getMsg());
     }
 
     /**
-     * 解码通道异常捕获
+     * 拼控服务异常捕获
      *
      * @param e
      * @return
@@ -51,6 +53,7 @@ public class DeviceAdvice {
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler({MspException.class})
     public BaseResult handleException(MspException e) {
+        log.error("拼控服务异常捕获:{},{}", e.getCode(), e.getMessage());
         return BaseResult.failed(e.getCode(), e.getMessage());
     }
 
@@ -63,12 +66,13 @@ public class DeviceAdvice {
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler({StreamMediaException.class})
     public BaseResult handleException(StreamMediaException e) {
+        log.error("流媒体异常捕获:{},{}", e.getCode(), e.getMessage());
         return BaseResult.failed(e.getCode(), e.getMessage());
     }
 
 
     /**
-     * ums异常捕获
+     * ums通知异常捕获
      *
      * @param e
      * @return
@@ -76,6 +80,7 @@ public class DeviceAdvice {
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler({UmsNotifyException.class})
     public BaseResult handleException(UmsNotifyException e) {
+        log.error("ums通知异常捕获:{},{}", e.getCode(), e.getMessage());
         return BaseResult.failed(e.getCode(), e.getMessage());
     }
 
@@ -89,6 +94,7 @@ public class DeviceAdvice {
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler({UmsManagerException.class})
     public BaseResult handleException(UmsManagerException e) {
+        log.error("ums异常捕获:{}", e.getMessage());
         return BaseResult.failed(DeviceErrorEnum.UMS_SERVICE_ERROR.getCode(), DeviceErrorEnum.UMS_SERVICE_ERROR.getMsg());
     }
 
@@ -102,6 +108,7 @@ public class DeviceAdvice {
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler({Exception.class})
     public BaseResult handleException(Exception e) {
+        log.error("统一设备异常捕获:{}", e.getMessage());
         return BaseResult.failed(DeviceErrorEnum.UMS_SERVICE_ERROR.getCode(), DeviceErrorEnum.UMS_SERVICE_ERROR.getMsg());
     }
 

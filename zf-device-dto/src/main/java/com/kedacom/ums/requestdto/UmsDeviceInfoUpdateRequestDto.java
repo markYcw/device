@@ -25,10 +25,6 @@ public class UmsDeviceInfoUpdateRequestDto implements Serializable {
     @Size(max = 125,message = "设备名称不得超过125个字")
     private String name;
 
-    @ApiModelProperty(value = "设备类型, 统一设备为28")
-    @NotNull(message = "设备类型不能为空")
-    private String deviceType;
-
     @ApiModelProperty(value = "统一设备IP地址")
     @Pattern(regexp = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$", message = "IP地址参数不合法")
     private String deviceIp;

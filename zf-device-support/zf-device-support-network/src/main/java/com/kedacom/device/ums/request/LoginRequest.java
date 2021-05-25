@@ -19,7 +19,7 @@ public class LoginRequest extends BaseRequest {
 
     @JSONField(name = "devtype")
     @ApiModelProperty(value = "设备类型, 统一设备为28")
-    private String deviceType;
+    private Integer deviceType;
 
     @JSONField(name = "devplatip")
     @ApiModelProperty(value = "统一设备IP地址")

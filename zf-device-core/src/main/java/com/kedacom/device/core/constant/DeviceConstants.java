@@ -8,8 +8,15 @@ public class DeviceConstants {
 
     public static final int SUCCESS = 0 ;
 
+    public static final Integer ADD_UMS = 1;
+
+    public static final Integer DEL_UMS = 2;
+
     public static final Integer REQUEST3 = 3;
 
     public static final Integer REQUEST4 = 4;
+
+    //统一平台类型
+    public static final Integer DEVICETYPE = 28;
 
 }

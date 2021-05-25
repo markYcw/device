@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kedacom.BasePage;
+import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.constant.UmsMod;
 import com.kedacom.device.core.convert.UmsAlarmTypeConvert;
@@ -22,6 +23,7 @@ import com.kedacom.device.core.mapper.GroupMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.core.notify.NotifyCallback;
 import com.kedacom.device.core.notify.UmsNotifyEventListener;
+import com.kedacom.device.core.runner.UmsDeviceRunner;
 import com.kedacom.device.core.service.UmsManagerService;
 import com.kedacom.device.core.task.UmsDeviceTask;
 import com.kedacom.device.core.task.UmsNotifyQueryTask;
@@ -67,6 +69,9 @@ public class UmsManagerServiceImpl implements UmsManagerService {
     DeviceMapper deviceMapper;
 
     @Resource
+    UmsDeviceRunner umsDeviceRunner;
+
+    @Resource
     SubDeviceMapper subDeviceMapper;
 
     @Resource
@@ -79,15 +84,15 @@ public class UmsManagerServiceImpl implements UmsManagerService {
 
     private final ConcurrentHashMap<String, UmsNotifyQueryTask> map = new ConcurrentHashMap<>();
 
-
-    private ExecutorService executorService = new ThreadPoolExecutor(2, 2, 0L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<Runnable>(20));
+//    private ExecutorService executorService = new ThreadPoolExecutor(2, 2, 0L, TimeUnit.MILLISECONDS,
+//            new LinkedBlockingQueue<Runnable>(20));
 
     @Override
     public String insertUmsDevice(UmsDeviceInfoAddRequestDto requestDto) {
 
         log.info("新增统一平台信息参数 ： requestDto {}", requestDto);
         LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertUmsDeviceInfoAddRequestVo(requestDto);
+        loginRequest.setDeviceType(DeviceConstants.DEVICETYPE);
         //1、调中间件登录接口，成功返回sessionId
         LoginResponse loginResponse = umsClient.login(loginRequest);
         //TODO 先标志一下异常处理，稍后统一处理
@@ -100,6 +105,9 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         //3、将返回的sessionId存入本地
         deviceInfoEntity.setSessionId(String.valueOf(loginResponse.acquireSsid()));
         deviceMapper.insert(deviceInfoEntity);
+
+        //平台信息添加成功，开启自动获取远端设备及分组信息任务
+        umsDeviceRunner.notifyUmsChange(deviceInfoEntity, DeviceConstants.ADD_UMS);
 
         return deviceInfoEntity.getId();
     }
@@ -126,6 +134,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
             }
             //2、调用中间件登录接口, 成功后将获取的sessionId存入本地
             LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertUmsDeviceInfoUpdateRequestVo(requestDto);
+            loginRequest.setDeviceType(DeviceConstants.DEVICETYPE);
             LoginResponse loginResponse = umsClient.login(loginRequest);
             if (loginResponse.acquireErrcode() != 0) {
                 log.error("登录统一平台异常");
@@ -202,6 +211,8 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         LambdaQueryWrapper<SubDeviceInfoEntity> deleteWrapper = new LambdaQueryWrapper<>();
         deleteWrapper.eq(SubDeviceInfoEntity::getParentId, umsId);
         subDeviceMapper.delete(deleteWrapper);
+        //删除根据平台信息获取远端设备及分组的任务
+        umsDeviceRunner.notifyUmsChange(deviceInfoEntity, DeviceConstants.DEL_UMS);
 
         return true;
     }

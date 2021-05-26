@@ -37,4 +37,8 @@ public interface StreamMediaService {
 
     Boolean sendTransData(SendTransDataDTO request);
 
+    QueryRealUrlVO queryRealUrl(QueryRealUrlDTO queryRealUrlDTO);
+
+    QueryHistoryUrlVO queryHistoryUrl(QueryHistoryUrlDTO queryHistoryUrlDTO);
+
 }

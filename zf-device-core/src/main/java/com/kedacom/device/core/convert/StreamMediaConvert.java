@@ -44,4 +44,8 @@ public interface StreamMediaConvert {
 
     TransDataEntity convertTransDataNotifyEvent(TransDataNotifyEvent event);
 
+    QueryRealUrlRequest convertQueryRealUrlDTO(QueryRealUrlDTO request);
+
+    QueryHistoryUrlRequest convertQueryHistoryUrlDTO(QueryHistoryUrlDTO request);
+
 }

@@ -288,4 +288,36 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         responseUtil.handleSMSRes(error, DeviceErrorEnum.SEND_TRANS_DATA_FAILED, res);
         return true;
     }
+
+    @Override
+    public QueryRealUrlVO queryRealUrl(QueryRealUrlDTO request) {
+        String error = "查询实时资源URL失败:{},{},{}";
+        log.info("查询实时资源URL入参信息:{}", request);
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        QueryRealUrlRequest queryRealUrlRequest = streamMediaConvert.convertQueryRealUrlDTO(request);
+        queryRealUrlRequest.setSsid(ssid);
+        log.info("查询实时资源URL交互参数:{}", queryRealUrlRequest);
+        QueryRealUrlResponse res = client.queryRealUrl(queryRealUrlRequest);
+        log.info("查询实时资源URL应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_REAL_URL_FAILED, res);
+        return res.acquireData(QueryRealUrlVO.class);
+    }
+
+    @Override
+    public QueryHistoryUrlVO queryHistoryUrl(QueryHistoryUrlDTO request) {
+        String error = "查询历史资源URL失败:{},{},{}";
+        log.info("查询历史资源URL入参信息:{}", request);
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        QueryHistoryUrlRequest queryHistoryUrlRequest = streamMediaConvert.convertQueryHistoryUrlDTO(request);
+        queryHistoryUrlRequest.setSsid(ssid);
+        log.info("查询历史资源URL交互参数:{}", queryHistoryUrlRequest);
+        QueryHistoryUrlResponse res = client.queryHistoryUrl(queryHistoryUrlRequest);
+        log.info("查询历史资源UR应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_HISTORY_URL_FAILED, res);
+        return res.acquireData(QueryHistoryUrlVO.class);
+    }
 }

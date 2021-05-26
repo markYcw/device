@@ -157,5 +157,22 @@ public class StreamMediaController {
         return BaseResult.succeed("发送成功", aBoolean);
     }
 
+    @ApiOperation("查询实时资源URL")
+    @PostMapping("/queryRealUrl")
+    public BaseResult<QueryRealUrlVO> queryRealUrl(@Valid @RequestBody QueryRealUrlDTO queryRealUrlDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        QueryRealUrlVO queryRealUrlVO = streamMediaService.queryRealUrl(queryRealUrlDTO);
+        return BaseResult.succeed("查询成功", queryRealUrlVO);
+    }
+
+    @ApiOperation("查询历史资源URL")
+    @PostMapping("/queryHistoryUrl")
+    public BaseResult<QueryHistoryUrlVO> queryHistoryUrl(@Valid @RequestBody QueryHistoryUrlDTO queryHistoryUrlDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        QueryHistoryUrlVO queryHistoryUrlVO = streamMediaService.queryHistoryUrl(queryHistoryUrlDTO);
+        return BaseResult.succeed("查询成功", queryHistoryUrlVO);
+    }
 
 }

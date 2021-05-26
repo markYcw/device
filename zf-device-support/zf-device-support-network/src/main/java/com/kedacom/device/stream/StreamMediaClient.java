@@ -127,4 +127,20 @@ public interface StreamMediaClient {
      */
     SendTransDataResponse sendTransData(SendTransDataRequest sendTransDataRequest);
 
+    /**
+     * 查询实时资源URL
+     *
+     * @param queryRealUrlRequest
+     * @return
+     */
+    QueryRealUrlResponse queryRealUrl(QueryRealUrlRequest queryRealUrlRequest);
+
+    /**
+     * 查询历史资源URL
+     *
+     * @param queryHistoryUrlRequest
+     * @return
+     */
+    QueryHistoryUrlResponse queryHistoryUrl(QueryHistoryUrlRequest queryHistoryUrlRequest);
+
 }

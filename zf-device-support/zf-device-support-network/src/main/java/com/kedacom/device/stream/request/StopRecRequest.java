@@ -3,9 +3,7 @@ package com.kedacom.device.stream.request;
 import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -26,7 +24,7 @@ public class StopRecRequest extends BaseRequest {
     private String request_id;
 
     @ApiModelProperty("录像ID")
-    private String recordId;
+    private String record_id;
 
     @Override
     public String name() {

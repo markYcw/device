@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication(scanBasePackages = "com.kedacom")
 @EnableAsync
 @EnableFeignClients(basePackages = "com.kedacom.device.core.msp")
-@EnableKmProxy(proxyPackages = "com.kedacom.device", ipAddr = "172.16.231.31:45670", notifyPackages = "com.kedacom.device.core.event")
+@EnableKmProxy(proxyPackages = "com.kedacom.device", ipAddr = "127.0.0.1:45670", notifyPackages = "com.kedacom.device.core.event")
 public class DeviceServer {
     public static void main(String[] args) {
         SpringApplication.run(DeviceServer.class);

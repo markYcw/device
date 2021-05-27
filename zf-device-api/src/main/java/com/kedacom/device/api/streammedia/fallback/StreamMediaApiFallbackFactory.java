@@ -83,6 +83,16 @@ public class StreamMediaApiFallbackFactory implements FallbackFactory<StreamMedi
             public BaseResult<Boolean> sendTransData(SendTransDataDTO sendTransDataDTO) {
                 return BaseResult.failed("服务出错，请稍后重试");
             }
+
+            @Override
+            public BaseResult<QueryRealUrlVO> queryRealUrl(QueryRealUrlDTO queryRealUrlDTO) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<QueryHistoryUrlVO> queryHistoryUrl(QueryHistoryUrlDTO queryHistoryUrlDTO) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
         };
     }
 }

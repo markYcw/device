@@ -4,6 +4,7 @@ import com.kedacom.BaseResult;
 import com.kedacom.device.common.exception.ParamException;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.exception.*;
+import com.kedacom.exception.KMTimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -98,6 +99,18 @@ public class DeviceAdvice {
         return BaseResult.failed(DeviceErrorEnum.UMS_SERVICE_ERROR.getCode(), DeviceErrorEnum.UMS_SERVICE_ERROR.getMsg());
     }
 
+    /**
+     * 动态代理请求超时异常捕获
+     *
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler({KMTimeoutException.class})
+    public BaseResult handleException(KMTimeoutException e) {
+        log.error("动态代理请求超时异常捕获:{}", e.getMessage());
+        return BaseResult.failed(e.getMessage());
+    }
 
     /**
      * 统一设备异常捕获

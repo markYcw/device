@@ -11,6 +11,7 @@ import com.kedacom.device.core.utils.ThreadPoolUtil;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.LoginRequest;
 import com.kedacom.device.ums.response.LoginResponse;
+import com.kedacom.exception.KMTimeoutException;
 import com.kedacom.ums.requestdto.UmsDeviceInfoSyncRequestDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -71,6 +72,8 @@ public class ConnectorListenerImpl implements ConnectorListener {
                 }
             }
 
+        } catch (KMTimeoutException e) {
+            log.error("动态代理请求超时异常捕获:{}", e.getMessage());
         } catch (Exception e) {
             log.error("连接事件监听status---已连接,初始化设备、设备分组和设备名称拼音转化失败:{}", e.getMessage());
         }

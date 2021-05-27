@@ -12,9 +12,15 @@ import com.kedacom.exception.KMProxyException;
 import com.kedacom.network.niohdl.core.IoContext;
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
+import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
@@ -34,7 +40,7 @@ import java.util.Set;
  * @date 2021/5/12 7:17
  */
 @Slf4j
-public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
+public class ClientProxyRegister implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 
     private NetworkConfig networkConfig;
 
@@ -42,18 +48,24 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
 
     private Map<String, Class<?>> notifyMap = new HashMap<>();
 
+    private ResourceLoader resourceLoader;
+
+    private Environment environment;
 
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry registry) {
 
+        ClassPathScanningCandidateComponentProvider scanner = getScanner();
+        scanner.setResourceLoader(this.resourceLoader);
 
         Map<String, Object> attrs = annotationMetadata
                 .getAnnotationAttributes(EnableKmProxy.class.getName(), true);
 
         if (attrs != null && attrs.containsKey("ipAddr")) {
             initIoContext();
-            initNetworkConfig((String) attrs.get("ipAddr"));
+            String ipAddress = getIpAddress(attrs);
+            initNetworkConfig(ipAddress);
         }
 
 
@@ -90,7 +102,7 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
 
             for (Class<?> clazz : typesAnnotatedWith) {
 
-                handlerProxyClient(clazz,registry);
+                handlerProxyClient(clazz, registry);
 
             }
 
@@ -103,7 +115,7 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
         IoContext.initIoSelector();
     }
 
-    private Set<String> getBasePackages(AnnotationMetadata annotationMetadata,String attributeName) {
+    private Set<String> getBasePackages(AnnotationMetadata annotationMetadata, String attributeName) {
 
         Map<String, Object> attributes = annotationMetadata.getAnnotationAttributes(EnableKmProxy.class.getCanonicalName());
 
@@ -133,7 +145,7 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
         ClientInfo clientInfo = resolverClient(clazz);
 
         //注册代理类
-        registerProxyClient(registry,clientInfo);
+        registerProxyClient(registry, clientInfo);
 
 
     }
@@ -201,6 +213,7 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
 
     /**
      * 解析操作
+     *
      * @param clazz class对象
      */
     private ClientInfo resolverClient(Class<?> clazz) {
@@ -229,7 +242,7 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
                     .parameters(parameters)
                     .returnType(returnType)
                     .build();
-            methodInfos.put(method,methodInfo);
+            methodInfos.put(method, methodInfo);
         }
 
         return ClientInfo.builder()
@@ -250,4 +263,40 @@ public class ClientProxyRegister implements ImportBeanDefinitionRegistrar{
         }
     }
 
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    @Override
+    public void setResourceLoader(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
+
+    private String getIpAddress(Map<String, Object> attributes) {
+        return resolve((String) attributes.get("ipAddr"));
+    }
+
+    private String resolve(String value) {
+        if (StringUtils.hasText(value)) {
+            return this.environment.resolvePlaceholders(value);
+        }
+        return value;
+    }
+
+    protected ClassPathScanningCandidateComponentProvider getScanner() {
+        return new ClassPathScanningCandidateComponentProvider(false, this.environment) {
+            @Override
+            protected boolean isCandidateComponent(
+                    AnnotatedBeanDefinition beanDefinition) {
+                boolean isCandidate = false;
+                if (beanDefinition.getMetadata().isIndependent()) {
+                    if (!beanDefinition.getMetadata().isAnnotation()) {
+                        isCandidate = true;
+                    }
+                }
+                return isCandidate;
+            }
+        };
+    }
 }

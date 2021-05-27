@@ -4,6 +4,7 @@ import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 @ApiModel("查询实时资源URL请求")
+@ToString(callSuper = true)
 public class QueryRealUrlRequest extends BaseRequest {
 
     private static final String COMMAND = "queryrealurl";
@@ -21,7 +23,7 @@ public class QueryRealUrlRequest extends BaseRequest {
     @NotBlank(message = "协议类型不能为空")
     private String protocol;
 
-    @ApiModelProperty("资源ID当使用RSTP协议时，device_id参数新增支持使用“视频资源ID-音频资源ID”来分别指定视频来源和音频来源")
+    @ApiModelProperty("国标id----当使用RSTP协议时，device_id参数新增支持使用“视频资源ID-音频资源ID”来分别指定视频来源和音频来源")
     @NotBlank(message = "资源ID不能为空")
     private String device_id;
 

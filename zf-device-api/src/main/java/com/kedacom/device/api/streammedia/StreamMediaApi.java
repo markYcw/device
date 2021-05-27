@@ -157,4 +157,22 @@ public interface StreamMediaApi {
     @PostMapping("/sendTransData")
     BaseResult<Boolean> sendTransData(@RequestBody SendTransDataDTO sendTransDataDTO);
 
+    /**
+     * 查询实时资源URL
+     *
+     * @param queryRealUrlDTO
+     * @return
+     */
+    @PostMapping("/queryRealUrl")
+    BaseResult<QueryRealUrlVO> queryRealUrl(@RequestBody QueryRealUrlDTO queryRealUrlDTO);
+
+    /**
+     * 查询历史资源URL
+     *
+     * @param queryHistoryUrlDTO
+     * @return
+     */
+    @PostMapping("/queryHistoryUrl")
+    BaseResult<QueryHistoryUrlVO> queryHistoryUrl(@RequestBody QueryHistoryUrlDTO queryHistoryUrlDTO);
+
 }

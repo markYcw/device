@@ -1,12 +1,12 @@
 package com.kedacom.device.core.msp;
 
-import com.kedacom.avIntegration.request.RequestBaseParam;
-import com.kedacom.avIntegration.request.auth.SystemLoginRequest;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemKeepAliveResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemLogOutResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemLoginResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemVersionResponse;
+import com.kedacom.avIntegration.request.RequestBaseParam;
 import com.kedacom.device.core.msp.config.FeignConfig;
+import com.kedacom.device.core.msp.entity.SystemLoginDTO;
 import com.kedacom.device.core.msp.fallback.SystemAuthSdkFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +31,7 @@ public interface SystemAuthSdk {
      * @return 登录响应
      */
     @PostMapping("login")
-    SystemLoginResponse login(@RequestBody SystemLoginRequest request);
+    SystemLoginResponse login(@RequestBody SystemLoginDTO systemLoginDTO);
 
     /**
      * 保活

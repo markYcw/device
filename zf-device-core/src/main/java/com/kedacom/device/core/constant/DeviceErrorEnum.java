@@ -36,6 +36,7 @@ public enum DeviceErrorEnum {
     MSP_REMOTE_ERROR(3001, "调用拼控服务远程接口错误"),
 
     SYSTEM_AUTH_FAILED(3010, "鉴权操作失败"),
+    AUTH_ACCOUNT_PASSWORD_FAILED(3010, "请配置拼控服务账号密码"),
     SYSTEM_LOGIN_FAILED(3011, "登录显控服务获取令牌失败"),
     SYSTEM_KEEPALIVE_FAILED(3012, "token令牌保活失败"),
     SYSTEM_VERSION_FAILED(3013, "获取版本号失败"),

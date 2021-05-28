@@ -72,6 +72,14 @@ public class DeviceInfoEntity implements Serializable {
     @TableField(value = "last_sync_third_device_time")
     private String lastSyncThirdDeviceTime;
 
+    @ApiModelProperty(value = "拼控服务账号")
+    @TableField(value = "msp_account")
+    private String mspAccount;
+
+    @ApiModelProperty(value = "拼控服务密码")
+    @TableField(value = "msp_password")
+    private String mspPassword;
+
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 

@@ -1,13 +1,13 @@
 package com.kedacom.device.core.msp.fallback;
 
-import com.kedacom.avIntegration.request.RequestBaseParam;
-import com.kedacom.avIntegration.request.auth.SystemLoginRequest;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemKeepAliveResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemLogOutResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemLoginResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemVersionResponse;
-import com.kedacom.device.core.msp.SystemAuthSdk;
+import com.kedacom.avIntegration.request.RequestBaseParam;
 import com.kedacom.device.core.exception.MspRemoteCallException;
+import com.kedacom.device.core.msp.SystemAuthSdk;
+import com.kedacom.device.core.msp.entity.SystemLoginDTO;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +31,7 @@ public class SystemAuthSdkFallbackFactory implements FallbackFactory<SystemAuthS
 
                     this.systemAuthSdk = new SystemAuthSdk() {
                         @Override
-                        public SystemLoginResponse login(SystemLoginRequest request) {
+                        public SystemLoginResponse login(SystemLoginDTO request) {
                             throw new MspRemoteCallException(cause.getMessage());
                         }
 

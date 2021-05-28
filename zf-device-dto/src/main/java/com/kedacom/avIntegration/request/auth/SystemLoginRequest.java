@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -15,18 +15,8 @@ import java.io.Serializable;
 @ApiModel("鉴权登录入参")
 public class SystemLoginRequest implements Serializable {
 
-    /**
-     * 用户名 必填
-     */
-    @NotEmpty(message = "用户名不能为空")
-    @ApiModelProperty(value = "用户名 - 必填", required = true)
-    private String user_name;
-
-    /**
-     * 密码 必填
-     */
-    @NotEmpty(message = "密码不能为空")
-    @ApiModelProperty(value = "密码 - 必填", required = true)
-    private String password;
+    @NotBlank(message = "统一平台id不能为空")
+    @ApiModelProperty(value = "平台id")
+    private String umsId;
 
 }

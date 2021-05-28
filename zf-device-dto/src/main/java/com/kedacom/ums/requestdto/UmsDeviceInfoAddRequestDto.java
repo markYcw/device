@@ -56,4 +56,10 @@ public class UmsDeviceInfoAddRequestDto implements Serializable {
     @Max(value = 65536, message = "录像服务端口号参数不正确")
     private Integer streamingMediaRecPort;
 
+    @ApiModelProperty(value = "拼控服务账号")
+    private String mspAccount;
+
+    @ApiModelProperty(value = "拼控服务密码")
+    private String mspPassword;
+
 }

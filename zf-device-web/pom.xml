@@ -62,11 +62,15 @@
             <artifactId>DmJdbcDriver</artifactId>
             <version>18</version>
         </dependency>
-
         <dependency>
             <groupId>com.kedacom.zf</groupId>
             <artifactId>zf-doc-spring-boot-starter</artifactId>
             <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kedacom</groupId>
+            <artifactId>zf-device-common</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

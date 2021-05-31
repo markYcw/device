@@ -16,7 +16,7 @@ import java.util.List;
 @ApiModel("配置大屏通道绑定应答")
 public class TvWallPipelineBindResponse implements Serializable {
 
-    @ApiModelProperty("响应状态码 成功0 失败4")
+    @ApiModelProperty("响应状态码:成功0(成功只返回状态码，其余属性均为空)、失败4")
     private Integer error;
 
     @ApiModelProperty(value = "大屏ID")

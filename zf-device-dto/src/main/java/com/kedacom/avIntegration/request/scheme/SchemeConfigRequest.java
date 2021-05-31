@@ -36,6 +36,15 @@ public class SchemeConfigRequest implements Serializable {
     @ApiModelProperty(value = "是否等分 - 等分是单元格合并；不等分填写窗口布局，默认等分")
     private boolean isequant;
 
+    @ApiModelProperty(value = "是否保留屏上窗口 是否保留大屏上的窗口，默认不保留清屏，园区拍拍项目定制接口 add by 2021/05/06")
+    private boolean iskeep;
+
+    @ApiModelProperty(value = "等分布局下必填:单元格行数，预案画面虚拟切分小单元格行数")
+    private Integer cell_row;
+
+    @ApiModelProperty(value = "等分布局下必填:单元格列数，预案画面虚拟切分小单元格列数")
+    private Integer cell_col;
+
     @ApiModelProperty(value = "窗口数组 - 等分模式下填写合并单元格的索引，不等分时填写坐标")
     private List<LayoutParam> layout;
 

@@ -34,10 +34,6 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.kedacom</groupId>
             <artifactId>zf-device-core</artifactId>
             <version>1.0.0</version>

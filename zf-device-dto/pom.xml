@@ -32,4 +32,30 @@
             <version>1.0.0</version>
         </dependency>
     </dependencies>
+
+    <!-- Source attach plugin -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>nexus</id>
+            <name>*</name>
+            <url>http://172.16.6.154:9081/repository/zfsyb-rep-release/</url>
+        </repository>
+    </distributionManagement>
 </project>

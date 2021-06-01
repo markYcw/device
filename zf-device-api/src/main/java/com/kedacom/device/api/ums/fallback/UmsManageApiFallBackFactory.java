@@ -3,6 +3,7 @@ package com.kedacom.device.api.ums.fallback;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.device.api.ums.UmsManageApi;
+import com.kedacom.ums.entity.AcceptUrlListen;
 import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.*;
 import feign.hystrix.FallbackFactory;
@@ -92,6 +93,11 @@ public class UmsManageApiFallBackFactory implements FallbackFactory<UmsManageApi
 
             @Override
             public BaseResult<List<UmsScheduleGroupItemQueryResponseDto>> selectUmsGroupItemList(UmsScheduleGroupItemQueryRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult deviceStatusRegister(AcceptUrlListen listener) {
                 return BaseResult.failed(throwable.getMessage());
             }
         };

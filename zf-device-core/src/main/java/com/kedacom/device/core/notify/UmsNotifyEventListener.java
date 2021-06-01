@@ -3,20 +3,21 @@ package com.kedacom.device.core.notify;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.kedacom.core.DeviceStatusListenerManager;
 import com.kedacom.device.core.constant.Event;
 import com.kedacom.device.core.convert.UmsGroupConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.entity.GroupInfoEntity;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.core.event.DeviceAndGroupEvent;
-import com.kedacom.device.core.event.DeviceStateEvent;
 import com.kedacom.device.core.event.DeviceGroupEvent;
 import com.kedacom.device.core.event.DeviceGroupStateEvent;
+import com.kedacom.device.core.event.DeviceStateEvent;
+import com.kedacom.device.core.kafka.UmsKafkaMessageProducer;
 import com.kedacom.device.core.kafka.UmsSubDeviceStatusModel;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.GroupMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
-import com.kedacom.device.core.kafka.UmsKafkaMessageProducer;
 import com.kedacom.device.ums.DeviceGroupVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -174,8 +175,17 @@ public class UmsNotifyEventListener {
             updateWrapper.eq(SubDeviceInfoEntity::getId, event.getId())
                     .set(SubDeviceInfoEntity::getDeviceStatus, event.getStatus());
             subDeviceMapper.update(null, updateWrapper);
+            UmsSubDeviceStatusModel umsSubDeviceStatusModel = UmsSubDeviceStatusModel.builder()
+                    .devId(event.getId())
+                    .devStatus(event.getStatus())
+                    .parentId(event.getParentId())
+                    .timeStamp(System.currentTimeMillis())
+                    .build();
+
             //当只是设备状态变更的时候做kafka的推送
-            sendKafka(event);
+            sendKafka(umsSubDeviceStatusModel);
+            DeviceStatusListenerManager.getInstance().publish(umsSubDeviceStatusModel.toString());
+
         }
         if (Event.OPERATETYPETYPE3.equals(operateType)) {
             SubDeviceInfoEntity subDeviceInfoEntity = toSubDeviceInfoEntity(event);
@@ -190,24 +200,17 @@ public class UmsNotifyEventListener {
         }
     }
 
-    private void sendKafka(DeviceStateEvent event) {
-
+    private void sendKafka(UmsSubDeviceStatusModel umsSubDeviceStatusModel) {
         executorService.submit(() -> {
-            UmsSubDeviceStatusModel umsSubDeviceStatusModel = UmsSubDeviceStatusModel.builder()
-                    .devId(event.getId())
-                    .devStatus(event.getStatus())
-                    .parentId(event.getParentId())
-                    .timeStamp(System.currentTimeMillis())
-                    .build();
             umsKafkaMessageProducer.deviceStatusUpdate(umsSubDeviceStatusModel.toString()).addCallback(new ListenableFutureCallback<SendResult<Object, Object>>() {
                 @Override
                 public void onFailure(Throwable throwable) {
-                    log.error("ID为{}的设备状态变更消息发送失败，失败信息为：{}", event.getId(), throwable);
+                    log.error("ID为{}的设备状态变更消息发送失败，失败信息为：{}", umsSubDeviceStatusModel.getDevId(), throwable);
                 }
 
                 @Override
                 public void onSuccess(SendResult<Object, Object> objectObjectSendResult) {
-                    log.info("ID为{}的设备状态变更消息发送成功，成功信息为：{}", event.getId(), objectObjectSendResult);
+                    log.info("ID为{}的设备状态变更消息发送成功，成功信息为：{}", umsSubDeviceStatusModel.getDevId(), objectObjectSendResult);
                 }
             });
         });

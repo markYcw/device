@@ -3,6 +3,7 @@ package com.kedacom.device.api.ums;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.device.api.ums.fallback.UmsManageApiFallBackFactory;
+import com.kedacom.ums.entity.AcceptUrlListen;
 import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.*;
 import io.swagger.annotations.ApiOperation;
@@ -79,5 +80,9 @@ public interface UmsManageApi {
     @ApiOperation("根据子设备条件查询统一平台下分组中设备状况信息")
     @PostMapping("/selectUmsGroupItemList")
     BaseResult<List<UmsScheduleGroupItemQueryResponseDto>> selectUmsGroupItemList(@RequestBody UmsScheduleGroupItemQueryRequestDto requestDto);
+
+    @PostMapping("/deviceStatusRegister")
+    @ApiOperation(value = "注冊到设备状态通知管理类")
+    BaseResult deviceStatusRegister(@RequestBody AcceptUrlListen listener);
 
 }

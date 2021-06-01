@@ -18,4 +18,5 @@ public class DeviceServer {
     public static void main(String[] args) {
         SpringApplication.run(DeviceServer.class);
     }
+   
 }

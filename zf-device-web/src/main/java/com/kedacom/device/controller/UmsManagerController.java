@@ -4,6 +4,8 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
+import com.kedacom.core.AcceptUrlListen;
+import com.kedacom.core.DeviceStatusListenerManager;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.UmsManagerService;
 import com.kedacom.ums.requestdto.*;
@@ -13,10 +15,12 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -244,7 +248,14 @@ public class UmsManagerController {
         List<UmsSubDeviceInfoQueryResponseDto> umsSubDeviceList = umsManagerService.selectUmsSubDeviceByGroupId(umsSubDeviceInfoQueryByGroupIdRequestDto);
         umsChildGroupAndSubDeviceInfoResponseVo.setSubDeviceList(umsSubDeviceList);
 
-        return BaseResult.succeed( "查询成功", umsChildGroupAndSubDeviceInfoResponseVo);
+        return BaseResult.succeed("查询成功", umsChildGroupAndSubDeviceInfoResponseVo);
+    }
+
+    @PostMapping("/deviceStatusRegister")
+    @ApiOperation(value = "注冊到设备状态通知管理类")
+    public BaseResult deviceStatusRegister(@Valid @RequestBody AcceptUrlListen listener, BindingResult result) {
+        DeviceStatusListenerManager.getInstance().register(listener);
+        return BaseResult.succeed("注册成功");
     }
 
 }

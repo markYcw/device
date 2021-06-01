@@ -7,7 +7,7 @@ import com.kedacom.device.core.convert.UmsDeviceConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.service.UmsManagerService;
-import com.kedacom.device.core.utils.ThreadPoolUtil;
+import com.kedacom.util.ThreadPoolUtil;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.LoginRequest;
 import com.kedacom.device.ums.response.LoginResponse;

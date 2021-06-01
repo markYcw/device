@@ -1,4 +1,4 @@
-package com.kedacom.device.core.utils;
+package com.kedacom.util;
 
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 

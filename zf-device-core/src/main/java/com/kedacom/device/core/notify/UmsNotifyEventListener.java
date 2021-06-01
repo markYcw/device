@@ -229,7 +229,7 @@ public class UmsNotifyEventListener {
         subDeviceInfoEntity.setGbid(event.getGbid());
         subDeviceInfoEntity.setGroupId(event.getGroupId());
         subDeviceInfoEntity.setId(event.getId());
-        subDeviceInfoEntity.setInstallDate(event.getInstallDate());
+        subDeviceInfoEntity.setInstallDate(null);
         subDeviceInfoEntity.setLatitude(event.getLatitude());
         subDeviceInfoEntity.setLatitudeStr(event.getLatitudeStr());
         subDeviceInfoEntity.setLongitude(event.getLongitude());

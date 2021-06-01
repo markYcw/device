@@ -2,6 +2,7 @@ package com.kedacom.core;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
+import com.kedacom.ums.entity.UmsSubDeviceStatusModel;
 import com.kedacom.util.ThreadPoolUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -59,20 +60,38 @@ public class DeviceStatusListenerManager {
 
     }
 
-    public void publish(String deviceStatus) {
-        log.info("DeviceStatusListenerManager publish deviceStatus:{}", deviceStatus);
-        ThreadPoolUtil.getInstance().submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (MapUtil.isNotEmpty(map)) {
-                        map.keySet().stream().forEach(key -> map.get(key).stream().forEach(url -> restTemplate.postForObject(url, deviceStatus, null)));
-                    }
-                } catch (Exception e) {
-                    log.error("DeviceStatusListenerManager publish failed,devicestatus:{},error:{}", deviceStatus, e.getMessage());
-                }
-            }
-        });
+    public void publish(UmsSubDeviceStatusModel model) {
+        DeviceStatusTask publishTask = new DeviceStatusTask(model);
+        ThreadPoolUtil.getInstance().submit(publishTask);
+    }
 
+    static class DeviceStatusTask implements Runnable {
+
+        private UmsSubDeviceStatusModel model;
+
+        public DeviceStatusTask(UmsSubDeviceStatusModel model) {
+            this.model = model;
+        }
+
+        @Override
+        public void run() {
+            log.info("DeviceStatusTask publish UmsSubDeviceStatusModel:{}", model);
+            try {
+                if (MapUtil.isNotEmpty(map)) {
+                    //           map.keySet().stream().distinct().forEach(key -> map.get(key).stream().distinct().forEach(url -> restTemplate.postForObject(url, deviceStatus, String.class)));
+                    Set<String> keySet = map.keySet();
+                    for (String key : keySet) {
+                        Set<String> urls = map.get(key);
+                        log.info("key:{},url:{},deviceStatus:{}", key, urls, model.toString());
+                        for (String url : urls) {
+                            restTemplate.postForObject(url, model, String.class);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.error("DeviceStatusListenerManager publish failed,deviceStatus:{},error:{}", model.toString(), e.getMessage());
+            }
+        }
     }
 }
+

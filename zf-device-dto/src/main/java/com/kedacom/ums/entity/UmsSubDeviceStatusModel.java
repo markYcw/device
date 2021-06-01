@@ -1,4 +1,4 @@
-package com.kedacom.device.core.kafka;
+package com.kedacom.ums.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,6 +12,7 @@ import java.io.Serializable;
 
 /**
  * 设备状态变更通知类
+ *
  * @author van.shu
  * @create 2020/9/25 15:03
  * @see UmsProducerTopic#DEVICE_STATUS_CHANGE linked topic

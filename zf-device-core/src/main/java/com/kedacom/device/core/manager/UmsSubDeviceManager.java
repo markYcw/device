@@ -5,6 +5,8 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kedacom.device.core.constant.DeviceErrorEnum;
+import com.kedacom.device.core.utils.HandleResponseUtil;
 import com.kedacom.device.core.utils.PinYinUtils;
 import com.kedacom.device.ums.request.QueryScheduleGroupRequest;
 import com.kedacom.device.ums.response.QuerySubDeviceInfoResponse;
@@ -21,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 import static com.kedacom.device.core.constant.DeviceConstants.*;
@@ -32,6 +35,9 @@ import static com.kedacom.device.core.constant.DeviceConstants.*;
 @Component
 @Slf4j
 public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceInfoEntity> {
+
+    @Autowired
+    private HandleResponseUtil handleResponseUtil;
 
     @Autowired
     private SubDeviceMapper subDeviceInfoMapper;
@@ -51,6 +57,9 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
         requestVo.setQueryindex(curPage);
         requestVo.setQuerycount(pageSize);
         QuerySubDeviceInfoResponse responseVo = umsClient.querydev(requestVo);
+        log.info("获取统一设备应答信息 ： responseVo {}", responseVo.getDevinfo());
+        String errorMsg = "获取统一设备信息异常 ： {}， {}， {}";
+        handleResponseUtil.handleUMSManagerRes(errorMsg, DeviceErrorEnum.DEVICE_SYNCHRONIZATION_FAILED, responseVo);
 
 //        if (responseVo.getResp().getErrorcode() != 0) {
 //            for (int i = 0; i < REQUEST3; i ++) {
@@ -80,13 +89,14 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
                 String lowerCase = PinYinUtils.StrToLowerCase(hanZiInitial);
                 umsSubDeviceInfoEntity.setPinyin(hanZiPinYin + "&&" + lowerCase);
                 umsSubDeviceInfoEntity.setParentId(umsDeviceId);
+                umsSubDeviceInfoEntity.setInstallDate(null);
                 if (subDeviceInfoMapper.selectById(umsSubDeviceInfoEntity.getId()) != null) {
 //                    log.info("已存在Id为:{}", umsSubDeviceInfoEntity.getId());
                     int i = subDeviceInfoMapper.updateById(umsSubDeviceInfoEntity);
                     if (i <= 0) {
                         log.error("设备id:{},更新失败", umsSubDeviceInfoEntity.getId());
                     }
-                }else {
+                } else {
                     int insert = subDeviceInfoMapper.insert(umsSubDeviceInfoEntity);
                     if (insert <= 0) {
                         log.error("设备id:{},插入失败", umsSubDeviceInfoEntity.getId());
@@ -110,10 +120,4 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
 
         subDeviceInfoMapper.update(null, updateWrapper);
     }
-
-
-
-
-
-
 }

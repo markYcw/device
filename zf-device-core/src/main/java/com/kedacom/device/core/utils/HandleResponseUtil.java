@@ -70,6 +70,25 @@ public class HandleResponseUtil {
     }
 
     /**
+     * 处理ums设备管理异常
+     *
+     * @param str
+     * @param errorEnum
+     * @param res
+     */
+    public void handleUMSManagerRes(String str, DeviceErrorEnum errorEnum, BaseResponse res) {
+        if (res.acquireErrcode() != DeviceConstants.SUCCESS) {
+            if (StrUtil.isNotBlank(kmErrCode.matchErrMsg(res.acquireErrcode()))) {
+                log.error(str, res.acquireErrcode(), errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
+                throw new UmsNotifyException(errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
+            } else {
+                log.error(str, res.acquireErrcode(), errorEnum.getCode(), errorEnum.getMsg());
+                throw new UmsNotifyException(errorEnum.getCode(), errorEnum.getMsg());
+            }
+        }
+    }
+
+    /**
      * 处理ums通知异常
      *
      * @param str

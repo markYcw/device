@@ -6,6 +6,7 @@ import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.entity.UmsPair;
 import com.kedacom.device.core.mapper.DeviceMapper;
+import com.kedacom.device.core.service.DeviceManagerService;
 import com.kedacom.device.core.service.UmsManagerService;
 import com.kedacom.device.core.task.UmsDeviceTask;
 import com.kedacom.util.ThreadPoolUtil;
@@ -42,7 +43,7 @@ public class UmsDeviceRunner /*implements CommandLineRunner*/ {
     private DeviceMapper deviceMapper;
 
     @Autowired
-    private UmsManagerService umsManagerService;
+    private DeviceManagerService deviceManagerService;
 
 
     public void notifyUmsChange(DeviceInfoEntity deviceInfoEntity, Integer umsChangeType) {
@@ -131,7 +132,7 @@ public class UmsDeviceRunner /*implements CommandLineRunner*/ {
         ThreadPoolUtil.getInstance().submit(new Runnable() {
             @Override
             public void run() {
-                umsManagerService.syncDeviceData(request);
+                deviceManagerService.syncDeviceData(request);
             }
         });
 

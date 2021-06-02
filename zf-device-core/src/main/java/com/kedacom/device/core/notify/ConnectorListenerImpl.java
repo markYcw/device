@@ -6,6 +6,7 @@ import com.kedacom.core.ConnectorListener;
 import com.kedacom.device.core.convert.UmsDeviceConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.mapper.DeviceMapper;
+import com.kedacom.device.core.service.DeviceManagerService;
 import com.kedacom.device.core.service.UmsManagerService;
 import com.kedacom.util.ThreadPoolUtil;
 import com.kedacom.device.ums.UmsClient;
@@ -35,7 +36,7 @@ public class ConnectorListenerImpl implements ConnectorListener {
     private DeviceMapper deviceMapper;
 
     @Resource
-    private UmsManagerService umsManagerService;
+    private DeviceManagerService deviceManagerService;
 
 
     @Override
@@ -65,7 +66,7 @@ public class ConnectorListenerImpl implements ConnectorListener {
                     ThreadPoolUtil.getInstance().submit(new Runnable() {
                         @Override
                         public void run() {
-                            umsManagerService.syncDeviceData(request);
+                            deviceManagerService.syncDeviceData(request);
                         }
                     });
 

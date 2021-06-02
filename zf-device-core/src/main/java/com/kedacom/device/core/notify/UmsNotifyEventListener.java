@@ -1,6 +1,7 @@
 package com.kedacom.device.core.notify;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.kedacom.core.DeviceStatusListenerManager;
@@ -13,6 +14,7 @@ import com.kedacom.device.core.event.DeviceAndGroupEvent;
 import com.kedacom.device.core.event.DeviceGroupEvent;
 import com.kedacom.device.core.event.DeviceGroupStateEvent;
 import com.kedacom.device.core.event.DeviceStateEvent;
+import com.kedacom.device.core.exception.UmsNotifyException;
 import com.kedacom.device.core.kafka.UmsKafkaMessageProducer;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.GroupMapper;
@@ -168,36 +170,22 @@ public class UmsNotifyEventListener {
     @EventListener(DeviceStateEvent.class)
     public void deviceStatusNotify(DeviceStateEvent event) {
         log.info("设备状态变更通知:{}", event);
-        Integer operateType = event.getOperateType();
-        //TODO 暂时只做了 设备的状态的更新，新增，修改，删除
-        if (Event.OPERATETYPETYPE1.equals(operateType)) {
-            LambdaUpdateWrapper<SubDeviceInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
-            updateWrapper.eq(SubDeviceInfoEntity::getId, event.getId())
-                    .set(SubDeviceInfoEntity::getDeviceStatus, event.getStatus());
-            subDeviceMapper.update(null, updateWrapper);
-            UmsSubDeviceStatusModel umsSubDeviceStatusModel = UmsSubDeviceStatusModel.builder()
-                    .devId(event.getId())
-                    .devStatus(event.getStatus())
-                    .parentId(event.getParentId())
-                    .timeStamp(System.currentTimeMillis())
-                    .build();
+        if (event == null) {
+            log.error("设备状态变更通知为空");
+            return;
+        }
+        LambdaUpdateWrapper<SubDeviceInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(SubDeviceInfoEntity::getId, event.getId())
+                .set(SubDeviceInfoEntity::getDeviceStatus, event.getStatus());
+        subDeviceMapper.update(null, updateWrapper);
+        UmsSubDeviceStatusModel umsSubDeviceStatusModel = UmsSubDeviceStatusModel.builder()
+                .devId(event.getId())
+                .devStatus(event.getStatus())
+                .timeStamp(System.currentTimeMillis())
+                .build();
 
-            //当只是设备状态变更的时候做kafka的推送
-            sendKafka(umsSubDeviceStatusModel);
-            DeviceStatusListenerManager.getInstance().publish(umsSubDeviceStatusModel);
-
-        }
-        if (Event.OPERATETYPETYPE3.equals(operateType)) {
-            SubDeviceInfoEntity subDeviceInfoEntity = toSubDeviceInfoEntity(event);
-            subDeviceMapper.insert(subDeviceInfoEntity);
-        }
-        if (Event.OPERATETYPETYPE4.equals(operateType)) {
-            SubDeviceInfoEntity subDeviceInfoEntity = toSubDeviceInfoEntity(event);
-            subDeviceMapper.updateById(subDeviceInfoEntity);
-        }
-        if (Event.OPERATETYPETYPE5.equals(operateType)) {
-            subDeviceMapper.deleteById(event.getId());
-        }
+        sendKafka(umsSubDeviceStatusModel);
+        DeviceStatusListenerManager.getInstance().publish(umsSubDeviceStatusModel);
     }
 
     private void sendKafka(UmsSubDeviceStatusModel umsSubDeviceStatusModel) {

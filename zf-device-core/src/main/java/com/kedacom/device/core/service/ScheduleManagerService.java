@@ -10,7 +10,7 @@ import java.util.List;
  * @describe
  * @date 2021/5/10
  */
-public interface UmsOperateService {
+public interface ScheduleManagerService {
 
     /**
      * 创建调度组
@@ -88,34 +88,6 @@ public interface UmsOperateService {
      * @return
      */
     Boolean controlScheduleGroupPtz(UmsScheduleGroupPtzControlRequestDto requestDto);
-
-    /**
-     * 加入讨论组
-     * @param requestDto
-     * @return
-     */
-    List<String> joinScheduleGroupDiscussionGroup(UmsScheduleGroupJoinDiscussionGroupRequestDto requestDto);
-
-    /**
-     * 离开讨论组
-     * @param requestDto
-     * @return
-     */
-    Boolean quitScheduleGroupDiscussionGroup(UmsScheduleGroupQuitDiscussionGroupRequestDto requestDto);
-
-    /**
-     * 查询讨论组
-     * @param requestDto
-     * @return
-     */
-    List<UmsScheduleGroupQueryDiscussionGroupResponseDto> queryScheduleGroupDiscussionGroup(UmsScheduleGroupQueryDiscussionGroupRequestDto requestDto);
-
-    /**
-     * 清空讨论组
-     * @param requestDto
-     * @return
-     */
-    Boolean clearScheduleGroupDiscussionGroup(UmsScheduleGroupClearDiscussionGroupRequestDto requestDto);
 
     /**
      * 开始画面合成

@@ -4,7 +4,7 @@ import com.kedacom.device.core.convert.UmsSubDeviceConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.exception.UmsOperateException;
 import com.kedacom.device.core.mapper.DeviceMapper;
-import com.kedacom.device.core.service.UmsOperateService;
+import com.kedacom.device.core.service.ScheduleManagerService;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.*;
 import com.kedacom.device.ums.response.*;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class UmsOperateServiceImpl implements UmsOperateService {
+public class ScheduleManagerServiceImpl implements ScheduleManagerService {
 
     @Resource
     UmsClient umsClient;
@@ -223,81 +223,6 @@ public class UmsOperateServiceImpl implements UmsOperateService {
         if (response.acquireErrcode() != 0) {
             log.error("调度组PTZ控制失败");
             throw new UmsOperateException("调度组PTZ控制失败");
-        }
-
-        return true;
-    }
-
-    @Override
-    public List<String> joinScheduleGroupDiscussionGroup(UmsScheduleGroupJoinDiscussionGroupRequestDto request) {
-
-        log.info("加入讨论组入参:{}", request);
-        String umsId = request.getUmsId();
-        DeviceInfoEntity entity = deviceMapper.selectById(umsId);
-        String sessionId = entity.getSessionId();
-        JoinDiscussionGroupRequest joinDiscussionGroupRequest = UmsSubDeviceConvert.INSTANCE.convertJoinDiscussionGroupRequest(request);
-        joinDiscussionGroupRequest.setSsid(Integer.valueOf(sessionId));
-        JoinDiscussionGroupResponse response = umsClient.joindiscussion(joinDiscussionGroupRequest);
-        if (response.acquireErrcode() != 0) {
-            log.error("加入讨论组失败");
-            throw new UmsOperateException("加入讨论组失败");
-        }
-
-        return response.getDeviceIDs();
-    }
-
-    @Override
-    public Boolean quitScheduleGroupDiscussionGroup(UmsScheduleGroupQuitDiscussionGroupRequestDto request) {
-
-        log.info("离开讨论组入参:{}", request);
-        String umsId = request.getUmsId();
-        DeviceInfoEntity entity = deviceMapper.selectById(umsId);
-        String sessionId = entity.getSessionId();
-        QuitDiscussionGroupRequest quitDiscussionGroupRequest = new QuitDiscussionGroupRequest();
-        quitDiscussionGroupRequest.setSsid(Integer.valueOf(sessionId));
-        quitDiscussionGroupRequest.setDeviceID(request.getDeviceID());
-        quitDiscussionGroupRequest.setGroupID(request.getGroupID());
-        QuitDiscussionGroupResponse response = umsClient.quitdiscussion(quitDiscussionGroupRequest);
-        if (response.acquireErrcode() != 0) {
-            log.error("退出讨论组失败");
-            throw new UmsOperateException("退出讨论组失败");
-        }
-
-        return true;
-    }
-
-    @Override
-    public List<UmsScheduleGroupQueryDiscussionGroupResponseDto> queryScheduleGroupDiscussionGroup(UmsScheduleGroupQueryDiscussionGroupRequestDto request) {
-
-        log.info("查询讨论组入参:{}", request);
-        String umsId = request.getUmsId();
-        DeviceInfoEntity entity = deviceMapper.selectById(umsId);
-        String sessionId = entity.getSessionId();
-        QueryDiscussionGroupRequest queryDiscussionGroupRequest = new QueryDiscussionGroupRequest();
-        queryDiscussionGroupRequest.setSsid(Integer.valueOf(sessionId));
-        QueryDiscussionGroupResponse response = umsClient.querydiscussion(queryDiscussionGroupRequest);
-        if (response.acquireErrcode() != 0) {
-            log.error("查询讨论组失败");
-            throw new UmsOperateException("查询讨论组失败");
-        }
-
-        return response.getMembers();
-    }
-
-    @Override
-    public Boolean clearScheduleGroupDiscussionGroup(UmsScheduleGroupClearDiscussionGroupRequestDto request) {
-
-        log.info("清空讨论组入参:{}", request);
-        String umsId = request.getUmsId();
-        DeviceInfoEntity entity = deviceMapper.selectById(umsId);
-        String sessionId = entity.getSessionId();
-        ClearDiscussionGroupRequest clearDiscussionGroupRequest = new ClearDiscussionGroupRequest();
-        clearDiscussionGroupRequest.setSsid(Integer.valueOf(sessionId));
-        clearDiscussionGroupRequest.setGroupID(request.getGroupID());
-        ClearDiscussionGroupResponse response = umsClient.cleardiscussion(clearDiscussionGroupRequest);
-        if (response.acquireErrcode() != 0) {
-            log.error("清空讨论组失败");
-            throw new UmsOperateException("清空讨论组失败");
         }
 
         return true;

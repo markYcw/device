@@ -58,8 +58,8 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
         requestVo.setQuerycount(pageSize);
         QuerySubDeviceInfoResponse responseVo = umsClient.querydev(requestVo);
         log.info("获取统一设备应答信息 ： responseVo {}", responseVo.getDevinfo());
-        String errorMsg = "获取统一设备信息异常 ： {}， {}， {}";
-        handleResponseUtil.handleUMSManagerRes(errorMsg, DeviceErrorEnum.DEVICE_SYNCHRONIZATION_FAILED, responseVo);
+//        String errorMsg = "获取统一设备信息异常 ： {}， {}， {}";
+//        handleResponseUtil.handleUMSManagerRes(errorMsg, DeviceErrorEnum.DEVICE_SYNCHRONIZATION_FAILED, responseVo);
 
 //        if (responseVo.getResp().getErrorcode() != 0) {
 //            for (int i = 0; i < REQUEST3; i ++) {
@@ -120,4 +120,9 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
 
         subDeviceInfoMapper.update(null, updateWrapper);
     }
+
+    public void dealQueryDev(){
+
+    }
+
 }

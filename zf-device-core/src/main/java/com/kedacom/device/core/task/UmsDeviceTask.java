@@ -12,6 +12,7 @@ import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.core.manager.UmsSubDeviceManager;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
+import com.kedacom.device.core.service.DeviceManagerService;
 import com.kedacom.device.core.service.UmsManagerService;
 import com.kedacom.device.core.utils.PinYinUtils;
 import com.kedacom.device.core.utils.SpringUtil;
@@ -206,9 +207,9 @@ public class UmsDeviceTask implements Runnable {
                     //开始同步分组信息
                     try {
                         log.info("本次更新所有统一设备模式已更正。。。。");
-                        UmsManagerService umsManagerService = getBean(UmsManagerService.class);
+                        DeviceManagerService deviceManagerService = getBean(DeviceManagerService.class);
                         log.info("开始获取设备分组信息，统一平台id为[{}]", umsDeviceId);
-                        Boolean umsGroupResult = umsManagerService.queryDeviceGroupNotify(umsDeviceId);
+                        Boolean umsGroupResult = deviceManagerService.queryDeviceGroupNotify(umsDeviceId);
                         if (!umsGroupResult) {
                             log.error("获取所有设备分组信息失败，统一设备Id为:[{}]", umsDeviceId);
                         }
@@ -247,9 +248,9 @@ public class UmsDeviceTask implements Runnable {
             if (code == Integer.MAX_VALUE) {
                 //到这里说明所有设备已经更新完成，那么模式还是同步中的设备则说明这次没有同步到，将模式改为未同步到
 //                umsSubDeviceManager.updateUmsSubDeviceMod(UmsMod.UPGRADING, UmsMod.EXIST);
-                UmsManagerService umsManagerService = getBean(UmsManagerService.class);
+                DeviceManagerService deviceManagerService = getBean(DeviceManagerService.class);
                 log.info("开始获取设备分组信息，统一平台id为{}", umsDeviceId);
-                Boolean umsGroupResult = umsManagerService.queryDeviceGroupNotify(umsDeviceId);
+                Boolean umsGroupResult = deviceManagerService.queryDeviceGroupNotify(umsDeviceId);
                 if (!umsGroupResult) {
                     log.error("远程调用统一设备分组接口失败或者未获取到统一设备分组信息,统一设备Id为:[{}]", umsDeviceId);
                     return false;
@@ -327,13 +328,13 @@ public class UmsDeviceTask implements Runnable {
      */
     private BasePage<UmsSubDeviceInfoQueryResponseDto> getUmsSubDeviceFromLocal(Integer pageSize) {
 
-        UmsManagerService umsManagerService = getBean(UmsManagerService.class);
+        DeviceManagerService deviceManagerService = getBean(DeviceManagerService.class);
 
         UmsSubDeviceInfoQueryRequestDto requestVo = new UmsSubDeviceInfoQueryRequestDto();
 
         requestVo.setPageSize(pageSize);
 
-        return umsManagerService.selectUmsSubDeviceList(requestVo);
+        return deviceManagerService.selectUmsSubDeviceList(requestVo);
     }
 
     /**

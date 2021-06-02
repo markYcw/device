@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.core.AcceptUrlListen;
+import com.kedacom.ums.entity.AcceptUrlListen;
 import com.kedacom.core.DeviceStatusListenerManager;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.UmsManagerService;

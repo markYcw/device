@@ -3,6 +3,7 @@ package com.kedacom.core;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
 import com.alibaba.fastjson.JSON;
+import com.kedacom.ums.entity.AcceptUrlListen;
 import com.kedacom.ums.entity.UmsSubDeviceStatusModel;
 import com.kedacom.util.ThreadPoolUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -87,9 +88,9 @@ public class DeviceStatusListenerManager {
                         log.info("key:{},url:{},deviceStatus:{}", key, urls, model.toString());
                         for (String url : urls) {
                             //1、 url:http://127.0.0.1:10090/demo/deviceStatus     @RequestBody:UmsSubDeviceStatusModel
-                             restTemplate.postForObject(url, model, String.class);
+                            restTemplate.postForObject(url, model, String.class);
                             //2、 url:http://127.0.0.1:10090/demo/deviceStatus?deviceStatus={deviceStatus}  @RequestParam String deviceStatus
-                           // restTemplate.postForObject(url, null, String.class, deviceStatus);
+                            // restTemplate.postForObject(url, null, String.class, deviceStatus);
                         }
                     }
                 }

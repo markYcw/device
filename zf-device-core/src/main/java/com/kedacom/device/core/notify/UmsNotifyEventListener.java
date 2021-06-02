@@ -1,7 +1,6 @@
 package com.kedacom.device.core.notify;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.kedacom.core.DeviceStatusListenerManager;
@@ -15,11 +14,11 @@ import com.kedacom.device.core.event.DeviceGroupEvent;
 import com.kedacom.device.core.event.DeviceGroupStateEvent;
 import com.kedacom.device.core.event.DeviceStateEvent;
 import com.kedacom.device.core.kafka.UmsKafkaMessageProducer;
-import com.kedacom.ums.entity.UmsSubDeviceStatusModel;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.GroupMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.ums.DeviceGroupVo;
+import com.kedacom.ums.entity.UmsSubDeviceStatusModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.kafka.support.SendResult;
@@ -175,7 +174,7 @@ public class UmsNotifyEventListener {
             LambdaUpdateWrapper<SubDeviceInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
             updateWrapper.eq(SubDeviceInfoEntity::getId, event.getId())
                     .set(SubDeviceInfoEntity::getDeviceStatus, event.getStatus());
-            //    subDeviceMapper.update(null, updateWrapper);
+            subDeviceMapper.update(null, updateWrapper);
             UmsSubDeviceStatusModel umsSubDeviceStatusModel = UmsSubDeviceStatusModel.builder()
                     .devId(event.getId())
                     .devStatus(event.getStatus())

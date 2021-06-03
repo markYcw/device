@@ -3,6 +3,7 @@ package com.kedacom.device.core.notify;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.kedacom.core.ConnectorListener;
+import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.convert.UmsDeviceConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.mapper.DeviceMapper;
@@ -50,6 +51,7 @@ public class ConnectorListenerImpl implements ConnectorListener {
                 log.info("连接事件监听status---已连接,设备登录:{}", beforeLoginList);
                 for (DeviceInfoEntity deviceInfoEntity : beforeLoginList) {
                     LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertDeviceInfo(deviceInfoEntity);
+                    loginRequest.setDeviceType(DeviceConstants.DEVICETYPE);
                     LoginResponse response = umsClient.login(loginRequest);
                     deviceInfoEntity.setSessionId(String.valueOf(response.acquireSsid()));
                     deviceInfoEntity.setUpdateTime(new Date());

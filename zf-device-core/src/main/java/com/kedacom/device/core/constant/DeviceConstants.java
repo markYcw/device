@@ -12,6 +12,8 @@ public class DeviceConstants {
 
     public static final Integer DEL_UMS = 2;
 
+    public static final Integer REQUEST2 = 2;
+
     public static final Integer REQUEST3 = 3;
 
     public static final Integer REQUEST4 = 4;

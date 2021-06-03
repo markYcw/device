@@ -5,9 +5,11 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.utils.HandleResponseUtil;
 import com.kedacom.device.core.utils.PinYinUtils;
+import com.kedacom.device.ums.RepeatDeviceRequest;
 import com.kedacom.device.ums.request.QueryScheduleGroupRequest;
 import com.kedacom.device.ums.response.QuerySubDeviceInfoResponse;
 import com.kedacom.ums.responsedto.SubDeviceInfoResponseVo;
@@ -57,28 +59,19 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
         requestVo.setQueryindex(curPage);
         requestVo.setQuerycount(pageSize);
         QuerySubDeviceInfoResponse responseVo = umsClient.querydev(requestVo);
-        log.info("获取统一设备应答信息 ： responseVo {}", responseVo.getDevinfo());
-        if (responseVo.acquireErrcode() != 0) {
+
+        // 如果当前请求异常， 将重新发送获取设备的请求（最多再请求两次）
+        RepeatDeviceRequest repeatDeviceRequest = repeatRequest(responseVo, requestVo);
+        if (repeatDeviceRequest.getRequestResult()) {
+            responseVo = repeatDeviceRequest.getResponse();
+        } else {
+            // 请求响应失败，记录第几页失败，当前页的请求数量
             log.error("同步设备第{}页异常，请求同步数据为{}条", curPage, pageSize);
         }
-//        String errorMsg = "获取统一设备信息异常 ： {}， {}， {}";
-//        handleResponseUtil.handleUMSManagerRes(errorMsg, DeviceErrorEnum.DEVICE_SYNCHRONIZATION_FAILED, responseVo);
-
-//        if (responseVo.getResp().getErrorcode() != 0) {
-//            for (int i = 0; i < REQUEST3; i ++) {
-//                responseVo = umsClient.querydev(requestVo);
-//                if (responseVo.getResp().getErrorcode() == 0) {
-//                    break;
-//                }
-//                if (i == 2) {
-//                    log.error("手动同步设备第{}页异常，同步数据为{}条", curPage, pageSize);
-//                    return 0;
-//                }
-//            }
-//        }
+        log.info("获取统一设备应答信息 ： responseVo {}", responseVo.getDevinfo());
         List<SubDeviceInfoResponseVo> responseVoList = responseVo.getDevinfo();
         log.info("当前第{}页查询到的数据条数是{}", curPage, responseVoList.size());
-        if (CollUtil.isEmpty(responseVoList) && curPage != 1) {
+        if (CollUtil.isEmpty(responseVoList)) {
             return Integer.MAX_VALUE;
         }
         List<SubDeviceInfoEntity> umsSubDeviceInfoEntityList = UmsSubDeviceConvert.INSTANCE.convertSubDeviceInfoEntityList(responseVoList);
@@ -124,8 +117,28 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
         subDeviceInfoMapper.update(null, updateWrapper);
     }
 
-    public void dealQueryDev(){
+    public RepeatDeviceRequest repeatRequest(QuerySubDeviceInfoResponse responseVo, QueryDeviceRequest requestVo){
 
+        RepeatDeviceRequest repeatDeviceRequest = new RepeatDeviceRequest();
+        Integer errCode = responseVo.acquireErrcode();
+        if (errCode == 0) {
+            repeatDeviceRequest.setRequestResult(true);
+            repeatDeviceRequest.setResponse(responseVo);
+            return repeatDeviceRequest;
+        }
+        // 请求结果失败，重新发送请求（最多请求两次）
+        for (int i = 0; i < REQUEST2; i ++) {
+            responseVo = umsClient.querydev(requestVo);
+            // 如果请求响应成功，返回结果
+            if (responseVo.acquireErrcode() == 0) {
+                repeatDeviceRequest.setRequestResult(true);
+                repeatDeviceRequest.setResponse(responseVo);
+                return repeatDeviceRequest;
+            }
+        }
+        repeatDeviceRequest.setRequestResult(false);
+
+        return repeatDeviceRequest;
     }
 
 }

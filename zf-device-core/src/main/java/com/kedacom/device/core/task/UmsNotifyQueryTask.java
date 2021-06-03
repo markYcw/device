@@ -3,7 +3,6 @@ package com.kedacom.device.core.task;
 import com.github.rholder.retry.*;
 import com.google.common.base.Predicates;
 import com.kedacom.device.core.service.DeviceManagerService;
-import com.kedacom.device.core.service.UmsManagerService;
 import com.kedacom.device.core.utils.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,9 +49,9 @@ public class UmsNotifyQueryTask implements Runnable {
                 }
             });
         } catch (ExecutionException e) {
-
+            log.error("UmsNotifyQueryTask ExecutionException,times:{}", anInt);
         } catch (RetryException e) {
-
+            log.error("UmsNotifyQueryTask RetryException,times:{}", anInt);
         }
     }
 }

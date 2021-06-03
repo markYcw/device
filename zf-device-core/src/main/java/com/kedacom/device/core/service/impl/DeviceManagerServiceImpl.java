@@ -22,7 +22,6 @@ import com.kedacom.device.core.mapper.GroupMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.core.notify.NotifyCallback;
 import com.kedacom.device.core.notify.UmsNotifyEventListener;
-import com.kedacom.device.core.runner.UmsDeviceRunner;
 import com.kedacom.device.core.service.DeviceManagerService;
 import com.kedacom.device.core.task.UmsDeviceTask;
 import com.kedacom.device.core.task.UmsNotifyQueryTask;
@@ -441,6 +440,7 @@ public class DeviceManagerServiceImpl implements DeviceManagerService {
                 UmsNotifyQueryTask notifyQueryTask = map.get(sessionId);
                 if (notifyQueryTask == null) {
                     UmsNotifyQueryTask task = new UmsNotifyQueryTask(umsId);
+                    map.put(sessionId, task);
                     task.run();
                 }
                 return false;

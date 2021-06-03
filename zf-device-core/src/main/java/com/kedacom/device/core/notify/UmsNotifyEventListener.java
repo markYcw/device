@@ -1,7 +1,6 @@
 package com.kedacom.device.core.notify;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.kedacom.core.DeviceStatusListenerManager;
@@ -14,7 +13,6 @@ import com.kedacom.device.core.event.DeviceAndGroupEvent;
 import com.kedacom.device.core.event.DeviceGroupEvent;
 import com.kedacom.device.core.event.DeviceGroupStateEvent;
 import com.kedacom.device.core.event.DeviceStateEvent;
-import com.kedacom.device.core.exception.UmsNotifyException;
 import com.kedacom.device.core.kafka.UmsKafkaMessageProducer;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.GroupMapper;
@@ -95,7 +93,7 @@ public class UmsNotifyEventListener {
                 if (log.isDebugEnabled()) {
                     log.info("deviceGroupNotify 设备分组通知开始同步数据库count:{}.data:{}", groupInfoEntities.size(), groupInfoEntities);
                 }
-                log.info("deviceGroupNotify 设备分组通知开始同步数据库-count:{},分组id:{}", groupIds.size(), groupIds);
+                log.info("deviceGroupNotify 设备分组通知开始同步数据库-总量:{},分组id:{}", groupIds.size(), groupIds);
                 LambdaQueryWrapper<GroupInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
                 LambdaUpdateWrapper<GroupInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
                 // 同步分组

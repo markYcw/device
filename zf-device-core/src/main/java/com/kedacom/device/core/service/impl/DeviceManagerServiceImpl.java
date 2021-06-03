@@ -329,7 +329,8 @@ public class DeviceManagerServiceImpl implements DeviceManagerService {
         long count = deviceQueryDtoList.stream().filter(x -> !UmsMod.EXIST.equals(x.getDeviceMod())).count();
         log.info("ordinary count is:{}", deviceQueryDtoList.size());
         log.info("filter count is {}", count);
-        Map<String, List<UmsSubDeviceQueryDto>> listMap = deviceQueryDtoList.stream().filter(x -> !UmsMod.EXIST.equals(x.getDeviceMod())).collect(Collectors.groupingBy(UmsSubDeviceQueryDto::getGroupId, Collectors.toList()));
+//        Map<String, List<UmsSubDeviceQueryDto>> listMap = deviceQueryDtoList.stream().filter(x -> !UmsMod.EXIST.equals(x.getDeviceMod())).collect(Collectors.groupingBy(UmsSubDeviceQueryDto::getGroupId, Collectors.toList()));
+        Map<String, List<UmsSubDeviceQueryDto>> listMap = deviceQueryDtoList.stream().collect(Collectors.groupingBy(UmsSubDeviceQueryDto::getGroupId));
         //统一设备这边一个设备可以在多个分组下，多个分组之间用“|”来分割，所以这里要处理一下
         Set<String> multiSet = listMap.keySet().stream().filter(x -> x.contains("|")).collect(Collectors.toSet());
         for (String multiGroupId : multiSet) {
@@ -397,7 +398,8 @@ public class DeviceManagerServiceImpl implements DeviceManagerService {
         if (CollectionUtil.isNotEmpty(deviceTypeList)) {
             queryWrapper.in(SubDeviceInfoEntity::getDeviceType, deviceTypeList);
         }
-        queryWrapper.ne(SubDeviceInfoEntity::getGroupId, "");
+        queryWrapper.ne(SubDeviceInfoEntity::getDeviceMod, UmsMod.EXIST);
+        queryWrapper.isNotNull(SubDeviceInfoEntity::getGroupId);
         List<SubDeviceInfoEntity> subDeviceInfoEntityList = subDeviceMapper.selectList(queryWrapper);
         if (CollectionUtil.isEmpty(subDeviceInfoEntityList)) {
             log.error("查询子设备信息为空");

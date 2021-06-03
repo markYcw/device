@@ -325,7 +325,8 @@ public class DeviceManagerServiceImpl implements DeviceManagerService {
             log.error("查询子设备信息为空");
             return null;
         }
-        long count = deviceQueryDtoList.stream().filter(x -> !UmsMod.EXIST.equals(x.getDeviceMod())).count();
+//        long count = deviceQueryDtoList.stream().filter(x -> !UmsMod.EXIST.equals(x.getDeviceMod())).count();
+        long count = deviceQueryDtoList.size();
         log.info("ordinary count is:{}", deviceQueryDtoList.size());
         log.info("filter count is {}", count);
 //        Map<String, List<UmsSubDeviceQueryDto>> listMap = deviceQueryDtoList.stream().filter(x -> !UmsMod.EXIST.equals(x.getDeviceMod())).collect(Collectors.groupingBy(UmsSubDeviceQueryDto::getGroupId, Collectors.toList()));

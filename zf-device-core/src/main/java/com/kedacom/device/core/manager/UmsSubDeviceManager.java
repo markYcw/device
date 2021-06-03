@@ -58,6 +58,9 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
         requestVo.setQuerycount(pageSize);
         QuerySubDeviceInfoResponse responseVo = umsClient.querydev(requestVo);
         log.info("获取统一设备应答信息 ： responseVo {}", responseVo.getDevinfo());
+        if (responseVo.acquireErrcode() != 0) {
+            log.error("同步设备第{}页异常，请求同步数据为{}条", curPage, pageSize);
+        }
 //        String errorMsg = "获取统一设备信息异常 ： {}， {}， {}";
 //        handleResponseUtil.handleUMSManagerRes(errorMsg, DeviceErrorEnum.DEVICE_SYNCHRONIZATION_FAILED, responseVo);
 

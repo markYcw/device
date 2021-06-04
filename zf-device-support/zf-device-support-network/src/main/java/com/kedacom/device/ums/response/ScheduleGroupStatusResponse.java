@@ -1,0 +1,24 @@
+package com.kedacom.device.ums.response;
+
+import com.alibaba.fastjson.JSONException;
+import com.kedacom.core.pojo.BaseResponse;
+import lombok.Data;
+import lombok.ToString;
+
+/**
+ * @author wangxy
+ * @describe
+ * @date 2021/6/4
+ */
+@Data
+@ToString(callSuper = true)
+public class ScheduleGroupStatusResponse extends BaseResponse {
+
+    @Override
+    public <T> T acquireData(Class<T> clazz)throws JSONException {
+
+        return super.acquireData(clazz);
+    }
+
+
+}

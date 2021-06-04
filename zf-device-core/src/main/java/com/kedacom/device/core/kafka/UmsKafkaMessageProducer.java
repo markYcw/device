@@ -50,6 +50,17 @@ public class UmsKafkaMessageProducer {
             }
         });
     }
+
+    /**
+     * 调度组状态通知
+     * @param scheduleStatusEventStr
+     * @return
+     */
+    public ListenableFuture<SendResult<Object, Object>> scheduleStatusUpdate(String scheduleStatusEventStr) {
+
+        log.info("--------kafka开始推送调度组状态通知--------");
+        return kafkaTemplate.send(UmsProducerTopic.DEVICE_SCHEDULE_GROUP_STATUS_NTY, scheduleStatusEventStr);
+    }
 }
 
 

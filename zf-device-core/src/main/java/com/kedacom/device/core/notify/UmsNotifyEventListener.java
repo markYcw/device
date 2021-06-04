@@ -9,10 +9,7 @@ import com.kedacom.device.core.convert.UmsGroupConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.entity.GroupInfoEntity;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
-import com.kedacom.device.core.event.DeviceAndGroupEvent;
-import com.kedacom.device.core.event.DeviceGroupEvent;
-import com.kedacom.device.core.event.DeviceGroupStateEvent;
-import com.kedacom.device.core.event.DeviceStateEvent;
+import com.kedacom.device.core.event.*;
 import com.kedacom.device.core.kafka.UmsKafkaMessageProducer;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.GroupMapper;
@@ -186,6 +183,14 @@ public class UmsNotifyEventListener {
         DeviceStatusListenerManager.getInstance().publish(umsSubDeviceStatusModel);
     }
 
+    @EventListener(ScheduleStatusEvent.class)
+    public void scheduleStatusNotify(ScheduleStatusEvent event) {
+
+        log.info("调度组状态通知信息：{}, 设备所有资源节点: {}, 设备下级的真实资源节点:{}", event, event.getMediaResourceNodeInfo(), event.getRealMediaResourceNodeInfo());
+        sendScheduleStatus(event);
+
+    }
+
     private void sendKafka(UmsSubDeviceStatusModel umsSubDeviceStatusModel) {
         executorService.submit(() -> {
             umsKafkaMessageProducer.deviceStatusUpdate(umsSubDeviceStatusModel.toString()).addCallback(new ListenableFutureCallback<SendResult<Object, Object>>() {
@@ -201,6 +206,22 @@ public class UmsNotifyEventListener {
             });
         });
 
+    }
+
+    private void sendScheduleStatus(ScheduleStatusEvent scheduleStatusEvent) {
+        executorService.submit(() -> {
+            umsKafkaMessageProducer.scheduleStatusUpdate(scheduleStatusEvent.toString()).addCallback(new ListenableFutureCallback<SendResult<Object, Object>>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    log.error("调度组ID为{}的状态变更消息发送失败，失败信息为：{}", scheduleStatusEvent.getGroupID(), throwable);
+                }
+
+                @Override
+                public void onSuccess(SendResult<Object, Object> objectObjectSendResult) {
+                    log.info("调度组ID为{}的状态变更消息发送成功，成功信息为：{}", scheduleStatusEvent.getGroupID(), objectObjectSendResult);
+                }
+            });
+        });
     }
 
     private SubDeviceInfoEntity toSubDeviceInfoEntity(DeviceStateEvent event) {

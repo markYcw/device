@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "查询调度组静音请求参数类")
+@ApiModel(value = "查询调度组静音请求参数类:DeviceID为设备国标id")
 public class UmsScheduleGroupQuerySilenceRequestDto implements Serializable {
 
     @NotBlank(message = "umsId不能为空")
@@ -24,8 +24,8 @@ public class UmsScheduleGroupQuerySilenceRequestDto implements Serializable {
     @ApiModelProperty(value = "调度组Id")
     private String GroupID;
 
-    @NotBlank(message = "设备Id不能为空")
-    @ApiModelProperty(value = "设备Id")
+    @NotBlank(message = "设备国标Id不能为空")
+    @ApiModelProperty(value = "设备国标Id")
     private String DeviceID;
 
 }

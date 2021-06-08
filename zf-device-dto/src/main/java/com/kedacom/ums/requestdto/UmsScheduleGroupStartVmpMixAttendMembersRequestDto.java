@@ -12,10 +12,10 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "参与画面合成的成员设备信息")
+@ApiModel(value = "参与画面合成的成员设备信息:id为设备国标id，name不填")
 public class UmsScheduleGroupStartVmpMixAttendMembersRequestDto implements Serializable {
 
-    @ApiModelProperty(value = "参与画面合成者的设备id")
+    @ApiModelProperty(value = "参与画面合成者的设备国标id")
     private String id;
 
     @ApiModelProperty(value = "参与画面合成者的名称")

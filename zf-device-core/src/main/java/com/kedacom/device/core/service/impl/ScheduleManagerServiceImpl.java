@@ -246,7 +246,7 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         StartVmpMixRequest startVmpMixRequest = UmsSubDeviceConvert.INSTANCE.convertStartVmpMixRequest(request);
         startVmpMixRequest.setSsid(Integer.valueOf(sessionId));
         StartVmpMixResponse response = umsClient.startvmpmix(startVmpMixRequest);
-        if (response.acquireErrcode() !=0) {
+        if (response.acquireErrcode() != 0) {
             log.error("开始画面合成失败");
             throw new UmsOperateException(null, "开始画面合成失败");
         }
@@ -334,11 +334,11 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         String umsId = request.getUmsId();
         DeviceInfoEntity entity = deviceMapper.selectById(umsId);
         String sessionId = entity.getSessionId();
-        String groupId = request.getRequestDto().getGroupID();
-        List<QueryMediaResponseDto> members = request.getRequestDto().getMembers();
+        String groupId = request.getGroupID();
+        MediaVo broadcast = request.getBroadcast();
         SetBroadcastRequest broadcastRequest = new SetBroadcastRequest();
         broadcastRequest.setSsid(Integer.valueOf(sessionId));
-        broadcastRequest.setBroadcast(members);
+        broadcastRequest.setBroadcast(broadcast);
         broadcastRequest.setGroupID(groupId);
         SetBroadcastResponse response = umsClient.setbroadcast(broadcastRequest);
         String errCode = "设置调度组广播源失败, {}, {}, {}";

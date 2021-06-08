@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "删除调度组成员设备信息请求参数类")
+@ApiModel(value = "删除调度组成员设备信息请求参数类：DeviceID为国标id")
 public class UmsScheduleGroupDeleteMembersRequestDto implements Serializable {
 
     @NotBlank(message = "umsId不能为空")
@@ -24,8 +24,8 @@ public class UmsScheduleGroupDeleteMembersRequestDto implements Serializable {
     @ApiModelProperty(value = "调度组Id")
     private String GroupID;
 
-    @NotBlank(message = "删除的成员设备Id不能为空")
-    @ApiModelProperty(value = "删除的成员设备ID集合")
+    @NotBlank(message = "删除的成员设备国标Id不能为空")
+    @ApiModelProperty(value = "删除的成员设备国标ID")
     private String DeviceID;
 
 }

@@ -1,12 +1,11 @@
 package com.kedacom.device.stream.request;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.kedacom.core.pojo.BaseRequest;
 import com.kedacom.streamMedia.info.AudioMixer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
@@ -23,6 +22,7 @@ public class UpdateAudioMixRequest extends BaseRequest {
     private static final String COMMAND = "updateaudiomix";
 
     @ApiModelProperty("音频混音设备组id")
+    @JSONField(name = "GroupID")
     private String GroupID;
 
     @ApiModelProperty("混音ID")

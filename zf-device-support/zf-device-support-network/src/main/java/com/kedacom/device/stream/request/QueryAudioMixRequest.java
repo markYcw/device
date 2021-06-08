@@ -1,5 +1,6 @@
 package com.kedacom.device.stream.request;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,6 +21,7 @@ public class QueryAudioMixRequest extends BaseRequest {
     private static final String COMMAND = "queryaudiomix";
 
     @ApiModelProperty("音频混音设备组id")
+    @JSONField(name = "GroupID")
     private String GroupID;
 
     @ApiModelProperty("混音ID集合")

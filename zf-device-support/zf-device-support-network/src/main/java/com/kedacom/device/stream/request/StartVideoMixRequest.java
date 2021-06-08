@@ -1,13 +1,12 @@
 package com.kedacom.device.stream.request;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.kedacom.core.pojo.BaseRequest;
 import com.kedacom.streamMedia.info.DrawText;
 import com.kedacom.streamMedia.info.VideoMixer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
@@ -24,6 +23,7 @@ public class StartVideoMixRequest extends BaseRequest {
     private static final String COMMAND = "startvideomix";
 
     @ApiModelProperty("画面合成设备分组id")
+    @JSONField(name = "GroupID")
     private String GroupID;
 
     @ApiModelProperty("画面合成风格")

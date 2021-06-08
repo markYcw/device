@@ -76,23 +76,23 @@
 # $ReleaseP :
 # $TEM :
 # =====================================================================================================================
-# ����common.pl֮ǰ,Ӧ���Ȼ�ȡ���α������Ŀ�汾��
-# ��ȡ��ǰ����ϵͳ
+# 调用common.pl之前,应当先获取本次编译的项目版本号
+# 获取当前操作系统
 if ( $ENV{'OS'} =~ /windows/i )
 {
-	$OS = 0; # Windows����ϵͳ
+	$OS = 0; # Windows操作系统
 	$OSstring = "Windows";
 }
 else
 {
-	$OS = 1; # Unix����ϵͳ
+	$OS = 1; # Unix操作系统
 	$OSstring = "Linux";
 }
-# ��ȡ��ǰʱ��͹���·��
+# 获取当前时间和工作路径
 $builddatetime = &getdatetime;
 $builddate = &getdate;
 $buildtime = &get_nowtime;
-# ��ȡ��ǰ����·��
+# 获取当前工作路径
 if ( $workpath eq "" )
 {
 	$workpath = &getcurrpath;
@@ -102,35 +102,35 @@ else
 	$workpath = &revisepath(1,$workpath);
 }
 # =====================================================================================================================
-# �ű�����Ŀ¼�µ��԰汾���������ļ��в������򴴽�
+# 脚本所在目录下的以版本号命名的文件夹不存在则创建
 if ( !-e $workpath.$version && !mkdir($workpath.$version) )
 {
 	$place = "Make_Version_Dir";
 	print "Failed Make Dir '$workpath$version' !\n";
 	&command("pause");
-	exit 1; # �����汾���������ļ���ʧ�����˳���������
+	exit 1; # 创建版本号命名的文件夹失败则退出整个程序
 }
-$verworkP = &revisepath(1,$workpath.$version); # ��������·���µİ汾·��Ϊ���ø�ʽ , ����ֱ����log�ļ�����
-# �ڰ汾���������ļ����´����Խű�����ʱ�������������ļ���
+$verworkP = &revisepath(1,$workpath.$version); # 修正工作路径下的版本路径为可用格式 , 用于直接与log文件连接
+# 在版本号命名的文件夹下创建以脚本运行时间日期命名的文件夹
 if ( !-e $verworkP.$builddatetime && !mkdir($verworkP.$builddatetime) )
 {
 	$place = "Make_Version_Datetime_Dir";
 	print "Failed Make Dir '$verworkP$builddatetime' !\n";
 	&command("pause");
-	exit 1; # ��������ʱ���������ļ���ʧ�����˳���������
+	exit 1; # 创建日期时间命名的文件夹失败则退出整个程序
 }
-$verworkP = &revisepath(1,$verworkP.$builddatetime); # ��������·���µİ汾·��Ϊ���ø�ʽ , ����ֱ����log�ļ�����
-# �򿪱��������Ϣ��־BuildError.log׼��д��
+$verworkP = &revisepath(1,$verworkP.$builddatetime); # 修正工作路径下的版本路径为可用格式 , 用于直接与log文件连接
+# 打开编译错误信息日志BuildError.log准备写入
 if ( !open(BUILDERROR,">>$verworkP"."BuildError.log") )
 {
 	print "Error : Failed Open File '$verworkP"."BuildError.log' !\n";
 	&command("pause");
-	exit 1; # �򲻿���־�ļ����˳���������
+	exit 1; # 打不开日志文件则退出整个程序
 }
 &printerror(1,"OS : $OSstring\nAutoBuild Script Path : $workpath\nAutoBuild Time : $builddatetime\n");
-$place = ""; # ���ڼ�¼�ӳ�����
-$module = ""; # ���ڼ�¼ģ����
-$vererrL = $verworkP."error.log"; # ����error.log�����ڼ�¼ϵͳ����Ĵ�����Ϣ�������ֱ�ӵ��ø�·��
+$place = ""; # 用于记录子程序名
+$module = ""; # 用于记录模块名
+$vererrL = $verworkP."error.log"; # 由于error.log多用于记录系统命令的错误信息，需便于直接调用该路径
 if ( $OS )
 {
 	my $info = `unalias cp`;
@@ -139,22 +139,22 @@ if ( $OS )
 	&printerror(1,$str);
 }
 # =====================================================================================================================
-# ����Ŀ�����ļ�main.ini����ȡ����������Ϣ
+# 打开项目配置文件main.ini，读取所有配置信息
 $place = "Get_Project_Config";
 print "\n$module - $place......\n";
 if ( !open(PROJECT,$workpath."main.ini") )
 {
 	&printerror(0,"Failed Open File '$workpath"."main.ini' !\n");
 	&command("pause");
-	exit 1; # �򲻿���Ŀ�����ļ�main.ini���˳���������
+	exit 1; # 打不开项目配置文件main.ini则退出整个程序
 }
 local @prjfile = <PROJECT>;
 close(PROJECT);
 chomp(@prjfile);
-# ��ȡmain.ini�о�̬��Ϣ
+# 读取main.ini中静态信息
 $BuildServer = &getprjconf("hostname");
 $proline = &getprjconf("productline");
-$UCMprj = &getprjconf("UCMproject"); # ��ȡ��ǰ������Ŀ
+$UCMprj = &getprjconf("UCMproject"); # 读取当前编译项目
 #print "zhangtingting:[$UCMprj]\n";
 
 $compileinfo_p = &getprjconf("compileinfo_path");
@@ -167,43 +167,43 @@ $commoncompP = &getprjconf("commoncomp_path");
 $compileIFP = &getprjconf("compileinfo_path");
 $moduleCFP = &getprjconf("moduleconf_path");
 my $linux_ismount = &getprjconf("linux_ismount");
-$ISM = 0; # ���û���д��checkreadme��ϢתΪboolֵ�������ж�
-$ISM = 1 if (( $linux_ismount eq "" ) || ( $linux_ismount eq "yes" ) || ( $linux_ismount eq "y" )); # ������дֵΪ�ջ�������"yes"ʱ��Ϊ��
+$ISM = 0; # 将用户填写的checkreadme信息转为bool值供后续判断
+$ISM = 1 if (( $linux_ismount eq "" ) || ( $linux_ismount eq "yes" ) || ( $linux_ismount eq "y" )); # 仅当填写值为空或不填或等于"yes"时才为真
 undef($linux_ismount);
 undef(@prjfile);
-# У����Ŀ�����ļ���
+# 校验项目配置文件名
 if ( $UCMprj eq "" )
 {
 	&printerror(0,"Failed Found Key Value 'UCMproject' in '$workpath"."main.ini' !\n");
 	&command("pause");
-	exit 1; # ��ȡ���Ĺؼ���ϢΪ�����˳���������
+	exit 1; # 获取到的关键信息为空则退出整个程序
 }
-# У��ؼ�ͨ��������Ϣ
+# 校验关键通用配置信息
 if ( $commoncompP eq "" )
 {
 	&printerror(0,"Failed Found Key Value 'commoncomp_path' in '$workpath"."main.ini' !\n");
 	&command("pause");
-	exit 1; # ��ȡ���Ĺؼ���ϢΪ�����˳���������
+	exit 1; # 获取到的关键信息为空则退出整个程序
 }
-# У��ؼ�ͨ��������Ϣ
+# 校验关键通用配置信息
 if ( $compileIFP eq "" )
 {
 	&printerror(0,"Failed Found Key Value 'compileinfo_path' in '$workpath"."main.ini' !\n");
 	&command("pause");
-	exit 1; # ��ȡ���Ĺؼ���ϢΪ�����˳���������
+	exit 1; # 获取到的关键信息为空则退出整个程序
 }
-# У��ؼ�ͨ��������Ϣ
+# 校验关键通用配置信息
 if ( $moduleCFP eq "" )
 {
 	&printerror(0,"Failed Found Key Value 'moduleconf_path' in '$workpath"."main.ini' !\n");
 	&command("pause");
-	exit 1; # ��ȡ���Ĺؼ���ϢΪ�����˳���������
+	exit 1; # 获取到的关键信息为空则退出整个程序
 }
-# ���û���д��·������Ϊ���ø�ʽ
+# 将用户填写的路径修正为可用格式
 $commoncompP = &revisepath(0,$commoncompP);
 $compileIFP = &revisepath(0,$compileIFP);
 $moduleCFP = &revisepath(0,$moduleCFP);
-# ����Ŀ�汾�����ļ�����ȡ����������Ϣ
+# 打开项目版本配置文件，读取所有配置信息
 $place = "Get_Version_Config";
 print "\n$module - $place......\n";
 
@@ -219,7 +219,7 @@ if ( !open(VERSION,$temp_path) )
 	
 	&printerror(0,"Failed Open file '$workpath$UCMprj".".ini' !\n");
 	&command("pause");
-	exit 1; # �򲻿���Ŀ�汾�����ļ����˳���������
+	exit 1; # 打不开项目版本配置文件则退出整个程序
 }else{
   #print "hhiiiiii.......\n";
 
@@ -227,16 +227,16 @@ if ( !open(VERSION,$temp_path) )
 @verfile = <VERSION>;
 close(VERSION);
 chomp(@verfile);
-# ��ȡproject.ini�о�̬��Ϣ
+# 读取project.ini中静态信息
 if ( $OS )
 {
-	@pv = &getline(0,"l",@verfile); # ���ұ���ƽ̨��
-	@pv = &shiftvalue("l",@pv); # ȥ������ƽ̨��ͷ��ֵ�Ϳո�
+	@pv = &getline(0,"l",@verfile); # 查找编译平台行
+	@pv = &shiftvalue("l",@pv); # 去除编译平台打头的值和空格
 }
 else
 {
-	@pv = &getline(0,"w",@verfile); # ���ұ���ƽ̨��
-	@pv = &shiftvalue("w",@pv); # ȥ������ƽ̨��ͷ��ֵ�Ϳո�
+	@pv = &getline(0,"w",@verfile); # 查找编译平台行
+	@pv = &shiftvalue("w",@pv); # 去除编译平台打头的值和空格
 }
 undef(@verfile);
 @v = &getline(0,$version,@pv);
@@ -245,39 +245,39 @@ if ( @v == 0 )
 {
 	&printerror(0,"Failed Found Version Config '$version' in '$workpath$versionCFN' !\n","v");
 	&command("pause");
-	exit 1; # �Ҳ����汾�����ڵ������˳���������
+	exit 1; # 找不到版本号所在的行则退出整个程序
 }
 
 ######hanjian 20140612##########################
-#�����ǲ��ǿ���ȡ���У�(�±�)
-#������main.ini�����һ��?�����������м���Ԫ�� ���ü���,�� forѭ��?
-#����ʱ�ڹ��������в��Ұ���.svn��.git�ļ������ж���svn������������git��������
-#Ϊ�˲�Ӱ��ģ����룬���޸�֮ǰ�Ĳ��֣�ֻ��ģ�������±����һ��ѭ��������Ϊ��������ȡ����λ��
+#这里是不是可以取多行？(下边)
+#行数在main.ini中添加一项?或者数组里有几个元素 就用几行,用 for循环?
+#更新时在工作副本中查找包含.svn或.git文件，来判断是svn工作副本还是git工作副本
+#为了不影响模块编译，不修改之前的部分，只是模仿着在下边添加一段循环，单独为整体编译获取代码位置
 ################################################
 
-@vervalue = &getvalue (" ",$v[0]); # ����ҵ����н����ҵ��ĵ�һ����ȡֵ 1����ƽ̨ 2�汾�� 3��̬��ͼ�� 4��̬��ͼ����λ�� 5����λ�� 6���Ը������ʼ���ַ
+@vervalue = &getvalue (" ",$v[0]); # 如果找到多行仅从找到的第一行中取值 1编译平台 2版本号 3动态视图名 4静态视图本地位置 5发布位置 6测试负责人邮件地址
 
-if ( @vervalue < 4 ) # ����һ��Ӧ������ǰ5��ֵ , ����ȥ���˱���ƽֵ̨ , ���У��Ϊ4��ֵ
+if ( @vervalue < 4 ) # 本来一行应当必需前5个值 , 由于去除了编译平台值 , 因此校验为4个值
 {
 	&printerror(0,"Wrong Format in '$v[0]' !\n","v");
 	&command("pause");
-	exit 1; # �ҵ��汾�����ڵ��е����йؼ���ȱ�����˳���������
+	exit 1; # 找到版本号所在的行但该行关键字缺少则退出整个程序
 }
-$SnapviewP = &revisepath(1,$vervalue[2]); # ��ȡ��̬��ͼԴ��洢·�� , ������Ϊ���ø�ʽ
+$SnapviewP = &revisepath(1,$vervalue[2]); # 获取静态视图源码存储路径 , 并修正为可用格式
 
 #add by hanjian 20140612
 #-----------------------------------------------------------
 foreach $vi(@v)
 {
-	@vervalue_i = &getvalue (" ",$vi); # ����ҵ����н����ҵ��ĵ�һ����ȡֵ 1����ƽ̨ 2�汾�� 3��̬��ͼ�� 4��̬��ͼ����λ�� 5����λ�� 6���Ը������ʼ���ַ
+	@vervalue_i = &getvalue (" ",$vi); # 如果找到多行仅从找到的第一行中取值 1编译平台 2版本号 3动态视图名 4静态视图本地位置 5发布位置 6测试负责人邮件地址
 	
-	if ( @vervalue_i < 4 ) # ����һ��Ӧ������ǰ5��ֵ , ����ȥ���˱���ƽֵ̨ , ���У��Ϊ4��ֵ
+	if ( @vervalue_i < 4 ) # 本来一行应当必需前5个值 , 由于去除了编译平台值 , 因此校验为4个值
 	{
 			&printerror(0,"Wrong Format in '$vi' !\n","v");
 			&command("pause");
-			exit 1; # �ҵ��汾�����ڵ��е����йؼ���ȱ�����˳���������
+			exit 1; # 找到版本号所在的行但该行关键字缺少则退出整个程序
 	}
-	$SnapviewP_i = &revisepath(1,$vervalue_i[2]); # ��ȡ��̬��ͼԴ��洢·�� , ������Ϊ���ø�ʽ
+	$SnapviewP_i = &revisepath(1,$vervalue_i[2]); # 获取静态视图源码存储路径 , 并修正为可用格式
 	push(@SnapviewP_i,$SnapviewP_i);
 }
 
@@ -286,7 +286,7 @@ undef(@v);
 
 $place = "Validate_CommonPath";
 print "\n$module - $place......\n";
-# У��ؼ�ͨ��·���Ƿ����(�������·��,������Ϣ·��,ģ�������ļ�·��)
+# 校验关键通用路径是否存在(共用组件路径,编译信息路径,模块配置文件路径)
 print "SnapviewP.commoncompP:[$SnapviewP.$commoncompP]\n";
 $compileinfo_p = $SnapviewP.$compileinfo_p;
 print "SnapviewP.compileinfo_p:[$compileinfo_p]\n";
@@ -303,26 +303,26 @@ if ( ! -e $SnapviewP.$commoncompP )
 {
 	&printerror(0,"Failed Found Path '$SnapviewP$commoncompP' !\n");
 	&command("pause");
-	exit 1; # �Ҳ���ͨ�ùؼ�·�����˳���������
+	exit 1; # 找不到通用关键路径则退出整个程序
 }
 if ( ! -e $SnapviewP.$compileIFP )
 {
 	&printerror(0,"Failed Found Path '$SnapviewP$compileIFP' !\n");
 	&command("pause");
-	exit 1; # �Ҳ���ͨ�ùؼ�·�����˳���������
+	exit 1; # 找不到通用关键路径则退出整个程序
 }
 if ( ! -e $SnapviewP.$moduleCFP )
 {
 	&printerror(0,"Failed Found Path '$SnapviewP$moduleCFP' !\n");
 	&command("pause");
-	exit 1; # �Ҳ���ͨ�ùؼ�·�����˳���������
+	exit 1; # 找不到通用关键路径则退出整个程序
 }
-$DynviewN = $vervalue[1]; # ��ȡ��̬��ͼ��
-$ReleaseP = &revisepath(1,$vervalue[3]); # ��ȡ�汾����·�� , ������Ϊ���ø�ʽ
-$TEM = $vervalue[4]; # ��ȡ�汾���Ը�����email , ������Ϊ���ø�ʽ
+$DynviewN = $vervalue[1]; # 获取动态视图名
+$ReleaseP = &revisepath(1,$vervalue[3]); # 获取版本发布路径 , 并修正为可用格式
+$TEM = $vervalue[4]; # 获取版本测试负责人email , 并修正为可用格式
 undef(@vervalue);
 # =====================================================================================================================
-# ��ȡ������ϵͳ�������� , ���ڻ�����������getenv()
+# 获取并保存系统环境变量 , 用于环境变量调用getenv()
 use Env qw(@PATH);
 @SYSPATH = @PATH;
 &getenv("SVN") if ( $OS );
@@ -333,25 +333,25 @@ use Env qw(@LIB);
 &getenv("DEFENV");
 
 # =====================================================================================================================
-# ��ȡ��Ŀ�����ļ���Ϣ
+# 获取项目配置文件信息
 sub getprjconf
 {
 	# input: @prjfile , $key
 	# output: keyword
 	my ($key) = @_;
-	my @found = &getline (1,$key,@prjfile); # �ҹؼ���������
+	my @found = &getline (1,$key,@prjfile); # 找关键字所在行
 	if ( @found == 0 )
 	{
 		&printerror(0,"Not Config '$key' in 'main.ini' !\n",$key);
-		return ""; # û���ҵ�ָ���Ĺؼ���$key���򷵻ؿ�ֵ
+		return ""; # 没有找到指定的关键字$key行则返回空值
 	}
 	else
 	{
-		my @value = &getvalue ("=",$found[0]); # ��ȡ�ؼ��ֵ�ֵ , ����ҵ���������ҵ��ĵ�һ����ȡֵ
+		my @value = &getvalue ("=",$found[0]); # 获取关键字的值 , 如果找到多行则从找到的第一行中取值
 		if ( $value[1] eq "" )
 		{
 			&printerror(0,"Wrong Format '$key' in '$found[0]' !\n",$key);
-			return ""; # �ҵ�ָ���Ĺؼ���$key�е���ȡֵΪ���򷵻ؿ�ֵ
+			return ""; # 找到指定的关键字$key行但获取值为空则返回空值
 		}
 		else
 		{
@@ -360,7 +360,7 @@ sub getprjconf
 	}
 }
 # =====================================================================================================================
-# ��¼�汾��,�����main.ini��û��ָ��,Ĭ��ʹ��172.16.0.99
+# 登录版本机,如果在main.ini中没有指定,默认使用172.16.0.99
 sub getconnect
 {
 	# input: 
@@ -381,10 +381,10 @@ sub getconnect
 		}
 		else # Linux
 		{
-			if ( !-e $address ) # �������·��������,����·��,��mount����·��
+			if ( !-e $address ) # 如果本地路径不存在,创建路径,并mount发布路径
 			{
 				&command("mkdir",$address);
-				if ( !&geterror ) # �д�����Ϣ
+				if ( !&geterror ) # 有错误信息
 				{
 					system("mount -t cifs -o username=$user,password=$passwd /$address $address 2>$vererrL");
 					&printerror(0,"Failded Mount Release Place '/$address' to Local Dir '$address' !\n") if ( &geterror );
@@ -394,7 +394,7 @@ sub getconnect
 					&printerror(0,"Failded Create Local Dir '$address' !\n");
 				}
 			}
-			else # �������·������,����Ƿ��Ѿ�mount,û����mount����·��
+			else # 如果本地路径存在,检查是否已经mount,没有则mount发布路径
 			{
 				my $mount = `mount`;
 				if ( $mount !~ /\/$address\s+on\s+$address/i )
@@ -406,7 +406,7 @@ sub getconnect
 		}
 	}
 }
-# ��ȡָ���Ļ������� , ������ӻ�����������sp�ű������Ӳ���У��
+# 获取指定的环境变量 , 如果增加环境变量请在sp脚本中增加参数校验
 sub getenv
 {
 	# input: @env_keys
@@ -415,41 +415,41 @@ sub getenv
 	$place = "Get_Env";
 	print "\n$module - $place......\n";
 	my @envfile;
-	# �򿪱��뻷�������ļ�env.ini
+	# 打开编译环境配置文件env.ini
 	if ( !open(ENV,$workpath."env.ini") )
 	{
 		&printerror(0,"Failed Open File '$workpath"."env.ini' !\n");
 		&command("pause");
-		exit 1; # �Ҳ����������������ļ����˳���������
+		exit 1; # 找不到环境变量配置文件则退出整个程序
 	}
 	@envfile = <ENV>;
 	close(ENV);
 	chomp(@envfile);
-	# ��ʼѭ������ÿ���ؼ���
+	# 开始循环处理每个关键字
 	my ($envkey,$env);
-	foreach $envkey (@envkeys) # ���������Ļ����ؼ���
+	foreach $envkey (@envkeys) # 逐个处理传入的环境关键字
 	{
 		my @found = &getline(0,$envkey,@envfile);
-		if ( @found == 0 ) # û���ҵ������ؼ��ֵ���
+		if ( @found == 0 ) # 没有找到环境关键字的行
 		{
 			&printerror(0,"Failed Found Env Key '$envkey' in '$workpath"."env.ini' !\n");
 			if (( $envkey =~ /^LinuxCC$/i ) || ( $envkey =~ /^GROUPS$/i ) || ( $envkey =~ /^DEFENV$/i ))
 			{
-				next; # ���������CC����������Ĭ�ϻ�������"ENV" , ���Ҳ���ʱ����
+				next; # 如果是设置CC环境变量和默认环境变量"ENV" , 则找不到时跳过
 			}
 			else
 			{
 				&command("pause");
-				exit 1; # �Ҳ��������������˳���������
+				exit 1; # 找不到环境变量则退出整个程序
 			}
 		}
 		&printerror(1,"$place : $envkey : \n");
-		@found = &shiftvalue($envkey,@found); # ȥ�������ؼ��ִ�ͷ�Ĺؼ��ֺͿո�
+		@found = &shiftvalue($envkey,@found); # 去除环境关键字打头的关键字和空格
 		if ( $envkey =~ /^VC[\d\._]*$/i )
 		{
-			foreach $f (@found) # ���д������ؼ��ֵ���
+			foreach $f (@found) # 逐行处理环境关键字的行
 			{
-				my @value = &getvalue("=",$f); # ���뻷������value[0]�뻷������ֵvalue[1]
+				my @value = &getvalue("=",$f); # 分离环境变量value[0]与环境变量值value[1]
 				if ( $value[0] =~ /^PATH$/i ){
 					push (@PATH,$value[1]);
 					$env = &command("env","PATH");
@@ -507,9 +507,9 @@ sub getenv
 		}
 		elsif ( $envkey =~ /^CCS[\d\._]*$/i )
 		{				
-			foreach $f (@found) # ���д������ؼ��ֵ���
+			foreach $f (@found) # 逐行处理环境关键字的行
 			{
-				my @value = &getvalue("=",$f); # ���뻷������value[0]�뻷������ֵvalue[1]
+				my @value = &getvalue("=",$f); # 分离环境变量value[0]与环境变量值value[1]
 				if ( $value[0] =~ /^PATH$/i ){
 					push (@PATH,$value[1]);
 					$env = &command("env","PATH");
@@ -577,9 +577,9 @@ sub getenv
 		}
 		elsif ( $envkey =~ /^ETI[\d\._]*$/i )
 		{
-			foreach $f (@found) # ���д������ؼ��ֵ���
+			foreach $f (@found) # 逐行处理环境关键字的行
 			{
-				my @value = &getvalue("=",$f); # ���뻷������value[0]�뻷������ֵvalue[1]
+				my @value = &getvalue("=",$f); # 分离环境变量value[0]与环境变量值value[1]
 				if ( $value[0] =~ /^PATH$/i ){
 					push (@PATH,$value[1]);
 					$env = &command("env","PATH");
@@ -599,9 +599,9 @@ sub getenv
 		}
 		elsif ( $envkey =~ /^Tornado[\d\._]*$/i )
 		{
-			foreach $f (@found) # ���д������ؼ��ֵ���
+			foreach $f (@found) # 逐行处理环境关键字的行
 			{
-				my @value = &getvalue("=",$f); # ���뻷������value[0]�뻷������ֵvalue[1]
+				my @value = &getvalue("=",$f); # 分离环境变量value[0]与环境变量值value[1]
 				if ( $value[0] =~ /^PATH$/i ){
 					push (@PATH,$value[1]);
 					$env = &command("env","PATH");
@@ -621,9 +621,9 @@ sub getenv
 		}
 		elsif ( $envkey =~ /^InstallShield[\d\._]*$/i )
 		{
-			foreach $f (@found) # ���д������ؼ��ֵ���
+			foreach $f (@found) # 逐行处理环境关键字的行
 			{
-				my @value = &getvalue("=",$f); # ���뻷������value[0]�뻷������ֵvalue[1]
+				my @value = &getvalue("=",$f); # 分离环境变量value[0]与环境变量值value[1]
 				if ( $value[0] =~ /^InstallShield12Build$/i ){
 					use Env qw($InstallShield12Build);
 					$InstallShield12Build = $value[1];
@@ -640,9 +640,9 @@ sub getenv
 		}
 		elsif ( $envkey =~ /^linuxintel[\d\._]*$/i )
 		{
-			foreach $f (@found) # ���д������ؼ��ֵ���
+			foreach $f (@found) # 逐行处理环境关键字的行
 			{
-				my @value = &getvalue("=",$f); # ���뻷������value[0]�뻷������ֵvalue[1]
+				my @value = &getvalue("=",$f); # 分离环境变量value[0]与环境变量值value[1]
 				if ( $value[0] =~ /^PATH$/i ){
 					push (@PATH,$value[1]);
 					$env = &command("env","PATH");
@@ -696,9 +696,9 @@ sub getenv
 		}
 		elsif ( $envkey =~ /^sign[\d\._]*$/i )
 		{
-			foreach $f (@found) # ���д������ؼ��ֵ���
+			foreach $f (@found) # 逐行处理环境关键字的行
 			{
-				my @value = &getvalue("=",$f); # ���뻷������value[0]�뻷������ֵvalue[1]
+				my @value = &getvalue("=",$f); # 分离环境变量value[0]与环境变量值value[1]
 				if ( $value[0] =~ /^PATH$/i ){
 					push (@PATH,$value[1]);
 					$env = &command("env","PATH");
@@ -710,9 +710,9 @@ sub getenv
 		}
 		elsif ( $envkey =~ /^GTK[\d\._]*$/i )
 		{
-			foreach $f (@found) # ���д������ؼ��ֵ���
+			foreach $f (@found) # 逐行处理环境关键字的行
 			{
-				my @value = &getvalue("=",$f); # ���뻷������value[0]�뻷������ֵvalue[1]
+				my @value = &getvalue("=",$f); # 分离环境变量value[0]与环境变量值value[1]
 				if ( $value[0] =~ /^INCLUDE$/i ){
 					push (@INCLUDE,$value[1]);
 					$env = &command("env","INCLUDE");
@@ -727,9 +727,9 @@ sub getenv
 		}
 		elsif (( $envkey =~ /^SVN[\d\._]*$/i ) ||( $envkey =~ /^PPC[\d\._]*$/i ) || ( $envkey =~ /^ARM[\d\._]*$/i ) || ( $envkey =~ /^EQT[\d\._]*$/i ) || ( $envkey =~ /^DAVINCI[\d\._]*$/i ))
 		{
-			foreach $f (@found) # ���д������ؼ��ֵ���
+			foreach $f (@found) # 逐行处理环境关键字的行
 			{
-				my @value = &getvalue("=",$f); # ���뻷������value[0]�뻷������ֵvalue[1]
+				my @value = &getvalue("=",$f); # 分离环境变量value[0]与环境变量值value[1]
 				if ( $value[0] =~ /^PATH$/i ){
 					push (@PATH,$value[1]);
 					$env = &command("env","PATH");
@@ -741,9 +741,9 @@ sub getenv
 		}
 		elsif ( $envkey =~ /^GROUPS[\d\._]*$/i )
 		{
-			foreach $f (@found) # ���д������ؼ��ֵ���
+			foreach $f (@found) # 逐行处理环境关键字的行
 			{
-				my @value = &getvalue("=",$f); # ���뻷������value[0]�뻷������ֵvalue[1]
+				my @value = &getvalue("=",$f); # 分离环境变量value[0]与环境变量值value[1]
 				if ( $value[0] =~ /^CLEARCASE_GROUPS$/i ){
 					use Env qw($CLEARCASE_GROUPS);
 					$CLEARCASE_GROUPS = $value[1] if ( $value[1] ne "" );
@@ -756,9 +756,9 @@ sub getenv
 		}
 		elsif ( $envkey =~ /^LinuxCC[\d\._]*$/i )
 		{
-			foreach $f (@found) # ���д������ؼ��ֵ���
+			foreach $f (@found) # 逐行处理环境关键字的行
 			{
-				my @value = &getvalue("=",$f); # ���뻷������value[0]�뻷������ֵvalue[1]
+				my @value = &getvalue("=",$f); # 分离环境变量value[0]与环境变量值value[1]
 				if ( $value[0] =~ /^PATH$/i ){
 					my @part = &getvalue(":",$value[1]);
 					foreach $p (@part)
@@ -789,9 +789,9 @@ sub getenv
 			}
 			else
 			{
-				my @value = &getvalue("=",$f[0]); # ���뻷������value[0]�뻷������ֵvalue[1]
+				my @value = &getvalue("=",$f[0]); # 分离环境变量value[0]与环境变量值value[1]
 				$defenv = $value[1];
-				$defenv = "-" if ( $defenv eq "" ); # ���Ĭ�ϻ�������Ϊ��,�����module������������
+				$defenv = "-" if ( $defenv eq "" ); # 如果默认环境变量为空,则避免module函数参数错误
 				&printerror(1,"$OSstring Default Env Key : $defenv\n");
 			}
 			undef(@f);
@@ -803,13 +803,13 @@ sub getenv
 	}
 }
 # =====================================================================================================================
-# ����ģ�����֮ǰ , �����ڱ��뻷���ı�Ҫ���� , ���紴��log�ļ��ͱ�����Ϣ�ļ���
+# 调用模块编译之前 , 做关于编译环境的必要处理 , 例如创建log文件和编译信息文件等
 sub preprocess
 {
 	# input: $options
 	# output: none
 	my ($options) = @_;
-	# ������� , ����ģ�����֮ǰ����common��ָ����Ŀ¼
+	# 如果更新 , 则在模块编译之前更新common中指定的目录
 	if ( $options =~ /u/ )
 	{
 		$place = "Update_Common_SourceCode";
@@ -824,7 +824,7 @@ sub preprocess
 			&module("u","GROUPS","common");
 		}
 	}
-	# ��main.ini�ļ���ȡ��Ҫ��Ϣ
+	# 打开main.ini文件读取必要信息
 	if ( open(PROJECT,$workpath."main.ini") )
 	{
 		$place = "Get_Project_Config";
@@ -837,27 +837,27 @@ sub preprocess
 	{
 		&printerror(0,"Failed Open File '$workpath"."main.ini' !\n");
 	}
-	# ���У�� , ��Ԥ��������ģ��У���ļ����Ϊͨ�� , ��ģ����ù��������в�ͨ����ģ������0 , �����ʼ�����
+	# 如果校验 , 则预定义所有模块校验文件结果为通过 , 在模块调用过程中若有不通过的模块则置0 , 用于邮件发送
 	if ( $options =~ /c/ )
 	{
 		$place = "Create_NoPassFile_Log";
 		print "\n$module - $place......\n";
 		my $checkreadme = &getprjconf("checkreadme");
-		$CRM = 0; # ���û���д��checkreadme��ϢתΪboolֵ�������ж�
-		$CRM = 1 if (( $checkreadme eq "" ) || ( $checkreadme eq "yes" ) || ( $checkreadme eq "y" )); # ������дֵΪ�ջ�������"yes"ʱ$CRM��Ϊ��
+		$CRM = 0; # 将用户填写的checkreadme信息转为bool值供后续判断
+		$CRM = 1 if (( $checkreadme eq "" ) || ( $checkreadme eq "yes" ) || ( $checkreadme eq "y" )); # 仅当填写值为空或不填或等于"yes"时$CRM才为真
 		undef($checkreadme);
 		$allcheckfileS = 1;
 		if ( $options !~ /f/ )
 		{
 			my $releasekreadme = &getprjconf("releasereadme");
-			$RRM = 0; # ���û���д��releasekreadme��ϢתΪboolֵ�������ж�
-			$RRM = 1 if (( $releasekreadme eq "" ) || ( $releasekreadme eq "yes" ) || ( $releasekreadme eq "y" )); # ������дֵΪ�ջ�������"yes"ʱ$RRM��Ϊ��
+			$RRM = 0; # 将用户填写的releasekreadme信息转为bool值供后续判断
+			$RRM = 1 if (( $releasekreadme eq "" ) || ( $releasekreadme eq "yes" ) || ( $releasekreadme eq "y" )); # 仅当填写值为空或不填或等于"yes"时$RRM才为真
 			undef($releasekreadme);
 			if ( $CRM )
 			{
 				$place = "Create_AllReadme_Log";
 				print "\n$module - $place......\n";
-				if ( open (ALLREADME,">$verworkP"."AllReadme.txt") ) # ��¼У��δͨ��readme����ʱ�ļ� , ��nopassreadme.log�ļ����
+				if ( open (ALLREADME,">$verworkP"."AllReadme.txt") ) # 记录校验未通过readme的临时文件 , 将nopassreadme.log文件清空
 				{
 					&getallmodules;
 					#print ALLREADME "UCMproject : $UCMprj\nVersion : $version\nModules : "."@allmodules"."\nCheck Readme Time : $builddate\n";
@@ -871,81 +871,81 @@ sub preprocess
 			}
 		}
 	}
-	# �������,���ȡ����·��
+	# 如果发布,则获取发布路径
 	if ( $options =~ /r/ )
 	{
-		# ��ȡ��¼��ָ���İ汾�������������Ϣ
+		# 获取登录到指定的版本服务器的相关信息
 		my $connect_address = &getprjconf("connect_addrs");
 		my @connect_addrs = &getvalue(",",$connect_address);
 		undef($connect_address);
 		my $connect_user = &getprjconf("connect_user");
 		my $connect_passwd = &getprjconf("connect_passwd");
-		# ��������
+		# 创建链接
 		&getconnect($connect_user,$connect_passwd,@connect_addrs) if (( $connect_user ne "" ) && ( @connect_addrs > 0 ));
 		undef(@connect_addrs);
 		undef($connect_user);
 		undef($connect_passwd);
 		my $TSstr = &getprjconf("buildtime_span");
-		$TS = 180*60; # Ĭ��180���� , ������
-		if (( $TSstr =~ /^\d+$/ ) && ( $TSstr <= 1440 )) # ���1440���� , ��һ��
+		$TS = 180*60; # 默认180分钟 , 换成秒
+		if (( $TSstr =~ /^\d+$/ ) && ( $TSstr <= 1440 )) # 最大1440分钟 , 即一天
 		{
-			$TS = $TSstr*60; # ������
+			$TS = $TSstr*60; # 换成秒
 		}
 		my $winfirst = &getprjconf("windowsfirst");
-		$WF = 0; # ���û���д��releasekreadme��ϢתΪboolֵ�������ж�
-		$WF = 1 if (( $winfirst eq "" ) || ( $winfirst eq "yes" ) || ( $winfirst eq "y" )); # ������дֵΪ�ջ�������"yes"ʱ$WF��Ϊ��
+		$WF = 0; # 将用户填写的releasekreadme信息转为bool值供后续判断
+		$WF = 1 if (( $winfirst eq "" ) || ( $winfirst eq "yes" ) || ( $winfirst eq "y" )); # 仅当填写值为空或不填或等于"yes"时$WF才为真
 	}
 	if ( $options =~ /n/ )
 	{
 		my $sendmail = &getprjconf("sendmail");
-		$MAIL = 0; # ���û���д��sendmail��ϢתΪboolֵ�������ж�
-		$MAIL = 1 if (( $sendmail eq "" ) || ( $sendmail eq "yes" ) || ( $sendmail eq "y" )); # ������дֵΪ�ջ�������"yes"ʱ$MAIL��Ϊ��
+		$MAIL = 0; # 将用户填写的sendmail信息转为bool值供后续判断
+		$MAIL = 1 if (( $sendmail eq "" ) || ( $sendmail eq "yes" ) || ( $sendmail eq "y" )); # 仅当填写值为空或不填或等于"yes"时$MAIL才为真
 		undef($sendmail);
 		if ( $MAIL )
 		{
 			$PMM = &getprjconf("PMmail");
 			$CMOM = &getprjconf("CMOmail");
 			$CMOM = "sqlmail\@kdcrd.com" if ( $CMOM eq "" );
-			$SMTP = &getprjconf("MAIL_SMTP_IP"); # �����ʼ�֪ͨ��SMTP����
+			$SMTP = &getprjconf("MAIL_SMTP_IP"); # 用于邮件通知的SMTP设置
 			$SMTP = "10.5.0.54" if ( $SMTP eq "" );
-			$mailfrom = &getprjconf("MAIL_FROM"); # �����ʼ�֪ͨ�ķ���������
+			$mailfrom = &getprjconf("MAIL_FROM"); # 用于邮件通知的发件人设置
 			$mailfrom = "sqlmail\@kedacom.com" if ( $mailfrom eq "" );
 		}
 	}
 	undef(@prjfile);
 }
-# ����ģ�����֮�� , �����ڱ��뻷���ı�Ҫ���� , ���緢�����뱨��,����readme,����������Ϣ��
+# 调用模块编译之后 , 做关于编译环境的必要处理 , 例如发布编译报告,发布readme,发布编译信息等
 sub afterprocess
 {
 	# input: $options
 	# output: none
 	my ($options) = @_;
-	# ������� , �򷢲�������Ϣ��common��ָ����Ŀ¼���ļ�
+	# 如果发布 , 则发布编译信息和common中指定的目录和文件
 	if ( $options =~ /r/ )
 	{
-		# ����Ǽ��ɱ��� , ����common��ָ����Ŀ¼���ļ�
+		# 如果是集成编译 , 发布common中指定的目录和文件
 		if ( $options =~ /i/ )
 		{
 			$place = "Release_Common_Files_Dirs";
 			print "\n$module - $place......\n";
 			&module("r","-","common");
 		}
-		# �����Ҫ����readme , �򷢲�AllReadme.txt�ļ�
+		# 如果需要发布readme , 则发布AllReadme.txt文件
 		if ( $RRM )
 		{
 			$place = "Release_AllReadme";
 			print "\n$module - $place......\n";
-			my $WreadmeFRP = &revisepath(1,$RP."readme"); # ����·��Ϊ���ø�ʽ
+			my $WreadmeFRP = &revisepath(1,$RP."readme"); # 修正路径为可用格式
 			&command("copy","f",$verworkP."AllReadme.txt",$WreadmeFRP);
-			&geterror; # �д�����Ϣ��д��BuildError.log
+			&geterror; # 有错误信息则写入BuildError.log
 		}
 	}
-	# ������� , ����������Ϣ�ļ�
+	# 如果编译 , 制作编译信息文件
 	if ( $options =~ /b/ )
 	{
 		$place = "Make_BuildInfo";
 		print "\n$module - $place......\n";
-		# �򿪱�����ϢBuildInfo.txt
+		# 打开编译信息BuildInfo.txt
 		if ( open(BUILDINFO,">$verworkP"."BuildInfo_".$OSstring."_".$builddatetime.".txt") )
 		{
 			my $currenttime = &getdatetime;
@@ -954,7 +954,7 @@ sub afterprocess
 			print BUILDINFO "Modules : "."@allmodules"."\n";
 			undef(@allmodules);
 			print BUILDINFO "ReleasPlace : $RP\n" if ( $options =~ /r/ );
-			# Baselineд�������Ϣ  ###hanjian 20120817 delete 
+			# Baseline写入编译信息  ###hanjian 20120817 delete 
 ###			if ( open(BASELINE,"all-code_".$builddatetime."_update.log") )
 ###			{
 ###				@blfile = <BASELINE>;
@@ -967,7 +967,7 @@ sub afterprocess
 ###				$place = "Read_updateLog";
 ###				&printerror(0,"Failed Open File '$verworkP"."baseline.log' !\n");
 ###			}
-			# ����ʱ��д�������Ϣ
+			# 编译时间写入编译信息
 			if ( open(TIME,$verworkP."buildtime.log") )
 			{
 				@timefile = <TIME>;
@@ -980,7 +980,7 @@ sub afterprocess
 				$place = "Read_BuildTimeLog";
 				&printerror(0,"Failed Open File '$verworkP"."buildtime.log' !\n");
 			}
-			# У���ļ����д�������Ϣ
+			# 校验文件结果写入编译信息
 			if ( $options =~ /c/ )
 			{
 				if ( open(CHECK,$verworkP."checkfile.log") )
@@ -998,16 +998,16 @@ sub afterprocess
 			}
 			print BUILDINFO "\n\nEND\n";
 			close(BUILDINFO);
-			# ����������Ϣ�ļ�
+			# 发布编译信息文件
 			if ( $options =~ /r/ )
 			{
 				$place = "Release_BuildInfo";
 				print "\n$module - $place......\n";
-				&command("copy","f",$verworkP."BuildInfo_".$OSstring."_".$builddatetime.".txt",$RP); # ����BuildInfo
+				&command("copy","f",$verworkP."BuildInfo_".$OSstring."_".$builddatetime.".txt",$RP); # 发布BuildInfo
 				
 				#####hanjian 20120810 
 				
-				&command("copy","f",$verworkP."all-code_".$OSstring."_".$builddatetime."_update.log",$RP); # �����������ʱ��ȫ������svn update�Ľ����¼�ļ�
+				&command("copy","f",$verworkP."all-code_".$OSstring."_".$builddatetime."_update.log",$RP); # 发布整体编译时，全部代码svn update的结果记录文件
 				
 				&geterror;
 			}
@@ -1018,7 +1018,7 @@ sub afterprocess
 			&printerror(0,"Failed Open File '$verworkP"."buildinfo_$OSstring_$builddatetime.txt' !\n");
 		}
 	}
-	# �������֪ͨ���� , ģ�������ɺ��ṩ����״̬����
+	# 如果开启通知功能 , 模块编译完成后提供编译状态报告
 	if (( $options =~ /n/ ) && $MAIL )
 	{
 		$place = "Build_Status_Report";
@@ -1033,7 +1033,7 @@ sub afterprocess
 		}
 	}
 }
-# ģ����������̣������ⲿ����
+# 模块编译主过程，用于外部调用
 sub module
 {
 	# parameter usage -----
@@ -1052,21 +1052,21 @@ sub module
 	# output : BuildError.txt
 	my ($moduleoptions,$moduleenvs,@modules) = @_;
 	$module = "";
-	&printerror(1,"\n~~~~~~~~~~~~~~~ Modules Process Start ~~~~~~~~~~~~~~\n"); # �������ֶ�ε���module�Ĵ�ӡ��Ϣ
+	&printerror(1,"\n~~~~~~~~~~~~~~~ Modules Process Start ~~~~~~~~~~~~~~\n"); # 用于区分多次调用module的打印信息
 	&printerror(1,"ModulesOptions : $moduleoptions\nEnv : $moduleenvs\nModules : "."@modules"."\n");
-	# ��ȡdemo�ļ���Ϣ������module���ô���ʱ����ȷ����
+	# 获取demo文件信息，用于module配置错误时的正确引导
 #	open(DEMO,$SnapviewP.$moduleCFP."demo.ini");
-#	local @demofile = <DEMO>; # ��ȡ�ļ�����
+#	local @demofile = <DEMO>; # 读取文件内容
 #	close(DEMO);
-#	chomp(@demofile); # ȥ�����з�
+#	chomp(@demofile); # 去除换行符
 	# =====================================================================================================================
-	# ������������ؼ��ֲ��� , ���û�������
+	# 如果环境变量关键字不空 , 设置环境变量
 	if ( $moduleenvs !~ /^-*$/ )
 	{
 		my @envs = &getvalue(",",$moduleenvs);
 		if ( $moduleoptions =~ /b/ )
 		{
-			# �����һ�λ�ȡgetenv�Ա��뻷���ĸı�
+			# 清除上一次获取getenv对编译环境的改变
 			undef(@PATH);
 			@PATH = @SYSPATH;
 			undef(@INCLUDE);
@@ -1077,20 +1077,20 @@ sub module
 		&getenv(@envs);
 	}
 	# =====================================================================================================================
-	# ��ģ�����ε���
-	local ($WmoduleCF,@modufile); # $module�Ѿ�����Ϊȫ��
+	# 多模块依次调用
+	local ($WmoduleCF,@modufile); # $module已经定义为全局
 	for ( my $i = 0 ; $i < @modules ; $i ++ )
 	{
 		$module = $modules[$i];
-		# ��ȡģ�������ļ�·��
+		# 获取模块配置文件路径
 		$WmoduleCF = $SnapviewP.$moduleCFP.$module.".ini";
-		# ��ģ�������ļ���Ϣ
+		# 读模块配置文件信息
 		if ( open(MODULE,$WmoduleCF) )
 		{
 			@modufile = <MODULE>;
 			close(MODULE);
 			chomp(@modufile);
-			# ��ÿ��ģ�����ģ��������
+			# 对每个模块调用模块编译过程
 			&process($moduleoptions);
 			undef(@modufile);
 		}
@@ -1098,60 +1098,60 @@ sub module
 		{
 			&printerror(0,"Failed Open Module Config File '$WmoduleCF' !\n");
 			&printerror(0,"Skip Module Build !\n");
-			next; # �򲻿�ģ�������ļ���������ģ��������
+			next; # 打不开模块配置文件则跳过该模块编译过程
 		}
 	}
 	$module = "";
-	&printerror(1,"\n--------------- Modules Process End ---------------\n"); # �������ֶ�ε���module�Ĵ�ӡ��Ϣ
+	&printerror(1,"\n--------------- Modules Process End ---------------\n"); # 用于区分多次调用module的打印信息
 }
-# ����ģ��������̶���ģ��������
+# 根据模块编译流程定义模块编译过程
 sub process
 {
 	# input: $options , $CRM , $RRM
 	# output: none
-	# �����û��Ա�����̵�ѡ���ģ�������ļ���ȡ���α������������������Ϣ
+	# 根据用户对编译过程的选择从模块配置文件获取本次编译流程所需的配置信息
 	my ($options) = @_;
 	local ($srccodePs,$owner,$ownerM);
 	&getmoduconf_s if (( $options =~ /u/ ) || ( $options =~ /c/ ) || ( $options =~ /n/ ));
 	local ($compileFP,$compileFN,$readmeFP,$readmeFN);
 	&getmoduconf_b if (( $options =~ /b/ ) || (( $options =~ /c/ ) && ( $options !~ /f/ ) && ( $CRM || $RRM )) || ( $options =~ /r/ ));
-	local (@checkFs,@releaseFs); # ���ڴ��У���ļ����ļ�����·��/�����ļ����ļ�����·���ͷ���·�� ; ��getmoduconf_c��ֵ��del/checkfile/releasefilesʹ��
+	local (@checkFs,@releaseFs); # 用于存放校验文件的文件名和路径/发布文件的文件名、路径和发布路径 ; 在getmoduconf_c赋值在del/checkfile/releasefiles使用
 	&getmoduconf_c if (( $options =~ /b/ ) || ( $options =~ /c/ ) || ( $options =~ /r/ ));
-	local (@releaseDs); # ���ڴ�ŷ���Ŀ¼��Ŀ¼����·�� ; ��getmoduconf_r��ֵ��releasefilesʹ��
+	local (@releaseDs); # 用于存放发布目录的目录名和路径 ; 在getmoduconf_r赋值在releasefiles使用
 	&getmoduconf_r if ( $options =~ /r/ );
-	# �����û��Ա�����̵�ѡ������ӳ���
+	# 根据用户对编译过程的选择调用子程序
 	&del if ( $options =~ /b/ );
 	local $updateS = 1;
 	if ( $options =~ /u/ )
 	{
 		&update;
-		&disreadonly; # updateԴ���ȥ��Դ���ֻ������
+		&disreadonly; # update源码后，去除源码的只读属性
 	}
 #	print "updateS : $updateS\n";
 	local $compileS = 1;
 	&compile if ( $options =~ /b/ );
-	# ���ڷ����ʼ��ж� , У����Ϊ0ʱ�����ʼ� , ����У�鲻ͨ��ʱ�����ʼ� , ��main.ini�����ò�У���δ����У����ϢҲ�������ʼ�
+	# 用于发送邮件判断 , 校验结果为0时发送邮件 , 仅当校验不通过时发送邮件 , 若main.ini中配置不校验或未配置校验信息也不发送邮件
 	local $checkfileS = 1;
 	local $checkreadmeS = 1;
 	local ($CFpassinfo,$RMpassinfo);
 	if ( $options =~ /c/ )
 	{
 		&checkfile;
-		# �ӹ���ѡ�����Ϊcfʱ��У��readme ; ��Ŀ�����ļ���������ҪУ��readmeʱ��У��readme
-		####&checkreadme if ( $CRM && ( $options !~ /f/ )); ###20120822 delete by hanjian ��ʱע��
+		# 子过程选择参数为cf时不校验readme ; 项目配置文件中配置需要校验readme时才校验readme
+		####&checkreadme if ( $CRM && ( $options !~ /f/ )); ###20120822 delete by hanjian 暂时注掉
 	}
 #	print "checkfileS : $checkfileS\ncheckreadmeS : $checkreadmeS\nCFpassinfo : $CFpassinfo\nRMpassinfo : $RMpassinfo\n";
 	if ( $options =~ /r/ )
 	{
 		&releasefiles;
-		# ��Ŀ�����ļ���������Ҫ����readmeʱ�ŷ���readme ; У���ļ����ͨ��ʱ�ŷ���readme
+		# 项目配置文件中配置需要发布readme时才发布readme ; 校验文件结果通过时才发布readme
 		&releasereadme if ( $RRM && ( $checkfileS == 1 ));
 		&releasecompileinfo;
 		&releaseupdatelog if ( $options =~ /u/ );
 	}
 	if (( $options =~ /n/ ) && $MAIL )
 	{
-		if ( !$checkfileS || ( $CRM && !$checkreadmeS )) # ����ģ���֪ͨ���� , ��У�鲻ͨ��ʱ��֪ͨ
+		if ( !$checkfileS || ( $CRM && !$checkreadmeS )) # 单个模块的通知规则 , 仅校验不通过时才通知
 		{
 			if ( $options =~ /i/ )
 			{
@@ -1165,7 +1165,7 @@ sub process
 	}
 }
 # =====================================================================================================================
-# ��ȡģ�������ļ���Ϣ
+# 获取模块配置文件信息
 sub getmoduconf
 {
 	# input: $keyword , @modufile
@@ -1176,25 +1176,25 @@ sub getmoduconf
 	my @l;
 	if ($OS)
 	{
-		@l = &getline (0,$key."l",@modufile); # linux����ϵͳ�ڹؼ��ֺ��"l"����
+		@l = &getline (0,$key."l",@modufile); # linux操作系统在关键字后加"l"查找
 	}
 	else
 	{
-		@l = &getline (0,$key."w",@modufile); # windows����ϵͳ�ڹؼ��ֺ��"w"����
+		@l = &getline (0,$key."w",@modufile); # windows操作系统在关键字后加"w"查找
 	}
 	&printerror(0,"Not Config '$key' in '$WmoduleCF' !\n",$key) if ( @l == 0 );
 	return @l;
 }
-# ��ȡģ��Դ����Ϣ
+# 获取模块源码信息
 sub getmoduconf_s
 {
 	# input: none
 	# output: $srccodePs , $owner , $ownerM
-	my @s = &getmoduconf("s"); # ��ģ�������ļ���ȡ's'�ؼ�����
+	my @s = &getmoduconf("s"); # 从模块配置文件获取's'关键字行
 	if ( @s != 0 )
 	{
-		my @value = &getvalue (" ",$s[0]); # �Ӹ��л�ȡ���йؼ�ֵ 1Դ��·���б� 2������ 3�ʼ���ַ
-		if ( $value[1] =~ /^-*$/ ) # ���Դ��·���б�Ϊ�� , ����"-"����Ϊ��
+		my @value = &getvalue (" ",$s[0]); # 从该行获取所有关键值 1源码路径列表 2负责人 3邮件地址
+		if ( $value[1] =~ /^-*$/ ) # 如果源码路径列表为空 , 或以"-"代表为空
 		{
 			$srccodePs = "";
 			&printerror(0,"Wrong Format of Source Code Path in '$s[0]' !\n","s");
@@ -1226,21 +1226,21 @@ sub getmoduconf_s
 	}
 #	print "srccodePs : $srccodePs\nowner : $owner\nownerM : $ownerM\n";
 }
-# ��ȡģ������readme��Ϣ
+# 获取模块编译和readme信息
 sub getmoduconf_b
 {
 	# input: none
 	# output: $compileFP , $compileFN , $readmeFP , $readmeFN
-	my @b = &getmoduconf("b"); # ��ģ�������ļ���ȡ'b'�ؼ�����
-	if ( @b == 0 ) # û�ҵ�ƥ�����
+	my @b = &getmoduconf("b"); # 从模块配置文件获取'b'关键字行
+	if ( @b == 0 ) # 没找到匹配的行
 	{
 		$compileFN = "";
 		$readmeFN = "";
 	}
 	else
 	{
-		my @value = &getvalue (" ",$b[0]); # �Ӹ��л�ȡ���йؼ�ֵ 1compile�ļ�·�� 2compile�ļ����� 3readme�ļ�·�� 4readme�ļ�����
-		if (( $value[1] =~ /^-*$/ ) || ( $value[2] =~ /^-*$/ )) # ���compile�ļ�·����compile�ļ����ƶ���Ϊ�� , ��ֵ����Ч
+		my @value = &getvalue (" ",$b[0]); # 从该行获取所有关键值 1compile文件路径 2compile文件名称 3readme文件路径 4readme文件名称
+		if (( $value[1] =~ /^-*$/ ) || ( $value[2] =~ /^-*$/ )) # 如果compile文件路径或compile文件名称都不为空 , 其值才有效
 		{
 			$compileFP = "";
 			$compileFN = "";
@@ -1248,7 +1248,7 @@ sub getmoduconf_b
 		}
 		else
 		{
-			$compileFP = &revisepath(0,$value[1]); # ����·��Ϊ���ø�ʽ
+			$compileFP = &revisepath(0,$value[1]); # 修正路径为可用格式
 			$compileFN = $value[2];
 		}
 		if ( $value[4] =~ /^-*$/ )
@@ -1259,9 +1259,9 @@ sub getmoduconf_b
 		}
 		else
 		{
-			if ( $value[3] =~ /^-*$/ ) # ���compile�ļ�·����compile�ļ����ƶ���Ϊ�� , ��ֵ����Ч
+			if ( $value[3] =~ /^-*$/ ) # 如果compile文件路径或compile文件名称都不为空 , 其值才有效
 			{
-				if ( $compileFP eq "" ) # ��compile�ļ�·����Ϊ�� , ����Ϊreadme�ļ�·����compile�ļ�·��
+				if ( $compileFP eq "" ) # 而compile文件路径不为空 , 则认为readme文件路径即compile文件路径
 				{
 					$readmeFP = "";
 					$readmeFN = "";
@@ -1273,39 +1273,39 @@ sub getmoduconf_b
 					$readmeFN = $value[4];
 				}
 			}
-			else # ���readme�ļ�·��Ϊ�� , 
+			else # 如果readme文件路径为空 , 
 			{
-				$readmeFP = &revisepath(0,$value[3]); # ����·��Ϊ���ø�ʽ
+				$readmeFP = &revisepath(0,$value[3]); # 修正路径为可用格式
 				$readmeFN = $value[4];
 			}
 		}
 	}
 #	print "compileFP : $compileFP\ncompileFN : $compileFN\nreadmeFP : $readmeFP\nreadmeFN : $readmeFN\n";
 }
-# ��ȡģ��У��ͷ����ļ���Ϣ
+# 获取模块校验和发布文件信息
 sub getmoduconf_c
 {	# input: none
 	# output: @checkFs , @releaseFs
-	my @c = &getmoduconf("c"); # ��ģ�������ļ���ȡ'c'�ؼ�����
-	if ( @c != 0 ) # ��ģ�������ļ��ҵ���'c'�ؼ�����
+	my @c = &getmoduconf("c"); # 从模块配置文件获取'c'关键字行
+	if ( @c != 0 ) # 从模块配置文件找到了'c'关键字行
 	{
 		my ($c,@checkFNs,$checkFN,$checkFP,$FRP,@FRPs);
-		foreach $c (@c) # ��ÿһ�л�ȡ��Ϣ
+		foreach $c (@c) # 从每一行获取信息
 		{
-			my @value = &getvalue (" ",$c); # �Ӹ��л�ȡ���йؼ�ֵ 1У���ļ������б� 2�ļ�·�� 3����·���б�
-			if ( @value < 3 ) # ����ؼ�ֵΪǰ3��
+			my @value = &getvalue (" ",$c); # 从该行获取所有关键值 1校验文件名称列表 2文件路径 3发布路径列表
+			if ( @value < 3 ) # 必填关键值为前3个
 			{
 				&printerror(0,"Wrong Format in line '$c[0]' !\n","c");
-				next; # ����ؼ�ֵȱ������������
+				next; # 必填关键值缺少则跳过该行
 			}
-			@checkFNs = &getvalue(",",$value[1]); # ��У���ļ������б�תΪ����
-#			@checkFNs = split(/,/,$value[1]); # ��У���ļ������б�תΪ����
-			$checkFP = &revisepath(0,$value[2]); # ����·��Ϊ���ø�ʽ
-			if ( $value[3] =~ /^-*$/ ) # �Ӹ��л�ȡ��'����·���б�'Ϊ�� , ����"-"����Ϊ��
+			@checkFNs = &getvalue(",",$value[1]); # 将校验文件名称列表转为数组
+#			@checkFNs = split(/,/,$value[1]); # 将校验文件名称列表转为数组
+			$checkFP = &revisepath(0,$value[2]); # 修正路径为可用格式
+			if ( $value[3] =~ /^-*$/ ) # 从该行获取的'发布路径列表'为空 , 或以"-"代表为空
 			{
 				foreach $checkFN (@checkFNs)
 				{
-					# ����checkF��ʽΪ : 0�ļ����� 1�ļ�·��
+					# 推入checkF格式为 : 0文件名称 1文件路径
 					push (@checkFs,$checkFN." ".$checkFP);
 #					print "checkF : $checkFN $checkFP\n";
 				}
@@ -1314,9 +1314,9 @@ sub getmoduconf_c
 			{
 				foreach $checkFN (@checkFNs)
 				{
-					# ����checkF��ʽΪ : 0�ļ����� 1�ļ�·�� 2����·���б�
+					# 推入checkF格式为 : 0文件名称 1文件路径 2发布路径列表
 					push (@checkFs,$checkFN." ".$checkFP." ".$value[3]);
-					# ����releaseF��ʽΪ : 0�ļ����� 1�ļ�·�� 2����·���б�
+					# 推入releaseF格式为 : 0文件名称 1文件路径 2发布路径列表
 					push (@releaseFs,$checkFN." ".$checkFP." ".$value[3]);
 #					print "checkF/releaseF : $checkFN $checkFP $value[3]\n";
 				}
@@ -1330,28 +1330,28 @@ sub getmoduconf_c
 		undef(@releaseFs);
 	}
 }
-# ��ȡģ�鷢��Ŀ¼��Ϣ
+# 获取模块发布目录信息
 sub getmoduconf_r
 {
 	# input: none
 	# output: @releaseDs
-	my @r = &getmoduconf("r"); # ��ģ�������ļ���ȡ'r'�ؼ�����
-	if ( @r != 0 ) # ��ģ�������ļ��ҵ���'r'�ؼ�����
+	my @r = &getmoduconf("r"); # 从模块配置文件获取'r'关键字行
+	if ( @r != 0 ) # 从模块配置文件找到了'r'关键字行
 	{
 		my ($r,@RDNs,$RDN,$RDP);
-		foreach $r (@r) # ��ÿһ�л�ȡ��Ϣ
+		foreach $r (@r) # 从每一行获取信息
 		{
-			my @value = &getvalue (" ",$r); # �Ӹ��л�ȡ���йؼ�ֵ 1�����ļ��������б� 2�ļ���·�� 3����·���б�
-			if ( @value < 4 ) # ����ؼ�ֵΪǰ4��
+			my @value = &getvalue (" ",$r); # 从该行获取所有关键值 1发布文件夹名称列表 2文件夹路径 3发布路径列表
+			if ( @value < 4 ) # 必填关键值为前4个
 			{
 				&printerror(0,"Wrong Format in '$r[0]' !\n","r");
-				next; # ����ؼ�ֵȱ������������
+				next; # 必填关键值缺少则跳过该行
 			}
-			@RDNs = &getvalue(",",$value[1]); # ��У���ļ������б�תΪ����
-#			@RDNs = split(/,/,$value[1]); # ��У���ļ������б�תΪ����
+			@RDNs = &getvalue(",",$value[1]); # 将校验文件名称列表转为数组
+#			@RDNs = split(/,/,$value[1]); # 将校验文件名称列表转为数组
 			foreach $RDN (@RDNs)
 			{
-				# ����releaseDs��ʽΪ : 0Ŀ¼���� 1Ŀ¼·�� 2����·���б�
+				# 推入releaseDs格式为 : 0目录名称 1目录路径 2发布路径列表
 				push (@releaseDs,$RDN." ".$value[2]." ".$value[3]);
 #				print "releaseD : $RDN $RDP $value[3]\n";
 			}
@@ -1379,31 +1379,31 @@ sub getmoduconf_r
 	
 #}
 # =====================================================================================================================
-# ģ�����'ɾ��'�ӹ���
+# 模块编译'删除'子过程
 sub del
 {
 	# input: $SnapviewP , $commoncompP , @checkFs
 	# output: none
 	$place = "Delete_CheckFiles";
 	print "\n$module - $place......\n";
-	# ɾ��У���ļ�
-	if ( @checkFs != 0 ) # �������ļ��л�ȡ��У���ļ���Ϣ��Ϊ��
+	# 删除校验文件
+	if ( @checkFs != 0 ) # 从配置文件中获取的校验文件信息不为空
 	{
 		my ($checkF,$WcheckF,$WcheckFs);
-		foreach $checkF (@checkFs) # ��ȡÿһ��У���ļ�����Ϣ
+		foreach $checkF (@checkFs) # 获取每一个校验文件的信息
 		{
-			my @value = &getvalue(" ",$checkF); # ��ȡ��У���ļ���Ϣ 0�ļ����� 1�ļ�·�� 2����·���б�
+			my @value = &getvalue(" ",$checkF); # 获取该校验文件信息 0文件名称 1文件路径 2发布路径列表
 			$value[0] =~ s/(y{2}|y{4})mmdd/\*/ig; # chenhuiren 090610 
-			$WcheckF = $SnapviewP.$commoncompP.$value[1].$value[0]; # ����·�����ļ���
+			$WcheckF = $SnapviewP.$commoncompP.$value[1].$value[0]; # 连接路径和文件名
 #			print "WcheckF : $WcheckF\n";
-			$WcheckFs = $WcheckFs.$WcheckF." "; # �����У���ļ��ÿո������Ϊdel�������һ��ִ��
+			$WcheckFs = $WcheckFs.$WcheckF." "; # 将多个校验文件用空格隔开作为del命令的项一次执行
 		}
-		&command("del","f",$WcheckFs); # ����ɾ��������������Ϣ��error.log��
+		&command("del","f",$WcheckFs); # 调用删除命令并输出错误信息到error.log中
 	}
-	&geterror; # �д�����Ϣ��д��BuildError.log
+	&geterror; # 有错误信息则写入BuildError.log
 }
 
-# ģ�����'����Դ�ļ�'�ӹ���
+# 模块编译'更新源文件'子过程
 sub update
 {
 	# input: $SnapviewP , $srccodePs , $module , $builddatetime
@@ -1414,20 +1414,20 @@ sub update
 	{
 		my ($srccodeP,$WsrccodeP,$WsrccodePs);
 		&cleanerror;
-		my @srccodeP = &getvalue(",",$srccodePs); # �����Դ��·���ָ������
-#		my @srccodeP = split(/,/,$srccodePs); # �����Դ��·���ָ������
-		#####my $updateLFN = $module."_".$builddatetime.".updt"; # �������Դ�����־�ļ�����
-		my $updateLFN = $module."_".$builddatetime."_update.log"; # �������Դ�����־�ļ�����  modify by hanjian 20120803 ;modify by hanjian 20120810
+		my @srccodeP = &getvalue(",",$srccodePs); # 将多个源码路径分割成数组
+#		my @srccodeP = split(/,/,$srccodePs); # 将多个源码路径分割成数组
+		#####my $updateLFN = $module."_".$builddatetime.".updt"; # 定义更新源码的日志文件名称
+		my $updateLFN = $module."_".$builddatetime."_update.log"; # 定义更新源码的日志文件名称  modify by hanjian 20120803 ;modify by hanjian 20120810
 		
 		foreach $srccodeP (@srccodeP)
 		{
-			$srccodeP = &revisepath(2,$srccodeP); # ����·��Ϊ���Ը�ʽ
-			$WsrccodeP = $SnapviewP.$srccodeP; # ƴ�ӳ�����·��
+			$srccodeP = &revisepath(2,$srccodeP); # 修正路径为可以格式
+			$WsrccodeP = $SnapviewP.$srccodeP; # 拼接成完整路径
 #			print "WsrccodeP : $WsrccodeP\n";
-			$WsrccodePs = $WsrccodePs.$WsrccodeP." "; # �����Դ��·���ÿո������Ϊupdate�������һ��ִ��
+			$WsrccodePs = $WsrccodePs.$WsrccodeP." "; # 将多个源码路径用空格隔开作为update命令的项一次执行
 		}
-		&command("update",$WsrccodePs,$verworkP.$updateLFN); # ���ø���Դ��������������Ϣ��error.log��
-		if ( &geterror ) # �д�����Ϣ
+		&command("update",$WsrccodePs,$verworkP.$updateLFN); # 调用更新源码命令并输出错误信息到error.log中
+		if ( &geterror ) # 有错误信息
 		{
 			$updateS = 0;
 			&printerror(0,"@errors");
@@ -1442,7 +1442,7 @@ sub update
 }
 
 
-# ȥ��Դ��ֻ������
+# 去除源码只读属性
 sub disreadonly
 {
 	# input: $SnapviewP , $srccodePs , $module , $builddatetime
@@ -1452,20 +1452,20 @@ sub disreadonly
 	if (( $srccodePs ne "" ) && $updateS )
 	{
 		my ($srccodeP,$WsrccodeP);
-		my @srccodeP = &getvalue(",",$srccodePs); # �����Դ��·���ָ������
-#		my @srccodeP = split(/,/,$srccodePs); # �����Դ��·���ָ������
-		my $updateLFN = $module."_".$builddatetime.".updt"; # �������Դ�����־�ļ�����
+		my @srccodeP = &getvalue(",",$srccodePs); # 将多个源码路径分割成数组
+#		my @srccodeP = split(/,/,$srccodePs); # 将多个源码路径分割成数组
+		my $updateLFN = $module."_".$builddatetime.".updt"; # 定义更新源码的日志文件名称
 		foreach $srccodeP (@srccodeP)
 		{
-			$srccodeP = &revisepath(0,$srccodeP); # ����·��Ϊ���Ը�ʽ
-			$WsrccodeP = $SnapviewP.$srccodeP; # ƴ�ӳ�����·��
+			$srccodeP = &revisepath(0,$srccodeP); # 修正路径为可以格式
+			$WsrccodeP = $SnapviewP.$srccodeP; # 拼接成完整路径
 #			print "WsrccodeP : $WsrccodeP\n";
-			&command("disreadonly",$WsrccodeP); # ���ø���Դ��������������Ϣ��error.log��
+			&command("disreadonly",$WsrccodeP); # 调用更新源码命令并输出错误信息到error.log中
 		}
-		&geterror; # �д�����Ϣ��д��BuildError.log
+		&geterror; # 有错误信息则写入BuildError.log
 	}
 }
-# ģ�����'����'�ӹ���
+# 模块编译'编译'子过程
 sub compile
 {
 	# input: $SnapviewP , $compileFP , $compileFN , $module , $OSstring , $workpath
@@ -1476,17 +1476,17 @@ sub compile
 	{
 		my $WcompileFP = $SnapviewP.$compileFP;
 #		print "WcompileFP : $WcompileFP\n";
-		my $WcompileIF = $SnapviewP.$compileIFP.$module."_".$OSstring.".txt"; # ������CMO��ȡ�ı�����Ϣ�ļ�����
-		if ( chdir($WcompileFP) ) # �������·��
+		my $WcompileIF = $SnapviewP.$compileIFP.$module."_".$OSstring.".txt"; # 定义由CMO获取的编译信息文件名称
+		if ( chdir($WcompileFP) ) # 进入编译路径
 		{
 			my $currenttime = &getdatetime;
-			&writelog($verworkP."buildtime.log","$module Compile Time : $currenttime"); # �������ļ�У����д����־�ļ�
-#			print BUILDINFO ("\n$module Compile Time : $currenttime"); # ��������ʼʱ��д�������Ϣ�ļ�
-			&command("exe",$compileFN,$WcompileIF); # ���ñ���������������Ϣ��CMO�ı�����Ϣ�ļ���
+			&writelog($verworkP."buildtime.log","$module Compile Time : $currenttime"); # 将所有文件校验结果写入日志文件
+#			print BUILDINFO ("\n$module Compile Time : $currenttime"); # 将编译起始时间写入编译信息文件
+			&command("exe",$compileFN,$WcompileIF); # 调用编译命令并输出错误信息到CMO的编译信息文件中
 			$currenttime = &getdatetime;
-			&writelog($verworkP."buildtime.log","~ $currenttime\n"); # �������ļ�У����д����־�ļ�
-#			print BUILDINFO ("~ $currenttime\n"); # ��������ֹʱ��д�������Ϣ�ļ�
-			&printerror(0,"Failed Access Work Path '$workpath' !\n") if ( !chdir($workpath) ); # ���ص�ǰ����·��
+			&writelog($verworkP."buildtime.log","~ $currenttime\n"); # 将所有文件校验结果写入日志文件
+#			print BUILDINFO ("~ $currenttime\n"); # 将编译终止时间写入编译信息文件
+			&printerror(0,"Failed Access Work Path '$workpath' !\n") if ( !chdir($workpath) ); # 返回当前工作路径
 		}
 		else
 		{
@@ -1503,7 +1503,7 @@ sub compile
 		&printerror(0,"Skip Compile Process !\n");
 	}
 }
-# ģ�����'У���ļ�'�ӹ���
+# 模块编译'校验文件'子过程
 sub checkfile
 {
 	# input: @checkFs
@@ -1511,12 +1511,12 @@ sub checkfile
 	$place = "Check_File";
 	print "\n$module - $place......\n";
 	my ($errorinfo,$passinfo,$nopassinfo);
-	if ( @checkFs != 0 ) # ��ģ�������ļ���ȡ��У���ļ���Ϣ��Ϊ��ʱ
+	if ( @checkFs != 0 ) # 从模块配置文件获取的校验文件信息不为空时
 	{
 		my ($checkF,$WcheckF);
-		undef(@releaseFs); # ����Ѷ���ķ����ļ���У��ͨ�����ļ��ŷ���
-		my $date4 = &getdate; # ��ȡ��ǰ����yyyymmdd # chenhuiren 090610 
-		my $date2 = substr($date4,2);# ��ȡ��ǰ����yymmdd # chenhuiren 090610
+		undef(@releaseFs); # 清除已定义的发布文件，校验通过的文件才发布
+		my $date4 = &getdate; # 获取当前日期yyyymmdd # chenhuiren 090610 
+		my $date2 = substr($date4,2);# 获取当前日期yymmdd # chenhuiren 090610
 		# chenhuiren 090610 start
 		foreach $checkF (@checkFs)
 		{
@@ -1524,24 +1524,24 @@ sub checkfile
 			$checkF =~ s/(y{2}mmdd)/$date2/ig;
 		}
 		# chenhuiren 090610 end
-		foreach $checkF (@checkFs) # ����ÿһ��У���ļ�
+		foreach $checkF (@checkFs) # 处理每一个校验文件
 		{
-			my @value = &getvalue (" ",$checkF); # ��ȡ��У���ļ���Ϣ 0�ļ����� 1�ļ�·�� 2����·���б�
+			my @value = &getvalue (" ",$checkF); # 获取该校验文件信息 0文件名称 1文件路径 2发布路径列表
 			$WcheckF = $SnapviewP.$commoncompP.$value[1].$value[0];
 #			print "WcheckF : $WcheckF\n";
-			if (( -e $WcheckF ) && ( -s $WcheckF )) # У�����У���ļ������Ҳ�Ϊ��
+			if (( -e $WcheckF ) && ( -s $WcheckF )) # 校验规则：校验文件存在且不为空
 			{
-				push (@releaseFs,$checkF) if ( $value[2] ne "" ); # У��ͨ���ҷ���·����Ϊ��������releaseFs��ʽΪ: 0�ļ����� 1�ļ�·�� 2����·���б�
-				$passinfo = $passinfo."Pass ͨ�� ".$WcheckF."\n";
+				push (@releaseFs,$checkF) if ( $value[2] ne "" ); # 校验通过且发布路径不为空则推入releaseFs格式为: 0文件名称 1文件路径 2发布路径列表
+				$passinfo = $passinfo."Pass 通过 ".$WcheckF."\n";
 			}
 			else
 			{
-				$checkfileS = 0; # ֻҪ��һ���ļ�У�鲻ͨ��,У������Ϊ0
-				$nopassinfo = $nopassinfo."NotPass ��ͨ�� ".$WcheckF."\n";
+				$checkfileS = 0; # 只要有一个文件校验不通过,校验结果即为0
+				$nopassinfo = $nopassinfo."NotPass 不通过 ".$WcheckF."\n";
 			}
 		}
 		$allcheckfileS = 0 if ( !$checkfileS );
-		&writelog($verworkP."nopassfile.log","--- $module / $owner / $ownerM ---\n".$nopassinfo."\n") if ( !$checkfileS ); # ��У��δͨ���ļ�д����ʱ�ļ�nopassfile.log
+		&writelog($verworkP."nopassfile.log","--- $module / $owner / $ownerM ---\n".$nopassinfo."\n") if ( !$checkfileS ); # 将校验未通过文件写入临时文件nopassfile.log
 		$CFpassinfo = $nopassinfo.$passinfo;
 		print "Check Files Result :\n$CFpassinfo";
 	}
@@ -1549,19 +1549,19 @@ sub checkfile
 	{
 		$errorinfo = "Not Config Check Files in $WmoduleCF !\n";
 	}
-	&writelog($verworkP."checkfile.log","$builddatetime / $module / $owner / $ownerM\n".$CFpassinfo.$errorinfo."\n"); # �������ļ�У����д����־�ļ�
+	&writelog($verworkP."checkfile.log","$builddatetime / $module / $owner / $ownerM\n".$CFpassinfo.$errorinfo."\n"); # 将所有文件校验结果写入日志文件
 	return $checkfileS;
 }
-# ģ�����'У��readme'�ӹ���
+# 模块编译'校验readme'子过程
 sub checkreadme
 {
 	# input: $SnapviewP , $readmeFP , $readmeFN
 	# output: $checkreadmeS , checkreadme.log
-	# readmeУ����� : �ҵ������ڵ��� , �ҵ���У��ͨ�� , �һ�ȡ�����𵽵�һ����"="��ɵ���֮��������е�AllReadme.txt��
+	# readme校验规则 : 找当天日期的行 , 找到则校验通过 , 且获取该行起到第一个由"="组成的行之间的所有行到AllReadme.txt中
 	$place = "Check_Readme";
 	print "\n$module - $place......\n";
 	my $errorinfo;
-	if ( $readmeFN ne "" ) # ģ�������ļ���������readme
+	if ( $readmeFN ne "" ) # 模块配置文件中配置了readme
 	{
 		my $WreadmeF = $SnapviewP.$readmeFP.$readmeFN;
 #		print "WreadmeF : $WreadmeF\n";
@@ -1569,23 +1569,23 @@ sub checkreadme
 		{
 			my @readme = <README>;
 			close(README);
-#			my $mydate = &getdate; # readmeУ����� , ���Ե�������У��
-			$mydate = substr($builddate,2); # ���ݹ�˾��readme�淶 , У�����ڸ�ʽΪYYMMDD
-			my @found = grep(/^\s*�汾��.+$mydate\s*$/i,@readme);
-			if ( @found == 0 ) # δ�ҵ�������������
+#			my $mydate = &getdate; # readme校验规则 , 暂以当天日期校验
+			$mydate = substr($builddate,2); # 根据公司的readme规范 , 校验日期格式为YYMMDD
+			my @found = grep(/^\s*版本号.+$mydate\s*$/i,@readme);
+			if ( @found == 0 ) # 未找到满足条件的行
 			{
 				$checkreadmeS = 0;
-				$RMpassinfo = "NotPass ��ͨ�� ".$WreadmeF."\n";
+				$RMpassinfo = "NotPass 不通过 ".$WreadmeF."\n";
 			}
-			else  # �ҵ�������������
+			else  # 找到满足条件的行
 			{
-				$RMpassinfo = "Pass ͨ�� ".$WreadmeF."\n";
+				$RMpassinfo = "Pass 通过 ".$WreadmeF."\n";
 				my ($line,@lines);
-				my $start = 0; # ��¼��readme�ļ����ҵ�����У�������ĵ�һ��
-				my $end = 0; # ��¼��readme�ļ����ҵ�����У������֮������һ��
+				my $start = 0; # 记录从readme文件中找到符合校验条件的第一行
+				my $end = 0; # 记录从readme文件中找到符合校验条件之后的最后一行
 				foreach $line (@readme)
 				{
-					$start = 1 if ( $line =~ /^\s*�汾��.+$mydate\s*$/i );
+					$start = 1 if ( $line =~ /^\s*版本号.+$mydate\s*$/i );
 					$end = 1 if ( $start && ( $line =~ /^=+$/i ));
 					push (@lines,$line) if ( $start && !$end );
 					last if ( $end );
@@ -1598,7 +1598,7 @@ sub checkreadme
 			&printerror(0,"Failed Open file '$WreadmeF' !\n");
 			$errorinfo = "Failed Open file $WreadmeF !\n";
 		}
-		&writelog($verworkP."nopassreadme.log","--- $module / $owner ---\n".$RMpassinfo."\n") if ( !$checkreadmeS ); # ��У��δͨ���ļ�д����ʱ�ļ�nopassreadme.log
+		&writelog($verworkP."nopassreadme.log","--- $module / $owner ---\n".$RMpassinfo."\n") if ( !$checkreadmeS ); # 将校验未通过文件写入临时文件nopassreadme.log
 #		print "checkreadmeS : $checkreadmeS\n$RMpassinfo";
 		print "Check Readme Result :\n$RMpassinfo";
 	}
@@ -1606,68 +1606,68 @@ sub checkreadme
 	{
 		$errorinfo = "Readme File was Not Config in $WmoduleCF !\n";
 	}
-	# ��readmeУ����д����־�ļ�
-	&writelog($verworkP."CheckReadme.log","$builddatetime / $module / $owner\n".$RMpassinfo.$errorinfo."\n"); # ��readmeУ����д����־�ļ�
+	# 将readme校验结果写入日志文件
+	&writelog($verworkP."CheckReadme.log","$builddatetime / $module / $owner\n".$RMpassinfo.$errorinfo."\n"); # 将readme校验结果写入日志文件
 	return $checkreadmeS;
 }
-# ģ�����'�����ļ���Ŀ¼'�ӹ���
+# 模块编译'发布文件和目录'子过程
 sub releasefiles
 {
 	# input: $RP , $SnapviewP , $commoncompP , @releaseFs , @releaseDs
 	# output: none
 	$place = "Release_Files_Dirs";
 	print "\n$module - $place......\n";
-	# ����У���ļ�
-	if ( @releaseFs != 0 ) # ��ģ�������ļ���ȡ��У���ļ�������Ϣ��У�����ļ�������Ϣ��Ϊ��ʱ
+	# 发布校验文件
+	if ( @releaseFs != 0 ) # 从模块配置文件获取的校验文件发布信息或经校验后的文件发布信息不为空时
 	{
 		print "$module - Release_File...\n";
 		my ($releaseF,$WRF,$FRP,$WFRP,@FRPs);
-		foreach $releaseF (@releaseFs) # ����ÿһ�������ļ�
+		foreach $releaseF (@releaseFs) # 处理每一个发布文件
 		{
-			my @value = &getvalue(" ",$releaseF); # ��ȡ�÷����ļ���Ϣ 0�ļ����� 1�ļ�·�� 2����·���б�
+			my @value = &getvalue(" ",$releaseF); # 获取该发布文件信息 0文件名称 1文件路径 2发布路径列表
 			$WRF = $SnapviewP.$commoncompP.$value[1].$value[0];
-			@FRPs = &getvalue(",",$value[2]); # ������·���б�תΪ����
-#			@FRPs = split(/,/,$value[2]); # ������·���б�תΪ����
+			@FRPs = &getvalue(",",$value[2]); # 将发布路径列表转为数组
+#			@FRPs = split(/,/,$value[2]); # 将发布路径列表转为数组
 			foreach $FRP (@FRPs)
 			{
-				$FRP = &revisepath(0,$FRP); # ����·��Ϊ���ø�ʽ
+				$FRP = &revisepath(0,$FRP); # 修正路径为可用格式
 				$WFRP = $RP.$FRP;
 #				print "WRF : $WRF\nWFRP : $WFRP\n";
-				&command("copy","f",$WRF,$WFRP); # ���ø��ǿ���Դ��������������Ϣ��error.log��
+				&command("copy","f",$WRF,$WFRP); # 调用覆盖拷贝源码命令并输出错误信息到error.log中
 			}
 		}
 	}
-	# �����ļ����ļ���
-	if ( @releaseDs != 0 ) # ��ģ�������ļ���ȡ�ķ���Ŀ¼��Ϣ��Ϊ��ʱ
+	# 发布文件和文件夹
+	if ( @releaseDs != 0 ) # 从模块配置文件获取的发布目录信息不为空时
 	{
 		print "$module - Release_Dir...\n";
 		my ($releaseD,$WRD,$DRP,$WDRP,@DRPs);
-		foreach $releaseD (@releaseDs) # ����ÿһ������Ŀ¼
+		foreach $releaseD (@releaseDs) # 处理每一个发布目录
 		{
-			my @value = &getvalue(" ",$releaseD); # ��ȡ�÷���Ŀ¼��Ϣ 0Ŀ¼���� 1Ŀ¼·�� 2����·���б�
-			my $RDP = &revisepath(0,$value[1]); # ����·��Ϊ���ø�ʽ
+			my @value = &getvalue(" ",$releaseD); # 获取该发布目录信息 0目录名称 1目录路径 2发布路径列表
+			my $RDP = &revisepath(0,$value[1]); # 修正路径为可用格式
 			$WRD = $SnapviewP.$commoncompP.$RDP.$value[0];
-			@DRPs = &getvalue(",",$value[2]); # ������·���б�תΪ����
-#			@DRPs = split(/,/,$value[2]); # ������·���б�תΪ����
-			my $file; # ���ڱ�ʶ$WRD���ļ�1�����ļ���0
+			@DRPs = &getvalue(",",$value[2]); # 将发布路径列表转为数组
+#			@DRPs = split(/,/,$value[2]); # 将发布路径列表转为数组
+			my $file; # 用于标识$WRD是文件1还是文件夹0
 			if ( -e $WRD )
 			{
 				$file = 1;
 				$file = 0 if ( -d $WRD );
 				foreach $DRP (@DRPs)
 				{
-					$DRP = &revisepath(0,$DRP); # ����·��Ϊ���ø�ʽ
+					$DRP = &revisepath(0,$DRP); # 修正路径为可用格式
 	#				print "WRD : $WRD\nWDRP : $WDRP\n";
 					if ( $file )
 					{
 						$WDRP = $RP.$DRP;
-						&command("copy","f",$WRD,$WDRP); # ���ø��ǿ���Դ��������������Ϣ��error.log��
+						&command("copy","f",$WRD,$WDRP); # 调用覆盖拷贝源码命令并输出错误信息到error.log中
 					}
 					else
 					{
 						$WDRP = $RP.$DRP.$value[0];
 						$WDRP = $RP.$DRP if ( $OS );
-						&command("copy","d",$WRD,$WDRP); # ���ø��ǿ���Դ��������������Ϣ��error.log��
+						&command("copy","d",$WRD,$WDRP); # 调用覆盖拷贝源码命令并输出错误信息到error.log中
 					}
 				}
 			}
@@ -1677,26 +1677,26 @@ sub releasefiles
 			}
 		}
 	}
-	&geterror; # �д�����Ϣ��д��BuildError.log
+	&geterror; # 有错误信息则写入BuildError.log
 }
-# ģ�����'����readme'�ӹ���
+# 模块编译'发布readme'子过程
 sub releasereadme
 {
 	# input: $SnapviewP , $readmeFP , $readmeFN , $RP
 	# output: none
 	$place = "Release_Readme";
 	print "\n$module - $place......\n";
-	if ( $readmeFN ne "" ) # ģ�������ļ���������readme
+	if ( $readmeFN ne "" ) # 模块配置文件中配置了readme
 	{
 		my $WreadmeF = $SnapviewP.$readmeFP.$readmeFN;
-		my $WreadmeFRP = &revisepath(1,$RP."readme"); # ����·��Ϊ���ø�ʽ
+		my $WreadmeFRP = &revisepath(1,$RP."readme"); # 修正路径为可用格式
 #		print "WreadmeF : $WreadmeF\nWreadmeFRP : $WreadmeFRP\n";
 		if ( -e $WreadmeF )
 		{
-			&command("copy","f",$WreadmeF,$WreadmeFRP); # ���ø��ǿ���Դ��������������Ϣ��error.log��
-			# ������λ���ϵ�readme�ļ�����Ϊ��ģ������"_"��ԭreadme�ļ���
+			&command("copy","f",$WreadmeF,$WreadmeFRP); # 调用覆盖拷贝源码命令并输出错误信息到error.log中
+			# 将发布位置上的readme文件更名为以模块名加"_"加原readme文件名
 			rename($WreadmeFRP.$readmeFN,$WreadmeFRP.$module."_".$readmeFN) || &printerror(0,"Failed Rename File '$WreadmeFRP$readmeFN' !\n");
-			&geterror; # �д�����Ϣ��д��BuildError.log
+			&geterror; # 有错误信息则写入BuildError.log
 		}
 		else
 		{
@@ -1704,7 +1704,7 @@ sub releasereadme
 		}
 	}
 }
-# ģ�����'����compileinfo'�ӹ���
+# 模块编译'发布compileinfo'子过程
 sub releasecompileinfo
 {
 	# input: $SnapviewP , $compileIFP , $module , $RP
@@ -1713,14 +1713,14 @@ sub releasecompileinfo
 	print "\n$module - $place......\n";
 	if ( $compileS )
 	{
-		my $WcompileIF = $SnapviewP.$compileIFP.$module."*"; # ��ģ��ı�����ϢΪ������Ϣ·����������ģ������ͷ���ļ�
-		my $WcompileIFRP = &revisepath(1,$RP."compileinfo"); # ����·��Ϊ���ø�ʽ
+		my $WcompileIF = $SnapviewP.$compileIFP.$module."*"; # 本模块的编译信息为编译信息路径下所有以模块名打头的文件
+		my $WcompileIFRP = &revisepath(1,$RP."compileinfo"); # 修正路径为可用格式
 #		print "WcompileIF : $WcompileIF\nWcompileIFRP : $WcompileIFRP\n";
-		&command("copy","f",$WcompileIF,$WcompileIFRP); # ���ø��¿���Դ��������������Ϣ��error.log��
-		&geterror; # �д�����Ϣ��д��BuildError.log
+		&command("copy","f",$WcompileIF,$WcompileIFRP); # 调用更新拷贝源码命令并输出错误信息到error.log中
+		&geterror; # 有错误信息则写入BuildError.log
 	}
 }
-# ģ�����'����updatelog'�ӹ���
+# 模块编译'发布updatelog'子过程
 sub releaseupdatelog
 {
 	# input: $updateL , $module , $RP
@@ -1729,18 +1729,18 @@ sub releaseupdatelog
 	print "\n$module - $place......\n";
 	if ( $updateS )
 	{
-		#my $WupdateL = $verworkP."$module"."_".$builddatetime.".updt"; # ���ݱ��ű��м�����updatelog���������λ�÷���
+		#my $WupdateL = $verworkP."$module"."_".$builddatetime.".updt"; # 根据本脚本中即定的updatelog命名规则和位置发布
 		
-		my $WupdateL = $verworkP."$module"."_".$builddatetime."_update.log"; # ���ݱ��ű��м�����updatelog���������λ�÷��� ###modify by hanjian 20120810
-		my $WupdateLRP = &revisepath(1,$RP."updatelog"); # ����·��Ϊ���ø�ʽ
+		my $WupdateL = $verworkP."$module"."_".$builddatetime."_update.log"; # 根据本脚本中即定的updatelog命名规则和位置发布 ###modify by hanjian 20120810
+		my $WupdateLRP = &revisepath(1,$RP."updatelog"); # 修正路径为可用格式
 		
    	print "WupdateL : $WupdateL\nWupdateLRP : $WupdateLRP\n"; ####20120810 --test
 
-		&command("copy","f",$WupdateL,$WupdateLRP); # ���ø��¿���Դ��������������Ϣ��error.log��
-		&geterror; # �д�����Ϣ��д��BuildError.log
+		&command("copy","f",$WupdateL,$WupdateLRP); # 调用更新拷贝源码命令并输出错误信息到error.log中
+		&geterror; # 有错误信息则写入BuildError.log
 	}
 }
-# ģ�����'֪ͨ'�ӹ���
+# 模块编译'通知'子过程
 sub notify
 {
 	# input: $RP , $OS , $ucmproject , $version , $builddatetime , $modulelist , $PMM , $TEM , $SMTP , $mailfrom
@@ -1751,86 +1751,86 @@ sub notify
 	my ($type,$rule) = @_;
 	my (@text,$to,$subject,$message,$notifyRP);
 	$notifyRP = $RP;
-	if ( $OS ) # �����linux����ϵͳ , ����Ҫ��notifyRPת��Ϊwindows��·����ʽ
+	if ( $OS ) # 如果是linux操作系统 , 则需要将notifyRP转换为windows的路径格式
 	{
 		$OS = 0;
 		$notifyRP = &revisepath(1,$RP);
 		$OS = 1;
 	}
-#	@allnopassreadme = ("��δͨ��readme\n") if ( @allnopassreadme == 0 );
+#	@allnopassreadme = ("无未通过readme\n") if ( @allnopassreadme == 0 );
 	$text[0] = "AutoBuild_Notify: ";
 	&getallmodules;
-	$text[1] = " , ����!\n\n���α�����Ϣ����: \n��Ŀ����: $UCMprj\n��Ŀ�汾��: $version\n�Զ��ű����п�ʼʱ��: $builddatetime\n���뱾���Զ��ű����е�ģ���б�: \n"."@allmodules"."\n�汾����λ��: $notifyRP\n\n";
+	$text[1] = " , 您好!\n\n本次编译信息如下: \n项目名称: $UCMprj\n项目版本号: $version\n自动脚本运行开始时间: $builddatetime\n参与本次自动脚本运行的模块列表: \n"."@allmodules"."\n版本发布位置: $notifyRP\n\n";
 	undef(@allmodules);
-	$text[2] = "���뻷��������ʱ���: ���ڷ���λ���µ�BuildInfo�ļ��в���;\nԴ����¼�¼: ���ڷ���λ���µ�updatelog�ļ����в���;\n������Ϣ: ���ڷ���λ���µ�compileinfo�ļ����в���.\n(ReadMe: ���ڷ���λ���µ�readme�ļ����в���.)\n\n�����������µ��������ù���Ա�����ʼ���$CMOM��\n���ʼ���ϵͳ��������ظ���лл��\n\n";
+	$text[2] = "编译环境及编译时间等: 请在发布位置下的BuildInfo文件中查找;\n源码更新记录: 请在发布位置下的updatelog文件夹中查找;\n编译信息: 请在发布位置下的compileinfo文件夹中查找.\n(ReadMe: 请在发布位置下的readme文件夹中查找.)\n\n如有疑问请致电您的配置管理员或发送邮件到$CMOM。\n该邮件由系统发送请勿回复。谢谢。\n\n";
 	if ( !$checkfileS )
 	{
-		open (NOPASSF,$verworkP."nopassfile.log"); # ��ȡУ��δͨ���ļ�����ʱ�ļ�nopassfile.log
+		open (NOPASSF,$verworkP."nopassfile.log"); # 读取校验未通过文件的临时文件nopassfile.log
 		my @allnopassfile = <NOPASSF>;
 		close (NOPASSF);
-		@allnopassfile = ("��δͨ���ļ�\n") if ( @allnopassfile == 0 );
+		@allnopassfile = ("无未通过文件\n") if ( @allnopassfile == 0 );
 		if ( $type )
 		{
-			$text[3] = "�ļ�У��δͨ��";
-			$text[4] = "У���ļ����: \n$CFpassinfo\n";
-			$text[5] = "��: ��ģ��֮ǰ����У��δͨ�����ļ�\n@allnopassfile\n";
+			$text[3] = "文件校验未通过";
+			$text[4] = "校验文件结果: \n$CFpassinfo\n";
+			$text[5] = "附: 本模块之前所有校验未通过的文件\n@allnopassfile\n";
 		}
 		else
 		{
-			$text[5] = "��1.1: ����У��δͨ�����ļ�\n@allnopassfile\n";
+			$text[5] = "附1.1: 所有校验未通过的文件\n@allnopassfile\n";
 		}
 	}
 	#########add by hanjian 20120417(mail update.log)################hanjian 20120810 
-	open (UPDATE333,$verworkP."all-code_".$OSstring."_".$builddatetime."_update.log.mail"); # ��ȡ�ļ�update.log
+	open (UPDATE333,$verworkP."all-code_".$OSstring."_".$builddatetime."_update.log.mail"); # 读取文件update.log
 		my @updatelogss = <UPDATE333>;
 		close (UPDATE333);
-##		@updatelogss = ("��ģ��Դ����¼�¼: ���ڷ���λ���µ�updatelog�ļ����в���\n") if ( @updatelogss == 0 );
-##	  $text[6]= $text[6]."�����updatelog:\n @updatelogss\n";
+##		@updatelogss = ("各模块源码更新记录: 请在发布位置下的updatelog文件夹中查找\n") if ( @updatelogss == 0 );
+##	  $text[6]= $text[6]."整体的updatelog:\n @updatelogss\n";
 	  if ( @updatelogss == 0 )
 	  {
-	  	$text[6]= "��ģ��Դ����¼�¼: ���ڷ���λ���µ�updatelog�ļ����в���\n";
+	  	$text[6]= "各模块源码更新记录: 请在发布位置下的updatelog文件夹中查找\n";
 	  }
 	  else
 	  {
-	  	$text[6]= $text[6]."�����updatelog:\n @updatelogss\n";
+	  	$text[6]= $text[6]."整体的updatelog:\n @updatelogss\n";
 	  } 
 	  
 	################################################################
 	if ( $CRM && !$checkreadmeS )
 	{
-		open (NOPASSRM,$verworkP."nopassreadme.log"); # ��ȡУ��δͨ��readme����ʱ�ļ�nopassreadme.log
+		open (NOPASSRM,$verworkP."nopassreadme.log"); # 读取校验未通过readme的临时文件nopassreadme.log
 		my @allnopassreadme = <NOPASSRM>;
 		close (NOPASSRM);
-		@allnopassreadme = ("��δͨ��readme\n") if ( @allnopassreadme == 0 );
+		@allnopassreadme = ("无未通过readme\n") if ( @allnopassreadme == 0 );
 		if ( $type )
 		{
-			$text[3] = $text[3]."ReadmeУ��δͨ��";
-			$text[4] = $text[4]."У��Readme���: \n$RMpassinfo\n";
+			$text[3] = $text[3]."Readme校验未通过";
+			$text[4] = $text[4]."校验Readme结果: \n$RMpassinfo\n";
 		}
 		else
 		{
-			$text[5] = $text[5]."��1.2: ����У��δͨ����readme\n@allnopassreadme\n";
+			$text[5] = $text[5]."附1.2: 所有校验未通过的readme\n@allnopassreadme\n";
 		}
 	}
-	if ($type) # ����ģ���֪ͨ���� , �ù�����spbuild��intbuild�й� , ��У�鲻ͨ��ʱ��֪ͨ
+	if ($type) # 单个模块的通知规则 , 该规则与spbuild或intbuild有关 , 仅校验不通过时才通知
 	{
-		$subject = $text[0]."$owner ģ��$module����$UCMprj $version $builddatetime�ı��� , $text[3]!";
-		$text[4] = "�������ģ��: $module\n".$text[4];
+		$subject = $text[0]."$owner 模块$module参与$UCMprj $version $builddatetime的编译 , $text[3]!";
+		$text[4] = "您负责的模块: $module\n".$text[4];
 		$message = $owner.$text[1].$text[4].$text[2].$text[5];
 		$to = $ownerM;
-		$to = $to.",".$gownerM if ( $rule ); # �����intbuild , �򵥸�ģ��֪ͨС�鸺����
+		$to = $to.",".$gownerM if ( $rule ); # 如果是intbuild , 则单个模块通知小组负责人
 		&writelog($verworkP."sendmail.log","$builddatetime / $module / $to\n");
 		&mail($to,$subject,$message);
 	}
-	else # ����ģ���֪ͨ���� , �ù�����spbuild��intbuild�й� , ���뱨��
+	else # 所有模块的通知规则 , 该规则与spbuild或intbuild有关 , 编译报告
 	{
-		$subject = $text[0]."$UCMprj $version $builddatetime�ı��뱨��";
-		$message = "$UCMprj $version �汾��ظ�����".$text[1].$text[2].$text[5].$text[6];
-		if ($rule) # intbuild֪ͨ����
+		$subject = $text[0]."$UCMprj $version $builddatetime的编译报告";
+		$message = "$UCMprj $version 版本相关负责人".$text[1].$text[2].$text[5].$text[6];
+		if ($rule) # intbuild通知规则
 		{
 			$to = $CMOM.",".$PMM.",".$TEM;
 		}
-		else # spbuild֪ͨ����
+		else # spbuild通知规则
 		{
 			$to = $CMOM;
 			$to = $to.",".$TEM if ( $allcheckfileS );
@@ -1839,7 +1839,7 @@ sub notify
 		&mail($to,$subject,$message);
 	}
 }
-# ���ڷ����ʼ�
+# 用于发送邮件
 sub mail
 {
 	# input: recipients , attachment
@@ -1857,22 +1857,22 @@ sub mail
 	$mail{'Content-Type'} = 'text/plain; charset="GB2312"';
 	if ( sendmail(%mail) )
 	{
-		&writelog($verworkP."sendmail.log","Successfully Send Mail !\n".$Mail::Sendmail::log."\n"); # �������ļ�У����д����־�ļ�
+		&writelog($verworkP."sendmail.log","Successfully Send Mail !\n".$Mail::Sendmail::log."\n"); # 将所有文件校验结果写入日志文件
 		print "Successfully Send Mail !\n";
 	}
 	else
 	{
-		&writelog($verworkP."sendmail.log","Failed Send Mail !\n".$Mail::Sendmail::error."\n"); # �������ļ�У����д����־�ļ�
+		&writelog($verworkP."sendmail.log","Failed Send Mail !\n".$Mail::Sendmail::error."\n"); # 将所有文件校验结果写入日志文件
 		&printerror(0,"Failed Send Mail !\n");
 	}
 	no Mail::Sendmail;
 }
-# ��ȡ����ű����е�����ģ�� , ����д��BUILDINFO,AllReadme(���������)���ʼ�����
+# 获取参与脚本运行的所有模块 , 用于写入BUILDINFO,AllReadme(如果被调用)和邮件发送
 sub getallmodules
 {
 	# input: allmodules.log
 	# output: @allmodules
-	if ( open (ALL,$verworkP."allmodules.log") ) # ��ȡУ��δͨ��readme����ʱ�ļ�nopassreadme.log
+	if ( open (ALL,$verworkP."allmodules.log") ) # 读取校验未通过readme的临时文件nopassreadme.log
 	{
 		@allmodules = <ALL>;
 		close(ALL);
@@ -1883,7 +1883,7 @@ sub getallmodules
 	}
 }
 # =====================================================================================================================
-# ϵͳ������ú���
+# 系统命令调用函数
 sub command
 {
 	# input: commandkey (update , exe , copy , del , updatecopy , pause), command items
@@ -1910,7 +1910,7 @@ sub command
 		if ( $OS )
 		{
 			if ($item0 eq "d"){
-				system("rm -fr $item1 2>$vererrL"); # �ݹ�ɾ��Ŀ¼�������ļ���Ŀ¼
+				system("rm -fr $item1 2>$vererrL"); # 递归删除目录下所有文件和目录
 			}else{ # if ($item0 eq "f")
 				system("rm -f $item1 2>$vererrL");
 			}
@@ -1918,7 +1918,7 @@ sub command
 		else
 		{
 			if ($item0 eq "d"){
-				system("del /s /f /q $item1 2>>$vererrL"); # �ݹ�ɾ��Ŀ¼�������ļ�
+				system("del /s /f /q $item1 2>>$vererrL"); # 递归删除目录下所有文件
 			}else{ # if ($item0 eq "f")
 				system("del /f /q $item1 2>>$vererrL");
 			}
@@ -1971,7 +1971,7 @@ sub command
 #		    	system("svn log -l 1 --username root --password 'kdckdc' --no-auth-cache $item0  >>$item1 ");
 		    	my $file_mail="tmp.log";
 		    	system("svn log -l 1 -q --username root --password 'kdckdc' --no-auth-cache $item0 >$file_mail");
-		    	open (FILE,$file_mail)or die "can't open tmp.log:$!";  #����־
+		    	open (FILE,$file_mail)or die "can't open tmp.log:$!";  #打开日志
           my @log_mail=<FILE>;
           close (FILE); 
 		    	my @num_mail=split(/\|/,$log_mail[1]);
@@ -2007,7 +2007,7 @@ sub command
 		    	system("svn log -l 1 .>>$item1");
 		    	my $file_mail="tmp.log";
 		    	system("svn log -l 1 -q $item0 >$file_mail");
-		    	open (FILE,$file_mail)or die "can't open tmp.log:$!";  #����־
+		    	open (FILE,$file_mail)or die "can't open tmp.log:$!";  #打开日志
           my @log_mail=<FILE>;
           close (FILE); 
 		    	my @num_mail=split(/\|/,$log_mail[1]);
@@ -2039,14 +2039,14 @@ sub command
 	elsif ( $cmd eq "disreadonly" )
 	{
 		print "Command : $cmd : $item0\n";
-		$item0 = $item0."*"; # ��disreadonly����·�������⴦��
+		$item0 = $item0."*"; # 对disreadonly参数路径的特殊处理
 		if ( $OS )
 		{
-			system("chmod -R 755 $item0 2>$vererrL"); # �ݹ�ȥ��Ŀ¼$item0�������ļ���ֻ������
+			system("chmod -R 755 $item0 2>$vererrL"); # 递归去除目录$item0下所有文件的只读属性
 		}
 		else
 		{
-			system("attrib -R $item0 /s 2>>$vererrL"); # �ݹ�ȥ��Ŀ¼$item0�������ļ���ֻ������
+			system("attrib -R $item0 /s 2>>$vererrL"); # 递归去除目录$item0下所有文件的只读属性
 		}
 	}
 	elsif ( $cmd eq "exe" )
@@ -2055,12 +2055,12 @@ sub command
 		print "Command : $cmd : $mycurrpath$item0 $item1\n";
 		if ( $OS )
 		{
-			system("./$item0 >$item1 2>&1"); # ִ���ļ�$item0 , д����־$item1
+			system("./$item0 >$item1 2>&1"); # 执行文件$item0 , 写入日志$item1
 			system("cat $item1");
 		}
 		else
 		{
-			system("$item0 >$item1 2>>&1"); # ִ���ļ�$item0 , д����־$item1
+			system("$item0 >$item1 2>>&1"); # 执行文件$item0 , 写入日志$item1
 			system("type $item1");
 		}
 		undef($mycurrpath);
@@ -2070,7 +2070,7 @@ sub command
 		print "Command : $cmd : $item1 $item2\n";
 		if ( $OS )
 		{
-			system("mkdir -p $item2 2>$vererrL") if ( !-e $item2 ); # ����linux��������cp��֧���Զ�������Ŀ¼ , ������ж�Ŀ��Ŀ¼�Ƿ���� , Ŀ��Ŀ¼�����ڣ����ȴ�����Ŀ¼
+			system("mkdir -p $item2 2>$vererrL") if ( !-e $item2 ); # 由于linux复制命令cp不支持自动创建父目录 , 因此先判断目标目录是否存在 , 目标目录不存在，则先创建该目录
 			if ($item0 eq "d"){
 				system("cp -fr --preserve=timestamps --dereference $item1 $item2 2>$vererrL");
 			}else{ # if ($item0 eq "f")
@@ -2126,46 +2126,46 @@ sub command
 			system("mkdir $item0 2>$vererrL");
 		}
 	}
-	elsif ( $cmd eq "pause" ) # ��ͣ����
+	elsif ( $cmd eq "pause" ) # 暂停命令
 	{
 		print "Press Enter to continue ...\n";
 		<STDIN>;
 #		`pause`;
 	}
 }
-# ���ڽ�ָ�����ִ���ӡ����Ļ , ������Ϣ��־BUILDERROR�ͱ�����ϢBUILDINFO , ���ṩ��ȷ������Ϣ
+# 用于将指定的字串打印到屏幕 , 错误信息日志BUILDERROR和编译信息BUILDINFO , 并提供正确引导信息
 sub printerror
 {
 	# input: print type , print string , show key
 	# output: none
 	my ($type,$string,$key) = @_;
 	$string = "Error : $module : $place : ".$string if ( $type == 0 );
-	print BUILDERROR $string; # ����ӡ���ִ�д����־ , ��¼ģ���λ��
-	print $string;  # ��ӡ�ִ�����Ļ
+	print BUILDERROR $string; # 将打印的字串写入日志 , 记录模块和位置
+	print $string;  # 打印字串到屏幕
 #	if ( $key ne "" )
 #	{
 #		my @found = &getline(0,"#$key",@demofile);
 #		if ( @found != 0 )
 #		{
-#			print join("\n",@found); # �������ļ���ȡ�Դ�ӡ�ؼ��ֿ�ͷ����ȷ������Ϣ
+#			print join("\n",@found); # 从引导文件读取以打印关键字开头的正确引导信息
 #			print "\n";
 #		}
 #		@found = &getline(0,"# ",@demofile);
 #		if ( @found != 0 )
 #		{
-#			print join("\n",@found); # �������ļ���ȡͨ�õ���ȷ������Ϣ
+#			print join("\n",@found); # 从引导文件读取通用的正确引导信息
 #			print "\n";
 #		}
 #		@found = &getline(0,"$key",@demofile);
 #		if ( @found != 0 )
 #		{
 #			print "Example:\n";
-#			print join("\n",@found); # �������ļ���ȡͨ�õ���ȷ������Ϣ
+#			print join("\n",@found); # 从引导文件读取通用的正确引导信息
 #			print "\n";
 #		}
 #	}
 }
-# ��ָ�����ִ�д��ָ������־
+# 将指定的字串写入指定的日志
 sub writelog
 {
 	# input: log file path , string to write
@@ -2181,7 +2181,7 @@ sub writelog
 		&printerror(0,"Failed Open File '$logfile' !\n");
 	}
 }
-# ��error�ļ�,���������ж��Ƿ񱨴�,֮���ӡ��־�����error�ļ�
+# 读error文件,根据类型判断是否报错,之后打印日志并清除error文件
 sub geterror
 {
 	# input: type(err: return 1 when found "error"; warn: return 1 when found "error" or "warnning"; except: return 0 when found except $string in first line )
@@ -2228,7 +2228,7 @@ sub geterror
 			$result = 1;
 		}
 	}
-	# ���error�ļ�����
+	# 清除error文件内容
 	if ( open (ERROR,">$vererrL") )
 	{
 		close (ERROR);
@@ -2240,7 +2240,7 @@ sub geterror
 	return $result;
 }
 
-# ����ļ�����
+# 清除文件内容
 sub cleanerror
 {
 	# input: none
@@ -2259,11 +2259,11 @@ sub cleanerror
 }
 
 # =====================================================================================================================
-# ����·��Ϊ���ø�ʽ , ���ø�ʽΪ: ����·������$OS����'\'��'/'��β ; �����������Ͳ�ͬȥ����ͷ��'\'��'/' , ����'\\''/'��ͷ
+# 修正路径为可用格式 , 可用格式为: 所有路径根据$OS均以'\'或'/'结尾 ; 根据修正类型不同去掉开头的'\'或'/' , 或以'\\''/'开头
 sub revisepath
 {
-	# input: ��������(1-������ͷ , 0-��������ͷ) , ����·��
-	# output: ���ø�ʽ��·�� : 1-linux����Ϊ'/'��ͷ'/'��β , windows����Ϊ'\\'��ͷ'\'��β ; 0-linux����Ϊ'/'��β , windows����Ϊ'\'��β , ������ͷ
+	# input: 修正类型(1-修正开头 , 0-不修正开头) , 修正路径
+	# output: 可用格式的路径 : 1-linux修正为'/'开头'/'结尾 , windows修正为'\\'开头'\'结尾 ; 0-linux修正为'/'结尾 , windows修正为'\'结尾 , 不处理开头
 	my ($type,$path) = @_;
 	if ( $path =~ /^[\\\/]+$/ )
 	{
@@ -2272,63 +2272,63 @@ sub revisepath
 	else
 	{
 		my (@part,$path1);
-		@part = split(/[\\\/]+/,$path); # �Զ������'\'��'/'������з���������·�� , �����ϵͳ�޹�
-		shift(@part) if ( $part[0] eq "" ); # ���'\'��'/'��ͷ , ��ȥ���з�����ĵ�һ��Ԫ�� , ����������Ԫ��ʱ����ȥ����ͷ��'\'��'/'
+		@part = split(/[\\\/]+/,$path); # 以多个连续'\'或'/'的组合切分需修正的路径 , 与操作系统无关
+		shift(@part) if ( $part[0] eq "" ); # 如果'\'或'/'打头 , 则去掉切分数组的第一个元素 , 在连接数组元素时即可去除开头的'\'或'/'
 #		shift(@part) if ( $path =~ /^[\\\/]+/ );
 		if ( $OS ) # linux
 		{
-			$path1 = join("/",@part); # ��'/'����
-			$path1 = $path1."/" if ( $type != 2 ); # ��������ʱ�Զ�ȥ����β����'/' , ��˼���
-			$path1 = "/".$path1 if (( $type == 1 ) && ( $path =~ /^[\\\/]+/ )); # ����'/'��ͷͬʱ��������Ϊ������ͷ , ����'/'��ͷ
+			$path1 = join("/",@part); # 以'/'连接
+			$path1 = $path1."/" if ( $type != 2 ); # 由于连接时自动去除了尾部的'/' , 因此加上
+			$path1 = "/".$path1 if (( $type == 1 ) && ( $path =~ /^[\\\/]+/ )); # 若以'/'开头同时修正类型为修正开头 , 则以'/'打头
 		}
 		else # windows
 		{
-			$path1 = join("\\",@part); # linux��'\'����
-			$path1 = $path1."\\" if ( $type != 2 ); # ��������ʱ�Զ�ȥ����β����'\' , ��˼���
-			$path1 = "\\\\".$path1 if (( $type == 1 ) && ( $path =~ /^[\\\/]+/ )); # ����'/'��ͷͬʱ��������Ϊ������ͷ , ����'\\'��ͷ��������·��
+			$path1 = join("\\",@part); # linux以'\'连接
+			$path1 = $path1."\\" if ( $type != 2 ); # 由于连接时自动去除了尾部的'\' , 因此加上
+			$path1 = "\\\\".$path1 if (( $type == 1 ) && ( $path =~ /^[\\\/]+/ )); # 若以'/'开头同时修正类型为修正开头 , 则以'\\'打头代表网络路径
 		}
 		return $path1;
 	}
 }
-# ��ָ�������в�����ָ���ؼ��ִ�ͷ��Ԫ��(�ڶ����в���������������)
+# 从指定数组中查找以指定关键字打头的元素(在多行中查找满足条件的行)
 sub getline
 {
-	# input: ��������(0-�Թؼ��ֿ�ͷ 1-�Թؼ��ּ�"="��ͷ) , lines to be find , ���ҹؼ���
+	# input: 查找类型(0-以关键字开头 1-以关键字加"="开头) , lines to be find , 查找关键字
 	# output: lines that beginwith the keyword, ignore blank/tab
 	my ($type,$keyword,@lines) = @_;
 	my ($l,@line);
 	if ( $type == 0 )
 	{
-		@line = grep(/^\s*$keyword\s+/i,@lines); # �Թؼ���+�ո��tab��ͷ
+		@line = grep(/^\s*$keyword\s+/i,@lines); # 以关键字+空格或tab打头
 	}
 	elsif ( $type == 1 )
 	{
-		@line = grep(/^\s*$keyword\s*=/i,@lines); # �����Թؼ��ֺ�"="ǰ��Ŀո��tab
+		@line = grep(/^\s*$keyword\s*=/i,@lines); # 均忽略关键字和"="前后的空格和tab
 	}
 	elsif ( $type == 2 )
 	{
-		@line = grep(/^\s*$keyword.*\s+/i,@lines); # �Թؼ���+�����ַ�+�ո��tab��ͷ
+		@line = grep(/^\s*$keyword.*\s+/i,@lines); # 以关键字+任意字符+空格或tab打头
 	}
 	foreach $l (@line)
 	{
-		$l =~ s/^\s+|\s+$//g ; # ȥ�����ҵ��е���β�ո��tab
+		$l =~ s/^\s+|\s+$//g ; # 去除已找到行的首尾空格和tab
 	}
 	return (@line);
 }
-# ��ָ���ؼ����з��ַ���
+# 以指定关键字切分字符串
 sub getvalue
 {
-	# input: �ָ�� , �����ַ���
-	# output: �ָ�õĸ�����
+	# input: 分割符 , 被切字符串
+	# output: 分割好的各部分
 	my ($separator,$line) = @_;
 	my @value;
 	if ( $separator eq " " )
 	{
-		@value = split(/\s+/,$line); # ���Էָ��ǰ��Ŀո��tab
+		@value = split(/\s+/,$line); # 忽略分割符前后的空格和tab
 	}
 	else
 	{
-		@value = split(/\s*$separator+\s*/i,$line); # ���Էָ��ǰ��Ŀո��tab
+		@value = split(/\s*$separator+\s*/i,$line); # 忽略分割符前后的空格和tab
 	}
 	shift(@value) if ( $value[0] eq "" );
 	return (@value);
@@ -2337,16 +2337,16 @@ sub getvalue
 sub shiftvalue
 {
 	# input: $key , 
-	# output: �ָ�õĸ�����
+	# output: 分割好的各部分
 	my ($value,@array) = @_;
 	my $a;
 	foreach $a (@array)
 	{
-		$a =~ s/^$value\s+//ig; # ȥ����ͷ��ֵ�Ϳո�
+		$a =~ s/^$value\s+//ig; # 去除打头的值和空格
 	}
 	return @array;
 }
-# ��ȡ��ǰ����·��
+# 获取当前工作路径
 sub getcurrpath
 {
 	# get current work dir
@@ -2363,13 +2363,13 @@ sub getcurrpath
 	$curpath = &revisepath(1,$curpath);
 	return $curpath;
 }
-# ��ȡ��������yymmdd
+# 获取当天日期yymmdd
 sub getdate
 {
     my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $time) = localtime();
     return sprintf("%4d%2.2d%2.2d", $year + 1900, $mon + 1, $mday);
 }
-# ��ȡ��������-ʱ��yymmdd-hhmm
+# 获取当天日期-时间yymmdd-hhmm
 sub getdatetime
 {
 	# input: none
@@ -2378,7 +2378,7 @@ sub getdatetime
     return sprintf("%4d%2.2d%2.2d-%2.2d%2.2d", $year + 1900, $mon + 1, $mday,  $hour, $min);
 }
 
-# ��ȡ����ʱ��hhmm
+# 获取当天时间hhmm
 sub get_nowtime
 {
 	# input: none
@@ -2389,11 +2389,11 @@ sub get_nowtime
 
 #----------20150915 add ----
 
-#��ȡwindows�汾�� ���ڴ�������Ŀ¼  20150915 add
+#获取windows版本号 用于创建发布目录  20150915 add
 sub get_win_version
 {
   
-  my $svnRev;#svn�汾��
+  my $svnRev;#svn版本号
   
   chdir $SnapviewP;
   my @svnRev_l=`svn info .`;
@@ -2410,10 +2410,10 @@ sub get_win_version
 sub get_linux_version
 {
 
-  my $svnRev;#svn�汾��
+  my $svnRev;#svn版本号
   	
   chdir $SnapviewP;
-  print "��ǰĿ¼Ϊ��$SnapviewP\n";
+  print "当前目录为：$SnapviewP\n";
  
   my @svnRev_l=`/usr/local/svn/bin/svn info . --username root --password kdckdc`;
 

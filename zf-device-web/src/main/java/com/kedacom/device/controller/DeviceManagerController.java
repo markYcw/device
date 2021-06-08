@@ -86,7 +86,7 @@ public class DeviceManagerController {
         return BaseResult.succeed(umsSubDeviceInfoQueryResponseDtoList);
     }
 
-    @ApiOperation("根据国标id查询子设备信息")
+    @ApiOperation("根据国标id查询设备信息")
     @PostMapping("/selectUmsSubDeviceByGbIds")
     public BaseResult<List<UmsSubDeviceInfoQueryResponseDto>> selectUmsSubDeviceByGbIds(@RequestBody UmsSubDeviceInfoQueryByGbIdsRequestDto requestDto) {
 

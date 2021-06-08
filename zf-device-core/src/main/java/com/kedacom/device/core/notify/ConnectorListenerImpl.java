@@ -62,17 +62,16 @@ public class ConnectorListenerImpl implements ConnectorListener {
             List<DeviceInfoEntity> afterLoginList = deviceMapper.selectList(queryWrapper);
             if (CollectionUtil.isNotEmpty(afterLoginList)) {
                 log.info("连接事件监听status---已连接,设备同步:{}", afterLoginList);
-                for (DeviceInfoEntity deviceInfoEntity : afterLoginList) {
-                    UmsDeviceInfoSyncRequestDto request = new UmsDeviceInfoSyncRequestDto();
-                    request.setUmsId(deviceInfoEntity.getId());
-                    ThreadPoolUtil.getInstance().submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            deviceManagerService.syncDeviceData(request);
-                        }
-                    });
-
-                }
+                // 只获取第一条平台信息，同步设备
+                DeviceInfoEntity deviceInfoEntity = afterLoginList.get(0);
+                UmsDeviceInfoSyncRequestDto request = new UmsDeviceInfoSyncRequestDto();
+                request.setUmsId(deviceInfoEntity.getId());
+                ThreadPoolUtil.getInstance().submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        deviceManagerService.syncDeviceData(request);
+                    }
+                });
             }
 
         } catch (KMTimeoutException e) {

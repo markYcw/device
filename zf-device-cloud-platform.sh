@@ -11,7 +11,7 @@ fi
 cp ./zf-device-cloud-platform.txt $dir
 sleep 1
 
-if [ ! -d ./10-common/version/release/linux/zf-device-cloud-platform];then
+if [ ! -d ./10-common/version/release/linux/zf-device-cloud-platform ];then
   mkdir -p ./10-common/version/release/linux/zf-device-cloud-platform
 else
   echo ./10-common/version/release/linux/zf-device-cloud-platform exist

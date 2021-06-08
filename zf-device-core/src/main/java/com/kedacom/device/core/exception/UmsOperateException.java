@@ -1,16 +1,30 @@
 package com.kedacom.device.core.exception;
 
+import com.kedacom.device.common.exception.OperatorException;
+
 /**
  * @author wangxy
  * @describe
  * @date 2021/5/13
  */
-public class UmsOperateException extends RuntimeException {
+public class UmsOperateException extends OperatorException {
 
-    private static final long serialVersionUID = -6412736870101571069L;
+    private Integer code;
 
-    public UmsOperateException(String message) {
-        super(message);
+    private String message;
+
+    public Integer getCode() {
+        return code;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
+    public UmsOperateException(Integer code, String message) {
+        this.message = message;
+        this.code = code;
     }
 
 }

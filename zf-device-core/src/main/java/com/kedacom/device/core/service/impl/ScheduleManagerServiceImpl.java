@@ -1,16 +1,19 @@
 package com.kedacom.device.core.service.impl;
 
+import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.UmsSubDeviceConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.exception.UmsOperateException;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.service.ScheduleManagerService;
+import com.kedacom.device.core.utils.HandleResponseUtil;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.*;
 import com.kedacom.device.ums.response.*;
 import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -31,6 +34,9 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
     @Resource
     DeviceMapper deviceMapper;
 
+    @Resource
+    HandleResponseUtil handleResponseUtil;
+
     @Override
     public UmsScheduleGroupCreateResponseDto createScheduleGroup(UmsScheduleGroupCreateRequestDto request) {
 
@@ -42,10 +48,8 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         createRequest.setSsid(Integer.valueOf(sessionId));
         createRequest.setMembers(request.getMembers());
         CreateResponse response = umsClient.creategroup(createRequest);
-        if (response.acquireErrcode() != 0) {
-            log.error("创建调度组失败");
-            throw new UmsOperateException("创建调度组失败");
-        }
+        String errCode = "创建调度组失败, {}, {}, {}";
+        handleResponseUtil.handleOperateRes(errCode, DeviceErrorEnum.SCHEDULE_CREATE_FAILED, response);
 
         return response.acquireData(UmsScheduleGroupCreateResponseDto.class);
     }
@@ -63,7 +67,7 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         DeleteResponse response = umsClient.deletegroup(deleteRequest);
         if (response.acquireErrcode() != 0) {
             log.error("删除调度组失败");
-            throw new UmsOperateException("删除调度组失败");
+            throw new UmsOperateException(null, "删除调度组失败");
         }
 
         return true;
@@ -79,10 +83,8 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         AddMembersRequest addMembersRequest = UmsSubDeviceConvert.INSTANCE.convertAddMembersRequest(request);
         addMembersRequest.setSsid(Integer.valueOf(sessionId));
         AddMembersResponse response = umsClient.addgroupmember(addMembersRequest);
-        if (response.acquireErrcode() != 0) {
-            log.error("添加调度组成员设备失败");
-            throw new UmsOperateException("添加调度组成员设备失败");
-        }
+        String errCode = "添加调度组成员设备失败, {}, {}, {}";
+        handleResponseUtil.handleOperateRes(errCode, DeviceErrorEnum.SCHEDULE_ADD_DEVICE_FAILED, response);
 
         return true;
     }
@@ -99,10 +101,8 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         deleteMembersRequest.setDeviceID(request.getDeviceID());
         deleteMembersRequest.setGroupID(request.getGroupID());
         DeleteMembersResponse response = umsClient.deletegroupmember(deleteMembersRequest);
-        if (response.acquireErrcode() != 0) {
-            log.error("删除调度组成员设备失败");
-            throw new UmsOperateException("删除调度组成员设备失败");
-        }
+        String errCode = "删除调度组成员设备失败， {}, {}, {}";
+        handleResponseUtil.handleOperateRes(errCode, DeviceErrorEnum.SCHEDULE_DELETE_DEVICE_FAILED, response);
 
         return true;
     }
@@ -119,7 +119,7 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         QueryScheduleGroupResponse response = umsClient.querygroup(queryScheduleGroupRequest);
         if (response.acquireErrcode() != 0) {
             log.error("查询调度组失败");
-            throw new UmsOperateException("查询调度组失败");
+            throw new UmsOperateException(null, "查询调度组失败");
         }
 
         return response.getGroups();
@@ -129,9 +129,19 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
     public Boolean queryScheduleGroupStatus(UmsScheduleGroupQueryStatusRequestVo request) {
 
         log.info("查询调度组状态入参:{}", request);
+        String umsId = request.getUmsId();
+        DeviceInfoEntity entity = deviceMapper.selectById(umsId);
+        String sessionId = entity.getSessionId();
+        ScheduleGroupStatusRequest scheduleGroupStatusRequest = new ScheduleGroupStatusRequest();
+        scheduleGroupStatusRequest.setSsid(Integer.valueOf(sessionId));
+        scheduleGroupStatusRequest.setGroupID(request.getGroupId());
+        ScheduleGroupStatusResponse response = umsClient.getgroupstatus(scheduleGroupStatusRequest);
+        if (response.acquireErrcode() != 0) {
+            log.error("查询调度组状态失败");
+            throw new UmsOperateException(null, "查询调度组状态失败");
+        }
 
-
-        return null;
+        return true;
     }
 
     @Override
@@ -146,7 +156,7 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         SetSilenceResponse response = umsClient.setgroupsilence(setSilenceRequest);
         if (response.acquireErrcode() != 0) {
             log.error("设置调度组静音失败");
-            throw new UmsOperateException("设置调度组静音失败");
+            throw new UmsOperateException(null, "设置调度组静音失败");
         }
 
         return true;
@@ -166,7 +176,7 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         QuerySilenceResponse response = umsClient.querygroupsilence(querySilenceRequest);
         if (response.acquireErrcode() != 0) {
             log.error("查询调度组静音失败");
-            throw new UmsOperateException("查询调度组静音失败");
+            throw new UmsOperateException(null, "查询调度组静音失败");
         }
 
         return response.acquireData(UmsScheduleGroupQuerySilenceResponseDto.class);
@@ -184,7 +194,7 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         SetMuteResponse response = umsClient.setgroupmute(setMuteRequest);
         if (response.acquireErrcode() != 0) {
             log.error("设置调度组哑音失败");
-            throw new UmsOperateException("设置调度组哑音失败");
+            throw new UmsOperateException(null, "设置调度组哑音失败");
         }
 
         return true;
@@ -204,7 +214,7 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         QueryMuteResponse response = umsClient.querygroupmute(queryMuteRequest);
         if (response.acquireErrcode() != 0) {
             log.error("查询调度组哑音失败");
-            throw new UmsOperateException("查询调度组哑音失败");
+            throw new UmsOperateException(null, "查询调度组哑音失败");
         }
 
         return response.acquireData(UmsScheduleGroupQueryMuteResponseDto.class);
@@ -220,10 +230,8 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         PtzControlRequest ptzControlRequest = UmsSubDeviceConvert.INSTANCE.convertPtzControlRequest(request);
         ptzControlRequest.setSsid(Integer.valueOf(sessionId));
         PtzControlResponse response = umsClient.groupptz(ptzControlRequest);
-        if (response.acquireErrcode() != 0) {
-            log.error("调度组PTZ控制失败");
-            throw new UmsOperateException("调度组PTZ控制失败");
-        }
+        String errCode = "调度组PTZ控制失败";
+        handleResponseUtil.handleOperateRes(errCode, DeviceErrorEnum.SCHEDULE_PTZ_CONTROLLER, response);
 
         return true;
     }
@@ -240,7 +248,7 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         StartVmpMixResponse response = umsClient.startvmpmix(startVmpMixRequest);
         if (response.acquireErrcode() !=0) {
             log.error("开始画面合成失败");
-            throw new UmsOperateException("开始画面合成失败");
+            throw new UmsOperateException(null, "开始画面合成失败");
         }
 
         return response.getVmpMixID();
@@ -258,7 +266,7 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         UpdateVmpMixResponse response = umsClient.updatevmpmix(updateVmpMixRequest);
         if (response.acquireErrcode() != 0) {
             log.error("更新画面合成失败");
-            throw new UmsOperateException("更新画面合成失败");
+            throw new UmsOperateException(null, "更新画面合成失败");
         }
 
         return true;
@@ -275,7 +283,7 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         StopVmpMixResponse response = umsClient.stopvmpmix(stopVmpMixRequest);
         if (response.acquireErrcode() != 0) {
             log.error("停止画面合成失败");
-            throw new UmsOperateException("停止画面合成失败");
+            throw new UmsOperateException(null, "停止画面合成失败");
         }
 
         return true;
@@ -293,7 +301,7 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         QueryVmpMixResponse response = umsClient.queryvmpmix(queryVmpMixRequest);
         if (response.acquireErrcode() != 0) {
             log.error("查询画面合成失败");
-            throw new UmsOperateException("查询画面合成失败");
+            throw new UmsOperateException(null, "查询画面合成失败");
         }
 
         return response.acquireData(UmsScheduleGroupQueryVmpMixResponseDto.class);
@@ -313,7 +321,7 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         CallUpResponse response = umsClient.callmember(callUpRequest);
         if (response.acquireErrcode() != 0) {
             log.error("呼叫设备上线失败");
-            throw new UmsOperateException("呼叫设备上线失败");
+            throw new UmsOperateException(null, "呼叫设备上线失败");
         }
 
         return true;
@@ -333,10 +341,8 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         broadcastRequest.setBroadcast(members);
         broadcastRequest.setGroupID(groupId);
         SetBroadcastResponse response = umsClient.setbroadcast(broadcastRequest);
-        if (response.acquireErrcode() != 0) {
-            log.error("设置调度组广播源失败");
-            throw new UmsOperateException("设置调度组广播源失败");
-        }
+        String errCode = "设置调度组广播源失败, {}, {}, {}";
+        handleResponseUtil.handleOperateRes(errCode, DeviceErrorEnum.SCHEDULE_SET_BROADCAST_FAILED, response);
 
         return true;
     }
@@ -353,7 +359,7 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         CancelBroadcastResponse response = umsClient.cancelbroadcast(broadcastRequest);
         if (response.acquireErrcode() != 0) {
             log.error("取消调度组广播源失败");
-            throw new UmsOperateException("取消调度组广播源失败");
+            throw new UmsOperateException(null, "取消调度组广播源失败");
         }
 
         return true;
@@ -372,7 +378,7 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         QueryBroadcastResponse response = umsClient.querybroadcast(broadcastRequest);
         if (response.acquireErrcode() != 0) {
             log.error("查询调度组广播源失败");
-            throw new UmsOperateException("查询调度组广播源失败");
+            throw new UmsOperateException(null, "查询调度组广播源失败");
         }
 
         return response.acquireData(UmsScheduleGroupQueryBroadcastResponseDto.class);
@@ -389,10 +395,8 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         SetMediaRequest request = UmsSubDeviceConvert.INSTANCE.convertSetMediaRequest(mediaInfo);
         request.setSsid(Integer.valueOf(sessionId));
         SetMediaResponse response = umsClient.setscheduling(request);
-        if (response.acquireErrcode() != 0) {
-            log.error("设置调度组成员媒体源失败");
-            throw new UmsOperateException("设置调度组成员媒体源失败");
-        }
+        String errCode = "设置调度组成员媒体源失败";
+        handleResponseUtil.handleOperateRes(errCode, DeviceErrorEnum.SCHEDULE_SET_MEDIA_FAILED, response);
 
         return true;
     }
@@ -411,7 +415,7 @@ public class ScheduleManagerServiceImpl implements ScheduleManagerService {
         QueryMediaResponse response = umsClient.queryscheduling(request);
         if (response.acquireErrcode() != 0) {
             log.error("查询调度组成员媒体源信息失败");
-            throw new UmsOperateException("查询调度组成员媒体源信息失败");
+            throw new UmsOperateException(null, "查询调度组成员媒体源信息失败");
         }
         log.info("查询调度组成员媒体源返回参数:{}", response);
 

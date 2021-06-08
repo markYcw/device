@@ -1,10 +1,12 @@
 package com.kedacom.device.core.service.impl;
 
+import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.UmsSubDeviceConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.exception.UmsOperateException;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.service.DiscussionManagerService;
+import com.kedacom.device.core.utils.HandleResponseUtil;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.ClearDiscussionGroupRequest;
 import com.kedacom.device.ums.request.JoinDiscussionGroupRequest;
@@ -40,6 +42,9 @@ public class DiscussionManagerServiceImpl implements DiscussionManagerService {
     @Resource
     DeviceMapper deviceMapper;
 
+    @Resource
+    HandleResponseUtil handleResponseUtil;
+
     @Override
     public List<String> joinScheduleGroupDiscussionGroup(UmsScheduleGroupJoinDiscussionGroupRequestDto request) {
 
@@ -52,7 +57,7 @@ public class DiscussionManagerServiceImpl implements DiscussionManagerService {
         JoinDiscussionGroupResponse response = umsClient.joindiscussion(joinDiscussionGroupRequest);
         if (response.acquireErrcode() != 0) {
             log.error("加入讨论组失败");
-            throw new UmsOperateException("加入讨论组失败");
+            throw new UmsOperateException(null, "加入讨论组失败");
         }
 
         return response.getDeviceIDs();
@@ -72,7 +77,7 @@ public class DiscussionManagerServiceImpl implements DiscussionManagerService {
         QuitDiscussionGroupResponse response = umsClient.quitdiscussion(quitDiscussionGroupRequest);
         if (response.acquireErrcode() != 0) {
             log.error("退出讨论组失败");
-            throw new UmsOperateException("退出讨论组失败");
+            throw new UmsOperateException(null, "退出讨论组失败");
         }
 
         return true;
@@ -88,10 +93,8 @@ public class DiscussionManagerServiceImpl implements DiscussionManagerService {
         QueryDiscussionGroupRequest queryDiscussionGroupRequest = new QueryDiscussionGroupRequest();
         queryDiscussionGroupRequest.setSsid(Integer.valueOf(sessionId));
         QueryDiscussionGroupResponse response = umsClient.querydiscussion(queryDiscussionGroupRequest);
-        if (response.acquireErrcode() != 0) {
-            log.error("查询讨论组失败");
-            throw new UmsOperateException("查询讨论组失败");
-        }
+        String errCode = "讨论组成员设备为空";
+        handleResponseUtil.handleOperateRes(errCode, DeviceErrorEnum.SCHEDULE_DISCUSSION_DEVICE_FAILED, response);
 
         return response.getMembers();
     }
@@ -109,7 +112,7 @@ public class DiscussionManagerServiceImpl implements DiscussionManagerService {
         ClearDiscussionGroupResponse response = umsClient.cleardiscussion(clearDiscussionGroupRequest);
         if (response.acquireErrcode() != 0) {
             log.error("清空讨论组失败");
-            throw new UmsOperateException("清空讨论组失败");
+            throw new UmsOperateException(null, "清空讨论组失败");
         }
 
         return true;

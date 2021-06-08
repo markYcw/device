@@ -208,4 +208,11 @@ public interface UmsClient {
      */
     CreateResponse creategroup(CreateRequest request);
 
+    /**
+     * 主动获取调度组状态通知
+     * @param request
+     * @return
+     */
+    ScheduleGroupStatusResponse getgroupstatus(ScheduleGroupStatusRequest request);
+
 }

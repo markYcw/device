@@ -2,6 +2,7 @@ package com.kedacom.device.core.utils;
 
 import cn.hutool.core.util.StrUtil;
 import com.kedacom.core.pojo.BaseResponse;
+import com.kedacom.device.common.exception.OperatorException;
 import com.kedacom.device.core.config.AvIntegrationErrCode;
 import com.kedacom.device.core.config.KmErrCode;
 import com.kedacom.device.core.constant.DeviceConstants;
@@ -9,6 +10,7 @@ import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.exception.MspException;
 import com.kedacom.device.core.exception.StreamMediaException;
 import com.kedacom.device.core.exception.UmsNotifyException;
+import com.kedacom.device.core.exception.UmsOperateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -70,14 +72,14 @@ public class HandleResponseUtil {
     }
 
     /**
-     * 处理ums设备管理异常
+     * 处理ums通知异常
      *
      * @param str
      * @param errorEnum
      * @param res
      */
-    public void handleUMSManagerRes(String str, DeviceErrorEnum errorEnum, BaseResponse res) {
-        if (res.acquireErrcode() != DeviceConstants.SUCCESS) {
+    public void handleUMSNotifyRes(String str, DeviceErrorEnum errorEnum, BaseResponse res) {
+        if (!res.acquireErrcode().equals(DeviceConstants.SUCCESS)) {
             if (StrUtil.isNotBlank(kmErrCode.matchErrMsg(res.acquireErrcode()))) {
                 log.error(str, res.acquireErrcode(), errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
                 throw new UmsNotifyException(errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
@@ -89,20 +91,19 @@ public class HandleResponseUtil {
     }
 
     /**
-     * 处理ums通知异常
-     *
+     * 处理 融合调度 异常
      * @param str
      * @param errorEnum
      * @param res
      */
-    public void handleUMSNotifyRes(String str, DeviceErrorEnum errorEnum, BaseResponse res) {
-        if (res.acquireErrcode() != DeviceConstants.SUCCESS) {
+    public void handleOperateRes(String str, DeviceErrorEnum errorEnum, BaseResponse res) {
+        if (!res.acquireErrcode().equals(DeviceConstants.SUCCESS)) {
             if (StrUtil.isNotBlank(kmErrCode.matchErrMsg(res.acquireErrcode()))) {
                 log.error(str, res.acquireErrcode(), errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
-                throw new UmsNotifyException(errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
+                throw new UmsOperateException(errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
             } else {
                 log.error(str, res.acquireErrcode(), errorEnum.getCode(), errorEnum.getMsg());
-                throw new UmsNotifyException(errorEnum.getCode(), errorEnum.getMsg());
+                throw new UmsOperateException(errorEnum.getCode(), errorEnum.getMsg());
             }
         }
     }

@@ -1,4 +1,4 @@
-#！/bin/bash
+#!/bin/bash
 mvn clean package -Dmaven.test.skip=true > ./zf-device-cloud-platform.txt
 dir=./10-common/version/compileinfo
 if [ ! -d  $dir ];then

@@ -1,610 +1,85 @@
-#!usr/bin/perl
-#
-# Perl Source File -- Created with SAPIEN Technologies PrimalScript 3.1
-#
-# NAME: module build process
-#
-# AUTHOR: chenhuiren , xuping ,pengjing
-# DATE  : 
-#
-# PURPOSE: 
-#
-# =====================================================================================================================
+# 请以关键字加空格打头标识编译环境变量，关键字不区分大小写
+# 变量赋值请用等号"="，等号两边支持空格
+# PATH,LIB,INCLUDE请以";"结尾，其他变量不需要
 
-#add   by  fangyanzhi  :   begin
-use  File::Copy;
-use  Cwd;
-use   Encode;
-my  $CUR_OS=$^O;
-#use  File::Find;
-$TOP_DIR=getcwd;
-chomp($TOP_DIR);
+# 设置本项目默认环境变量列表(多个关键字请以","隔开)
+DEFENV WINDOWS = VC6,ETI,Tornado,InstallShield12
+DEFENV LINUX = PPC,PPC_82,ARM,EQT,DAVINCI,SVN
 
-			if ( -e  nopass.html )
-				{
-				unlink nopass.html;
-				&command("del","f","nopass.html");
-				}
+SVN PATH = /usr/local/svn/bin:/usr/local/bin/:/usr/local/erlang/bin:/opt/CodeSourcery/Sourcery_G++_Lite/bin/:/usr/java/jdk1.7.0_67/:/usr/java/jdk1.7.0_67/bin/:/usr/java/jdk1.7.0_67/lib/dt.jar:/usr/java/jdk1.7.0_67/lib/tools.jar:/opt/apache-maven-3.2.3/bin/:/opt/apache-ant-1.9.4/bin/:/usr/java/jdk1.7.0_67/include/:/usr/java/jdk1.7.0_67/jre/lib/i386/client/
 
-# add   by  fangyanzhi  : end
+# 设置CLEARCASE环境变量
+#CLEARCASE CLEARCASE_GROUPS = Domain Users;m_cbb;m_video;m_audio;m_opt;m_mediactrl;m_imageunit;m_vidcomlib;m_vidmanage;m_vidtest;m_vidunit;m_media_codecs;m_h263enc_v300;m_h264enc_v500;m_h264enc_v501;m_h264enc_v600;m_h264dec_v600;m_h264dec_v700;m_mpeg4dec_v500;m_h263enc_opt_v300;m_h264enc_opt_v600;m_h264dec_opt_v700;m_mpeg4dec_opt_v500;m_codec_wrapper;m_imagelib;m_jpegdec
 
-print "\n=======================================================================\n";
-print "\n                            INT BUILD START                            \n";
-print "\n=======================================================================\n";
-# 校验脚本输入参数
-$place = "Validate_Script_Para";
-print "\n$module - $place......\n";
-# def 3
-for ( my $i = 0 ; $i < @ARGV; $i++ )
-{
-	if ( $ARGV[$i] =~ /^-/ ) # "-"标识options
-	{
-		if ( $intoptions eq "" )
-		{
-			$intoptions = $ARGV[$i];
-			$intoptions =~ s/^-//g; # 去除参数标识符'-'之后进行处理
-			if ( $intoptions eq "" )
-			{
-				print "Invalid Option '$ARGV[$i]' !\n";
-				exit 1; # 处理后的关键字仍然为空则退出整个程序
-			}
-			$intoptions = lc($intoptions); # 将参数转化为小写
-			if (( $intoptions ne "a" ) && ( $intoptions ne "s" ))
-			{
-				print "Invalid Option '$ARGV[$i]' !\n";
-				exit 1; # 处理后的关键字仍然为空则退出整个程序
-			}
-		}
-		else
-		{
-			print "ReDefine Options '$ARGV[$i]' after '$intoptions' !\n";
-			exit 1; # 参数数量不正确则退出整个程序
-		}
-	}
-	elsif ( $version eq "" ) # 第一个参数为版本号
-	{
-		$version = $ARGV[$i];
-	}
-	elsif (( $intspecRP eq "" ) && ( $ARGV[$i] =~ /^[\\\/]+/ )) # 第三个参数为指定发布路径
-	{
-		$intspecRP = $ARGV[$i];
-	}
-	else
-	{
-		print "Redundant ARGVmeters '$ARGV[$i]' !\n";
-		exit 1; # 参数数量不正确则退出整个程序
-	}
-}
-undef($i);
-if ( $version eq "" )
-{
-	print "Lost 'Version' ARGVmeters in '@ARGV' !\n";
-	exit 1; # 缺少关键参数
-}
-if (( $intoptions eq "a" ) && ( $intspecRP ne "" ))
-{
-	print "Not Match options '$intoptions' and specRP '$intspecRP' in '@ARGV' !\n";
-	exit 1; # 缺少关键参数
-}
-require ("common.pl");
+# 设置Linux CLEARCASE环境变量
+LinuxCC PATH = /opt/rational/clearcase/bin:/opt/rational/clearcase/etc
+
+# 设置PPC环境变量
+PPC PATH = /opt/ppc/bin
+
+# 设置PPC_82环境变量
+PPC_82 PATH = /opt/ppc_nofpu/bin
+
+# 设置ARM环境变量
+ARM PATH=/opt/arm/bin
+
+# 设置EQT环境变量
+EQT PATH=/usr/local/Equator/v6.1/tools/i686_Linux/bin
+
+# 设置DAVINCI环境变量
+DAVINCI PATH=/opt/montavista/pro/devkit/arm/v5t_le/bin
+
+# 设置VC6环境变量
+VC6 PATH = C:\PROGRA~1\MICROS~4\Common\msdev98\BIN;C:\PROGRA~1\MICROS~4\VC98\BIN;C:\PROGRA~1\MICROS~4\Common\TOOLS\WINNT;C:\PROGRA~1\MICROS~4\Common\TOOLS;
+VC6 INCLUDE = C:\PROGRA~1\MICROS~4\VC98\ATL\INCLUDE;C:\PROGRA~1\MICROS~4\VC98\INCLUDE;C:\PROGRA~1\MICROS~4\VC98\MFC\INCLUDE;
+VC6 LIB = C:\PROGRA~1\MICROS~4\VC98\LIB;C:\PROGRA~1\MICROS~4\VC98\MFC\LIB;
+#VC6 VSCommonDir=C:\PROGRA~1\MICROS~4\Common
+VC6 MSDevDir=C:\PROGRA~1\MICROS~4\Common\msdev98
+VC6 MSVCDir=C:\PROGRA~1\MICROS~4\VC98
 
 
+# 设置VC2005环境变量
+VC2005 VSINSTALLDIR = C:\Program Files\Microsoft Visual Studio 8
+VC2005 VCINSTALLDIR = C:\Program Files\Microsoft Visual Studio 8\VC
+VC2005 FrameworkDir = C:\WINNT\Microsoft.NET\Framework
+VC2005 FrameworkVersion = v2.0.50727
+VC2005 FrameworkSDKDir = C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0
+VC2005 DevEnvDir = C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
+VC2005 PATH = C:\Program Files\Microsoft Visual Studio 8\Common7\IDE;C:\Program Files\Microsoft Visual Studio 8\VC\BIN;C:\Program Files\Microsoft Visual Studio 8\Common7\Tools;C:\Program Files\Microsoft Visual Studio 8\Common7\Tools\bin;C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\bin;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\bin;C:\WINNT\Microsoft.NET\Framework\v2.0.50727;C:\Program Files\Microsoft Visual Studio 8\VC\VCPackages;
+VC2005 INCLUDE = C:\Program Files\Microsoft Visual Studio 8\VC\ATLMFC\INCLUDE;C:\Program Files\Microsoft Visual Studio 8\VC\INCLUDE;C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\include;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\include;
+VC2005 LIB = C:\Program Files\Microsoft Visual Studio 8\VC\ATLMFC\LIB;C:\Program Files\Microsoft Visual Studio 8\VC\LIB;C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\lib;
+VC2005 LIBPATH = C:\WINNT\Microsoft.NET\Framework\v2.0.50727;C:\Program Files\Microsoft Visual Studio 8\VC\ATLMFC\LIB
 
+# 设置iMediaTools环境变量
+ETI EQUATOR_ROOT = C:\eti_tools
+ETI ETI_TOOLKIT = C:\eti_tools
+ETI PATH = C:\eti_tools;
 
+# 设置CCS3.3环境变量
+CCS3.3 PATH=C:\CCStudio_v3.3\bin;C:\CCStudio_v3.3\cc\bin;C:\CCStudio_v3.3\c6000\cgtools\bin;C:\CCStudio_v3.3\c6000\evm6x\bin;C:\CCStudio_v3.3\c5400\cgtools\bin;C:\CCStudio_v3.3\c5500\cgtools\bin;C:\CCStudio_v3.3\TMS470\cgtools\bin;C:\CCStudio_v3.3\plugins\bios;C:\CCStudio_v3.3\bios_5_32_01\xdctools;
+CCS3.3 C54X_C_DIR=C:\CCStudio_v3.3\bios_5_32_01\packages\ti\bios\include;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\bios\lib;C:\CCStudio_v3.3\c5400\xdais\include;C:\CCStudio_v3.3\c5500\xdais\lib;C:\CCStudio_v3.3\c5400\cgtools\include;C:\CCStudio_v3.3\c5400\cgtools\lib;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\rtdx\include\c5400;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\rtdx\lib\c5400;
+CCS3.3 C54X_A_DIR=C:\CCStudio_v3.3\bios_5_32_01\packages\ti\bios\include;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\bios\lib;C:\CCStudio_v3.3\c5400\dsk5416\include;C:\CCStudio_v3.3\c5400\dsk5416\lib;C:\CCStudio_v3.3\c5400\xdais\include;C:\CCStudio_v3.3\c5500\xdais\lib;C:\CCStudio_v3.3\c5400\cgtools\include;C:\CCStudio_v3.3\c5400\cgtools\lib;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\rtdx\include\c5400;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\rtdx\lib\c5400;
+CCS3.3 BSL5416_DIR=C:\CCStudio_v3.3\c5400\dsk5416\lib
+CCS3.3 TI_DIR=C:\CCStudio_v3.3
+CCS3.3 C55X_A_DIR=C:\CCStudio_v3.3\c5500\xdais\include;C:\CCStudio_v3.3\c5500\xdais\lib;C:\CCStudio_v3.3\c5500\cgtools\include;C:\CCStudio_v3.3\c5500\cgtools\lib;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\bios\include;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\bios\lib;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\rtdx\include\c5500;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\rtdx\lib\c5500;
+CCS3.3 C55X_C_DIR=C:\CCStudio_v3.3\c5500\xdais\include;C:\CCStudio_v3.3\c5500\xdais\lib;C:\CCStudio_v3.3\c5500\cgtools\include;C:\CCStudio_v3.3\c5500\cgtools\lib;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\bios\include;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\bios\lib;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\rtdx\include\c5500;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\rtdx\libc5500;
+CCS3.3 C55X_CONFIG_FILE=C:\CCStudio_v3.3\cc\bin\c55xx.cfg
+CCS3.3 TMS470_C_DIR=C:\CCStudio_v3.3\TMS470\cgtools\include;C:\CCStudio_v3.3\TMS470\cgtools\lib;C:\CCStudio_v3.3\TMS470\rtdx\include;C:\CCStudio_v3.3\TMS470\rtdx\lib;
+CCS3.3 TMS470_A_DIR=C:\CCStudio_v3.3\TMS470\cgtools\include;C:\CCStudio_v3.3\TMS470\cgtools\lib;C:\CCStudio_v3.3\TMS470\rtdx\include;C:\CCStudio_v3.3\TMS470\rtdx\lib;
+CCS3.3 C6X_C_DIR=C:\CCStudio_v3.3\bios_5_32_01\packages\ti\bios\include;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\bios\lib;C:\CCStudio_v3.3\c6000\xdais\include;C:\CCStudio_v3.3\c6000\xdais\lib;C:\CCStudio_v3.3\c6000\cgtools\include;C:\CCStudio_v3.3\c6000\cgtools\lib;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\rtdx\lib\c6000;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\rtdx\include\c6000;C:\CCStudio_v3.3\c6000\dsk6416\include;C:\CCStudio_v3.3\c6000\dsk6416\lib;C:\CCStudio_v3.3\c6000\dsk6713\include;C:\CCStudio_v3.3\c6000\dsk6713\lib;
+CCS3.3 C6X_A_DIR=C:\CCStudio_v3.3\bios_5_32_01\packages\ti\bios\include;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\bios\lib;C:\CCStudio_v3.3\c6000\xdais\include;C:\CCStudio_v3.3\c6000\xdais\lib;C:\CCStudio_v3.3\c6000\cgtools\include;C:\CCStudio_v3.3\c6000\cgtools\lib;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\rtdx\lib\c6000;C:\CCStudio_v3.3\bios_5_32_01\packages\ti\rtdx\include\c6000;C:\CCStudio_v3.3\c6000\dsk6416\include;C:\CCStudio_v3.3\c6000\dsk6416\lib;C:\CCStudio_v3.3\c6000\dsk6713\include;C:\CCStudio_v3.3\c6000\dsk6713\lib;
+CCS3.3 D_SRC=C:\CCStudio_v3.3\c6000\evm6x\lib
+CCS3.3 BSL6416_DIR=C:\CCStudio_v3.3\c6000\dsk6416\lib
+CCS3.3 BSL6713_DIR=C:\CCStudio_v3.3\c6000\dsk6713\lib
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+# 设置CCS3.2环境变量
 
-# =====================================================================================================================
-# 获取模块列表
-$place = "Get_Module_List";
-print "\n$module - $place......\n";
-if ( !open (MODULES,$workpath."$version.ini") )
-{
-	&printerror(0,"Failed Open File '$workpath$version".".ini' !\n");
-	&command("pause");
-	exit 1;
-}
-@modulefile = <MODULES>;
-close(MODULES);
-chomp(@modulefile);
-if ( $OS )
-{
-	@modulelines = &getline(2,"l",@modulefile);
-}
-else
-{
-	@modulelines = &getline(2,"w",@modulefile);
-}
-undef(@modulefile);
-if ( @modulelines == 0 )
-{
-	&printerror(0,"Failed Found Modules Group in '$workpath$version".".ini' !\n");
-	&command("pause");
-	exit 1; # 找不到版本编译模块则退出整个程序
-}
-# def 3
-foreach $moduleline (@modulelines)
-{
-	my @part = &getvalue(" ",$moduleline); # 0操作系统 1小组负责人邮件 2环境关键字列表 3模块列表
-	if ( @part < 4 )
-	{
-		&printerror(0,"Wrong Format in '$moduleline' !\n");
-		&command("pause");
-		exit 1; # 模块列表格式错误则退出整个程序
-	}
-	$part[1] = $CMOM if ( $part[1] =~ /^-*$/ );
-	$part[2] = $defenv if ( $part[2] =~ /^-*$/ );
-	push(@groupowner,$part[1]);
-	push(@envkeylist,$part[2]);
-	push(@modulelist,$part[3]);
-}
-undef($moduleline);
-undef(@part);
-undef(@modulelines);
-# 将全部模块写入allmodules.log文件
-for ( my $i = 0 ; $i < @modulelist ; $i++ )
-{
-	my @part = &getvalue(",",$modulelist[$i]);
-	&writelog($verworkP."allmodules.log","@part"." ");
-}
-undef(@part);
-undef($i);
-# =====================================================================================================================
-if ( $OS && $ISM )
-{
-	&printerror(1,"Linux SourceCode is mounted , Skip Mkbl Setcs and Update View !\n");
-}
-else
-{
-	########hanjian 20140612#########################
-	##here  update  code
-	#用 for循环?
-	#################################################
-	# 获取基线 , 更新源码
-	$place = "Access_SnapshotView_Path";
-	print "\n$module - $place......\n";
-	
-	# 视图同步和更新源码之前 , Windows操作系统上需要设置环境变量
-	if ( !$OS )
-	{
-		$place = "Set_Update_Env";
-		print "\n$module - $place......\n";
-		&getenv("GROUPS");
-	}
-	
-	foreach $SnapviewP_i(@SnapviewP_i)
-	{
-		if ( !chdir($SnapviewP_i) ) # 进入静态视图编译路径 , 如果无法进入 , 则报错 , 且退出
-		{
-			&printerror(0,"Failed Access Snapshot View Path '$SnapviewP_i' !\n");
-			&command("pause");
-			exit 1;
-		}
-		# 视图同步和更新源码 , 过程中如有错误 , 则报错 , 且退出
-		&cleanerror;
-	
-		$place = "Update_All of the code:";
-		print "\n$module - $place......\n";
-		&cleanerror;
-		$SnapviewP1_i = $SnapviewP_i;
-		chop($SnapviewP1_i);
-		print "$SnapviewP1_i !!!!!!!!!!!******\n";
-		#&command("update_i",$SnapviewP1_i,$verworkP."all-code_".$OSstring."_".$builddatetime."_update.log");
-		undef($SnapviewP1_i);
+# 设置Tona环境变量
+Tornado PATH=c:\Tornado\host\x86-win32\bin;
+Tornado WIND_BASE=c:\Tornado
+Tornado WIND_HOST_TYPE=x86-win32
 
-		if ( &geterror )
-		{
-			&printerror(0,"@errors");
-			&command("pause");
-			exit 1;
-		}
-		
-	}
-	
-	
-	
-	
-	
-	
-	# 发布update LOG ??
-	# 回到工作路径
-	$place = "Backto_Script_Path";
-	&printerror(0,"Warnning:Failed Back to Work Path '$workpath' !\n") if ( !chdir($workpath) );
-	# =====================================================================================================================
-	# 去除源码只读属性
-	$place = "DisReadonly_SourceCode";
-	#print "\n$module - $place......\n";
-	&cleanerror;
-	#&command("disreadonly",$SnapviewP); # 调用更新源码命令并输出错误信息到error.log中
-	&printerror(0,"@errors") if ( &geterror );
-}
-# =====================================================================================================================
+# 设置InstallShield12环境变量
+InstallShield12 InstallShield12Build=c:\Program Files\Macrovision\IS12\System
+InstallShield12 InstallShield12Script=c:\Program Files\Macrovision\IS12\Script
 
-
-
-# 编译开始之前的预处理
-&preprocess("b");
-
-#======================================================================================================================
-# 整体编译之前删除编译信息文件夹中，所有旧的编译信息
-# 20130517 move form common.pl
-if ((($ISM eq 1)&&($OS eq 0))||($ISM eq 0))
-{
-	print "\n- del compileinfo.....\n";
-	my $tmptmp="*.*";
-  &command("del","f",$compileinfo_p.$tmptmp);
-	}
-
-#======================================================================================================================
-
-# 编译开始 , 仅编译
-$place = "Module_Process_Compile";
-print "\n$module - $place......\n";
-for ( my $i = 0 ; $i < @modulelist ; $i++ )
-{
-	my @intmodules = &getvalue(",",$modulelist[$i]);
-	&module("b",$envkeylist[$i],@intmodules);
-}
-undef(@intmodules);
-undef($i);
-# 编译之后的续处理 , 放在校验 , 发布 , 通知全部结束后做续处理
-# =====================================================================================================================
-# 校验 , 发布 , 通知之前的预处理
-&preprocess("crni");
-
-
-#-------------------20150915 add 
-
-&getversionprocess;
-sub getversionprocess
-{
-  if ( $OS )
-  {
-    #$version_name=&get_version;
-    $version_name=&get_linux_version;
-    chomp($version_name);
-    print "!!!!!*****$version_name!!!!!!\n";
-    open (OUTFILE,">./outfile");
-    #print OUTFILE  $builddatetime."_R".$version_name; 
-	print OUTFILE  $UCMprj."_".$version."_R".$version_name."#T".$buildtime;
-    close(OUTFILE);
-  }
-  else
-  {
-    $version_name=&get_win_version;
-    chomp($version_name);
-    print "!!!!!*****$version_name!!!!!!\n";
-    open (OUTFILE,">./outfile");
-    #print OUTFILE  $builddatetime."_R".$version_name;
-	print OUTFILE  $UCMprj."_".$version."_R".$version_name."#T".$buildtime;
-    close(OUTFILE);
-  }
-}
-
-#-------------------20150915 add 
-
-
-
-
-# 处理windows和linux协同编译时的发布位置
-$RP = &revisepath(1,$ReleaseP.$builddate."\\".$UCMprj."_".$version."_R".$version_name."#T".$buildtime); # 根据发布规则在发布路径后加日前文件夹/日前时间文件夹以区分每次发布
-my $sharefile = $ReleaseP."share.txt";
-my $D = 0; # 如果share.txt已经存在,默认删除该文件
-my $C = 0; # 如果share.txt已经存在,默认不创建新的share文件
-if ( $intoptions eq "a" )
-{
-	$place = "Build_Together";
-	print "\n$module - $place......\n";
-	print "\nSearching Share...\n";
-	if ( -e $sharefile && open (SHARE,$sharefile) )
-	{
-		print "\nGetting Share...\n";
-		my $line = <SHARE>;
-		close(SHARE);
-		$D = 1; # Share文件已经存在,因此需要删除该文件
-		my @value = &getvalue(":",$line);
-		if ( @value == 2 )
-		{
-			my @OSstr = ("Windows","Linux");
-			my $str = $OSstr[!$OS];
-			my $str1 = $OSstr[$OS];
-			if ( $value[0] =~ /^$str$/i ) # 必须当share.txt中的操作系统标识与当前操作系统相反时,才确认其值可能有效.
-			{
-				if ( $WF && ( $value[0] =~ /^Linux$/i ))
-				{
-					&printerror(0,"Wrong OS of '$value[1]' in '$sharefile' when Windows Build First !\n");
-				}
-				else
-				{
-					if ( $value[1] =~ /^\d{8}-\d{4}$/ ) # 日期符合yyyymmdd-hhmm格式
-					{
-						use Time::Local;
-						my $dis = &difftime($builddatetime,$value[1]);
-						$dis = abs($dis);
-						my @synctime=split(/-/,$value[1]);
-						$RP = &revisepath(1,$ReleaseP.$builddate."\\".$UCMprj."_".$version."_R".$version_name."#T".$synctime[1]) if ( $dis <= $TS ); # 协同编译 , 获取共享文件中的共享发布路径
-						#$RP = &revisepath(1,$ReleaseP.$value[1]."_R".$version_name) if ( $dis <= $TS ); # 协同编译 , 获取共享文件中的共享发布路径
-						no Time::Local;
-					}
-					else
-					{
-						&printerror(0,"Wrong Format Datetime of '$value[1]' in '$sharefile' !\n");
-					}
-				}
-			}
-			elsif ( $value[0] =~ /^$str1$/i )
-			{
-				if ( $WF && $OS )
-				{
-					&printerror(1,"$place : Don't Create Share when Windows Build First !\n");
-				}
-				else
-				{
-					$C = 1; # 同操作系统下编译多次,需要重新创建share文件
-				}
-			}
-			else
-			{
-				&printerror(0,"Wrong Format OS of '$value[0]' in '$sharefile' !\n");
-			}
-		}
-		else
-		{
-			&printerror(0,"Wrong Format of '$line' in '$sharefile' !\n");
-		}
-	}
-	elsif ( !-e $sharefile ) # 如果share文件不存在 , 则创建该文件提供给协同编译共享
-	{
-		if ( $WF && $OS )
-		{
-			&printerror(1,"$place : Don't Create Share when Windows Build First !\n");
-		}
-		else
-		{
-			$C = 1;
-		}
-	}
-	else # share文件存在但无法打开
-	{
-		$D = 1;
-	}
-}
-elsif ( $intoptions eq "s" )
-{
-	$place = "Build_Single";
-	print "\n$module - $place......\n";
-	$RP = &revisepath(1,$intspecRP) if ( $intspecRP ne "" );
-	if ( -e $sharefile )
-	{
-		$D = 1; # 如果share文件已经存在 , 则删除该文件
-	}
-}
-if ( $D )
-{
-	print "\nDeleting Share...\n";
-	&cleanerror;
-	&command("del","f",$sharefile); # 获取到共享发布路径后即删除共享文件
-	if ( &geterror )
-	{
-		&printerror(0,"Failed Del ShareFile '$sharefile' !\n");
-		&command("pause");
-		exit 1; # 找不到版本编译模块则退出整个程序
-	}
-	else
-	{
-		&printerror(1,"$place : Successfully Delete ShareFile '$sharefile' !\n");
-	}
-}
-if ( $C )
-{
-	print "\nCreating Share...\n";
-	if ( open (SHARE,">$sharefile") )
-	{
-		print SHARE "$OSstring : $builddatetime";
-		close(SHARE);
-		&printerror(1,"$place : Successfully Create ShareFile '$sharefile' !\n");
-	}
-	else # 创建share文件失败
-	{
-		&printerror(0,"Failed Create ShareFile '$sharefile' !\n");
-	}
-}
-undef($D);
-undef($C);
-undef($sharefile);
-undef($intoptions);
-undef($intspecRP);
-&printerror(1,"\n$place : ReleasePlace : $RP\n");
-# =====================================================================================================================
-# 校验 , 发布 , 通知
-$place = "Module_Process_Check_Release_Notify";
-print "\n$module - $place......\n";
-for ( my $i = 0 ; $i < @modulelist ; $i++ )
-{
-	my @intmodules = &getvalue(",",$modulelist[$i]);
-	$gownerM = $groupowner[$i];
-	&module("crni","-",@intmodules);
-}
-undef(@intmodules);
-undef($i);
-# 校验 , 发布 , 通知之后的续处理
-&afterprocess("bcrni");
-# =====================================================================================================================
-# 关闭编译错误信息文件
-close(BUILDERROR);
-
-########################################
-#add  by  fangyanzhi :  begin
-#调用findname  changehtml
-chdir $TOP_DIR;
-
-&findname("$TOP_DIR"."/"."$version"."/"."$builddatetime");
-
-
-&changehtml;	
-#add  by  fangyanzhi : end
-#######################################
-
-############################################################
-#add  by  fangyanzhi : begin
-#findname  作用是查找nopass.log的位置
-sub findname
-{
-	my ($finddir)=@_;
-	if ( -d $finddir )
-		{
-			if ( opendir (DH,$finddir) )
-			{
-				my @files= grep( !/^\.\.?/,readdir DH ) ;
-				close DH;
-				foreach $tmpfile (@files)
-					{
-					if ( $tmpfile =~ /nopassfile\.log/i )
-					 	{
-							$res="yes";
-							$NOPASSDIR=$finddir;
-							print "\nfind%%%\n";
-						}	
-					else
-                                              { 
-							if( -d  $finddir."/".$tmpfile )
-							{
-							my $subdir = $finddir."/"."$tmpfile";
-							&findname($subdir);
-							}
-					      } 
-				
-					}
-				
-		  	}
-	
-		}
-}
-
-
-#changehtml 的作用是将nopass.log 的格式转换成 HTML 
-sub changehtml
-{
-	if ( $res  eq "yes")
-	{
-		    my  %nopassmodules;
-			my $cnt=-1; 
-			my  @details;
-			print "\n now HTML !!!!!\n";
-			if ( -e  nopass.html )
-				{
-				unlink nopass.html;
-				&command("del","f","nopass.html");
-				}
-                        open HTMLFH ,">nopass.html";
-                        print  HTMLFH "<html>"."\n";
-						print  HTMLFH "<head>"."\n";
-                        print  HTMLFH  "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />"."\n";
-                        print  HTMLFH "</head>"."\n";
-                        print  HTMLFH "<body>"."\n";
-                   #     print  HTMLFH "<font style=\"font-weight:bold\">不通过</font>"."<br>";
-			if  (  open (NOPASSFILE,"$NOPASSDIR/nopassfile\.log") )
-				{
-					my  @modules =  <NOPASSFILE>;
-					close  NPOPASSFILE;
-					for   (my $i=0;$i<@modules;$i++)
-						{
-							 if ( length("$modules[$i]") == 0 )
-								{
-								     @tmplibs=();
-  								    undef @tmplibs;
-								     print  HTMLFH  "<HR style=\"border:3 double #987cb9\" width=\"80%\" color=#987cb9 SIZE=3>\										";
-							
-								}
-							 else
-								{
-								 	if (  $modules[$i]  =~/---.*---/)
-										{
-										       @tmp =  split /\s+/,$modules[$i];
-											   if  (  $CUR_OS  =~/MSWin32/i )
-											   {
-											    $modules[$i] = Encode::decode("gb2312","$modules[$i]");
-											   }
-											   elsif ( $CUR_OS   =~ /linux/i  )
-											   {
-											     print  "nothing  to do "."\n";
-											   }
-											#Encode::_utf8_on($modules[$i]);
-											#print  HTMLFH "<B>$tmp[1]<B>"."<br>";
-											#print  HTMLFH "<B>$modules[$i]<B>"."<br>";
-                      print  HTMLFH "<B>$modules[$i]<B>"."<br>";
-										}
-									else
-										{
-										       @tmplibs  =  split /\s+/,$modules[$i];
-										#	push(my @tmplibs,$modules[$i]);
-										#	print HTMLFH "$tmplibs[2]"."<br>";
-											 $liblist=$tmplibs[2];
-											if  ( $liblist =~ /10-common/ )
-											{
-												$liblist=~s/(.*)10-common/10-common/g;
-												print HTMLFH  "$liblist"."<br>";
-											}
-											#print HTMLFH "$modules[i]"."<br>";
-											#$details[$cnt]=[@tmplibs];
-											#print  "$details[$cnt]";
-											 #  for (my $j=0;$j<=$#{$details[$cnt]};$j++)
-
-                                        						#	{
-                                                					#	print  "$cnt $j  ";
-                                                					#	print  $details[$cnt][$j];
-                                        						#	}	
-										}
-
-
-
-								}
-						}
-				}
-			else
-				{
-				 	print  "error  open"."\n";
-				}
-			
-
-			print  HTMLFH "</body>"."\n";
-			print  HTMLFH "</html>"."\n";
-			close HTMLFH;
-	}
-
-}
-#add  by fangyanzhi   :end
-########################################################
-
-
-
-print "\n================================= END =================================\n";
-sub difftime
-{
-	my ($s,$d) = @_;
-	my $sd = 1441;
-	if (( $s !~ /^\d{8}-\d{4}$/ ) || ( $d !~ /^\d{8}-\d{4}$/ ))
-	{
-		&printerror(0,"Wrong Format of '$s' or '$d' !\n");
-	}
-	else
-	{
-		my @tm = ("",$s,$s,$s,$s,$s); # 按照($sec,$min,$hour,$mday,$mon,$year)推入
-		$tm[1] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$5/g; # 获取'min'
-		$tm[2] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$4/g; # 获取'hour'
-		$tm[3] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$3/g; # 获取'mday'
-		$tm[4] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$2/g; # 获取'mon'
-		$tm[4] = $tm[4]-1; # timelocal的月必须在"0~11"范围中
-		$tm[5] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$1/g; # 获取'year'
-		my $st = timelocal(@tm);
-		my @tm = ("",$d,$d,$d,$d,$d); # 按照($sec,$min,$hour,$mday,$mon,$year)推入
-		$tm[1] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$5/g; # 获取'min'
-		$tm[2] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$4/g; # 获取'hour'
-		$tm[3] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$3/g; # 获取'mday'
-		$tm[4] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$2/g; # 获取'mon'
-		$tm[4] = $tm[4]-1; # timelocal的月必须在"0~11"范围中
-		$tm[5] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$1/g; # 获取'year'
-		my $dt = timelocal(@tm);
-		$sd = $st-$dt;
-	}
-	return $sd;
-}
-# End

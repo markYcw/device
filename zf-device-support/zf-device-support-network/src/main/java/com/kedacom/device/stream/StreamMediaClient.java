@@ -143,4 +143,12 @@ public interface StreamMediaClient {
      */
     QueryHistoryUrlResponse queryHistoryUrl(QueryHistoryUrlRequest queryHistoryUrlRequest);
 
+    /**
+     * 发送宏指令数据
+     *
+     * @param sendOrderDataRequest
+     * @return
+     */
+    SendOrderDataResponse sendOrderData(SendOrderDataRequest sendOrderDataRequest);
+
 }

@@ -175,4 +175,14 @@ public class StreamMediaController {
         return BaseResult.succeed("查询成功", queryHistoryUrlVO);
     }
 
+
+    @ApiOperation("发送宏指令数据")
+    @PostMapping("/sendOrderData")
+    public BaseResult<Boolean> sendOrderData(@Valid @RequestBody SendOrderDataDTO sendOrderDataDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean aBoolean = streamMediaService.sendOrderData(sendOrderDataDTO);
+        return BaseResult.succeed("发送成功", aBoolean);
+    }
+
 }

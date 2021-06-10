@@ -7,17 +7,17 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class SpringUtil implements ApplicationContextAware {
+public class SpringGetBeanUtil implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        if(com.kedacom.device.core.utils.SpringUtil.applicationContext == null) {
-            com.kedacom.device.core.utils.SpringUtil.applicationContext = applicationContext;
+        if(com.kedacom.device.core.utils.SpringGetBeanUtil.applicationContext == null) {
+            com.kedacom.device.core.utils.SpringGetBeanUtil.applicationContext = applicationContext;
         }
 
-        System.out.println("========ApplicationContext配置成功,在普通类可以通过调用SpringUtils.getAppContext()获取applicationContext对象,applicationContext="+ com.kedacom.device.core.utils.SpringUtil.applicationContext+"========");
+        System.out.println("========ApplicationContext配置成功,在普通类可以通过调用SpringUtils.getAppContext()获取applicationContext对象,applicationContext="+ com.kedacom.device.core.utils.SpringGetBeanUtil.applicationContext+"========");
 
     }
 

@@ -8,9 +8,11 @@ import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -84,5 +86,9 @@ public interface UmsManageApi {
     @PostMapping("/deviceStatusRegister")
     @ApiOperation(value = "注冊到设备状态通知管理类")
     BaseResult deviceStatusRegister(@RequestBody AcceptUrlListen listener);
+
+    @PostMapping("/getDeviceInfoById")
+    @ApiOperation(value = "根据平台id查询平台信息")
+    BaseResult<UmsDeviceInfoSelectByIdResponseDto> getDeviceInfoById(@RequestBody UmsDeviceInfoSelectByIdRequestDto requestDto);
 
 }

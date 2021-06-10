@@ -220,4 +220,18 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         return basePage;
     }
 
+    @Override
+    public UmsDeviceInfoSelectByIdResponseDto getDeviceInfoById(UmsDeviceInfoSelectByIdRequestDto requestDto) {
+
+        String umsId = requestDto.getUmsId();
+        log.info("根据id查询统一平台信息参数 ： requestDto [{}]", umsId);
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(umsId);
+        if (deviceInfoEntity == null) {
+            log.error("根据id查询统一平台信息不存在");
+            return null;
+        }
+
+        return UmsDeviceConvert.INSTANCE.concertUmsDeviceInfoSelectByIdResponseDto(deviceInfoEntity);
+    }
+
 }

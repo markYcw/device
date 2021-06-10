@@ -100,6 +100,11 @@ public class UmsManageApiFallBackFactory implements FallbackFactory<UmsManageApi
             public BaseResult deviceStatusRegister(AcceptUrlListen listener) {
                 return BaseResult.failed(throwable.getMessage());
             }
+
+            @Override
+            public BaseResult<UmsDeviceInfoSelectByIdResponseDto> getDeviceInfoById(UmsDeviceInfoSelectByIdRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
         };
     }
 

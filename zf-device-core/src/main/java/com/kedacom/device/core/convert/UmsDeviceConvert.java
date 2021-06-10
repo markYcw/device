@@ -5,6 +5,7 @@ import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.ums.request.LoginRequest;
 import com.kedacom.ums.requestdto.UmsDeviceInfoAddRequestDto;
 import com.kedacom.ums.requestdto.UmsDeviceInfoUpdateRequestDto;
+import com.kedacom.ums.responsedto.UmsDeviceInfoSelectByIdResponseDto;
 import com.kedacom.ums.responsedto.UmsDeviceInfoSelectResponseDto;
 import com.kedacom.ums.responsedto.UmsSubDeviceInfoQueryResponseDto;
 import org.mapstruct.Mapper;
@@ -56,7 +57,7 @@ public interface UmsDeviceConvert {
      */
     List<UmsDeviceInfoSelectResponseDto> convertUmsDeviceInfoSelectResponseDtoList(List<DeviceInfoEntity> deviceInfoEntityList);
 
-
+    UmsDeviceInfoSelectByIdResponseDto concertUmsDeviceInfoSelectByIdResponseDto(DeviceInfoEntity deviceInfoEntity);
 
     @Mappings({@Mapping(source = "deviceStatus",target = "status"),
     @Mapping(source = "deviceModel",target = "model")})

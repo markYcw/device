@@ -66,9 +66,8 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
             responseVo = repeatDeviceRequest.getResponse();
         } else {
             // 请求响应失败，记录第几页失败，当前页的请求数量
-            log.error("同步设备第{}页异常，请求同步数据为{}条", curPage, pageSize);
+            log.error("同步设备第{}页异常，请求同步数据为{}条, 异常码为{}", curPage, pageSize, repeatDeviceRequest.getErrCode());
         }
-        log.info("获取统一设备应答信息 ： responseVo {}", responseVo.getDevinfo());
         List<SubDeviceInfoResponseVo> responseVoList = responseVo.getDevinfo();
         log.info("当前第{}页查询到的数据条数是{}", curPage, responseVoList.size());
         if (CollUtil.isEmpty(responseVoList)) {
@@ -137,6 +136,7 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
             }
         }
         repeatDeviceRequest.setRequestResult(false);
+        repeatDeviceRequest.setErrCode(responseVo.acquireErrcode());
 
         return repeatDeviceRequest;
     }

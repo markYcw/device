@@ -17,4 +17,6 @@ public class RepeatDeviceRequest implements Serializable {
 
     private QuerySubDeviceInfoResponse response;
 
+    private Integer errCode;
+
 }

@@ -196,38 +196,13 @@ else
 {
 	$spenvs = "-" if ( $spoptions !~ /u/ );
 }
-&getversionprocess;
-sub getversionprocess
-{
-  if ( $OS )
-  {
-    #$version_name=&get_version;
-    $version_name=&get_linux_version;
-    chomp($version_name);
-    print "!!!!!*****$version_name!!!!!!\n";
-    open (OUTFILE,">./outfile");    
-	print OUTFILE  $UCMprj."_".$version."_R".$version_name."#T".$buildtime;
-    close(OUTFILE);
-  }
-  else
-  {
-    $version_name=&get_win_version;
-    chomp($version_name);
-    print "!!!!!*****$version_name!!!!!!\n";
-    open (OUTFILE,">./outfile");
-    print OUTFILE  $UCMprj."_".$version."_R".$version_name."#T".$buildtime;
-    close(OUTFILE);
-  }
-}
-
 # 如果发布 , 则处理发布路径
 if ( $spoptions =~ /r/ )
 {
 	# 获取最终的发布路径
 	if ( $spspecRP eq "" ) # 当用户没有指定发布路径 , 根据发布规则在发布路径后加日前文件夹/日前时间文件夹以区分每次发布
 	{
-		my $p = &revisepath(0,$builddate."-SP/".$UCMprj."_".$version."_R".$version_name."#T".$buildtime);
-		#my $p = &revisepath(0,"$builddate-SP/$builddatetime");
+		my $p = &revisepath(0,"$builddate-SP/$builddatetime");
 		$RP = $ReleaseP.$p;
 	}
 	else

@@ -91,7 +91,6 @@ else
 # 获取当前时间和工作路径
 $builddatetime = &getdatetime;
 $builddate = &getdate;
-$buildtime = &get_nowtime;
 # 获取当前工作路径
 if ( $workpath eq "" )
 {
@@ -156,11 +155,6 @@ $BuildServer = &getprjconf("hostname");
 $proline = &getprjconf("productline");
 $UCMprj = &getprjconf("UCMproject"); # 读取当前编译项目
 #print "zhangtingting:[$UCMprj]\n";
-
-$compileinfo_p = &getprjconf("compileinfo_path");
-$compileinfo_p = &revisepath(1,$compileinfo_p);
-
-
 
 &printerror(1,"Build Server : $BuildServer\nUCMproject : $UCMprj\n");
 $commoncompP = &getprjconf("commoncomp_path");
@@ -247,16 +241,8 @@ if ( @v == 0 )
 	&command("pause");
 	exit 1; # 找不到版本号所在的行则退出整个程序
 }
-
-######hanjian 20140612##########################
-#这里是不是可以取多行？(下边)
-#行数在main.ini中添加一项?或者数组里有几个元素 就用几行,用 for循环?
-#更新时在工作副本中查找包含.svn或.git文件，来判断是svn工作副本还是git工作副本
-#为了不影响模块编译，不修改之前的部分，只是模仿着在下边添加一段循环，单独为整体编译获取代码位置
-################################################
-
 @vervalue = &getvalue (" ",$v[0]); # 如果找到多行仅从找到的第一行中取值 1编译平台 2版本号 3动态视图名 4静态视图本地位置 5发布位置 6测试负责人邮件地址
-
+undef(@v);
 if ( @vervalue < 4 ) # 本来一行应当必需前5个值 , 由于去除了编译平台值 , 因此校验为4个值
 {
 	&printerror(0,"Wrong Format in '$v[0]' !\n","v");
@@ -264,41 +250,10 @@ if ( @vervalue < 4 ) # 本来一行应当必需前5个值 , 由于去除了编�
 	exit 1; # 找到版本号所在的行但该行关键字缺少则退出整个程序
 }
 $SnapviewP = &revisepath(1,$vervalue[2]); # 获取静态视图源码存储路径 , 并修正为可用格式
-
-#add by hanjian 20140612
-#-----------------------------------------------------------
-foreach $vi(@v)
-{
-	@vervalue_i = &getvalue (" ",$vi); # 如果找到多行仅从找到的第一行中取值 1编译平台 2版本号 3动态视图名 4静态视图本地位置 5发布位置 6测试负责人邮件地址
-	
-	if ( @vervalue_i < 4 ) # 本来一行应当必需前5个值 , 由于去除了编译平台值 , 因此校验为4个值
-	{
-			&printerror(0,"Wrong Format in '$vi' !\n","v");
-			&command("pause");
-			exit 1; # 找到版本号所在的行但该行关键字缺少则退出整个程序
-	}
-	$SnapviewP_i = &revisepath(1,$vervalue_i[2]); # 获取静态视图源码存储路径 , 并修正为可用格式
-	push(@SnapviewP_i,$SnapviewP_i);
-}
-
-undef(@v);
-#-----------------------------------------------------------
-
 $place = "Validate_CommonPath";
 print "\n$module - $place......\n";
 # 校验关键通用路径是否存在(共用组件路径,编译信息路径,模块配置文件路径)
 print "SnapviewP.commoncompP:[$SnapviewP.$commoncompP]\n";
-$compileinfo_p = $SnapviewP.$compileinfo_p;
-print "SnapviewP.compileinfo_p:[$compileinfo_p]\n";
-###add 20130322  -----20130517 hanjian move to int.pl 
-#if ((($ISM eq 1)&&($OS eq 0))||($ISM eq 0))
-#{
-#	print "\n- del compileinfo.....\n";
-#	my $tmptmp="*.*";
-#  &command("del","f",$compileinfo_p.$tmptmp);
-#	}
-#
-
 if ( ! -e $SnapviewP.$commoncompP )
 {
 	&printerror(0,"Failed Found Path '$SnapviewP$commoncompP' !\n");
@@ -325,7 +280,7 @@ undef(@vervalue);
 # 获取并保存系统环境变量 , 用于环境变量调用getenv()
 use Env qw(@PATH);
 @SYSPATH = @PATH;
-&getenv("SVN") if ( $OS );
+#&getenv("LinuxCC") if ( $OS );
 use Env qw(@INCLUDE);
 @SYSINCLUDE = @INCLUDE;
 use Env qw(@LIB);
@@ -725,7 +680,7 @@ sub getenv
 				&printerror(1,$env);
 			}
 		}
-		elsif (( $envkey =~ /^SVN[\d\._]*$/i ) ||( $envkey =~ /^PPC[\d\._]*$/i ) || ( $envkey =~ /^ARM[\d\._]*$/i ) || ( $envkey =~ /^EQT[\d\._]*$/i ) || ( $envkey =~ /^DAVINCI[\d\._]*$/i ))
+		elsif (( $envkey =~ /^PPC[\d\._]*$/i ) || ( $envkey =~ /^ARM[\d\._]*$/i ) || ( $envkey =~ /^EQT[\d\._]*$/i ) || ( $envkey =~ /^DAVINCI[\d\._]*$/i ))
 		{
 			foreach $f (@found) # 逐行处理环境关键字的行
 			{
@@ -1007,7 +962,7 @@ sub afterprocess
 				
 				#####hanjian 20120810 
 				
-				&command("copy","f",$verworkP."all-code_".$OSstring."_".$builddatetime."_update.log",$RP); # 发布整体编译时，全部代码svn update的结果记录文件
+				&command("copy","f",$verworkP."all-code_".$builddatetime."_update.log",$RP); # 发布整体编译时，全部代码svn update的结果记录文件
 				
 				&geterror;
 			}
@@ -1016,6 +971,14 @@ sub afterprocess
 		{
 			$place = "Create_BuildInfo";
 			&printerror(0,"Failed Open File '$verworkP"."buildinfo_$OSstring_$builddatetime.txt' !\n");
+		}
+		
+		if ( open(BUILDPATH,">$workpath"."ReleasePath.log") )
+		{
+		 ##print BUILDPATH  "$RP\n" ;
+		 $RelP=&relpath(1,$RP);
+		 print BUILDPATH  "$RelP\n" ;
+		 close(BUILDPATH);
 		}
 	}
 	# 如果开启通知功能 , 模块编译完成后提供编译状态报告
@@ -1125,7 +1088,7 @@ sub process
 	if ( $options =~ /u/ )
 	{
 		&update;
-		&disreadonly; # update源码后，去除源码的只读属性
+		#&disreadonly; # update源码后，去除源码的只读属性
 	}
 #	print "updateS : $updateS\n";
 	local $compileS = 1;
@@ -1366,18 +1329,18 @@ sub getmoduconf_r
 # =====================================================================================================================
 #add by hanjian 20120824
 
-#sub deletecompileinfo
-#{
-#	print"delete compileinfo\n";
+sub deletecompileinfo
+{
+	print"delete compileinfo\n";
 	
-#	$compilePPP = &getprjconf("compileinfo_path");
+	$compilePPP = &getprjconf("compileinfo_path");
 	
-#	$compilePPP = &revisepath(1,$compilePPP);
-#	my $compileinfopath=$SnapviewP.$compilePPP."*.*";
-#	print "\n!!!!!compile info path: $compileinfopath\n";
-#	&command("del","f",$compileinfopath);
+	$compilePPP = &revisepath(1,$compilePPP);
+	my $compileinfopath=$SnapviewP.$compilePPP."*.*";
+	print "\n!!!!!compile info path: $compileinfopath\n";
+	#&command("del","f",$compileinfopath);
 	
-#}
+}
 # =====================================================================================================================
 # 模块编译'删除'子过程
 sub del
@@ -1460,7 +1423,7 @@ sub disreadonly
 			$srccodeP = &revisepath(0,$srccodeP); # 修正路径为可以格式
 			$WsrccodeP = $SnapviewP.$srccodeP; # 拼接成完整路径
 #			print "WsrccodeP : $WsrccodeP\n";
-			&command("disreadonly",$WsrccodeP); # 调用更新源码命令并输出错误信息到error.log中
+			#&command("disreadonly",$WsrccodeP); # 调用更新源码命令并输出错误信息到error.log中
 		}
 		&geterror; # 有错误信息则写入BuildError.log
 	}
@@ -1541,7 +1504,7 @@ sub checkfile
 			}
 		}
 		$allcheckfileS = 0 if ( !$checkfileS );
-		&writelog($verworkP."nopassfile.log","--- $module / $owner / $ownerM ---\n".$nopassinfo."\n") if ( !$checkfileS ); # 将校验未通过文件写入临时文件nopassfile.log
+		&writelog($verworkP."nopassfile.log","--- $module / $owner ---\n".$nopassinfo."\n") if ( !$checkfileS ); # 将校验未通过文件写入临时文件nopassfile.log
 		$CFpassinfo = $nopassinfo.$passinfo;
 		print "Check Files Result :\n$CFpassinfo";
 	}
@@ -1549,7 +1512,7 @@ sub checkfile
 	{
 		$errorinfo = "Not Config Check Files in $WmoduleCF !\n";
 	}
-	&writelog($verworkP."checkfile.log","$builddatetime / $module / $owner / $ownerM\n".$CFpassinfo.$errorinfo."\n"); # 将所有文件校验结果写入日志文件
+	&writelog($verworkP."checkfile.log","$builddatetime / $module / $owner\n".$CFpassinfo.$errorinfo."\n"); # 将所有文件校验结果写入日志文件
 	return $checkfileS;
 }
 # 模块编译'校验readme'子过程
@@ -1630,7 +1593,8 @@ sub releasefiles
 #			@FRPs = split(/,/,$value[2]); # 将发布路径列表转为数组
 			foreach $FRP (@FRPs)
 			{
-				$FRP = &revisepath(0,$FRP); # 修正路径为可用格式
+				$FRP = &revisepath(1,$FRP); # 修正路径为可用格式
+                $RP =  &revisepath(1,$RP); 
 				$WFRP = $RP.$FRP;
 #				print "WRF : $WRF\nWFRP : $WFRP\n";
 				&command("copy","f",$WRF,$WFRP); # 调用覆盖拷贝源码命令并输出错误信息到error.log中
@@ -1781,7 +1745,7 @@ sub notify
 		}
 	}
 	#########add by hanjian 20120417(mail update.log)################hanjian 20120810 
-	open (UPDATE333,$verworkP."all-code_".$OSstring."_".$builddatetime."_update.log.mail"); # 读取文件update.log
+	open (UPDATE333,$verworkP."all-code_".$builddatetime."_update.log"); # 读取文件update.log
 		my @updatelogss = <UPDATE333>;
 		close (UPDATE333);
 ##		@updatelogss = ("各模块源码更新记录: 请在发布位置下的updatelog文件夹中查找\n") if ( @updatelogss == 0 );
@@ -1931,15 +1895,14 @@ sub command
 		if ( $OS )
 		{
 			#system("export LANG="en_US.UTF-8"");
-				#$ENV{LANG} = "en_US.UTF-8";
-				
-#        system("svn update  --accept theirs-full --username root --password 'kdckdc' --no-auth-cache $item0  >$item1");####--- modify by hanjian 20120821  for update 
-#		    system("svn update  --accept theirs-full --username root --password 'kdckdc' --no-auth-cache $item0 2>$vererrL");
+				$ENV{LANG} = "en_US.UTF-8";
+        system("svn update  $item0  >$item1");####--- modify by hanjian 20120821  for update 
+		    system("svn update  $item0 2>$vererrL");
 		}
 		else
 		{
-			  system("svn update  --accept theirs-full $item0  >$item1");####--- modify by hanjian 20120821  for update 
-		    system("svn update  --accept theirs-full $item0 2>$vererrL");
+			  system("svn update --force $item0  >$item1");####--- modify by hanjian 20120821  for update 
+		    system("svn update --force $item0 2>$vererrL");
 		}
 	  
 	  
@@ -1947,95 +1910,6 @@ sub command
 		#system("svn update --username root --password 'kdckdc' --no-auth-cache $item0  >$item1");####--- modify by hanjian 20120803  for update 
 		#system("svn update --username root --password 'kdckdc' --no-auth-cache $item0 2>$vererrL"); ####---- add by hanjian 20120803  for update 
 	}
-	
-	elsif ( $cmd eq "update_i" )#####add  if git or svn 20140612
-	{
-		print "Command : $cmd : $item0 $item1\n";
-		system("echo ============================================================== >>$item1");
-		system("echo -------------------------------------------------------------- >>$item1.mail");
-		######system("cleartool update -f -ove -log $item1 $item0 2>$vererrL");
-		if ( $OS )
-		{    
-			#system("export LANG="en_US.UTF-8"");
-			     &getenv(@envs);
-				$ENV{LANG} = "en_US.UTF-8";
-				if (-e ".svn"){
-					#system("svn cleanup   --username root --password 'kdckdc' --no-auth-cache $item0  ");
-					#system("svn revert   --username root --password 'kdckdc' --no-auth-cache $item0  ");
-#					system("svn info --username root --password 'kdckdc' --no-auth-cache $item0|grep URL  >>$item1 ");
-#					system("svn info --username root --password 'kdckdc' --no-auth-cache $item0|grep URL  >>$item1.mail "); ###use  $item1.mail  as mail context --add 20140707
-					system("echo now updating.... >>$item1");
-#        	system("svn update  --accept theirs-full --username root --password 'kdckdc' --no-auth-cache $item0  >>$item1");####--- modify by hanjian 20120821  for update 
-#		    	system("svn update  --accept theirs-full --username root --password 'kdckdc' --no-auth-cache $item0 2>$vererrL");
-		    	system("echo the lasted log.... >>$item1");
-#		    	system("svn log -l 1 --username root --password 'kdckdc' --no-auth-cache $item0  >>$item1 ");
-		    	my $file_mail="tmp.log";
-		    	system("svn log -l 1 -q --username root --password 'kdckdc' --no-auth-cache $item0 >$file_mail");
-		    	open (FILE,$file_mail)or die "can't open tmp.log:$!";  #打开日志
-          my @log_mail=<FILE>;
-          close (FILE); 
-		    	my @num_mail=split(/\|/,$log_mail[1]);
-		    	system("echo $num_mail[0]  >>$item1.mail");
-		    	
-		    }elsif(-e ".git"){
-		    	system("git remote -v |grep '(fetch)' >>$item1");
-		    	system("git remote -v |grep '(fetch)' >>$item1.mail");
-		    	system("git branch |grep '*' >>$item1");
-		    	system("git branch |grep '*' >>$item1.mail");
-		    	system("echo now pull ing.... >>$item1");
-		    	system("git pull >>$item1 ");
-		    	system("git pull 2>$vererrL");
-		    	system("echo the lasted log.... >>$item1");
-		    	system("git log -n 1 >>$item1");
-		    	system("git log -n 1 --pretty=format:commit:%H%n >>$item1.mail");
-		    	
-		    }else{
-		    	print "it is  not a workspace\n";
-		    }
-		}
-		else
-		{
-				if (-e ".svn"){
-					#system("svn cleanup   $item0  ");
-					#system("svn revert   $item0  ");
-					system("svn info     $item0|grep URL   >>$item1 ");
-					system("svn info     $item0|grep URL   >>$item1.mail ");
-					system("echo now updating.... >>$item1");
-        	system("svn update   $item0  >>$item1"); 
-		    	system("svn update   $item0 2>$vererrL");
-		    	system("echo the lasted log.... >>$item1");
-		    	system("svn log -l 1 .>>$item1");
-		    	my $file_mail="tmp.log";
-		    	system("svn log -l 1 -q $item0 >$file_mail");
-		    	open (FILE,$file_mail)or die "can't open tmp.log:$!";  #打开日志
-          my @log_mail=<FILE>;
-          close (FILE); 
-		    	my @num_mail=split(/\|/,$log_mail[1]);
-		    	system("echo $num_mail[0] >>$item1.mail");
-		    	
-		    	
-		    }elsif(-e ".git"){
-		    	system("git remote -v |grep '(fetch)' >>$item1");
-		    	system("git remote -v |grep '(fetch)' >>$item1.mail");
-		    	system("git branch |grep '*' >>$item1");
-		    	system("git branch |grep '*' >>$item1.mail");
-		    	system("echo now pull ing.... >>$item1");
-		    	system("git pull >>$item1 ");
-		    	system("git pull 2>$vererrL");
-		    	system("echo the lasted log.... >>$item1");
-		    	system("git log -n 1 >>$item1");
-		    	system("echo \n >>$item1.mail");
-		    	system("git log -n 1 --pretty=format:commit:%H%n >>$item1.mail");
-		    	
-		    }else{
-		    	print "it is  not a workspace\n";
-		    }
-			 	  
-		}
-		#system("svn update --username root --password 'kdckdc' --no-auth-cache $item0  >$item1");####--- modify by hanjian 20120803  for update 
-		#system("svn update --username root --password 'kdckdc' --no-auth-cache $item0 2>$vererrL"); ####---- add by hanjian 20120803  for update 
-	}
-	
 	elsif ( $cmd eq "disreadonly" )
 	{
 		print "Command : $cmd : $item0\n";
@@ -2056,12 +1930,10 @@ sub command
 		if ( $OS )
 		{
 			system("./$item0 >$item1 2>&1"); # 执行文件$item0 , 写入日志$item1
-			system("cat $item1");
 		}
 		else
 		{
 			system("$item0 >$item1 2>>&1"); # 执行文件$item0 , 写入日志$item1
-			system("type $item1");
 		}
 		undef($mycurrpath);
 	}
@@ -2377,59 +2249,27 @@ sub getdatetime
     my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $time) = localtime();
     return sprintf("%4d%2.2d%2.2d-%2.2d%2.2d", $year + 1900, $mon + 1, $mday,  $hour, $min);
 }
-
-# 获取当天时间hhmm
-sub get_nowtime
+sub relpath
 {
-	# input: none
-	# output: current date-time
-    my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $time) = localtime();
-    return sprintf("%2.2d%2.2d", $hour, $min);
+	# input: 修正类型(1-修正开头 , 0-不修正开头) , 修正路径
+	# output: 可用格式的路径 : 1-linux修正为'/'开头'/'结尾 , windows修正为'\\'开头'\'结尾 ; 0-linux修正为'/'结尾 , windows修正为'\'结尾 , 不处理开头
+	my ($type,$path) = @_;
+	if ( $path =~ /^[\\\/]+$/ )
+	{
+		return "";
+	}
+	else
+	{
+		my (@part,$path1);
+		@part = split(/[\\\/]+/,$path); # 以多个连续'\'或'/'的组合切分需修正的路径 , 与操作系统无关
+		shift(@part) if ( $part[0] eq "" ); # 如果'\'或'/'打头 , 则去掉切分数组的第一个元素 , 在连接数组元素时即可去除开头的'\'或'/'
+		
+			$path1 = join("\\",@part); # linux以'\'连接
+			$path1 = $path1."\\" if ( $type != 2 ); # 由于连接时自动去除了尾部的'\' , 因此加上
+			$path1 = "\\\\".$path1 if (( $type == 1 ) && ( $path =~ /^[\\\/]+/ )); # 若以'/'开头同时修正类型为修正开头 , 则以'\\'打头代表网络路径
+			return $path1;
+	}
 }
-
-#----------20150915 add ----
-
-#获取windows版本号 用于创建发布目录  20150915 add
-sub get_win_version
-{
-  
-  my $svnRev;#svn版本号
-  
-  chdir $SnapviewP;
-  my @svnRev_l=`svn info .`;
-  print $svnRev_l[9];
-  my @svnR=split ":",$svnRev_l[9];
-  print "====\n";
-  print $svnR[1];
-    print "====\n";
-  $svnRev=$svnR[1];
-  $svnRev =~ s/\s//g;  
-  return $svnRev;
-}
-
-sub get_linux_version
-{
-
-  my $svnRev;#svn版本号
-  	
-  chdir $SnapviewP;
-  print "当前目录为：$SnapviewP\n";
- 
-  my @svnRev_l=`/usr/local/svn/bin/svn info . --username root --password kdckdc`;
-
-  
-  #$svnRev_l[5]=Encode::decode("gb2312","$svnRev_l[5]");
-  print $svnRev_l[9];
-  my @svnR=split ":",$svnRev_l[9];
-  print "====\n";
-  print $svnR[1];
-    print "====\n";
-  $svnRev=$svnR[1];
-  $svnRev =~ s/\s//g;
-	
-	return $svnRev;
-}
-
 # =====================================================================================================================
 return 1;
 # End

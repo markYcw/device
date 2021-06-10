@@ -10,24 +10,6 @@
 # PURPOSE: 
 #
 # =====================================================================================================================
-
-#add   by  fangyanzhi  :   begin
-use  File::Copy;
-use  Cwd;
-use   Encode;
-my  $CUR_OS=$^O;
-#use  File::Find;
-$TOP_DIR=getcwd;
-chomp($TOP_DIR);
-
-			if ( -e  nopass.html )
-				{
-				unlink nopass.html;
-				&command("del","f","nopass.html");
-				}
-
-# add   by  fangyanzhi  : end
-
 print "\n=======================================================================\n";
 print "\n                            INT BUILD START                            \n";
 print "\n=======================================================================\n";
@@ -154,14 +136,53 @@ if ( $OS && $ISM )
 }
 else
 {
-	########hanjian 20140612#########################
-	##here  update  code
-	#用 for循环?
-	#################################################
 	# 获取基线 , 更新源码
 	$place = "Access_SnapshotView_Path";
 	print "\n$module - $place......\n";
-	
+	if ( !chdir($SnapviewP) ) # 进入静态视图编译路径 , 如果无法进入 , 则报错 , 且退出
+	{
+		&printerror(0,"Failed Access Snapshot View Path '$SnapviewP' !\n");
+		&command("pause");
+		exit 1;
+	}
+	# 打基线 , 置推荐基线 , 获取推荐基线 , 过程中如有错误，则报错 , 但不退出
+	$place = "Make_Baseline";
+	print "\n$module - $place......\n";
+	&cleanerror;
+	####&command("mkbl");  #hanjian 20120810 svn don't need clearcase command
+###	if ( !&geterror )
+###	{
+###		$place = "Change_Stream";
+###		print "\n$module - $place......\n";
+###		&cleanerror;
+###		&command("chstream");
+###		if ( !&geterror )
+###		{
+###			$place = "Get_BaseLine";
+###			print "\n$module - $place......\n";
+###			&cleanerror;
+###			$baseline = &command("lsstream"); # 取静态视图对应的推荐基线的列表
+###			if ( !&geterror )
+###			{
+###				$baseline =~ s/\s/\n/g; # 字符串中所有的空格都用回车替换
+###				&writelog($verworkP."baseline.log",$baseline."\n");
+###				print $baseline;
+###			}
+###			else
+###			{
+###				&printerror(0,"@errors");
+###			}
+###			undef($baseline);
+###		}
+###		else
+###		{
+###			&printerror(0,"@errors");
+###		}
+###	}
+###	else
+###	{
+###		&printerror(0,"@errors");
+###	}
 	# 视图同步和更新源码之前 , Windows操作系统上需要设置环境变量
 	if ( !$OS )
 	{
@@ -169,41 +190,35 @@ else
 		print "\n$module - $place......\n";
 		&getenv("GROUPS");
 	}
+	# 视图同步和更新源码 , 过程中如有错误 , 则报错 , 且退出
+	###$place = "Synchronize_View";
+	$place = "Update all of the code:";
 	
-	foreach $SnapviewP_i(@SnapviewP_i)
+	print "\n$module - $place......\n";
+	&cleanerror;
+	###&command("setcs");
+	###&command("setcs"); # chenhuiren 090610 #hanjian20120810 svn don't need clearcase cpmmand
+	if ( &geterror )
 	{
-		if ( !chdir($SnapviewP_i) ) # 进入静态视图编译路径 , 如果无法进入 , 则报错 , 且退出
-		{
-			&printerror(0,"Failed Access Snapshot View Path '$SnapviewP_i' !\n");
-			&command("pause");
-			exit 1;
-		}
-		# 视图同步和更新源码 , 过程中如有错误 , 则报错 , 且退出
-		&cleanerror;
-	
-		$place = "Update_All of the code:";
-		print "\n$module - $place......\n";
-		&cleanerror;
-		$SnapviewP1_i = $SnapviewP_i;
-		chop($SnapviewP1_i);
-		print "$SnapviewP1_i !!!!!!!!!!!******\n";
-		#&command("update_i",$SnapviewP1_i,$verworkP."all-code_".$OSstring."_".$builddatetime."_update.log");
-		undef($SnapviewP1_i);
-
-		if ( &geterror )
-		{
-			&printerror(0,"@errors");
-			&command("pause");
-			exit 1;
-		}
-		
+		&printerror(0,"@errors");
+		&command("pause");
+		exit 1;
 	}
-	
-	
-	
-	
-	
-	
+	$place = "Update_All";
+	print "\n$module - $place......\n";
+	&cleanerror;
+	$SnapviewP1 = $SnapviewP;
+	chop($SnapviewP1);
+	print "$SnapviewP1 !!!!!!!!!!!******\n";
+	#&command("update",$SnapviewP1,$verworkP."all-code_".$builddatetime."_update.log");
+	undef($SnapviewP1);
+
+	if ( &geterror )
+	{
+		&printerror(0,"@errors");
+		&command("pause");
+		exit 1;
+	}
 	# 发布update LOG ??
 	# 回到工作路径
 	$place = "Backto_Script_Path";
@@ -211,7 +226,7 @@ else
 	# =====================================================================================================================
 	# 去除源码只读属性
 	$place = "DisReadonly_SourceCode";
-	#print "\n$module - $place......\n";
+	print "\n$module - $place......\n";
 	&cleanerror;
 	#&command("disreadonly",$SnapviewP); # 调用更新源码命令并输出错误信息到error.log中
 	&printerror(0,"@errors") if ( &geterror );
@@ -222,16 +237,12 @@ else
 
 # 编译开始之前的预处理
 &preprocess("b");
+#&command("pause");
 
 #======================================================================================================================
 # 整体编译之前删除编译信息文件夹中，所有旧的编译信息
-# 20130517 move form common.pl
-if ((($ISM eq 1)&&($OS eq 0))||($ISM eq 0))
-{
-	print "\n- del compileinfo.....\n";
-	my $tmptmp="*.*";
-  &command("del","f",$compileinfo_p.$tmptmp);
-	}
+# add by hanjian 20120824
+ &deletecompileinfo;
 
 #======================================================================================================================
 
@@ -249,43 +260,8 @@ undef($i);
 # =====================================================================================================================
 # 校验 , 发布 , 通知之前的预处理
 &preprocess("crni");
-
-
-#-------------------20150915 add 
-
-&getversionprocess;
-sub getversionprocess
-{
-  if ( $OS )
-  {
-    #$version_name=&get_version;
-    $version_name=&get_linux_version;
-    chomp($version_name);
-    print "!!!!!*****$version_name!!!!!!\n";
-    open (OUTFILE,">./outfile");
-    #print OUTFILE  $builddatetime."_R".$version_name; 
-	print OUTFILE  $UCMprj."_".$version."_R".$version_name."#T".$buildtime;
-    close(OUTFILE);
-  }
-  else
-  {
-    $version_name=&get_win_version;
-    chomp($version_name);
-    print "!!!!!*****$version_name!!!!!!\n";
-    open (OUTFILE,">./outfile");
-    #print OUTFILE  $builddatetime."_R".$version_name;
-	print OUTFILE  $UCMprj."_".$version."_R".$version_name."#T".$buildtime;
-    close(OUTFILE);
-  }
-}
-
-#-------------------20150915 add 
-
-
-
-
 # 处理windows和linux协同编译时的发布位置
-$RP = &revisepath(1,$ReleaseP.$builddate."\\".$UCMprj."_".$version."_R".$version_name."#T".$buildtime); # 根据发布规则在发布路径后加日前文件夹/日前时间文件夹以区分每次发布
+$RP = &revisepath(1,$ReleaseP.$builddatetime); # 根据发布规则在发布路径后加日前文件夹/日前时间文件夹以区分每次发布
 my $sharefile = $ReleaseP."share.txt";
 my $D = 0; # 如果share.txt已经存在,默认删除该文件
 my $C = 0; # 如果share.txt已经存在,默认不创建新的share文件
@@ -319,9 +295,7 @@ if ( $intoptions eq "a" )
 						use Time::Local;
 						my $dis = &difftime($builddatetime,$value[1]);
 						$dis = abs($dis);
-						my @synctime=split(/-/,$value[1]);
-						$RP = &revisepath(1,$ReleaseP.$builddate."\\".$UCMprj."_".$version."_R".$version_name."#T".$synctime[1]) if ( $dis <= $TS ); # 协同编译 , 获取共享文件中的共享发布路径
-						#$RP = &revisepath(1,$ReleaseP.$value[1]."_R".$version_name) if ( $dis <= $TS ); # 协同编译 , 获取共享文件中的共享发布路径
+						$RP = &revisepath(1,$ReleaseP.$value[1]) if ( $dis <= $TS ); # 协同编译 , 获取共享文件中的共享发布路径
 						no Time::Local;
 					}
 					else
@@ -430,152 +404,6 @@ undef($i);
 # =====================================================================================================================
 # 关闭编译错误信息文件
 close(BUILDERROR);
-
-########################################
-#add  by  fangyanzhi :  begin
-#调用findname  changehtml
-chdir $TOP_DIR;
-
-&findname("$TOP_DIR"."/"."$version"."/"."$builddatetime");
-
-
-&changehtml;	
-#add  by  fangyanzhi : end
-#######################################
-
-############################################################
-#add  by  fangyanzhi : begin
-#findname  作用是查找nopass.log的位置
-sub findname
-{
-	my ($finddir)=@_;
-	if ( -d $finddir )
-		{
-			if ( opendir (DH,$finddir) )
-			{
-				my @files= grep( !/^\.\.?/,readdir DH ) ;
-				close DH;
-				foreach $tmpfile (@files)
-					{
-					if ( $tmpfile =~ /nopassfile\.log/i )
-					 	{
-							$res="yes";
-							$NOPASSDIR=$finddir;
-							print "\nfind%%%\n";
-						}	
-					else
-                                              { 
-							if( -d  $finddir."/".$tmpfile )
-							{
-							my $subdir = $finddir."/"."$tmpfile";
-							&findname($subdir);
-							}
-					      } 
-				
-					}
-				
-		  	}
-	
-		}
-}
-
-
-#changehtml 的作用是将nopass.log 的格式转换成 HTML 
-sub changehtml
-{
-	if ( $res  eq "yes")
-	{
-		    my  %nopassmodules;
-			my $cnt=-1; 
-			my  @details;
-			print "\n now HTML !!!!!\n";
-			if ( -e  nopass.html )
-				{
-				unlink nopass.html;
-				&command("del","f","nopass.html");
-				}
-                        open HTMLFH ,">nopass.html";
-                        print  HTMLFH "<html>"."\n";
-						print  HTMLFH "<head>"."\n";
-                        print  HTMLFH  "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />"."\n";
-                        print  HTMLFH "</head>"."\n";
-                        print  HTMLFH "<body>"."\n";
-                   #     print  HTMLFH "<font style=\"font-weight:bold\">不通过</font>"."<br>";
-			if  (  open (NOPASSFILE,"$NOPASSDIR/nopassfile\.log") )
-				{
-					my  @modules =  <NOPASSFILE>;
-					close  NPOPASSFILE;
-					for   (my $i=0;$i<@modules;$i++)
-						{
-							 if ( length("$modules[$i]") == 0 )
-								{
-								     @tmplibs=();
-  								    undef @tmplibs;
-								     print  HTMLFH  "<HR style=\"border:3 double #987cb9\" width=\"80%\" color=#987cb9 SIZE=3>\										";
-							
-								}
-							 else
-								{
-								 	if (  $modules[$i]  =~/---.*---/)
-										{
-										       @tmp =  split /\s+/,$modules[$i];
-											   if  (  $CUR_OS  =~/MSWin32/i )
-											   {
-											    $modules[$i] = Encode::decode("gb2312","$modules[$i]");
-											   }
-											   elsif ( $CUR_OS   =~ /linux/i  )
-											   {
-											     print  "nothing  to do "."\n";
-											   }
-											#Encode::_utf8_on($modules[$i]);
-											#print  HTMLFH "<B>$tmp[1]<B>"."<br>";
-											#print  HTMLFH "<B>$modules[$i]<B>"."<br>";
-                      print  HTMLFH "<B>$modules[$i]<B>"."<br>";
-										}
-									else
-										{
-										       @tmplibs  =  split /\s+/,$modules[$i];
-										#	push(my @tmplibs,$modules[$i]);
-										#	print HTMLFH "$tmplibs[2]"."<br>";
-											 $liblist=$tmplibs[2];
-											if  ( $liblist =~ /10-common/ )
-											{
-												$liblist=~s/(.*)10-common/10-common/g;
-												print HTMLFH  "$liblist"."<br>";
-											}
-											#print HTMLFH "$modules[i]"."<br>";
-											#$details[$cnt]=[@tmplibs];
-											#print  "$details[$cnt]";
-											 #  for (my $j=0;$j<=$#{$details[$cnt]};$j++)
-
-                                        						#	{
-                                                					#	print  "$cnt $j  ";
-                                                					#	print  $details[$cnt][$j];
-                                        						#	}	
-										}
-
-
-
-								}
-						}
-				}
-			else
-				{
-				 	print  "error  open"."\n";
-				}
-			
-
-			print  HTMLFH "</body>"."\n";
-			print  HTMLFH "</html>"."\n";
-			close HTMLFH;
-	}
-
-}
-#add  by fangyanzhi   :end
-########################################################
-
-
-
 print "\n================================= END =================================\n";
 sub difftime
 {

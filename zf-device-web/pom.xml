@@ -78,11 +78,6 @@
             <artifactId>zf-device-common</artifactId>
             <version>1.0.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.kedacom.zf</groupId>
-            <artifactId>zf-commons</artifactId>
-            <version>1.0</version>
-        </dependency>
         <!-- 版本信息 -->
         <dependency>
             <groupId>com.kedacom.zf</groupId>

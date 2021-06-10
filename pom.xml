@@ -61,6 +61,7 @@
         <knife4j-spring-boot-starter.version>2.0.8</knife4j-spring-boot-starter.version>
         <validation.version>2.3.2.RELEASE</validation.version>
         <spring.kafka.version>2.6.3</spring.kafka.version>
+        <jedis.version>3.1.0</jedis.version>
     </properties>
 
     <!--通用依赖-->
@@ -193,6 +194,13 @@
                 <groupId>org.springframework.kafka</groupId>
                 <artifactId>spring-kafka</artifactId>
                 <version>${spring.kafka.version}</version>
+            </dependency>
+
+            <!--jedis 依赖-->
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
             </dependency>
 
         </dependencies>

@@ -11,6 +11,16 @@
 
     <artifactId>zf-device-web</artifactId>
     <description>项目web统一访问模块</description>
+    <version>1.0</version>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -68,15 +78,27 @@
             <artifactId>zf-device-common</artifactId>
             <version>1.0.0</version>
         </dependency>
-<!--        &lt;!&ndash; 版本信息 &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>com.kedacom.zf</groupId>-->
-<!--            <artifactId>zf-serviceinfo-spring-boot-starter</artifactId>-->
-<!--            <version>1.0.0</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.kedacom.zf</groupId>
+            <artifactId>zf-commons</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <!-- 版本信息 -->
+        <dependency>
+            <groupId>com.kedacom.zf</groupId>
+            <artifactId>zf-serviceinfo-spring-boot-starter</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
+        <!--重要 若是不设置resource 会致使application.yaml中的@@找不到pom文件中的配置-->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -48,4 +48,6 @@ public interface StreamMediaConvert {
 
     QueryHistoryUrlRequest convertQueryHistoryUrlDTO(QueryHistoryUrlDTO request);
 
+    SendOrderDataRequest convertSendOrderDataDTO(SendOrderDataDTO request);
+
 }

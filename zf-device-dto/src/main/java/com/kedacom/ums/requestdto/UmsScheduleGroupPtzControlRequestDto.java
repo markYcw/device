@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "调度组PTZ控制请求参数类")
+@ApiModel(value = "调度组PTZ控制请求参数类:DeviceID为设备国标id")
 public class UmsScheduleGroupPtzControlRequestDto implements Serializable {
 
     @NotBlank(message = "umsId不能为空")
@@ -25,8 +25,8 @@ public class UmsScheduleGroupPtzControlRequestDto implements Serializable {
     @ApiModelProperty(value = "调度组Id")
     private String GroupID;
 
-    @NotBlank(message = "设备Id不能为空")
-    @ApiModelProperty(value = "设备Id")
+    @NotBlank(message = "设备国标Id不能为空")
+    @ApiModelProperty(value = "设备国标Id")
     private String DeviceID;
 
     @NotNull(message = "PTZ控制状态不能为空")

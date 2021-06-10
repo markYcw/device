@@ -175,4 +175,12 @@ public interface StreamMediaApi {
     @PostMapping("/queryHistoryUrl")
     BaseResult<QueryHistoryUrlVO> queryHistoryUrl(@RequestBody QueryHistoryUrlDTO queryHistoryUrlDTO);
 
+    /**
+     * 发送宏指令数据
+     *
+     * @param sendOrderDataDTO
+     * @return
+     */
+    @PostMapping("/sendOrderData")
+    BaseResult<Boolean> sendOrderData(@RequestBody SendOrderDataDTO sendOrderDataDTO);
 }

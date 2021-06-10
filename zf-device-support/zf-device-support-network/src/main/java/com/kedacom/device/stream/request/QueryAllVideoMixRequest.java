@@ -1,5 +1,6 @@
 package com.kedacom.device.stream.request;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -16,6 +17,7 @@ public class QueryAllVideoMixRequest extends BaseRequest {
     private static final String COMMAND = "queryallvideomix";
 
     @ApiModelProperty("画面合成设备分组id")
+    @JSONField(name = "GroupID")
     private String GroupID;
 
     @Override

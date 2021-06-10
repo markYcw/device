@@ -49,30 +49,29 @@ public class ConnectorListenerImpl implements ConnectorListener {
             List<DeviceInfoEntity> beforeLoginList = deviceMapper.selectList(queryWrapper);
             if (CollectionUtil.isNotEmpty(beforeLoginList)) {
                 log.info("连接事件监听status---已连接,设备登录:{}", beforeLoginList);
-                for (DeviceInfoEntity deviceInfoEntity : beforeLoginList) {
-                    LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertDeviceInfo(deviceInfoEntity);
-                    loginRequest.setDeviceType(DeviceConstants.DEVICETYPE);
-                    LoginResponse response = umsClient.login(loginRequest);
-                    deviceInfoEntity.setSessionId(String.valueOf(response.acquireSsid()));
-                    deviceInfoEntity.setUpdateTime(new Date());
-                    deviceMapper.updateById(deviceInfoEntity);
-                }
+                // 只获取第一条平台信息，登录
+                DeviceInfoEntity deviceInfoEntity = beforeLoginList.get(0);
+                LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertDeviceInfo(deviceInfoEntity);
+                loginRequest.setDeviceType(DeviceConstants.DEVICETYPE);
+                LoginResponse response = umsClient.login(loginRequest);
+                deviceInfoEntity.setSessionId(String.valueOf(response.acquireSsid()));
+                deviceInfoEntity.setUpdateTime(new Date());
+                deviceMapper.updateById(deviceInfoEntity);
             }
 
             List<DeviceInfoEntity> afterLoginList = deviceMapper.selectList(queryWrapper);
             if (CollectionUtil.isNotEmpty(afterLoginList)) {
                 log.info("连接事件监听status---已连接,设备同步:{}", afterLoginList);
-                for (DeviceInfoEntity deviceInfoEntity : afterLoginList) {
-                    UmsDeviceInfoSyncRequestDto request = new UmsDeviceInfoSyncRequestDto();
-                    request.setUmsId(deviceInfoEntity.getId());
-                    ThreadPoolUtil.getInstance().submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            deviceManagerService.syncDeviceData(request);
-                        }
-                    });
-
-                }
+                // 只获取第一条平台信息，同步设备
+                DeviceInfoEntity deviceInfoEntity = afterLoginList.get(0);
+                UmsDeviceInfoSyncRequestDto request = new UmsDeviceInfoSyncRequestDto();
+                request.setUmsId(deviceInfoEntity.getId());
+                ThreadPoolUtil.getInstance().submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        deviceManagerService.syncDeviceData(request);
+                    }
+                });
             }
 
         } catch (KMTimeoutException e) {

@@ -1,5 +1,6 @@
 package com.kedacom.device.stream.request;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.kedacom.core.pojo.BaseRequest;
 import com.kedacom.streamMedia.info.DrawText;
 import com.kedacom.streamMedia.info.VideoMixer;
@@ -22,6 +23,7 @@ public class UpdateVideoMixRequest extends BaseRequest {
     private static final String COMMAND = "updatevideomix";
 
     @ApiModelProperty("画面合成设备分组id")
+    @JSONField(name = "GroupID")
     private String GroupID;
 
     @ApiModelProperty("画面合成ID")

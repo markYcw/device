@@ -92,6 +92,7 @@ public class DiscussionManagerServiceImpl implements DiscussionManagerService {
         String sessionId = entity.getSessionId();
         QueryDiscussionGroupRequest queryDiscussionGroupRequest = new QueryDiscussionGroupRequest();
         queryDiscussionGroupRequest.setSsid(Integer.valueOf(sessionId));
+        queryDiscussionGroupRequest.setGroupID(request.getGroupID());
         QueryDiscussionGroupResponse response = umsClient.querydiscussion(queryDiscussionGroupRequest);
         String errCode = "讨论组成员设备为空";
         handleResponseUtil.handleOperateRes(errCode, DeviceErrorEnum.SCHEDULE_DISCUSSION_DEVICE_FAILED, response);

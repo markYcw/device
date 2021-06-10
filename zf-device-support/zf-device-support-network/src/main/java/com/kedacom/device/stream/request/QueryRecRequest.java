@@ -1,11 +1,10 @@
 package com.kedacom.device.stream.request;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
@@ -22,6 +21,7 @@ public class QueryRecRequest extends BaseRequest {
     private static final String COMMAND = "queryrec";
 
     @ApiModelProperty("具体设备ID")
+    @JSONField(name = "DeviceID")
     private String DeviceID;
 
     @ApiModelProperty(value = "域ID。*在跨域访问场景必填" +

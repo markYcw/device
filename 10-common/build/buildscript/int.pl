@@ -31,60 +31,60 @@ chomp($TOP_DIR);
 print "\n=======================================================================\n";
 print "\n                            INT BUILD START                            \n";
 print "\n=======================================================================\n";
-# У��ű��������
+# 校验脚本输入参数
 $place = "Validate_Script_Para";
 print "\n$module - $place......\n";
 # def 3
 for ( my $i = 0 ; $i < @ARGV; $i++ )
 {
-	if ( $ARGV[$i] =~ /^-/ ) # "-"��ʶoptions
+	if ( $ARGV[$i] =~ /^-/ ) # "-"标识options
 	{
 		if ( $intoptions eq "" )
 		{
 			$intoptions = $ARGV[$i];
-			$intoptions =~ s/^-//g; # ȥ��������ʶ��'-'֮����д���
+			$intoptions =~ s/^-//g; # 去除参数标识符'-'之后进行处理
 			if ( $intoptions eq "" )
 			{
 				print "Invalid Option '$ARGV[$i]' !\n";
-				exit 1; # �����Ĺؼ�����ȻΪ�����˳���������
+				exit 1; # 处理后的关键字仍然为空则退出整个程序
 			}
-			$intoptions = lc($intoptions); # ������ת��ΪСд
+			$intoptions = lc($intoptions); # 将参数转化为小写
 			if (( $intoptions ne "a" ) && ( $intoptions ne "s" ))
 			{
 				print "Invalid Option '$ARGV[$i]' !\n";
-				exit 1; # �����Ĺؼ�����ȻΪ�����˳���������
+				exit 1; # 处理后的关键字仍然为空则退出整个程序
 			}
 		}
 		else
 		{
 			print "ReDefine Options '$ARGV[$i]' after '$intoptions' !\n";
-			exit 1; # ������������ȷ���˳���������
+			exit 1; # 参数数量不正确则退出整个程序
 		}
 	}
-	elsif ( $version eq "" ) # ��һ������Ϊ�汾��
+	elsif ( $version eq "" ) # 第一个参数为版本号
 	{
 		$version = $ARGV[$i];
 	}
-	elsif (( $intspecRP eq "" ) && ( $ARGV[$i] =~ /^[\\\/]+/ )) # ����������Ϊָ������·��
+	elsif (( $intspecRP eq "" ) && ( $ARGV[$i] =~ /^[\\\/]+/ )) # 第三个参数为指定发布路径
 	{
 		$intspecRP = $ARGV[$i];
 	}
 	else
 	{
 		print "Redundant ARGVmeters '$ARGV[$i]' !\n";
-		exit 1; # ������������ȷ���˳���������
+		exit 1; # 参数数量不正确则退出整个程序
 	}
 }
 undef($i);
 if ( $version eq "" )
 {
 	print "Lost 'Version' ARGVmeters in '@ARGV' !\n";
-	exit 1; # ȱ�ٹؼ�����
+	exit 1; # 缺少关键参数
 }
 if (( $intoptions eq "a" ) && ( $intspecRP ne "" ))
 {
 	print "Not Match options '$intoptions' and specRP '$intspecRP' in '@ARGV' !\n";
-	exit 1; # ȱ�ٹؼ�����
+	exit 1; # 缺少关键参数
 }
 require ("common.pl");
 
@@ -93,7 +93,7 @@ require ("common.pl");
 
 
 # =====================================================================================================================
-# ��ȡģ���б�
+# 获取模块列表
 $place = "Get_Module_List";
 print "\n$module - $place......\n";
 if ( !open (MODULES,$workpath."$version.ini") )
@@ -118,17 +118,17 @@ if ( @modulelines == 0 )
 {
 	&printerror(0,"Failed Found Modules Group in '$workpath$version".".ini' !\n");
 	&command("pause");
-	exit 1; # �Ҳ����汾����ģ�����˳���������
+	exit 1; # 找不到版本编译模块则退出整个程序
 }
 # def 3
 foreach $moduleline (@modulelines)
 {
-	my @part = &getvalue(" ",$moduleline); # 0����ϵͳ 1С�鸺�����ʼ� 2�����ؼ����б� 3ģ���б�
+	my @part = &getvalue(" ",$moduleline); # 0操作系统 1小组负责人邮件 2环境关键字列表 3模块列表
 	if ( @part < 4 )
 	{
 		&printerror(0,"Wrong Format in '$moduleline' !\n");
 		&command("pause");
-		exit 1; # ģ���б��ʽ�������˳���������
+		exit 1; # 模块列表格式错误则退出整个程序
 	}
 	$part[1] = $CMOM if ( $part[1] =~ /^-*$/ );
 	$part[2] = $defenv if ( $part[2] =~ /^-*$/ );
@@ -139,7 +139,7 @@ foreach $moduleline (@modulelines)
 undef($moduleline);
 undef(@part);
 undef(@modulelines);
-# ��ȫ��ģ��д��allmodules.log�ļ�
+# 将全部模块写入allmodules.log文件
 for ( my $i = 0 ; $i < @modulelist ; $i++ )
 {
 	my @part = &getvalue(",",$modulelist[$i]);
@@ -156,13 +156,13 @@ else
 {
 	########hanjian 20140612#########################
 	##here  update  code
-	#�� forѭ��?
+	#用 for循环?
 	#################################################
-	# ��ȡ���� , ����Դ��
+	# 获取基线 , 更新源码
 	$place = "Access_SnapshotView_Path";
 	print "\n$module - $place......\n";
 	
-	# ��ͼͬ���͸���Դ��֮ǰ , Windows����ϵͳ����Ҫ���û�������
+	# 视图同步和更新源码之前 , Windows操作系统上需要设置环境变量
 	if ( !$OS )
 	{
 		$place = "Set_Update_Env";
@@ -172,13 +172,13 @@ else
 	
 	foreach $SnapviewP_i(@SnapviewP_i)
 	{
-		if ( !chdir($SnapviewP_i) ) # ���뾲̬��ͼ����·�� , ����޷����� , �򱨴� , ���˳�
+		if ( !chdir($SnapviewP_i) ) # 进入静态视图编译路径 , 如果无法进入 , 则报错 , 且退出
 		{
 			&printerror(0,"Failed Access Snapshot View Path '$SnapviewP_i' !\n");
 			&command("pause");
 			exit 1;
 		}
-		# ��ͼͬ���͸���Դ�� , ���������д��� , �򱨴� , ���˳�
+		# 视图同步和更新源码 , 过程中如有错误 , 则报错 , 且退出
 		&cleanerror;
 	
 		$place = "Update_All of the code:";
@@ -204,27 +204,27 @@ else
 	
 	
 	
-	# ����update LOG ??
-	# �ص�����·��
+	# 发布update LOG ??
+	# 回到工作路径
 	$place = "Backto_Script_Path";
 	&printerror(0,"Warnning:Failed Back to Work Path '$workpath' !\n") if ( !chdir($workpath) );
 	# =====================================================================================================================
-	# ȥ��Դ��ֻ������
+	# 去除源码只读属性
 	$place = "DisReadonly_SourceCode";
 	#print "\n$module - $place......\n";
 	&cleanerror;
-	#&command("disreadonly",$SnapviewP); # ���ø���Դ��������������Ϣ��error.log��
+	#&command("disreadonly",$SnapviewP); # 调用更新源码命令并输出错误信息到error.log中
 	&printerror(0,"@errors") if ( &geterror );
 }
 # =====================================================================================================================
 
 
 
-# ���뿪ʼ֮ǰ��Ԥ����
+# 编译开始之前的预处理
 &preprocess("b");
 
 #======================================================================================================================
-# �������֮ǰɾ��������Ϣ�ļ����У����оɵı�����Ϣ
+# 整体编译之前删除编译信息文件夹中，所有旧的编译信息
 # 20130517 move form common.pl
 if ((($ISM eq 1)&&($OS eq 0))||($ISM eq 0))
 {
@@ -235,7 +235,7 @@ if ((($ISM eq 1)&&($OS eq 0))||($ISM eq 0))
 
 #======================================================================================================================
 
-# ���뿪ʼ , ������
+# 编译开始 , 仅编译
 $place = "Module_Process_Compile";
 print "\n$module - $place......\n";
 for ( my $i = 0 ; $i < @modulelist ; $i++ )
@@ -245,9 +245,9 @@ for ( my $i = 0 ; $i < @modulelist ; $i++ )
 }
 undef(@intmodules);
 undef($i);
-# ����֮��������� , ����У�� , ���� , ֪ͨȫ����������������
+# 编译之后的续处理 , 放在校验 , 发布 , 通知全部结束后做续处理
 # =====================================================================================================================
-# У�� , ���� , ֪֮ͨǰ��Ԥ����
+# 校验 , 发布 , 通知之前的预处理
 &preprocess("crni");
 
 
@@ -284,11 +284,11 @@ sub getversionprocess
 
 
 
-# ����windows��linuxЭͬ����ʱ�ķ���λ��
-$RP = &revisepath(1,$ReleaseP.$builddate."\\".$UCMprj."_".$version."_R".$version_name."#T".$buildtime); # ���ݷ��������ڷ���·�������ǰ�ļ���/��ǰʱ���ļ���������ÿ�η���
+# 处理windows和linux协同编译时的发布位置
+$RP = &revisepath(1,$ReleaseP.$builddate."\\".$UCMprj."_".$version."_R".$version_name."#T".$buildtime); # 根据发布规则在发布路径后加日前文件夹/日前时间文件夹以区分每次发布
 my $sharefile = $ReleaseP."share.txt";
-my $D = 0; # ���share.txt�Ѿ�����,Ĭ��ɾ�����ļ�
-my $C = 0; # ���share.txt�Ѿ�����,Ĭ�ϲ������µ�share�ļ�
+my $D = 0; # 如果share.txt已经存在,默认删除该文件
+my $C = 0; # 如果share.txt已经存在,默认不创建新的share文件
 if ( $intoptions eq "a" )
 {
 	$place = "Build_Together";
@@ -299,14 +299,14 @@ if ( $intoptions eq "a" )
 		print "\nGetting Share...\n";
 		my $line = <SHARE>;
 		close(SHARE);
-		$D = 1; # Share�ļ��Ѿ�����,�����Ҫɾ�����ļ�
+		$D = 1; # Share文件已经存在,因此需要删除该文件
 		my @value = &getvalue(":",$line);
 		if ( @value == 2 )
 		{
 			my @OSstr = ("Windows","Linux");
 			my $str = $OSstr[!$OS];
 			my $str1 = $OSstr[$OS];
-			if ( $value[0] =~ /^$str$/i ) # ���뵱share.txt�еĲ���ϵͳ��ʶ�뵱ǰ����ϵͳ�෴ʱ,��ȷ����ֵ������Ч.
+			if ( $value[0] =~ /^$str$/i ) # 必须当share.txt中的操作系统标识与当前操作系统相反时,才确认其值可能有效.
 			{
 				if ( $WF && ( $value[0] =~ /^Linux$/i ))
 				{
@@ -314,14 +314,14 @@ if ( $intoptions eq "a" )
 				}
 				else
 				{
-					if ( $value[1] =~ /^\d{8}-\d{4}$/ ) # ���ڷ���yyyymmdd-hhmm��ʽ
+					if ( $value[1] =~ /^\d{8}-\d{4}$/ ) # 日期符合yyyymmdd-hhmm格式
 					{
 						use Time::Local;
 						my $dis = &difftime($builddatetime,$value[1]);
 						$dis = abs($dis);
 						my @synctime=split(/-/,$value[1]);
-						$RP = &revisepath(1,$ReleaseP.$builddate."\\".$UCMprj."_".$version."_R".$version_name."#T".$synctime[1]) if ( $dis <= $TS ); # Эͬ���� , ��ȡ�����ļ��еĹ�����·��
-						#$RP = &revisepath(1,$ReleaseP.$value[1]."_R".$version_name) if ( $dis <= $TS ); # Эͬ���� , ��ȡ�����ļ��еĹ�����·��
+						$RP = &revisepath(1,$ReleaseP.$builddate."\\".$UCMprj."_".$version."_R".$version_name."#T".$synctime[1]) if ( $dis <= $TS ); # 协同编译 , 获取共享文件中的共享发布路径
+						#$RP = &revisepath(1,$ReleaseP.$value[1]."_R".$version_name) if ( $dis <= $TS ); # 协同编译 , 获取共享文件中的共享发布路径
 						no Time::Local;
 					}
 					else
@@ -338,7 +338,7 @@ if ( $intoptions eq "a" )
 				}
 				else
 				{
-					$C = 1; # ͬ����ϵͳ�±�����,��Ҫ���´���share�ļ�
+					$C = 1; # 同操作系统下编译多次,需要重新创建share文件
 				}
 			}
 			else
@@ -351,7 +351,7 @@ if ( $intoptions eq "a" )
 			&printerror(0,"Wrong Format of '$line' in '$sharefile' !\n");
 		}
 	}
-	elsif ( !-e $sharefile ) # ���share�ļ������� , �򴴽����ļ��ṩ��Эͬ���빲��
+	elsif ( !-e $sharefile ) # 如果share文件不存在 , 则创建该文件提供给协同编译共享
 	{
 		if ( $WF && $OS )
 		{
@@ -362,7 +362,7 @@ if ( $intoptions eq "a" )
 			$C = 1;
 		}
 	}
-	else # share�ļ����ڵ��޷���
+	else # share文件存在但无法打开
 	{
 		$D = 1;
 	}
@@ -374,19 +374,19 @@ elsif ( $intoptions eq "s" )
 	$RP = &revisepath(1,$intspecRP) if ( $intspecRP ne "" );
 	if ( -e $sharefile )
 	{
-		$D = 1; # ���share�ļ��Ѿ����� , ��ɾ�����ļ�
+		$D = 1; # 如果share文件已经存在 , 则删除该文件
 	}
 }
 if ( $D )
 {
 	print "\nDeleting Share...\n";
 	&cleanerror;
-	&command("del","f",$sharefile); # ��ȡ��������·����ɾ�������ļ�
+	&command("del","f",$sharefile); # 获取到共享发布路径后即删除共享文件
 	if ( &geterror )
 	{
 		&printerror(0,"Failed Del ShareFile '$sharefile' !\n");
 		&command("pause");
-		exit 1; # �Ҳ����汾����ģ�����˳���������
+		exit 1; # 找不到版本编译模块则退出整个程序
 	}
 	else
 	{
@@ -402,7 +402,7 @@ if ( $C )
 		close(SHARE);
 		&printerror(1,"$place : Successfully Create ShareFile '$sharefile' !\n");
 	}
-	else # ����share�ļ�ʧ��
+	else # 创建share文件失败
 	{
 		&printerror(0,"Failed Create ShareFile '$sharefile' !\n");
 	}
@@ -414,7 +414,7 @@ undef($intoptions);
 undef($intspecRP);
 &printerror(1,"\n$place : ReleasePlace : $RP\n");
 # =====================================================================================================================
-# У�� , ���� , ֪ͨ
+# 校验 , 发布 , 通知
 $place = "Module_Process_Check_Release_Notify";
 print "\n$module - $place......\n";
 for ( my $i = 0 ; $i < @modulelist ; $i++ )
@@ -425,15 +425,15 @@ for ( my $i = 0 ; $i < @modulelist ; $i++ )
 }
 undef(@intmodules);
 undef($i);
-# У�� , ���� , ֪֮ͨ���������
+# 校验 , 发布 , 通知之后的续处理
 &afterprocess("bcrni");
 # =====================================================================================================================
-# �رձ��������Ϣ�ļ�
+# 关闭编译错误信息文件
 close(BUILDERROR);
 
 ########################################
 #add  by  fangyanzhi :  begin
-#����findname  changehtml
+#调用findname  changehtml
 chdir $TOP_DIR;
 
 &findname("$TOP_DIR"."/"."$version"."/"."$builddatetime");
@@ -445,7 +445,7 @@ chdir $TOP_DIR;
 
 ############################################################
 #add  by  fangyanzhi : begin
-#findname  �����ǲ���nopass.log��λ��
+#findname  作用是查找nopass.log的位置
 sub findname
 {
 	my ($finddir)=@_;
@@ -480,7 +480,7 @@ sub findname
 }
 
 
-#changehtml �������ǽ�nopass.log �ĸ�ʽת���� HTML 
+#changehtml 的作用是将nopass.log 的格式转换成 HTML 
 sub changehtml
 {
 	if ( $res  eq "yes")
@@ -500,7 +500,7 @@ sub changehtml
                         print  HTMLFH  "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />"."\n";
                         print  HTMLFH "</head>"."\n";
                         print  HTMLFH "<body>"."\n";
-                   #     print  HTMLFH "<font style=\"font-weight:bold\">��ͨ��</font>"."<br>";
+                   #     print  HTMLFH "<font style=\"font-weight:bold\">不通过</font>"."<br>";
 			if  (  open (NOPASSFILE,"$NOPASSDIR/nopassfile\.log") )
 				{
 					my  @modules =  <NOPASSFILE>;
@@ -587,21 +587,21 @@ sub difftime
 	}
 	else
 	{
-		my @tm = ("",$s,$s,$s,$s,$s); # ����($sec,$min,$hour,$mday,$mon,$year)����
-		$tm[1] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$5/g; # ��ȡ'min'
-		$tm[2] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$4/g; # ��ȡ'hour'
-		$tm[3] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$3/g; # ��ȡ'mday'
-		$tm[4] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$2/g; # ��ȡ'mon'
-		$tm[4] = $tm[4]-1; # timelocal���±�����"0~11"��Χ��
-		$tm[5] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$1/g; # ��ȡ'year'
+		my @tm = ("",$s,$s,$s,$s,$s); # 按照($sec,$min,$hour,$mday,$mon,$year)推入
+		$tm[1] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$5/g; # 获取'min'
+		$tm[2] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$4/g; # 获取'hour'
+		$tm[3] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$3/g; # 获取'mday'
+		$tm[4] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$2/g; # 获取'mon'
+		$tm[4] = $tm[4]-1; # timelocal的月必须在"0~11"范围中
+		$tm[5] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$1/g; # 获取'year'
 		my $st = timelocal(@tm);
-		my @tm = ("",$d,$d,$d,$d,$d); # ����($sec,$min,$hour,$mday,$mon,$year)����
-		$tm[1] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$5/g; # ��ȡ'min'
-		$tm[2] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$4/g; # ��ȡ'hour'
-		$tm[3] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$3/g; # ��ȡ'mday'
-		$tm[4] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$2/g; # ��ȡ'mon'
-		$tm[4] = $tm[4]-1; # timelocal���±�����"0~11"��Χ��
-		$tm[5] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$1/g; # ��ȡ'year'
+		my @tm = ("",$d,$d,$d,$d,$d); # 按照($sec,$min,$hour,$mday,$mon,$year)推入
+		$tm[1] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$5/g; # 获取'min'
+		$tm[2] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$4/g; # 获取'hour'
+		$tm[3] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$3/g; # 获取'mday'
+		$tm[4] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$2/g; # 获取'mon'
+		$tm[4] = $tm[4]-1; # timelocal的月必须在"0~11"范围中
+		$tm[5] =~ s/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/$1/g; # 获取'year'
 		my $dt = timelocal(@tm);
 		$sd = $st-$dt;
 	}

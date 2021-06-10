@@ -1,4 +1,4 @@
-#！/bin/bash
+#!/bin/bash
 mvn clean package -Dmaven.test.skip=true > ./zf-device-cloud-platform.txt
 dir=./10-common/version/compileinfo
 if [ ! -d  $dir ];then
@@ -17,7 +17,7 @@ else
   echo ./10-common/version/release/linux/zf-device-cloud-platform exist
 fi
 
-cp cp ./zf-device-web/target/*.jar    ./10-common/version/release/linux/zf-device-cloud-platform/
+cp ./zf-device-core/target/*.jar    ./10-common/version/release/linux/zf-device-cloud-platform/
 
 echo compile over
 

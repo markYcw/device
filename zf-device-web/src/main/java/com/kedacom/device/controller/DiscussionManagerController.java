@@ -27,7 +27,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("ums/operator")
-@Api(value = "讨论组管理接口",tags = "讨论组管理接口（基于融合调度服务）")
+@Api(value = "讨论组管理接口（基于融合调度服务）",tags = "讨论组管理接口（基于融合调度服务）")
 public class DiscussionManagerController {
 
     @Autowired

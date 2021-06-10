@@ -41,4 +41,6 @@ public interface StreamMediaService {
 
     QueryHistoryUrlVO queryHistoryUrl(QueryHistoryUrlDTO queryHistoryUrlDTO);
 
+    Boolean sendOrderData(SendOrderDataDTO sendOrderDataDTO);
+
 }

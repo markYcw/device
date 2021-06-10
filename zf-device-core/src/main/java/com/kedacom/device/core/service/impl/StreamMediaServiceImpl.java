@@ -1,9 +1,11 @@
 package com.kedacom.device.core.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.kedacom.core.pojo.BaseResponse;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.StreamMediaConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
+import com.kedacom.device.core.exception.StreamMediaException;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.service.StreamMediaService;
 import com.kedacom.device.core.utils.HandleResponseUtil;
@@ -41,6 +43,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("开启录像入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         StartRecRequest startRecRequest = streamMediaConvert.convertStartRecRequest(request);
@@ -60,6 +64,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("停止录像入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         StopRecRequest stopRecRequest = streamMediaConvert.convertStopRecRequest(request);
@@ -80,6 +86,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("查询录像记录入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         QueryRecRequest queryRecRequest = streamMediaConvert.convertQueryRecRequest(request);
@@ -97,6 +105,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("开启音频混音入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         // 自定义的分组id
@@ -120,6 +130,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("停止音频混音入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         StopAudioMixRequest stopAudioMixRequest = streamMediaConvert.convertStopAudioMixRequest(request);
@@ -137,6 +149,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("更新音频混音入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         UpdateAudioMixRequest updateAudioMixRequest = streamMediaConvert.convertUpdateAudioMixRequest(request);
@@ -154,6 +168,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("查询所有混音入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         QueryAllAudioMixRequest queryAllAudioMixRequest = streamMediaConvert.convertQueryAllAudioMixRequest(request);
@@ -171,6 +187,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("查询混音信息入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         QueryAudioMixRequest queryAudioMixRequest = streamMediaConvert.convertQueryAudioMixRequest(request);
@@ -188,6 +206,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("开始画面合成入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         String groupId = UUID.randomUUID().toString().replace("-", "");
@@ -210,6 +230,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("停止画面合成入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         StopVideoMixRequest stopVideoMixRequest = streamMediaConvert.convertStopVideoMixRequest(request);
@@ -227,6 +249,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("更新画面合成入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         UpdateVideoMixRequest updateVideoMixRequest = streamMediaConvert.convertUpdateVideoMixRequest(request);
@@ -244,6 +268,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("查询所有画面合成入参信息 :{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         QueryAllVideoMixRequest queryAllVideoMixRequest = new QueryAllVideoMixRequest();
@@ -261,6 +287,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("查询画面信息入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         QueryVideoMixRequest queryVideoMixRequest = streamMediaConvert.convertQueryVideoMixRequest(request);
@@ -278,6 +306,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("发送透明通道数据入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         SendTransDataRequest sendTransDataRequest = streamMediaConvert.convertSendTransDataDTO(request);
@@ -293,7 +323,10 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     public QueryRealUrlVO queryRealUrl(QueryRealUrlDTO request) {
         String error = "查询实时资源URL失败:{},{},{}";
         log.info("查询实时资源URL入参信息:{}", request);
+
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         QueryRealUrlRequest queryRealUrlRequest = streamMediaConvert.convertQueryRealUrlDTO(request);
@@ -309,7 +342,10 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     public QueryHistoryUrlVO queryHistoryUrl(QueryHistoryUrlDTO request) {
         String error = "查询历史资源URL失败:{},{},{}";
         log.info("查询历史资源URL入参信息:{}", request);
+
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
         QueryHistoryUrlRequest queryHistoryUrlRequest = streamMediaConvert.convertQueryHistoryUrlDTO(request);
@@ -319,5 +355,24 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("查询历史资源UR应答信息:{}", res);
         responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_HISTORY_URL_FAILED, res);
         return res.acquireData(QueryHistoryUrlVO.class);
+    }
+
+    @Override
+    public Boolean sendOrderData(SendOrderDataDTO request) {
+        String error = "发送宏指令数据失败:{},{},{}";
+        log.info("发送宏指令数据入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        SendOrderDataRequest sendOrderDataRequest = streamMediaConvert.convertSendOrderDataDTO(request);
+        sendOrderDataRequest.setSsid(ssid);
+        log.info("发送宏指令数据交互参数:{}", sendOrderDataRequest);
+        SendOrderDataResponse res = client.sendOrderData(sendOrderDataRequest);
+        log.info("发送宏指令数据应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.SEND_TRANS_DATA_FAILED, res);
+        return true;
     }
 }

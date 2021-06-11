@@ -1,5 +1,6 @@
 package com.kedacom.device;
 
+import com.kedacom.common.annotation.ZFApplicationCloud;
 import com.kedacom.core.anno.EnableKmProxy;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  */
 @SpringBootApplication(scanBasePackages = "com.kedacom")
 @EnableAsync
-//@ZFApplicationCloud
+@ZFApplicationCloud
 @EnableFeignClients(basePackages = "com.kedacom.device.core.msp")
 @EnableKmProxy(proxyPackages = "com.kedacom.device", ipAddr = "${zf.kmProxy.server_addr}", notifyPackages = "com.kedacom.device.core.event")
 public class DeviceServer {

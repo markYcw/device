@@ -11,7 +11,6 @@
 
     <artifactId>zf-device-web</artifactId>
     <description>项目web统一访问模块</description>
-    <version>1.0</version>
 
     <properties>
         <java.version>1.8</java.version>

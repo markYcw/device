@@ -32,11 +32,6 @@
             <artifactId>mapstruct</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.belerweb</groupId>
-            <artifactId>pinyin4j</artifactId>
-            <version>2.5.1</version>
-        </dependency>
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>29.0-jre</version>
@@ -46,10 +41,11 @@
             <artifactId>guava-retrying</artifactId>
             <version>2.0.0</version>
         </dependency>
+        <!-- 版本信息 -->
         <dependency>
             <groupId>com.kedacom.zf</groupId>
-            <artifactId>zf-commons</artifactId>
-            <version>1.0</version>
+            <artifactId>zf-serviceinfo-spring-boot-starter</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

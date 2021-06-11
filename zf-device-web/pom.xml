@@ -12,6 +12,7 @@
     <artifactId>zf-device-web</artifactId>
     <description>项目web统一访问模块</description>
 
+
     <properties>
         <java.version>1.8</java.version>
         <maven.compiler.source>1.8</maven.compiler.source>

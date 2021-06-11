@@ -5,30 +5,26 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.kedacom.device.core.constant.DeviceConstants;
-import com.kedacom.device.core.constant.DeviceErrorEnum;
-import com.kedacom.device.core.utils.HandleResponseUtil;
-import com.kedacom.device.core.utils.PinYinUtils;
-import com.kedacom.device.ums.RepeatDeviceRequest;
-import com.kedacom.device.ums.request.QueryScheduleGroupRequest;
-import com.kedacom.device.ums.response.QuerySubDeviceInfoResponse;
-import com.kedacom.ums.responsedto.SubDeviceInfoResponseVo;
+import com.kedacom.common.utils.PinYinUtils;
 import com.kedacom.device.core.constant.UmsMod;
 import com.kedacom.device.core.convert.UmsSubDeviceConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
+import com.kedacom.device.core.utils.HandleResponseUtil;
+import com.kedacom.device.ums.RepeatDeviceRequest;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.QueryDeviceRequest;
+import com.kedacom.device.ums.response.QuerySubDeviceInfoResponse;
+import com.kedacom.ums.responsedto.SubDeviceInfoResponseVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.List;
 
-import static com.kedacom.device.core.constant.DeviceConstants.*;
+import static com.kedacom.device.core.constant.DeviceConstants.REQUEST2;
 
 /**
  * @author van.shu

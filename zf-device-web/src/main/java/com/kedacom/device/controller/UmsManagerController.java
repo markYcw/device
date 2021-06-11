@@ -11,6 +11,7 @@ import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -118,6 +119,16 @@ public class UmsManagerController {
     public BaseResult deviceStatusRegister(@Valid @RequestBody AcceptUrlListen listener, BindingResult result) {
         DeviceStatusListenerManager.getInstance().register(listener);
         return BaseResult.succeed("注册成功");
+    }
+
+    @PostMapping("/getDeviceInfoById")
+    @ApiOperation(value = "根据平台id查询平台信息")
+    public BaseResult<UmsDeviceInfoSelectByIdResponseDto> getDeviceInfoById(@Valid @RequestBody UmsDeviceInfoSelectByIdRequestDto requestDto, BindingResult result) {
+
+        ValidUtils.paramValid(result);
+        UmsDeviceInfoSelectByIdResponseDto responseDto = umsManagerService.getDeviceInfoById(requestDto);
+
+        return BaseResult.succeed("查询成功", responseDto);
     }
 
 }

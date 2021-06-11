@@ -65,4 +65,11 @@ public interface UmsManagerService {
      */
     BasePage<UmsDeviceInfoSelectResponseDto> selectUmsDeviceList(UmsDeviceInfoSelectRequestDto requestDto);
 
+    /**
+     * 根据id查询统一平台信息
+     * @param requestDto
+     * @return
+     */
+    UmsDeviceInfoSelectByIdResponseDto getDeviceInfoById(UmsDeviceInfoSelectByIdRequestDto requestDto);
+
 }

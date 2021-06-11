@@ -5,7 +5,6 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.kedacom.common.utils.PinYinUtils;
 import com.kedacom.device.core.constant.UmsMod;
 import com.kedacom.device.core.convert.UmsSubDeviceConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
@@ -13,6 +12,7 @@ import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.core.utils.HandleResponseUtil;
+import com.kedacom.device.core.utils.PinYinUtils;
 import com.kedacom.device.ums.RepeatDeviceRequest;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.QueryDeviceRequest;
@@ -101,7 +101,7 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
 
     public void updateUmsSubDeviceMod(Integer ordinaryMod, Integer updateMod) {
 
-       // subDeviceInfoMapper.updateMod(ordinaryMod, updateMod);
+        // subDeviceInfoMapper.updateMod(ordinaryMod, updateMod);
 
         UpdateWrapper<SubDeviceInfoEntity> updateWrapper = new UpdateWrapper();
         LambdaUpdateWrapper<SubDeviceInfoEntity> lambda = updateWrapper.lambda();
@@ -112,7 +112,7 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
         subDeviceInfoMapper.update(null, updateWrapper);
     }
 
-    public RepeatDeviceRequest repeatRequest(QuerySubDeviceInfoResponse responseVo, QueryDeviceRequest requestVo){
+    public RepeatDeviceRequest repeatRequest(QuerySubDeviceInfoResponse responseVo, QueryDeviceRequest requestVo) {
 
         RepeatDeviceRequest repeatDeviceRequest = new RepeatDeviceRequest();
         Integer errCode = responseVo.acquireErrcode();
@@ -122,7 +122,7 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
             return repeatDeviceRequest;
         }
         // 请求结果失败，重新发送请求（最多请求两次）
-        for (int i = 0; i < REQUEST2; i ++) {
+        for (int i = 0; i < REQUEST2; i++) {
             responseVo = umsClient.querydev(requestVo);
             // 如果请求响应成功，返回结果
             if (responseVo.acquireErrcode() == 0) {

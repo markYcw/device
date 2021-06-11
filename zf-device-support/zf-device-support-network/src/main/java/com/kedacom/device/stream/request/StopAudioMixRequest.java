@@ -22,7 +22,7 @@ public class StopAudioMixRequest extends BaseRequest {
 
     @ApiModelProperty("音频混音设备组id")
     @JSONField(name = "GroupID")
-    private String GroupID;
+    private String groupID;
 
     @ApiModelProperty("画面合成ID集合")
     private List<String> mixIDs;

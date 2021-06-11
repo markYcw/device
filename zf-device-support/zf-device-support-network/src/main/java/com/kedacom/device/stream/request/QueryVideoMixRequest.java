@@ -1,11 +1,10 @@
 package com.kedacom.device.stream.request;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
@@ -20,6 +19,10 @@ import java.util.List;
 public class QueryVideoMixRequest extends BaseRequest {
 
     private static final String COMMAND = "queryvideomix";
+
+    @ApiModelProperty("画面合成设备分组id")
+    @JSONField(name = "GroupID")
+    private String groupID;
 
     @ApiModelProperty("合成ID集合")
     private List<String> mixIDs;

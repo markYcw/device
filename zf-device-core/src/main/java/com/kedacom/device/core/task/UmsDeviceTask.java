@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.kedacom.BasePage;
+import com.kedacom.common.utils.SpringUtil;
 import com.kedacom.device.core.constant.UmsMod;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
@@ -14,7 +15,6 @@ import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.core.service.DeviceManagerService;
 import com.kedacom.device.core.utils.PinYinUtils;
-import com.kedacom.device.core.utils.SpringGetBeanUtil;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.QueryDeviceRequest;
 import com.kedacom.device.ums.response.QuerySubDeviceInfoResponse;
@@ -77,7 +77,7 @@ public class UmsDeviceTask implements Runnable {
 
     public <T> T getBean(Class<T> clazz) {
 
-        return SpringGetBeanUtil.getBean(clazz);
+        return SpringUtil.getBean(clazz);
     }
 
     @Override

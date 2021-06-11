@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class StartAudioMixResponseVO implements Serializable {
 
     @ApiModelProperty("混音设备分组id")
-    private String GroupID;
+    private String groupID;
 
     @ApiModelProperty("混音ID")
     private String mixID;

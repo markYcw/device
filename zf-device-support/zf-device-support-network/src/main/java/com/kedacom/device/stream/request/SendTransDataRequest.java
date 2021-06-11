@@ -20,19 +20,19 @@ public class SendTransDataRequest extends BaseRequest {
 
     @ApiModelProperty(value = "设备ID")
     @JSONField(name = "DeviceID")
-    private String DeviceID;
+    private String deviceID;
 
     @ApiModelProperty(value = "是否是透明数据扩展,默认值:0,0:不是、1:是")
     @JSONField(name = "Ext")
-    private Integer Ext;
+    private Integer ext;
 
     @ApiModelProperty(value = "控制类型。当Ext为1时AppCmd不起作用")
     @JSONField(name = "AppCmd")
-    private Integer AppCmd;
+    private Integer appCmd;
 
     @ApiModelProperty(value = "透明数据")
     @JSONField(name = "TransData")
-    private String TransData;
+    private String transData;
 
     @Override
     public String name() {

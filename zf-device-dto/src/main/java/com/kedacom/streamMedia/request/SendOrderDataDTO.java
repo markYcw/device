@@ -21,10 +21,10 @@ public class SendOrderDataDTO implements Serializable {
 
     @NotBlank(message = "设备国标id不能为空")
     @ApiModelProperty(value = "设备国标id", required = true)
-    private String DeviceID;
+    private String deviceID;
 
     @NotBlank(message = "宏指令不能为空")
     @ApiModelProperty(value = "宏指令", required = true)
-    private String OrderData;
+    private String orderData;
 
 }

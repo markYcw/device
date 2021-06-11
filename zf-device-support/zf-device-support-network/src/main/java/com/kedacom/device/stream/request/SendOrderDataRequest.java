@@ -21,11 +21,11 @@ public class SendOrderDataRequest extends BaseRequest {
 
     @NotBlank(message = "设备国标id不能为空")
     @JSONField(name = "DeviceID")
-    private String DeviceID;
+    private String deviceID;
 
     @NotBlank(message = "宏指令不能为空")
     @JSONField(name = "OrderData")
-    private String OrderData;
+    private String orderData;
 
     @Override
     public String name() {

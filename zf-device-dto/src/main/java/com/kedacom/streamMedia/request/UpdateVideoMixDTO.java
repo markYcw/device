@@ -24,7 +24,7 @@ public class UpdateVideoMixDTO implements Serializable {
 
     @NotBlank(message = "画面合成设备分组id不能为空")
     @ApiModelProperty("画面合成设备分组id")
-    private String GroupID;
+    private String groupID;
 
     @NotBlank(message = "画面合成ID不能为空")
     @ApiModelProperty("画面合成ID")

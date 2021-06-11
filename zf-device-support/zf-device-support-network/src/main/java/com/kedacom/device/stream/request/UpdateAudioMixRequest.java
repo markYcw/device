@@ -23,7 +23,7 @@ public class UpdateAudioMixRequest extends BaseRequest {
 
     @ApiModelProperty("音频混音设备组id")
     @JSONField(name = "GroupID")
-    private String GroupID;
+    private String groupID;
 
     @ApiModelProperty("混音ID")
     private String mixID;

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.List;
 
@@ -21,7 +22,8 @@ public class StartAudioMixDTO implements Serializable {
     @ApiModelProperty(value = "平台id")
     private String umsId;
 
-    @ApiModelProperty("混音列表")
+    @ApiModelProperty("参与混音方列表(最大数目为16)")
+    @NotEmpty(message = "混音列表不能为空")
     private List<AudioMixer> mixer_list;
 
 }

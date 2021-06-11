@@ -23,7 +23,7 @@ public class QueryAudioMixDTO implements Serializable {
 
     @NotBlank(message = "混音设备分组id不能为空")
     @ApiModelProperty("混音设备分组id")
-    private String GroupID;
+    private String groupID;
 
     @NotEmpty(message = "混音ID集合不能为空")
     @ApiModelProperty("混音ID集合")

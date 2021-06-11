@@ -22,7 +22,7 @@ public class StopVideoMixRequest extends BaseRequest {
 
     @ApiModelProperty("画面合成设备分组id")
     @JSONField(name = "GroupID")
-    private String GroupID;
+    private String groupID;
 
     @ApiModelProperty("画面合成ID集合")
     private List<String> mixIDs;

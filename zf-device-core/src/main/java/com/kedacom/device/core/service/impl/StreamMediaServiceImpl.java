@@ -116,11 +116,12 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         startAudioMixRequest.setSsid(ssid);
         log.info("开启音频混音交互参数:{}", startAudioMixRequest);
         StartAudioMixResponse res = client.startAudioMix(startAudioMixRequest);
-        log.info("开启音频混音返参:{}", res);
+        log.info("开启音频混音应答:{}", res);
         responseUtil.handleSMSRes(error, DeviceErrorEnum.START_AUDIO_MIX_FAILED, res);
         StartAudioMixResponseVO response = new StartAudioMixResponseVO();
         response.setMixID(res.getMixID());
         response.setGroupID(groupId);
+        log.info("开启音频混音返参:{}", response);
         return response;
     }
 
@@ -293,6 +294,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
 
         QueryVideoMixRequest queryVideoMixRequest = streamMediaConvert.convertQueryVideoMixRequest(request);
         queryVideoMixRequest.setSsid(ssid);
+        queryVideoMixRequest.setGroupID(request.getGroupID());
         log.info("查询画面信息交互参数:{}", queryVideoMixRequest);
         QueryVideoMixResponse res = client.queryVideoMix(queryVideoMixRequest);
         log.info("查询画面信息应答信息:{}", res);

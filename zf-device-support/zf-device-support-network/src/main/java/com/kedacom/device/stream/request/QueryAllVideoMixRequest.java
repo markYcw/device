@@ -18,7 +18,7 @@ public class QueryAllVideoMixRequest extends BaseRequest {
 
     @ApiModelProperty("画面合成设备分组id")
     @JSONField(name = "GroupID")
-    private String GroupID;
+    private String groupID;
 
     @Override
     public String name() {

@@ -2,7 +2,6 @@ package com.kedacom.core;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
-import com.alibaba.fastjson.JSON;
 import com.kedacom.ums.entity.AcceptUrlListen;
 import com.kedacom.ums.entity.UmsSubDeviceStatusModel;
 import com.kedacom.util.ThreadPoolUtil;
@@ -77,15 +76,14 @@ public class DeviceStatusListenerManager {
 
         @Override
         public void run() {
-            log.info("DeviceStatusTask publish UmsSubDeviceStatusModel:{}", model);
             try {
-                String deviceStatus = JSON.toJSONString(model);
+                //      String deviceStatus = JSON.toJSONString(model);
                 if (MapUtil.isNotEmpty(map)) {
                     //           map.keySet().stream().distinct().forEach(key -> map.get(key).stream().distinct().forEach(url -> restTemplate.postForObject(url, deviceStatus, String.class)));
                     Set<String> keySet = map.keySet();
                     for (String key : keySet) {
                         Set<String> urls = map.get(key);
-                        log.info("key:{},url:{},deviceStatus:{}", key, urls, model.toString());
+                        log.info("设备状态变更restTemplate类型时间通知--->key:{},url:{},deviceStatus:{}", key, urls, model.toString());
                         for (String url : urls) {
                             //1、 url:http://127.0.0.1:10090/demo/deviceStatus     @RequestBody:UmsSubDeviceStatusModel
                             restTemplate.postForObject(url, model, String.class);

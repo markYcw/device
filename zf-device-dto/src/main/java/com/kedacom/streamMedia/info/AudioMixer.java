@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class AudioMixer implements Serializable {
 
     @NotBlank(message = "参与混音方终端ID不能为空")
-    @ApiModelProperty("参与混音方终端ID")
+    @ApiModelProperty("参与混音方终端ID---就是设备国标id")
     private String resourceID;
 
     @ApiModelProperty(value = "域ID。*在跨域访问场景必填" +

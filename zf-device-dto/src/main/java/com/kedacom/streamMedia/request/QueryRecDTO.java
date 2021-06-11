@@ -21,7 +21,7 @@ public class QueryRecDTO implements Serializable {
 
     @NotBlank(message = "具体设备ID不能为空")
     @ApiModelProperty("具体设备ID")
-    private String DeviceID;
+    private String deviceID;
 
     @ApiModelProperty(value = "域ID。*在跨域访问场景必填" +
             "deviceID不为空时选填，表示交换节点（resourceID）所在的流媒体微服务和目标设备不在同一网络环境中，且需要通过目标设备所在域的指定流媒体微服务（nmedia_id）才能正确获取目标设备的音视频码流。" +

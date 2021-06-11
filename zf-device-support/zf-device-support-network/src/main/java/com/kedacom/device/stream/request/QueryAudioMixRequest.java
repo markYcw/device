@@ -22,7 +22,7 @@ public class QueryAudioMixRequest extends BaseRequest {
 
     @ApiModelProperty("音频混音设备组id")
     @JSONField(name = "GroupID")
-    private String GroupID;
+    private String groupID;
 
     @ApiModelProperty("混音ID集合")
     private List<String> mixIDs;

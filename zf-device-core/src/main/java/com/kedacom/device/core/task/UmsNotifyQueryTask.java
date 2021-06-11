@@ -2,8 +2,8 @@ package com.kedacom.device.core.task;
 
 import com.github.rholder.retry.*;
 import com.google.common.base.Predicates;
-import com.kedacom.common.utils.SpringUtil;
 import com.kedacom.device.core.service.DeviceManagerService;
+import com.kedacom.device.core.utils.SpringGetBeanUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.Callable;
@@ -44,7 +44,7 @@ public class UmsNotifyQueryTask implements Runnable {
                 @Override
                 public Boolean call() throws Exception {
                     log.info("queryDeviceGroupNotify retry,umsId:{},times:{}", umsId, anInt.incrementAndGet());
-                    DeviceManagerService deviceManagerService = SpringUtil.getBean(DeviceManagerService.class);
+                    DeviceManagerService deviceManagerService = SpringGetBeanUtils.getBean(DeviceManagerService.class);
                     return deviceManagerService.queryDeviceGroupNotify(umsId);
                 }
             });

@@ -1,7 +1,7 @@
 package com.kedacom.device.core.task;
 
-import com.kedacom.common.utils.SpringUtil;
 import com.kedacom.device.core.manager.UmsSubDeviceManager;
+import com.kedacom.device.core.utils.SpringGetBeanUtils;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -36,7 +36,7 @@ public class UpdateDetailTask implements Runnable {
 
     public <T> T getBean(Class<T> clazz) {
 
-        return SpringUtil.getBean(clazz);
+        return SpringGetBeanUtils.getBean(clazz);
     }
 
 

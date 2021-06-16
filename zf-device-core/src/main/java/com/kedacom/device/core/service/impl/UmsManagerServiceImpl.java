@@ -68,7 +68,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         DeviceInfoEntity deviceInfoEntity = UmsDeviceConvert.INSTANCE.convertDeviceInfoEntityForAdd(requestDto);
         //3、将返回的sessionId存入本地
         deviceInfoEntity.setSessionId(String.valueOf(loginResponse.acquireSsid()));
-        deviceInfoEntity.setDeviceType("UMS");
+        deviceInfoEntity.setDeviceType("28");
         deviceMapper.insert(deviceInfoEntity);
 
         //平台信息添加成功，开启自动获取远端设备及分组信息任务
@@ -106,9 +106,9 @@ public class UmsManagerServiceImpl implements UmsManagerService {
                 throw new UmsManagerException("登录统一平台异常");
             }
             deviceInfoEntity.setSessionId(String.valueOf(loginResponse.acquireSsid()));
-            deviceInfoEntity.setDeviceType("UMS");
 
         }
+        deviceInfoEntity.setDeviceType("28");
         deviceMapper.updateById(deviceInfoEntity);
 
         return deviceInfoEntity.getId();
@@ -209,6 +209,10 @@ public class UmsManagerServiceImpl implements UmsManagerService {
         }
         log.info("查询统一平台信息 ： records [{}]", records);
         List<UmsDeviceInfoSelectResponseDto> umsDeviceInfoSelectResponseDtoList = UmsDeviceConvert.INSTANCE.convertUmsDeviceInfoSelectResponseDtoList(records);
+
+        for (UmsDeviceInfoSelectResponseDto entity : umsDeviceInfoSelectResponseDtoList) {
+            entity.setDeviceType("UMS");
+        }
 
         BasePage<UmsDeviceInfoSelectResponseDto> basePage = new BasePage<>();
         basePage.setTotal(resultPage.getTotal());

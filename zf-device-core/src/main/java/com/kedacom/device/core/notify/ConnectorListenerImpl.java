@@ -52,7 +52,6 @@ public class ConnectorListenerImpl implements ConnectorListener {
                 // 只获取第一条平台信息，登录
                 DeviceInfoEntity deviceInfoEntity = beforeLoginList.get(0);
                 LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertDeviceInfo(deviceInfoEntity);
-                loginRequest.setDeviceType(DeviceConstants.DEVICETYPE);
                 LoginResponse response = umsClient.login(loginRequest);
                 deviceInfoEntity.setSessionId(String.valueOf(response.acquireSsid()));
                 deviceInfoEntity.setUpdateTime(new Date());

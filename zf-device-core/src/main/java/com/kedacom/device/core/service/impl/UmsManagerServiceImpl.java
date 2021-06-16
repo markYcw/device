@@ -208,11 +208,10 @@ public class UmsManagerServiceImpl implements UmsManagerService {
             return null;
         }
         log.info("查询统一平台信息 ： records [{}]", records);
-        List<UmsDeviceInfoSelectResponseDto> umsDeviceInfoSelectResponseDtoList = UmsDeviceConvert.INSTANCE.convertUmsDeviceInfoSelectResponseDtoList(records);
-
-        for (UmsDeviceInfoSelectResponseDto entity : umsDeviceInfoSelectResponseDtoList) {
-            entity.setDeviceType("UMS");
+        for (DeviceInfoEntity deviceInfoEntity : records) {
+            deviceInfoEntity.setDeviceType("UMS");
         }
+        List<UmsDeviceInfoSelectResponseDto> umsDeviceInfoSelectResponseDtoList = UmsDeviceConvert.INSTANCE.convertUmsDeviceInfoSelectResponseDtoList(records);
 
         BasePage<UmsDeviceInfoSelectResponseDto> basePage = new BasePage<>();
         basePage.setTotal(resultPage.getTotal());
@@ -234,6 +233,7 @@ public class UmsManagerServiceImpl implements UmsManagerService {
             log.error("根据id查询统一平台信息不存在");
             return null;
         }
+        deviceInfoEntity.setDeviceType("UMS");
 
         return UmsDeviceConvert.INSTANCE.concertUmsDeviceInfoSelectByIdResponseDto(deviceInfoEntity);
     }

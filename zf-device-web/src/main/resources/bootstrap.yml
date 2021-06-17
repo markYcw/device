@@ -32,3 +32,5 @@ spring:
             refresh: true
           - dataId: ribbon-feign-hystrix.yml
             refresh: true
+          - dataId: heartbeat.yml
+            refresh: true

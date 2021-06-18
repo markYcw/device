@@ -2,11 +2,11 @@ package com.kedacom.device.stream.request;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.kedacom.core.pojo.BaseRequest;
+import com.kedacom.streamMedia.request.RemDev;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
-
-import javax.validation.constraints.NotBlank;
 
 /**
  * @Auther: hxj
@@ -19,13 +19,21 @@ public class SendOrderDataRequest extends BaseRequest {
 
     private static final String COMMAND = "sendorderdata";
 
-    @NotBlank(message = "设备国标id不能为空")
+    @ApiModelProperty(value = "设备国标id", required = true)
     @JSONField(name = "DeviceID")
     private String deviceID;
 
-    @NotBlank(message = "宏指令不能为空")
+    @ApiModelProperty(value = "宏指令", required = true)
     @JSONField(name = "OrderData")
     private String orderData;
+
+    @ApiModelProperty(value = "宏指令类型,0:常规;1：添加启用远程点(此时需要传入RemDev参数)")
+    @JSONField(name = "Type")
+    private Integer type;
+
+    @ApiModelProperty(value = "远程点设备信息")
+    @JSONField(name = "RemDev")
+    private RemDev remDev;
 
     @Override
     public String name() {

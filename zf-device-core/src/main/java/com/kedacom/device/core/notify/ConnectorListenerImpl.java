@@ -8,13 +8,12 @@ import com.kedacom.device.core.convert.UmsDeviceConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.service.DeviceManagerService;
-import com.kedacom.device.core.service.UmsManagerService;
-import com.kedacom.util.ThreadPoolUtil;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.LoginRequest;
 import com.kedacom.device.ums.response.LoginResponse;
 import com.kedacom.exception.KMTimeoutException;
 import com.kedacom.ums.requestdto.UmsDeviceInfoSyncRequestDto;
+import com.kedacom.util.ThreadPoolUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -42,13 +41,13 @@ public class ConnectorListenerImpl implements ConnectorListener {
 
     @Override
     public void onConnected(String serverAddr) {
-        log.info("连接事件监听status---已连接:{}", serverAddr);
+        log.info("连接事件status监听---已连接,serverAddr:{}", serverAddr);
 
         try {
             LambdaQueryWrapper<DeviceInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
             List<DeviceInfoEntity> beforeLoginList = deviceMapper.selectList(queryWrapper);
             if (CollectionUtil.isNotEmpty(beforeLoginList)) {
-                log.info("连接事件监听status---已连接,设备登录:{}", beforeLoginList);
+                log.info("连接事件status监听---已连接,设备登录:{}", beforeLoginList);
                 // 只获取第一条平台信息，登录
                 DeviceInfoEntity deviceInfoEntity = beforeLoginList.get(0);
                 LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertDeviceInfo(deviceInfoEntity);
@@ -61,7 +60,7 @@ public class ConnectorListenerImpl implements ConnectorListener {
 
             List<DeviceInfoEntity> afterLoginList = deviceMapper.selectList(queryWrapper);
             if (CollectionUtil.isNotEmpty(afterLoginList)) {
-                log.info("连接事件监听status---已连接,设备同步:{}", afterLoginList);
+                log.info("连接事件status监听---已连接,设备同步:{}", afterLoginList);
                 // 只获取第一条平台信息，同步设备
                 DeviceInfoEntity deviceInfoEntity = afterLoginList.get(0);
                 UmsDeviceInfoSyncRequestDto request = new UmsDeviceInfoSyncRequestDto();
@@ -77,7 +76,7 @@ public class ConnectorListenerImpl implements ConnectorListener {
         } catch (KMTimeoutException e) {
             log.error("动态代理请求超时异常捕获:{}", e.getMessage());
         } catch (Exception e) {
-            log.error("连接事件监听status---已连接,初始化设备、设备分组和设备名称拼音转化失败:{}", e.getMessage());
+            log.error("连接事件status监听---已连接,初始化设备、设备分组和设备名称拼音转化失败:{}", e.getMessage());
         }
     }
 
@@ -94,6 +93,6 @@ public class ConnectorListenerImpl implements ConnectorListener {
     @Override
     public void onClosed(String serverAddr) {
         log.error("连接事件监听status---未连接/连接断开:{}", serverAddr);
-
     }
+
 }

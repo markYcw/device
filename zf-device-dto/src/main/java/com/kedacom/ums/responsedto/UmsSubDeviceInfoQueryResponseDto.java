@@ -17,8 +17,11 @@ import java.util.Date;
 @ApiModel(value = "分页查询统一平台下子设备信息响应参数类")
 public class UmsSubDeviceInfoQueryResponseDto implements Serializable {
 
-    @ApiModelProperty(value = "设备id")
+    @ApiModelProperty(value = "id")
     private String id;
+
+    @ApiModelProperty(value = "设备id")
+    private String deviceId;
 
     @ApiModelProperty(value = "父id")
     private String parentId;

@@ -409,6 +409,7 @@ public class DeviceManagerServiceImpl implements DeviceManagerService {
         for (SubDeviceInfoEntity subDeviceInfoEntity : subDeviceInfoEntityList) {
             UmsSubDeviceQueryDto umsSubDeviceQueryDto = new UmsSubDeviceQueryDto();
             umsSubDeviceQueryDto.setId(subDeviceInfoEntity.getId());
+            umsSubDeviceQueryDto.setDeviceId(subDeviceInfoEntity.getDeviceId());
             umsSubDeviceQueryDto.setName(subDeviceInfoEntity.getName());
             umsSubDeviceQueryDto.setStatus(subDeviceInfoEntity.getDeviceStatus());
             umsSubDeviceQueryDto.setGroupId(subDeviceInfoEntity.getGroupId());

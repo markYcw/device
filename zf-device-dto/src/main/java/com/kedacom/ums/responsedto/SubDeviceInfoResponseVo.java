@@ -14,8 +14,11 @@ import java.util.Date;
 @Data
 public class SubDeviceInfoResponseVo implements Serializable {
 
-    @ApiModelProperty(value = "设备id")
+    @ApiModelProperty(value = "id")
     private String id;
+
+    @ApiModelProperty(value = "设备id")
+    private String deviceId;
 
     @ApiModelProperty(value = "设备名")
     private String name;

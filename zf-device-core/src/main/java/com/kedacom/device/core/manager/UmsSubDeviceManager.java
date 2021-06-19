@@ -2,6 +2,7 @@ package com.kedacom.device.core.manager;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -33,9 +34,6 @@ import static com.kedacom.device.core.constant.DeviceConstants.REQUEST2;
 @Component
 @Slf4j
 public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceInfoEntity> {
-
-    @Autowired
-    private HandleResponseUtil handleResponseUtil;
 
     @Autowired
     private SubDeviceMapper subDeviceInfoMapper;
@@ -81,8 +79,10 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
                 umsSubDeviceInfoEntity.setPinyin(hanZiPinYin + "&&" + lowerCase);
                 umsSubDeviceInfoEntity.setParentId(umsDeviceId);
                 umsSubDeviceInfoEntity.setInstallDate(null);
-                if (subDeviceInfoMapper.selectById(umsSubDeviceInfoEntity.getId()) != null) {
-//                    log.info("已存在Id为:{}", umsSubDeviceInfoEntity.getId());
+                LambdaQueryWrapper<SubDeviceInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(SubDeviceInfoEntity::getDeviceId, umsSubDeviceInfoEntity.getId())
+                        .eq(SubDeviceInfoEntity::getParentId, umsDeviceId);
+                if (subDeviceInfoMapper.selectOne(queryWrapper) != null) {
                     int i = subDeviceInfoMapper.updateById(umsSubDeviceInfoEntity);
                     if (i <= 0) {
                         log.error("设备id:{},更新失败", umsSubDeviceInfoEntity.getId());

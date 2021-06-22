@@ -2,6 +2,7 @@ package com.kedacom.device.core.manager;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -12,7 +13,6 @@ import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
-import com.kedacom.device.core.utils.HandleResponseUtil;
 import com.kedacom.device.ums.RepeatDeviceRequest;
 import com.kedacom.device.ums.UmsClient;
 import com.kedacom.device.ums.request.QueryDeviceRequest;
@@ -33,9 +33,6 @@ import static com.kedacom.device.core.constant.DeviceConstants.REQUEST2;
 @Component
 @Slf4j
 public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceInfoEntity> {
-
-    @Autowired
-    private HandleResponseUtil handleResponseUtil;
 
     @Autowired
     private SubDeviceMapper subDeviceInfoMapper;
@@ -81,13 +78,18 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
                 umsSubDeviceInfoEntity.setPinyin(hanZiPinYin + "&&" + lowerCase);
                 umsSubDeviceInfoEntity.setParentId(umsDeviceId);
                 umsSubDeviceInfoEntity.setInstallDate(null);
-                if (subDeviceInfoMapper.selectById(umsSubDeviceInfoEntity.getId()) != null) {
-//                    log.info("已存在Id为:{}", umsSubDeviceInfoEntity.getId());
+                LambdaQueryWrapper<SubDeviceInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(SubDeviceInfoEntity::getDeviceId, umsSubDeviceInfoEntity.getId())
+                        .eq(SubDeviceInfoEntity::getParentId, umsDeviceId);
+                SubDeviceInfoEntity subDeviceInfoEntity = subDeviceInfoMapper.selectOne(queryWrapper);
+                if (subDeviceInfoEntity != null) {
+                    umsSubDeviceInfoEntity.setId(subDeviceInfoEntity.getId());
                     int i = subDeviceInfoMapper.updateById(umsSubDeviceInfoEntity);
                     if (i <= 0) {
                         log.error("设备id:{},更新失败", umsSubDeviceInfoEntity.getId());
                     }
                 } else {
+                    umsSubDeviceInfoEntity.setId(null);
                     int insert = subDeviceInfoMapper.insert(umsSubDeviceInfoEntity);
                     if (insert <= 0) {
                         log.error("设备id:{},插入失败", umsSubDeviceInfoEntity.getId());

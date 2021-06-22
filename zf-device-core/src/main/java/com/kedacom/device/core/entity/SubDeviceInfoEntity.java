@@ -17,8 +17,12 @@ import java.util.Date;
 public class SubDeviceInfoEntity implements Serializable {
 
     @TableId(type = IdType.ASSIGN_ID)
-    @ApiModelProperty(value = "设备id")
+    @ApiModelProperty(value = "id")
     private String id;
+
+    @TableField(value = "device_id")
+    @ApiModelProperty(value = "设备id")
+    private String deviceId;
 
     @TableField(value = "parent_id")
     @ApiModelProperty(value = "上级")

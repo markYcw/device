@@ -22,7 +22,8 @@ public interface UmsSubDeviceConvert {
 
     UmsSubDeviceConvert INSTANCE = Mappers.getMapper(UmsSubDeviceConvert.class);
 
-    @Mappings({@Mapping(source = "ipv4", target = "deviceIp"),
+    @Mappings({@Mapping(source = "id", target = "deviceId"),
+            @Mapping(source = "ipv4", target = "deviceIp"),
             @Mapping(source = "manufactorCode_name",target = "manufactorName"),
             @Mapping(source = "status",target = "deviceStatus"),
             @Mapping(source = "model",target = "deviceModel"),

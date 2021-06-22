@@ -157,7 +157,7 @@ public class UmsNotifyEventListener {
     public void deviceStateNotify(DeviceAndGroupEvent event) {
         log.info("设备与分组关联状态变更通知:{}", event);
         LambdaUpdateWrapper<SubDeviceInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(SubDeviceInfoEntity::getId, event.getId())
+        updateWrapper.eq(SubDeviceInfoEntity::getDeviceId, event.getId())
                 .set(SubDeviceInfoEntity::getGbid, event.getGbid())
                 .set(SubDeviceInfoEntity::getGroupId, event.getGroupId());
         subDeviceMapper.update(null, updateWrapper);
@@ -171,7 +171,7 @@ public class UmsNotifyEventListener {
             return;
         }
         LambdaUpdateWrapper<SubDeviceInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(SubDeviceInfoEntity::getId, event.getId())
+        updateWrapper.eq(SubDeviceInfoEntity::getDeviceId, event.getId())
                 .set(SubDeviceInfoEntity::getDeviceStatus, event.getStatus());
         subDeviceMapper.update(null, updateWrapper);
         UmsSubDeviceStatusModel umsSubDeviceStatusModel = UmsSubDeviceStatusModel.builder()
@@ -236,7 +236,7 @@ public class UmsNotifyEventListener {
         subDeviceInfoEntity.setDomainId(event.getDomainId());
         subDeviceInfoEntity.setGbid(event.getGbid());
         subDeviceInfoEntity.setGroupId(event.getGroupId());
-        subDeviceInfoEntity.setId(event.getId());
+        subDeviceInfoEntity.setDeviceIp(event.getId());
         subDeviceInfoEntity.setInstallDate(null);
         subDeviceInfoEntity.setLatitude(event.getLatitude());
         subDeviceInfoEntity.setLatitudeStr(event.getLatitudeStr());

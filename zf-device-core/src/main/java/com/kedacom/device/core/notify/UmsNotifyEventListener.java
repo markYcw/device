@@ -86,6 +86,7 @@ public class UmsNotifyEventListener {
         }
         try {
             if (deviceGroupEvent.getEnd() == 1) {
+                groupInfoEntities = deviceGroupMap.get(ssid + "_" + deviceGroupEvent.getNty().getSsno());
                 List<String> groupIds = groupInfoEntities.stream().map(GroupInfoEntity::getGroupId).collect(Collectors.toList());
                 if (log.isDebugEnabled()) {
                     log.info("deviceGroupNotify 设备分组通知开始同步数据库count:{}.data:{}", groupInfoEntities.size(), groupInfoEntities);

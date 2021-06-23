@@ -86,7 +86,7 @@ public class DeviceManagerServiceImpl implements DeviceManagerService {
             throw new UmsManagerException("未查询到统一设备信息");
         }
 
-        //查询最近一次的更新时间
+/*        //查询最近一次的更新时间
         String lastSyncThirdDeviceTime = deviceInfoEntity.getLastSyncThirdDeviceTime();
         SyncSubDeviceRecord syncRecord = SyncSubDeviceRecord.getInstance();
         Map<String, SyncSubDeviceRecord.Sync> record = syncRecord.getRecord();
@@ -107,7 +107,7 @@ public class DeviceManagerServiceImpl implements DeviceManagerService {
             }
             //设置最新上次更新时间
             record.get(umsId).setLastSyncTime(lastSyncThirdDeviceTime);
-        }
+        }*/
 
         UmsDeviceTask task = new UmsDeviceTask(umsId);
         task.run();

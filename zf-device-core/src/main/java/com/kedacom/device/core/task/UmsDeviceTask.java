@@ -121,7 +121,7 @@ public class UmsDeviceTask implements Runnable {
         int totalPage = (int) Math.ceil((double) total / querycount);
         setPoolSize(totalPage);
         //将正常状态的数据设置为同步中
-        umsSubDeviceManager.updateUmsSubDeviceMod(UmsMod.NORMAL, UmsMod.UPGRADING);
+//        umsSubDeviceManager.updateUmsSubDeviceMod(UmsMod.NORMAL, UmsMod.UPGRADING);
         log.info("开始更新同步。。。。");
         boolean syncResult;
         if (shouldDistribute) {

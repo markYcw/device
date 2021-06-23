@@ -36,20 +36,13 @@ public interface UmsManagerService {
     Boolean isRepeatForName(String id, String name);
 
     /**
-     * 统一平台IP判重
+     * 统一平台 IP + port 判重
      * @param id
      * @param deviceIp
-     * @return
-     */
-    Boolean isRepeatForDeviceIp(String id, String deviceIp);
-
-    /**
-     * 统一平台端口判重
-     * @param id
      * @param devicePort
      * @return
      */
-    Boolean isRepeatForDevicePort(String id, Integer devicePort);
+    Boolean isRepeatForDeviceIpAndPort(String id, String deviceIp, Integer devicePort);
 
     /**
      * 删除统一平台信息

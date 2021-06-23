@@ -128,27 +128,15 @@ public class UmsManagerServiceImpl implements UmsManagerService {
     }
 
     @Override
-    public Boolean isRepeatForDeviceIp(String id, String deviceIp) {
+    public Boolean isRepeatForDeviceIpAndPort(String id, String deviceIp, Integer devicePort) {
 
-        LambdaQueryWrapper<DeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(DeviceInfoEntity::getDeviceIp, deviceIp);
+        LambdaQueryWrapper<DeviceInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(DeviceInfoEntity::getDeviceIp, deviceIp)
+                .eq(DeviceInfoEntity::getDevicePort, devicePort);
         if (id != null) {
-            wrapper.ne(DeviceInfoEntity::getId, id);
+            queryWrapper.ne(DeviceInfoEntity::getId, id);
         }
-        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectOne(wrapper);
-
-        return deviceInfoEntity != null;
-    }
-
-    @Override
-    public Boolean isRepeatForDevicePort(String id, Integer devicePort) {
-
-        LambdaQueryWrapper<DeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(DeviceInfoEntity::getDevicePort, devicePort);
-        if (id != null) {
-            wrapper.ne(DeviceInfoEntity::getId, id);
-        }
-        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectOne(wrapper);
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectOne(queryWrapper);
 
         return deviceInfoEntity != null;
     }

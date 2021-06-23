@@ -52,13 +52,9 @@ public class UmsManagerController {
             log.error("新增统一平台信息失败 ： 设备名称重复");
             return BaseResult.failed("设备名称重复，请重新填写");
         }
-        if (umsManagerService.isRepeatForDeviceIp(null, requestDto.getDeviceIp())) {
-            log.error("新增统一平台信息失败 ： 设备IP重复");
-            return BaseResult.failed("设备IP重复，请重新填写");
-        }
-        if (umsManagerService.isRepeatForDevicePort(null, requestDto.getDevicePort())) {
-            log.error("新增统一平台信息失败 ： 设备端口重复");
-            return BaseResult.failed("设备端口重复，请重新填写");
+        if (umsManagerService.isRepeatForDeviceIpAndPort(null, requestDto.getDeviceIp(), requestDto.getDevicePort())) {
+            log.error("更新统一平台信息失败 ： 设备IP或端口重复");
+            return BaseResult.failed("设备IP或端口重复，请重新填写");
         }
         String umsId = umsManagerService.insertUmsDevice(requestDto);
         if (StrUtil.isBlank(umsId)) {
@@ -77,13 +73,9 @@ public class UmsManagerController {
             log.error("更新统一平台信息失败 ： 设备名称重复");
             return BaseResult.failed("设备名称重复，请重新填写");
         }
-        if (umsManagerService.isRepeatForDeviceIp(requestDto.getId(), requestDto.getDeviceIp())) {
-            log.error("更新统一平台信息失败 ： 设备IP重复");
-            return BaseResult.failed("设备IP重复，请重新填写");
-        }
-        if (umsManagerService.isRepeatForDevicePort(requestDto.getId(), requestDto.getDevicePort())) {
-            log.error("更新统一平台信息失败 ： 设备端口重复");
-            return BaseResult.failed("设备端口重复，请重新填写");
+        if (umsManagerService.isRepeatForDeviceIpAndPort(requestDto.getId(), requestDto.getDeviceIp(), requestDto.getDevicePort())) {
+            log.error("更新统一平台信息失败 ： 设备IP或端口重复");
+            return BaseResult.failed("设备IP或端口重复，请重新填写");
         }
         String umsId = umsManagerService.updateUmsDevice(requestDto);
         if (StrUtil.isBlank(umsId)) {

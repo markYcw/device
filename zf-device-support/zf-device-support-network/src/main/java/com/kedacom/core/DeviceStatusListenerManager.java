@@ -2,6 +2,7 @@ package com.kedacom.core;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.kedacom.ums.entity.AcceptUrlListen;
 import com.kedacom.ums.entity.UmsSubDeviceStatusModel;
 import com.kedacom.util.ThreadPoolUtil;
@@ -83,7 +84,7 @@ public class DeviceStatusListenerManager {
                     Set<String> keySet = map.keySet();
                     for (String key : keySet) {
                         Set<String> urls = map.get(key);
-                        log.info("设备状态变更restTemplate类型时间通知--->key:{},url:{},deviceStatus:{}", key, urls, model.toString());
+                        log.info("设备状态变更restTemplate类型时间通知--->key:{},url:{},deviceStatus:{}", key, urls, JSONObject.toJSONString(model));
                         for (String url : urls) {
                             //1、 url:http://127.0.0.1:10090/demo/deviceStatus     @RequestBody:UmsSubDeviceStatusModel
                             restTemplate.postForObject(url, model, String.class);

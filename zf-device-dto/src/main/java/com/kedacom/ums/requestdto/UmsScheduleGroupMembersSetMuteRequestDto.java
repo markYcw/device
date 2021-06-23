@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "设置调度组成员设备哑音请求参数类:DeviceID为设备国标id,DeviceType不填")
+@ApiModel(value = "设置调度组成员设备哑音请求参数类:DeviceID为设备国标id-DeviceType不填")
 public class UmsScheduleGroupMembersSetMuteRequestDto implements Serializable {
 
     @NotBlank(message = "成员设备类型不能为空")

@@ -196,30 +196,29 @@ public class UmsNotifyEventListener {
             sendKafkaOfDeviceStatus(umsSubDeviceStatusModel);
             DeviceStatusListenerManager.getInstance().publish(umsSubDeviceStatusModel);
         }
-        //设备新增
-        if (Event.OPERATETYPETYPE3.equals(operateType)) {
-            SubDeviceInfoEntity subDeviceInfoEntity = toSubDeviceInfoEntity(event);
-            subDeviceInfoEntity.setParentId(umsId);
-            subDeviceMapper.insert(subDeviceInfoEntity);
-            UmsSubDeviceChangeModel umsSubDeviceChangeModel = UmsSubDeviceConvert.INSTANCE.convertUmsSubDeviceChangeModel(subDeviceInfoEntity);
-            umsSubDeviceChangeModel.setNtyType(0);
-            sendKafkaOfDeviceChange(umsSubDeviceChangeModel);
-            DeviceStatusListenerManager.getInstance().publishDeviceChange(umsSubDeviceChangeModel);
-        }
-        //设备修改
         if (Event.OPERATETYPETYPE4.equals(operateType)) {
             SubDeviceInfoEntity subDeviceInfoEntity = toSubDeviceInfoEntity(event);
             subDeviceInfoEntity.setParentId(umsId);
             LambdaQueryWrapper<SubDeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(SubDeviceInfoEntity::getGbid, subDeviceInfoEntity.getGbid())
-                    .eq(SubDeviceInfoEntity::getParentId, umsId);
-            SubDeviceInfoEntity subDeviceInfo = subDeviceMapper.selectOne(wrapper);
-            subDeviceInfoEntity.setId(subDeviceInfo.getId());
-            subDeviceMapper.updateById(subDeviceInfoEntity);
-            UmsSubDeviceChangeModel umsSubDeviceChangeModel = UmsSubDeviceConvert.INSTANCE.convertUmsSubDeviceChangeModel(subDeviceInfoEntity);
-            umsSubDeviceChangeModel.setNtyType(1);
-            sendKafkaOfDeviceChange(umsSubDeviceChangeModel);
-            DeviceStatusListenerManager.getInstance().publishDeviceChange(umsSubDeviceChangeModel);
+            wrapper.eq(SubDeviceInfoEntity::getParentId, umsId)
+                    .eq(SubDeviceInfoEntity::getGbid, subDeviceInfoEntity.getGbid());
+            SubDeviceInfoEntity entity = subDeviceMapper.selectOne(wrapper);
+            if (entity == null) {
+                //设备新增
+                subDeviceMapper.insert(subDeviceInfoEntity);
+                UmsSubDeviceChangeModel umsSubDeviceChangeModel = UmsSubDeviceConvert.INSTANCE.convertUmsSubDeviceChangeModel(subDeviceInfoEntity);
+                umsSubDeviceChangeModel.setNtyType(0);
+                sendKafkaOfDeviceChange(umsSubDeviceChangeModel);
+                DeviceStatusListenerManager.getInstance().publishDeviceChange(umsSubDeviceChangeModel);
+            } else {
+                //设备修改
+                subDeviceInfoEntity.setId(entity.getId());
+                subDeviceMapper.updateById(subDeviceInfoEntity);
+                UmsSubDeviceChangeModel umsSubDeviceChangeModel = UmsSubDeviceConvert.INSTANCE.convertUmsSubDeviceChangeModel(subDeviceInfoEntity);
+                umsSubDeviceChangeModel.setNtyType(1);
+                sendKafkaOfDeviceChange(umsSubDeviceChangeModel);
+                DeviceStatusListenerManager.getInstance().publishDeviceChange(umsSubDeviceChangeModel);
+            }
         }
         //设备删除
         if (Event.OPERATETYPETYPE5.equals(operateType)) {

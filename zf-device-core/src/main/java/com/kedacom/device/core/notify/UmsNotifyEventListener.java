@@ -1,11 +1,13 @@
 package com.kedacom.device.core.notify;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.kedacom.core.DeviceStatusListenerManager;
 import com.kedacom.device.core.constant.Event;
 import com.kedacom.device.core.convert.UmsGroupConvert;
+import com.kedacom.device.core.convert.UmsSubDeviceConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.entity.GroupInfoEntity;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
@@ -15,6 +17,7 @@ import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.GroupMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.ums.DeviceGroupVo;
+import com.kedacom.ums.entity.UmsSubDeviceChangeModel;
 import com.kedacom.ums.entity.UmsSubDeviceStatusModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -170,18 +173,66 @@ public class UmsNotifyEventListener {
             log.error("设备状态变更通知为空");
             return;
         }
-        LambdaUpdateWrapper<SubDeviceInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(SubDeviceInfoEntity::getDeviceId, event.getId())
-                .set(SubDeviceInfoEntity::getDeviceStatus, event.getStatus());
-        subDeviceMapper.update(null, updateWrapper);
-        UmsSubDeviceStatusModel umsSubDeviceStatusModel = UmsSubDeviceStatusModel.builder()
-                .devId(event.getId())
-                .devStatus(event.getStatus())
-                .timeStamp(System.currentTimeMillis())
-                .build();
+        Integer ssid = event.getNty().getSsid();
+        LambdaQueryWrapper<DeviceInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(DeviceInfoEntity::getSessionId, ssid);
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectOne(queryWrapper);
+        String umsId = deviceInfoEntity.getId();
+        Integer operateType = event.getOperateType();
+        //设备状态改变
+        if (Event.OPERATETYPETYPE1.equals(operateType)) {
+            LambdaUpdateWrapper<SubDeviceInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(SubDeviceInfoEntity::getDeviceId, event.getId())
+                    .eq(SubDeviceInfoEntity::getParentId, umsId)
+                    .set(SubDeviceInfoEntity::getDeviceStatus, event.getStatus());
+            subDeviceMapper.update(null, updateWrapper);
+            UmsSubDeviceStatusModel umsSubDeviceStatusModel = UmsSubDeviceStatusModel.builder()
+                    .devId(event.getId())
+                    .parentId(umsId)
+                    .devStatus(event.getStatus())
+                    .timeStamp(System.currentTimeMillis())
+                    .build();
 
-        sendKafka(umsSubDeviceStatusModel);
-        DeviceStatusListenerManager.getInstance().publish(umsSubDeviceStatusModel);
+            sendKafkaOfDeviceStatus(umsSubDeviceStatusModel);
+            DeviceStatusListenerManager.getInstance().publish(umsSubDeviceStatusModel);
+        }
+        //设备新增
+        if (Event.OPERATETYPETYPE3.equals(operateType)) {
+            SubDeviceInfoEntity subDeviceInfoEntity = toSubDeviceInfoEntity(event);
+            subDeviceInfoEntity.setParentId(umsId);
+            subDeviceMapper.insert(subDeviceInfoEntity);
+            UmsSubDeviceChangeModel umsSubDeviceChangeModel = UmsSubDeviceConvert.INSTANCE.convertUmsSubDeviceChangeModel(subDeviceInfoEntity);
+            umsSubDeviceChangeModel.setNtyType(0);
+            sendKafkaOfDeviceChange(umsSubDeviceChangeModel);
+            DeviceStatusListenerManager.getInstance().publishDeviceChange(umsSubDeviceChangeModel);
+        }
+        //设备修改
+        if (Event.OPERATETYPETYPE4.equals(operateType)) {
+            SubDeviceInfoEntity subDeviceInfoEntity = toSubDeviceInfoEntity(event);
+            subDeviceInfoEntity.setParentId(umsId);
+            LambdaQueryWrapper<SubDeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(SubDeviceInfoEntity::getGbid, subDeviceInfoEntity.getGbid())
+                    .eq(SubDeviceInfoEntity::getParentId, umsId);
+            SubDeviceInfoEntity subDeviceInfo = subDeviceMapper.selectOne(wrapper);
+            subDeviceInfoEntity.setId(subDeviceInfo.getId());
+            subDeviceMapper.updateById(subDeviceInfoEntity);
+            UmsSubDeviceChangeModel umsSubDeviceChangeModel = UmsSubDeviceConvert.INSTANCE.convertUmsSubDeviceChangeModel(subDeviceInfoEntity);
+            umsSubDeviceChangeModel.setNtyType(1);
+            sendKafkaOfDeviceChange(umsSubDeviceChangeModel);
+            DeviceStatusListenerManager.getInstance().publishDeviceChange(umsSubDeviceChangeModel);
+        }
+        //设备删除
+        if (Event.OPERATETYPETYPE5.equals(operateType)) {
+            String gbid = event.getGbid();
+            LambdaQueryWrapper<SubDeviceInfoEntity> deleteWrapper = new LambdaQueryWrapper<>();
+            deleteWrapper.eq(SubDeviceInfoEntity::getGbid, gbid);
+            subDeviceMapper.delete(deleteWrapper);
+            SubDeviceInfoEntity subDeviceInfoEntity = toSubDeviceInfoEntity(event);
+            UmsSubDeviceChangeModel umsSubDeviceChangeModel = UmsSubDeviceConvert.INSTANCE.convertUmsSubDeviceChangeModel(subDeviceInfoEntity);
+            umsSubDeviceChangeModel.setNtyType(2);
+            sendKafkaOfDeviceChange(umsSubDeviceChangeModel);
+            DeviceStatusListenerManager.getInstance().publishDeviceChange(umsSubDeviceChangeModel);
+        }
     }
 
     @EventListener(ScheduleStatusEvent.class)
@@ -192,7 +243,7 @@ public class UmsNotifyEventListener {
 
     }
 
-    private void sendKafka(UmsSubDeviceStatusModel umsSubDeviceStatusModel) {
+    private void sendKafkaOfDeviceStatus(UmsSubDeviceStatusModel umsSubDeviceStatusModel) {
         executorService.submit(() -> {
             umsKafkaMessageProducer.deviceStatusUpdate(umsSubDeviceStatusModel.toString()).addCallback(new ListenableFutureCallback<SendResult<Object, Object>>() {
                 @Override
@@ -203,6 +254,23 @@ public class UmsNotifyEventListener {
                 @Override
                 public void onSuccess(SendResult<Object, Object> objectObjectSendResult) {
                     log.info("ID为{}的设备状态变更消息发送成功，成功信息为：{}", umsSubDeviceStatusModel.getDevId(), objectObjectSendResult);
+                }
+            });
+        });
+
+    }
+
+    private void sendKafkaOfDeviceChange(UmsSubDeviceChangeModel umsSubDeviceChangeModel) {
+        executorService.submit(() -> {
+            umsKafkaMessageProducer.deviceChange(umsSubDeviceChangeModel.toString()).addCallback(new ListenableFutureCallback<SendResult<Object, Object>>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    log.error("ID为{}的设备状态变更消息发送失败，失败信息为：{}", umsSubDeviceChangeModel.getDeviceId(), throwable);
+                }
+
+                @Override
+                public void onSuccess(SendResult<Object, Object> objectObjectSendResult) {
+                    log.info("ID为{}的设备状态变更消息发送成功，成功信息为：{}", umsSubDeviceChangeModel.getDeviceId(), objectObjectSendResult);
                 }
             });
         });

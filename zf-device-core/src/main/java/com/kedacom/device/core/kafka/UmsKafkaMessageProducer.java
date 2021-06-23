@@ -34,6 +34,17 @@ public class UmsKafkaMessageProducer {
         return kafkaTemplate.send(UmsProducerTopic.DEVICE_STATUS_CHANGE, umsSubDeviceStatusModelStr);
     }
 
+    /**
+     * 设备更新通知
+     * @param umsSubDeviceChangeModelStr
+     * @return
+     */
+    public ListenableFuture<SendResult<Object, Object>> deviceChange(String umsSubDeviceChangeModelStr) {
+
+        log.info("--------kafka开始推送设备更新改变通知--------");
+        return kafkaTemplate.send(UmsProducerTopic.DEVICE_CHANGE, umsSubDeviceChangeModelStr);
+    }
+
     public void sendTransDataNotifyKafka(TransDataEntity entity) {
         log.info("接收透明通道数据通知进行推送:{}", entity);
         ListenableFuture<SendResult<Object, Object>> future;

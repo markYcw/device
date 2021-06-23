@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONException;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kedacom.core.anno.KmNotify;
 import com.kedacom.core.pojo.Notify;
+import com.kedacom.core.pojo.NotifyHead;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
@@ -19,6 +20,8 @@ import java.util.Date;
 @ToString(callSuper = true)
 @KmNotify(name = "devstatusnty")
 public class DeviceStateEvent implements Notify {
+
+    private NotifyHead nty;
 
     @ApiModelProperty(value = "设备id")
     private String id;

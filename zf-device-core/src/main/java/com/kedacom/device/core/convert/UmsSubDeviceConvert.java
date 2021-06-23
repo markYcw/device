@@ -1,5 +1,6 @@
 package com.kedacom.device.core.convert;
 
+import com.kedacom.ums.entity.UmsSubDeviceChangeModel;
 import com.kedacom.ums.responsedto.SubDeviceInfoResponseVo;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.ums.request.*;
@@ -51,5 +52,7 @@ public interface UmsSubDeviceConvert {
     SetSilenceRequest convertSetSilenceRequest(UmsScheduleGroupSetSilenceRequestDto requestDto);
 
     AddMembersRequest convertAddMembersRequest(UmsScheduleGroupAddMembersRequestDto requestDto);
+
+    UmsSubDeviceChangeModel convertUmsSubDeviceChangeModel(SubDeviceInfoEntity subDeviceInfoEntity);
 
 }

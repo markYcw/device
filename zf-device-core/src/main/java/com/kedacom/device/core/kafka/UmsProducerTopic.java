@@ -12,6 +12,7 @@ public interface UmsProducerTopic {
      */
     String DEVICE_STATUS_CHANGE = "zf_ums_topic_AV_DEVICE_STATUS";
 
+    String DEVICE_CHANGE = "zf_ums_topic_AV_DEVICE_CHANGE";
 
     /**
      * 统一设备子设备添加通知topic

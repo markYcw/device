@@ -4,12 +4,14 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.kedacom.ums.entity.AcceptUrlListen;
+import com.kedacom.ums.entity.UmsSubDeviceChangeModel;
 import com.kedacom.ums.entity.UmsSubDeviceStatusModel;
 import com.kedacom.util.ThreadPoolUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+import javax.swing.*;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -65,6 +67,45 @@ public class DeviceStatusListenerManager {
     public void publish(UmsSubDeviceStatusModel model) {
         DeviceStatusTask publishTask = new DeviceStatusTask(model);
         ThreadPoolUtil.getInstance().submit(publishTask);
+    }
+
+    public void publishDeviceChange(UmsSubDeviceChangeModel model) {
+
+        DeviceChangeTask deviceChangeTask = new DeviceChangeTask(model);
+        ThreadPoolUtil.getInstance().submit(deviceChangeTask);
+
+    }
+
+    static class DeviceChangeTask implements Runnable {
+
+        private UmsSubDeviceChangeModel umsSubDeviceChangeModel;
+
+        public DeviceChangeTask(UmsSubDeviceChangeModel umsSubDeviceChangeModel) {
+            this.umsSubDeviceChangeModel = umsSubDeviceChangeModel;
+        }
+
+        @Override
+        public void run() {
+            try {
+                //      String deviceStatus = JSON.toJSONString(model);
+                if (MapUtil.isNotEmpty(map)) {
+                    //           map.keySet().stream().distinct().forEach(key -> map.get(key).stream().distinct().forEach(url -> restTemplate.postForObject(url, deviceStatus, String.class)));
+                    Set<String> keySet = map.keySet();
+                    for (String key : keySet) {
+                        Set<String> urls = map.get(key);
+                        log.info("设备信息变更restTemplate类型时间通知--->key:{},url:{},deviceChange:{}", key, urls, umsSubDeviceChangeModel.toString());
+                        for (String url : urls) {
+                            //1、 url:http://127.0.0.1:10090/demo/deviceStatus     @RequestBody:UmsSubDeviceStatusModel
+                            restTemplate.postForObject(url, umsSubDeviceChangeModel, String.class);
+                            //2、 url:http://127.0.0.1:10090/demo/deviceStatus?deviceStatus={deviceStatus}  @RequestParam String deviceStatus
+                            // restTemplate.postForObject(url, null, String.class, deviceStatus);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.error("DeviceStatusListenerManager publishDeviceChange failed,deviceChange:{},error:{}", umsSubDeviceChangeModel.toString(), e.getMessage());
+            }
+        }
     }
 
     static class DeviceStatusTask implements Runnable {

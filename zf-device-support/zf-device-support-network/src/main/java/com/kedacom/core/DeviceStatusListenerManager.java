@@ -94,7 +94,7 @@ public class DeviceStatusListenerManager {
                     }
                 }
             } catch (Exception e) {
-                log.error("DeviceStatusListenerManager publish failed,deviceStatus:{},error:{}", model.toString(), e.getMessage());
+                log.error("DeviceStatusListenerManager publish failed,deviceStatus:{},error:{}", JSONObject.toJSONString(model), e.getMessage());
             }
         }
     }

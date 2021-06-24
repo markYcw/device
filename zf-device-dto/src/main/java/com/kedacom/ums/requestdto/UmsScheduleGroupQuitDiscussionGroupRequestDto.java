@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "退出讨论组请求参数类：DeviceID设备国标id")
+@ApiModel(value = "退出讨论组请求参数类(DeviceID设备国标id)")
 public class UmsScheduleGroupQuitDiscussionGroupRequestDto implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

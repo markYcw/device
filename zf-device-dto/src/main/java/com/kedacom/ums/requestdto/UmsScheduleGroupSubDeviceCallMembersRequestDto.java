@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "被呼叫的成员设备信息参数类:DeviceID为设备国标id-LocalID不填")
+@ApiModel(value = "被呼叫的成员设备信息参数类(DeviceID为设备国标id-LocalID不填)")
 public class UmsScheduleGroupSubDeviceCallMembersRequestDto implements Serializable {
 
     @ApiModelProperty("设备国标Id")

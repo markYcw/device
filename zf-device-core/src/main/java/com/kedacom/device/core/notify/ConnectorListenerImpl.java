@@ -64,25 +64,20 @@ public class ConnectorListenerImpl implements ConnectorListener {
         List<DeviceInfoEntity> beforeLoginList = deviceMapper.selectList(queryWrapper);
         if (CollectionUtil.isNotEmpty(beforeLoginList)) {
             log.info("连接事件status监听---已连接,平台进行登录:{}", beforeLoginList);
-            // 只获取第一条平台信息，登录
-            DeviceInfoEntity deviceInfoEntity = beforeLoginList.get(0);
-            LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertDeviceInfo(deviceInfoEntity);
             try {
                 retryer.call(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
-                        LoginResponse response = umsClient.login(loginRequest);
-                        log.info("onConnected device login retry,times:{}loginRequest:{},response:{}", anInt.incrementAndGet(), loginRequest, response);
-                        if (response.acquireErrcode() == 0) {
-                            deviceInfoEntity.setSessionId(String.valueOf(response.acquireSsid()));
-                            deviceInfoEntity.setUpdateTime(new Date());
-                            deviceMapper.updateById(deviceInfoEntity);
+                        for (DeviceInfoEntity deviceInfoEntity : beforeLoginList) {
+                            LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertDeviceInfo(deviceInfoEntity);
+                            LoginResponse response = umsClient.login(loginRequest);
+                            log.info("onConnected device login retry,times:{}loginRequest:{},response:{}", anInt.incrementAndGet(), loginRequest, response);
+                            if (response.acquireErrcode() == 0) {
+                                deviceInfoEntity.setSessionId(String.valueOf(response.acquireSsid()));
+                                deviceInfoEntity.setUpdateTime(new Date());
+                                deviceMapper.updateById(deviceInfoEntity);
 
-                            List<DeviceInfoEntity> afterLoginList = deviceMapper.selectList(queryWrapper);
-                            if (CollectionUtil.isNotEmpty(afterLoginList)) {
-                                log.info("连接事件status监听---已连接,平台登录成功:{},设备同步", beforeLoginList);
-                                // 只获取第一条平台信息，同步设备
-                                DeviceInfoEntity deviceInfoEntity = afterLoginList.get(0);
+                                log.info("连接事件status监听---已连接,平台登录成功:{},设备同步", deviceInfoEntity);
                                 UmsDeviceInfoSyncRequestDto request = new UmsDeviceInfoSyncRequestDto();
                                 request.setUmsId(deviceInfoEntity.getId());
                                 ThreadPoolUtil.getInstance().submit(new Runnable() {
@@ -91,10 +86,11 @@ public class ConnectorListenerImpl implements ConnectorListener {
                                         deviceManagerService.syncDeviceData(request);
                                     }
                                 });
+                                anInt.set(0);
+                                return true;
                             }
-                            anInt.set(0);
-                            return true;
                         }
+
                         return false;
                     }
                 });

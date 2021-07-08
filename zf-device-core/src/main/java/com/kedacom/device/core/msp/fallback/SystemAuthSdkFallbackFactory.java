@@ -1,5 +1,6 @@
 package com.kedacom.device.core.msp.fallback;
 
+import com.alibaba.fastjson.JSON;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemKeepAliveResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemLogOutResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemLoginResponse;
@@ -32,22 +33,22 @@ public class SystemAuthSdkFallbackFactory implements FallbackFactory<SystemAuthS
                     this.systemAuthSdk = new SystemAuthSdk() {
                         @Override
                         public SystemLoginResponse login(SystemLoginDTO request) {
-                            throw new MspRemoteCallException(cause.getMessage());
+                            throw new MspRemoteCallException(JSON.toJSONString(cause));
                         }
 
                         @Override
                         public SystemKeepAliveResponse keepAlive(RequestBaseParam request) {
-                            throw new MspRemoteCallException(cause.getMessage());
+                            throw new MspRemoteCallException(JSON.toJSONString(cause));
                         }
 
                         @Override
                         public SystemVersionResponse version(RequestBaseParam request) {
-                            throw new MspRemoteCallException(cause.getMessage());
+                            throw new MspRemoteCallException(JSON.toJSONString(cause));
                         }
 
                         @Override
                         public SystemLogOutResponse logout(RequestBaseParam request) {
-                            throw new MspRemoteCallException(cause.getMessage());
+                            throw new MspRemoteCallException(JSON.toJSONString(cause));
                         }
                     };
                 }

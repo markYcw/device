@@ -1,6 +1,8 @@
 package com.kedacom.device.core.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemKeepAliveResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemLogOutResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemLoginResponse;
@@ -15,11 +17,11 @@ import com.kedacom.device.core.msp.SystemAuthSdk;
 import com.kedacom.device.core.msp.entity.SystemLoginDTO;
 import com.kedacom.device.core.service.SystemAuthService;
 import com.kedacom.device.core.utils.HandleResponseUtil;
+import com.kedacom.device.core.utils.MspRestTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 
 /**
  * @Auther: hxj
@@ -31,14 +33,24 @@ public class SystemAuthServiceImpl implements SystemAuthService {
 
     @Autowired
     private SystemAuthSdk systemAuthSdk;
+
     @Autowired
     private HandleResponseUtil responseUtil;
-    @Resource
+
+    @Autowired
     private DeviceMapper deviceMapper;
+
+    @Autowired
+    private MspRestTemplate mspRestTemplate;
+
+    @Value("${zf.msp.server_addr}")
+    private String mspUrl;
+
+    private static final String mspPath = "/api/v1/manage/system/";
 
     @Override
     public SystemLoginResponse login(SystemLoginRequest request) {
-        log.info("登录显控统一服务入参:{}", request);
+        log.info("登录显控统一服务入参:{}", JSON.toJSONString(request));
         SystemLoginDTO systemLoginDTO = new SystemLoginDTO();
         String umsId = request.getUmsId();
         DeviceInfoEntity entity = deviceMapper.selectById(umsId);
@@ -47,35 +59,64 @@ public class SystemAuthServiceImpl implements SystemAuthService {
         }
         systemLoginDTO.setUser_name(entity.getMspAccount());
         systemLoginDTO.setPassword(entity.getMspPassword());
-        SystemLoginResponse response = systemAuthSdk.login(systemLoginDTO);
-        log.info("登录显控统一服务应答:{}", response);
-        responseUtil.handleMSPRes("登录显控统一服务异常:{},{},{}", DeviceErrorEnum.SYSTEM_LOGIN_FAILED, response.getError(), null);
-        return response;
+        log.info("登录显控统一服务feign接口入参:{}", JSON.toJSONString(systemLoginDTO));
+
+        String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "login", JSON.toJSONString(systemLoginDTO), String.class);
+        SystemLoginResponse systemLoginResponse = JSONObject.parseObject(response, SystemLoginResponse.class);
+
+        //     String response = systemAuthSdk.login(JSON.toJSONString(systemLoginDTO));
+
+        log.info("登录显控统一服务应答:{}", systemLoginResponse);
+        if (systemLoginResponse != null) {
+            responseUtil.handleMSPRes("登录显控统一服务异常:{},{},{}", DeviceErrorEnum.SYSTEM_LOGIN_FAILED, systemLoginResponse.getError(), null);
+        }
+        return systemLoginResponse;
     }
 
     @Override
     public void keepAlive(RequestBaseParam request) {
-        log.info("保活入参:{}", request);
-        SystemKeepAliveResponse response = systemAuthSdk.keepAlive(request);
-        log.info("保活应答:{}", response);
-        responseUtil.handleMSPRes("保活异常:{},{},{}", DeviceErrorEnum.SYSTEM_KEEPALIVE_FAILED, response.getError(), null);
+        log.info("保活入参:{}", JSON.toJSONString(request));
+
+        String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "keepalive", JSON.toJSONString(request), String.class);
+        SystemKeepAliveResponse aliveResponse = JSONObject.parseObject(response, SystemKeepAliveResponse.class);
+
+        // SystemKeepAliveResponse response = systemAuthSdk.keepAlive(request);
+
+        log.info("保活应答:{}", aliveResponse);
+        if (aliveResponse != null) {
+            responseUtil.handleMSPRes("保活异常:{},{},{}", DeviceErrorEnum.SYSTEM_KEEPALIVE_FAILED, aliveResponse.getError(), null);
+        }
     }
 
     @Override
     public SystemVersionResponse version(RequestBaseParam request) {
-        log.info("显控统一服务API版本号入参:{}", request);
-        SystemVersionResponse response = systemAuthSdk.version(request);
+        log.info("显控统一服务API版本号入参:{}", JSON.toJSONString(request));
+
+        String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "version", JSON.toJSONString(request), String.class);
+        SystemVersionResponse versionResponse = JSONObject.parseObject(response, SystemVersionResponse.class);
+
+        //  SystemVersionResponse response = systemAuthSdk.version(request);
+
         log.info("显控统一服务API版本号应答:{}", response);
-        responseUtil.handleMSPRes("显控统一服务API版本号异常:{},{},{}", DeviceErrorEnum.SYSTEM_VERSION_FAILED, response.getError(), null);
-        return response;
+        if (versionResponse != null) {
+            responseUtil.handleMSPRes("显控统一服务API版本号异常:{},{},{}", DeviceErrorEnum.SYSTEM_VERSION_FAILED, versionResponse.getError(), null);
+        }
+        return versionResponse;
     }
 
     @Override
     public void logout(RequestBaseParam request) {
-        log.info("退出显控统一服务入参:{}", request);
-        SystemLogOutResponse response = systemAuthSdk.logout(request);
-        log.info("退出显控统一服务应答:{}", response);
-        responseUtil.handleMSPRes("退出显控统一服务异常:{},{},{}", DeviceErrorEnum.SYSTEM_LOGOUT_FAILED, response.getError(), null);
+        log.info("退出显控统一服务入参:{}", JSON.toJSONString(request));
+
+        String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "logout", JSON.toJSONString(request), String.class);
+        SystemLogOutResponse outResponse = JSONObject.parseObject(response, SystemLogOutResponse.class);
+
+        // SystemLogOutResponse response = systemAuthSdk.logout(request);
+
+        log.info("退出显控统一服务应答:{}", outResponse);
+        if (outResponse != null) {
+            responseUtil.handleMSPRes("退出显控统一服务异常:{},{},{}", DeviceErrorEnum.SYSTEM_LOGOUT_FAILED, outResponse.getError(), null);
+        }
     }
 
 

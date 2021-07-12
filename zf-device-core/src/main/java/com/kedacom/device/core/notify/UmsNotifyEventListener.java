@@ -99,7 +99,8 @@ public class UmsNotifyEventListener {
                 LambdaUpdateWrapper<GroupInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
                 // 同步分组
                 for (GroupInfoEntity umsGroupEntity : groupInfoEntities) {
-                    queryWrapper.eq(GroupInfoEntity::getGroupId, umsGroupEntity.getGroupId());
+                    queryWrapper.eq(GroupInfoEntity::getGroupDevId, umsId)
+                            .eq(GroupInfoEntity::getGroupId, umsGroupEntity.getGroupId());
                     GroupInfoEntity checkUmsGroup = groupMapper.selectOne(queryWrapper);
                     if (checkUmsGroup != null) {
                         updateWrapper.eq(GroupInfoEntity::getGroupId, umsGroupEntity.getGroupId());

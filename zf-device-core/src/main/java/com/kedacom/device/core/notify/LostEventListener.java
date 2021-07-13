@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,8 +50,8 @@ public class LostEventListener {
         retryer = RetryerBuilder.<Boolean>newBuilder()
                 .retryIfResult(Predicates.equalTo(false)) // 返回false时重试
                 .retryIfExceptionOfType(RuntimeException.class) // 抛出RuntimeException时重试
-                .withWaitStrategy(WaitStrategies.fixedWait(1000, TimeUnit.MILLISECONDS)) // 1s后重试
-                .withStopStrategy(StopStrategies.stopAfterAttempt(10)) // 重试10次后停止
+                .withWaitStrategy(WaitStrategies.fixedWait(2000, TimeUnit.MILLISECONDS)) // 2s后重试
+                .withStopStrategy(StopStrategies.stopAfterAttempt(15)) // 重试10次后停止
                 .build();
     }
 
@@ -63,15 +62,12 @@ public class LostEventListener {
         List<DeviceInfoEntity> beforeLoginList = deviceMapper.selectList(queryWrapper);
         if (CollectionUtil.isNotEmpty(beforeLoginList)) {
             log.info("掉线通知事件,平台进行登录:{}", beforeLoginList);
-            // 只获取第一条平台信息，登录
-            DeviceInfoEntity deviceInfoEntity = beforeLoginList.get(0);
-            LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertDeviceInfo(deviceInfoEntity);
             try {
-                retryer.call(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
+                for (DeviceInfoEntity deviceInfoEntity : beforeLoginList) {
+                    retryer.call(() -> {
+                        LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertDeviceInfo(deviceInfoEntity);
                         LoginResponse response = umsClient.login(loginRequest);
-                        log.info("LostCntNty login retry,times:{},loginRequest:{},response:{}", anInt.incrementAndGet(), loginRequest, response);
+                        log.info("LostCntNty login retry,times:{},deviceInfoEntity:{},loginRequest:{},response:{}", anInt.incrementAndGet(), deviceInfoEntity, loginRequest, response);
                         if (response.acquireErrcode() == 0) {
                             deviceInfoEntity.setSessionId(String.valueOf(response.acquireSsid()));
                             deviceInfoEntity.setUpdateTime(new Date());
@@ -81,9 +77,9 @@ public class LostEventListener {
                             if (CollectionUtil.isNotEmpty(afterLoginList)) {
                                 log.info("掉线通知事件,平台登录成功:{},设备同步", beforeLoginList);
                                 // 只获取第一条平台信息，同步设备
-                                DeviceInfoEntity deviceInfoEntity = afterLoginList.get(0);
+                                DeviceInfoEntity deviceInfoEntity1 = afterLoginList.get(0);
                                 UmsDeviceInfoSyncRequestDto request = new UmsDeviceInfoSyncRequestDto();
-                                request.setUmsId(deviceInfoEntity.getId());
+                                request.setUmsId(deviceInfoEntity1.getId());
                                 ThreadPoolUtil.getInstance().submit(new Runnable() {
                                     @Override
                                     public void run() {
@@ -95,8 +91,8 @@ public class LostEventListener {
                             return true;
                         }
                         return false;
-                    }
-                });
+                    });
+                }
             } catch (ExecutionException e) {
                 log.error("LostCntNty login ExecutionException,times:{},error:{}", anInt, e.getMessage());
             } catch (RetryException e) {

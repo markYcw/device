@@ -241,6 +241,7 @@ public class UmsDeviceTask implements Runnable {
 
         while (true) {
 
+            log.info("获取设备请求：curPage:{}, pageSize:{}", curPage, pageSize);
             Integer code = umsSubDeviceManager.selectAndInsertSubDeviceFromAvFeign(umsDeviceId, curPage, pageSize);
             log.info("返回的code数据为:[{}]", code);
             if (code == Integer.MAX_VALUE) {

@@ -3,7 +3,6 @@ package com.kedacom.device.core.notify;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.rholder.retry.*;
-import com.google.common.base.Predicates;
 import com.kedacom.core.ConnectorListener;
 import com.kedacom.device.core.convert.UmsDeviceConvert;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -41,13 +41,13 @@ public class ConnectorListenerImpl implements ConnectorListener {
     @Resource
     private DeviceManagerService deviceManagerService;
 
-    private static AtomicInteger anInt = new AtomicInteger(0);
+    private static final AtomicInteger anInt = new AtomicInteger(0);
 
     static Retryer<Boolean> retryer;
 
     static {
         retryer = RetryerBuilder.<Boolean>newBuilder()
-                .retryIfResult(Predicates.equalTo(false)) // 返回false时重试
+                .retryIfResult(aBoolean -> Objects.equals(aBoolean, false)) // 返回false时重试
                 .retryIfExceptionOfType(RuntimeException.class) // 抛出RuntimeException时重试
                 .withWaitStrategy(WaitStrategies.fixedWait(2000, TimeUnit.MILLISECONDS)) // 2s后重试
                 .withStopStrategy(StopStrategies.stopAfterAttempt(15)) // 重试15次后停止

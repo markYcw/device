@@ -100,7 +100,7 @@ public class UmsDeviceTask implements Runnable {
     private void process() {
 
         log.info("开始执行任务.....,统一设备平台Id为:[{}]", umsDeviceId);
-        int queryindex = 1;
+        int queryindex = 0;
         int querycount = 100;
         Integer total = queryCountOfSubDeviceFromThird(umsDeviceId, queryindex, querycount);
         if (!keepConnection) {

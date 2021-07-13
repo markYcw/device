@@ -59,7 +59,7 @@ public class TvWallServiceImpl implements TvWallService {
         String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "layout", JSON.toJSONString(request), String.class);
         TvWallLayoutResponse tvWallListResponse = JSONObject.parseObject(response, TvWallLayoutResponse.class);
 
-        //     TvWallLayoutResponse response = tvWallManageSdk.layout(request);
+      //      TvWallLayoutResponse response = tvWallManageSdk.layout(request);
 
         log.info("获取大屏布局应答:{}", response);
         if (tvWallListResponse != null) {

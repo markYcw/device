@@ -1,15 +1,15 @@
 package com.kedacom.device.core.msp;
 
 
-import com.kedacom.avIntegration.request.decoder.OsdConfigRequest;
-import com.kedacom.avIntegration.request.decoder.OsdDeleteRequest;
-import com.kedacom.avIntegration.request.decoder.StyleConfigRequest;
-import com.kedacom.avIntegration.request.decoder.StyleQueryRequest;
 import com.kedacom.acl.network.data.avIntegration.decoder.OsdConfigResponse;
 import com.kedacom.acl.network.data.avIntegration.decoder.OsdDeleteResponse;
 import com.kedacom.acl.network.data.avIntegration.decoder.StyleConfigResponse;
 import com.kedacom.acl.network.data.avIntegration.decoder.StyleQueryResponse;
-import com.kedacom.device.core.msp.config.FeignConfig;
+import com.kedacom.avIntegration.request.decoder.OsdConfigRequest;
+import com.kedacom.avIntegration.request.decoder.OsdDeleteRequest;
+import com.kedacom.avIntegration.request.decoder.StyleConfigRequest;
+import com.kedacom.avIntegration.request.decoder.StyleQueryRequest;
+import com.kedacom.device.core.config.config.DeviceFastJsonConfig;
 import com.kedacom.device.core.msp.fallback.DecoderManageSdkFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
         url = "${zf.msp.server_addr}",
         path = "/api/v1/manage/decoder",
         fallbackFactory = DecoderManageSdkFallbackFactory.class,
-        configuration = FeignConfig.class)
+        configuration = DeviceFastJsonConfig.class)
 public interface DecoderManageSdk {
 
     /**

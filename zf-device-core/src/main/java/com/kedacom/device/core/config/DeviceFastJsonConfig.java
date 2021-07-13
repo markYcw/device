@@ -1,4 +1,4 @@
-package com.kedacom.device.core.msp.config;
+package com.kedacom.device.core.config.config;
 
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-public class FeignConfig {
+public class DeviceFastJsonConfig {
 
     @Bean
     public ResponseEntityDecoder feignDecoder() {

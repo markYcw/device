@@ -2,7 +2,7 @@ package com.kedacom.device.core.msp;
 
 import com.kedacom.acl.network.data.avIntegration.tvwall.*;
 import com.kedacom.avIntegration.request.tvwall.*;
-import com.kedacom.device.core.msp.config.FeignConfig;
+import com.kedacom.device.core.config.config.DeviceFastJsonConfig;
 import com.kedacom.device.core.msp.fallback.TvWallManageSdkFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
         url = "${zf.msp.server_addr}",
         path = "/api/v1/manage/tvwall",
         fallbackFactory = TvWallManageSdkFallbackFactory.class,
-        configuration = FeignConfig.class)
+        configuration = DeviceFastJsonConfig.class)
 public interface TvWallManageSdk {
 
     /**

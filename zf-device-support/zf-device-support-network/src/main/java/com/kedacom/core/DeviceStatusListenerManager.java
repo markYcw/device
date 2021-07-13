@@ -2,6 +2,7 @@ package com.kedacom.core;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.kedacom.ums.entity.AcceptUrlListen;
 import com.kedacom.ums.entity.UmsSubDeviceChangeModel;
@@ -9,10 +10,13 @@ import com.kedacom.ums.entity.UmsSubDeviceStatusModel;
 import com.kedacom.util.ThreadPoolUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import javax.swing.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,6 +40,7 @@ public class DeviceStatusListenerManager {
         httpRequestFactory.setConnectTimeout(15000);
         httpRequestFactory.setReadTimeout(15000);
         restTemplate = new RestTemplate(httpRequestFactory);
+        setRestTemplateEncode(restTemplate);
     }
 
     public static DeviceStatusListenerManager getInstance() {
@@ -136,6 +141,20 @@ public class DeviceStatusListenerManager {
                 }
             } catch (Exception e) {
                 log.error("DeviceStatusListenerManager publish failed,deviceStatus:{},error:{}", JSONObject.toJSONString(model), e.getMessage());
+            }
+        }
+    }
+
+    public static void setRestTemplateEncode(RestTemplate restTemplate) {
+        if (null == restTemplate || ObjectUtil.isEmpty(restTemplate.getMessageConverters())) {
+            return;
+        }
+
+        List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
+        for (int i = 0; i < messageConverters.size(); i++) {
+            HttpMessageConverter<?> httpMessageConverter = messageConverters.get(i);
+            if (httpMessageConverter.getClass().equals(StringHttpMessageConverter.class)) {
+                messageConverters.set(i, new StringHttpMessageConverter(StandardCharsets.UTF_8));
             }
         }
     }

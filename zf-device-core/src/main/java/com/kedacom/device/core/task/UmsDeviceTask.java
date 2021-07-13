@@ -100,7 +100,7 @@ public class UmsDeviceTask implements Runnable {
     private void process() {
 
         log.info("开始执行任务.....,统一设备平台Id为:[{}]", umsDeviceId);
-        int queryindex = 1;
+        int queryindex = 0;
         int querycount = 100;
         Integer total = queryCountOfSubDeviceFromThird(umsDeviceId, queryindex, querycount);
         if (!keepConnection) {
@@ -238,10 +238,12 @@ public class UmsDeviceTask implements Runnable {
     private Boolean doAlone(int curPage, int pageSize, UmsSubDeviceManager umsSubDeviceManager) {
 
         int retryTime = 0;
+        int index = 0;
 
         while (true) {
 
-            Integer code = umsSubDeviceManager.selectAndInsertSubDeviceFromAvFeign(umsDeviceId, curPage, pageSize);
+            log.info("获取设备请求：curPage:{}, pageSize:{}", curPage, pageSize);
+            Integer code = umsSubDeviceManager.selectAndInsertSubDeviceFromAvFeign(umsDeviceId, index, pageSize);
             log.info("返回的code数据为:[{}]", code);
             if (code == Integer.MAX_VALUE) {
                 //到这里说明所有设备已经更新完成，那么模式还是同步中的设备则说明这次没有同步到，将模式改为未同步到
@@ -268,7 +270,7 @@ public class UmsDeviceTask implements Runnable {
             if (retryTime != 0) {
                 retryTime = 0;
             }
-            curPage++;
+            index++;
         }
     }
 

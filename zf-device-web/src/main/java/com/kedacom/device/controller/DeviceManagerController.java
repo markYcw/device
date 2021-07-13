@@ -44,6 +44,16 @@ public class DeviceManagerController {
         return BaseResult.succeed("当前统一设备开启同步成功");
     }
 
+    @ApiOperation("手动同步设备分组数据")
+    @PostMapping("/syncDeviceData")
+    public BaseResult<String> syncDeviceData(@Valid @RequestBody UmsDeviceGroupSyncRequestDto requestDto, BindingResult result) {
+
+        ValidUtils.paramValid(result);
+        deviceManagerService.queryDeviceGroupNotify(requestDto.getUmsId());
+
+        return BaseResult.succeed("当前统一设备分组开启同步成功");
+    }
+
     @ApiOperation("获取当前服务统一设备最近一次同步设备时间")
     @PostMapping("/lastSyncTime")
     public BaseResult<String> getUmsLastSyncTime(@Valid @RequestBody UmsDeviceInfoSyncRequestDto requestDto, BindingResult result) {

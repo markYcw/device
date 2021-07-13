@@ -124,7 +124,7 @@ public class UmsDeviceTask implements Runnable {
         log.info("开始更新同步。。。。");
         boolean syncResult;
         if (shouldDistribute) {
-            syncResult = distribute(0, querycount, umsSubDeviceManager);
+            syncResult = distribute(totalPage, querycount, umsSubDeviceManager);
         } else {
             syncResult = doAlone(0, querycount, umsSubDeviceManager);
         }
@@ -178,7 +178,7 @@ public class UmsDeviceTask implements Runnable {
 
         monitor(executorService);
 
-        for (int i = 1; i <= totalPage + 1; i++) {
+        for (int i = 0; i <= totalPage + 1; i++) {
 
             try {
                 executorService.execute(new UpdateDetailTask(umsDeviceId, i, pageSize));

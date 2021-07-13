@@ -51,6 +51,7 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
         requestVo.setSsid(Integer.valueOf(sessionId));
         requestVo.setQueryindex(curPage);
         requestVo.setQuerycount(pageSize);
+        log.info("curPage:{}, pageSize:{}", curPage, pageSize);
         QuerySubDeviceInfoResponse responseVo = umsClient.querydev(requestVo);
 
         // 如果当前请求异常， 将重新发送获取设备的请求（最多再请求两次）

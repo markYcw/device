@@ -45,8 +45,8 @@ public class DeviceManagerController {
     }
 
     @ApiOperation("手动同步设备分组数据")
-    @PostMapping("/syncDeviceData")
-    public BaseResult<String> syncDeviceData(@Valid @RequestBody UmsDeviceGroupSyncRequestDto requestDto, BindingResult result) {
+    @PostMapping("/syncDeviceGroupData")
+    public BaseResult<String> syncDeviceGroupData(@Valid @RequestBody UmsDeviceGroupSyncRequestDto requestDto, BindingResult result) {
 
         ValidUtils.paramValid(result);
         deviceManagerService.queryDeviceGroupNotify(requestDto.getUmsId());

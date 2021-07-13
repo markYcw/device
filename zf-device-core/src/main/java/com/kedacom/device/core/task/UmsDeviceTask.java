@@ -8,7 +8,6 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.kedacom.BasePage;
 import com.kedacom.common.utils.PinYinUtils;
 import com.kedacom.common.utils.SpringUtil;
-import com.kedacom.device.core.constant.UmsMod;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.core.manager.UmsSubDeviceManager;
@@ -125,7 +124,7 @@ public class UmsDeviceTask implements Runnable {
         log.info("开始更新同步。。。。");
         boolean syncResult;
         if (shouldDistribute) {
-            syncResult = distribute(totalPage, querycount, umsSubDeviceManager);
+            syncResult = distribute(0, querycount, umsSubDeviceManager);
         } else {
             syncResult = doAlone(0, querycount, umsSubDeviceManager);
         }
@@ -322,7 +321,7 @@ public class UmsDeviceTask implements Runnable {
     /**
      * 从本地服务获取统一设备下的子设备
      *
-     * @param pageSize    每一页大小
+     * @param pageSize 每一页大小
      * @return 结果
      */
     private BasePage<UmsSubDeviceInfoQueryResponseDto> getUmsSubDeviceFromLocal(Integer pageSize) {

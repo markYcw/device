@@ -377,4 +377,80 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         responseUtil.handleSMSRes(error, DeviceErrorEnum.SEND_TRANS_DATA_FAILED, res);
         return true;
     }
+
+    @Override
+    public StartPushUrlVO startPushUrl(StartPushUrlDTO request) {
+        String error = "开始推送媒体流失败:{},{},{}";
+        log.info("开始推送媒体流入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        StartPushUrlRequest startPushUrlRequest = streamMediaConvert.convertStartPushUrlDTO(request);
+        startPushUrlRequest.setSsid(ssid);
+        log.info("开始推送媒体流失败交互参数:{}", startPushUrlRequest);
+        StartPushUrlResponse res = client.startPushUrl(startPushUrlRequest);
+        log.info("开始推送媒体流失败交互参数应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.SEND_TRANS_DATA_FAILED, res);
+        return res.acquireData(StartPushUrlVO.class);
+    }
+
+    @Override
+    public Boolean stopPushUrl(StopPushUrlDTO request) {
+        String error = "停止推送媒体流失败:{},{},{}";
+        log.info("停止推送媒体流入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        StopPushUrlRequest stopPushUrlRequest = streamMediaConvert.convertStopPushUrlDTO(request);
+        stopPushUrlRequest.setSsid(ssid);
+        log.info("发送宏指令数据交互参数:{}", stopPushUrlRequest);
+        StopPushUrlResponse res = client.stopPushUrl(stopPushUrlRequest);
+        log.info("发送宏指令数据应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.SEND_TRANS_DATA_FAILED, res);
+        return true;
+    }
+
+    @Override
+    public StartPullUrlVO startPullUrl(StartPullUrlDTO request) {
+        String error = "开始拉取媒体流失败:{},{},{}";
+        log.info("开始拉取媒体流入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        StartPullUrlRequest startPullUrlRequest = streamMediaConvert.convertStartPullUrlDTO(request);
+        startPullUrlRequest.setSsid(ssid);
+        log.info("开始拉取媒体流交互参数:{}", startPullUrlRequest);
+        StartPullUrlResponse res = client.startPullUrl(startPullUrlRequest);
+        log.info("开始拉取媒体流应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.SEND_TRANS_DATA_FAILED, res);
+        return res.acquireData(StartPullUrlVO.class);
+    }
+
+    @Override
+    public Boolean stopPullUrl(StopPullUrlDTO request) {
+        String error = "停止拉取媒体流失败:{},{},{}";
+        log.info("停止拉取媒体流失败:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity))
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        StopPullUrlRequest stopPullUrlRequest = streamMediaConvert.convertStopPullUrlDTO(request);
+        stopPullUrlRequest.setSsid(ssid);
+        log.info("停止拉取媒体流交互参数:{}", stopPullUrlRequest);
+        StopPullUrlResponse res = client.stopPullUrl(stopPullUrlRequest);
+        log.info("停止拉取媒体流应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.SEND_TRANS_DATA_FAILED, res);
+        return true;
+    }
 }

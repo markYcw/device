@@ -98,6 +98,26 @@ public class StreamMediaApiFallbackFactory implements FallbackFactory<StreamMedi
             public BaseResult<Boolean> sendOrderData(SendOrderDataDTO sendOrderDataDTO) {
                 return BaseResult.failed("服务出错，请稍后重试");
             }
+
+            @Override
+            public BaseResult<StartPushUrlVO> startPushUrl(StartPushUrlDTO startPushUrlDTO) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<Boolean> stopPushUrl(StopPushUrlDTO stopPushUrlDTO) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<StartPullUrlVO> startPullUrl(StartPullUrlDTO startPullUrlDTO) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<Boolean> stopPullUrl(StopPullUrlDTO stopPullUrlDTO) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
         };
     }
 }

@@ -43,4 +43,12 @@ public interface StreamMediaService {
 
     Boolean sendOrderData(SendOrderDataDTO sendOrderDataDTO);
 
+    StartPushUrlVO startPushUrl(StartPushUrlDTO startPushUrlDTO);
+
+    Boolean stopPushUrl(StopPushUrlDTO stopPushUrlDTO);
+
+    StartPullUrlVO startPullUrl(StartPullUrlDTO startPullUrlDTO);
+
+    Boolean stopPullUrl(StopPullUrlDTO stopPullUrlDTO);
+
 }

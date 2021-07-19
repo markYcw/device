@@ -175,7 +175,6 @@ public class StreamMediaController {
         return BaseResult.succeed("查询成功", queryHistoryUrlVO);
     }
 
-
     @ApiOperation("发送宏指令数据")
     @PostMapping("/sendOrderData")
     public BaseResult<Boolean> sendOrderData(@Valid @RequestBody SendOrderDataDTO sendOrderDataDTO, BindingResult br) {
@@ -185,4 +184,39 @@ public class StreamMediaController {
         return BaseResult.succeed("发送成功", aBoolean);
     }
 
+    @ApiOperation("开始推送媒体流")
+    @PostMapping("/startPushUrl")
+    public BaseResult<StartPushUrlVO> startPushUrl(@Valid @RequestBody StartPushUrlDTO startPushUrlDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        StartPushUrlVO startPushUrlVO = streamMediaService.startPushUrl(startPushUrlDTO);
+        return BaseResult.succeed("推送成功", startPushUrlVO);
+    }
+
+    @ApiOperation("停止推送媒体流")
+    @PostMapping("/stopPushUrl")
+    public BaseResult<Boolean> stopPushUrl(@Valid @RequestBody StopPushUrlDTO stopPushUrlDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean aBoolean = streamMediaService.stopPushUrl(stopPushUrlDTO);
+        return BaseResult.succeed("停止成功", aBoolean);
+    }
+
+    @ApiOperation("开始拉取媒体流")
+    @PostMapping("/startPullUrl")
+    public BaseResult<StartPullUrlVO> startPullUrl(@Valid @RequestBody StartPullUrlDTO startPullUrlDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        StartPullUrlVO startPullUrlVO = streamMediaService.startPullUrl(startPullUrlDTO);
+        return BaseResult.succeed("拉取成功", startPullUrlVO);
+    }
+
+    @ApiOperation("停止拉取媒体流")
+    @PostMapping("/stopPullUrl")
+    public BaseResult<Boolean> stopPullUrl(@Valid @RequestBody StopPullUrlDTO stopPullUrlDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean aBoolean = streamMediaService.stopPullUrl(stopPullUrlDTO);
+        return BaseResult.succeed("停止成功", aBoolean);
+    }
 }

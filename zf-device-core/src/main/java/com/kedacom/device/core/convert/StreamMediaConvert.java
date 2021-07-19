@@ -50,4 +50,12 @@ public interface StreamMediaConvert {
 
     SendOrderDataRequest convertSendOrderDataDTO(SendOrderDataDTO request);
 
+    StartPushUrlRequest convertStartPushUrlDTO(StartPushUrlDTO request);
+
+    StopPushUrlRequest convertStopPushUrlDTO(StopPushUrlDTO request);
+
+    StartPullUrlRequest convertStartPullUrlDTO(StartPullUrlDTO request);
+
+    StopPullUrlRequest convertStopPullUrlDTO(StopPullUrlDTO request);
+
 }

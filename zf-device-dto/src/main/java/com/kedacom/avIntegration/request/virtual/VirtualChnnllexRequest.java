@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class VirtualChnnllexRequest implements Serializable {
         @ApiModelProperty("大屏在设备上的名称 必填")
         private String name;
 
-        @NotEmpty
+        @NotNull
         @ApiModelProperty("通道类型，魅视的输入通道=46 必填")
         private Integer type;
 

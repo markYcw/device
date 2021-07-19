@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -37,27 +38,27 @@ public class VirtualTvWallRequest implements Serializable {
         @ApiModelProperty("大屏在设备上的名称 必填")
         private String name;
 
-        @NotEmpty
+        @NotNull
         @ApiModelProperty("大屏分辨率宽 必填")
         private Integer res_width;
 
-        @NotEmpty
+        @NotNull
         @ApiModelProperty("大屏分辨率高 必填")
         private Integer res_height;
 
-        @NotEmpty
+        @NotNull
         @ApiModelProperty("大屏布局，行数 必填")
         private Integer cell_row;
 
-        @NotEmpty
+        @NotNull
         @ApiModelProperty("大屏布局，列数 必填")
         private Integer cell_col;
 
-        @NotEmpty
+        @NotNull
         @ApiModelProperty("是否规则等分布局 必填")
         private Boolean isequant;
 
-        @NotEmpty
+        @NotNull
         @ApiModelProperty("是否可以编辑 必填")
         private Boolean isedit;
     }

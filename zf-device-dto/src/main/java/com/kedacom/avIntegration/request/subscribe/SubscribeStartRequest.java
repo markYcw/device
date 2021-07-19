@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class SubscribeStartRequest implements Serializable {
     @ApiModelProperty(value = "订阅发布地址，例如http://dev.ctsp.kedacom.com/displayServer/process_callback")
     private String url;
 
-    @NotEmpty
+    @NotNull
     @ApiModelProperty(value = "订阅个数")
     private Integer number;
 

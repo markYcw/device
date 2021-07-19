@@ -151,4 +151,36 @@ public interface StreamMediaClient {
      */
     SendOrderDataResponse sendOrderData(SendOrderDataRequest sendOrderDataRequest);
 
+    /**
+     * 开始推送媒体流
+     *
+     * @param startPushUrlRequest
+     * @return
+     */
+    StartPushUrlResponse startPushUrl(StartPushUrlRequest startPushUrlRequest);
+
+    /**
+     * 停止推送媒体流
+     *
+     * @param stopPushUrlRequest
+     * @return
+     */
+    StopPushUrlResponse stopPushUrl(StopPushUrlRequest stopPushUrlRequest);
+
+    /**
+     * 开始拉取媒体流
+     *
+     * @param startPullUrlRequest
+     * @return
+     */
+    StartPullUrlResponse startPullUrl(StartPullUrlRequest startPullUrlRequest);
+
+    /**
+     * 停止拉取媒体流
+     *
+     * @param stopPullUrlRequest
+     * @return
+     */
+    StopPullUrlResponse stopPullUrl(StopPullUrlRequest stopPullUrlRequest);
+
 }

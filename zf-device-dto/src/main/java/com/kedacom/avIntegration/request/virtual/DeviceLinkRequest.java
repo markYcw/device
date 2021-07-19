@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -20,7 +20,7 @@ public class DeviceLinkRequest implements Serializable {
     @ApiModelProperty(value = "token令牌 - 必填")
     private String token;
 
-    @NotEmpty
+    @NotNull
     @ApiModelProperty("大屏ID")
     private Integer tvid;
 

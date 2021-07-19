@@ -183,4 +183,40 @@ public interface StreamMediaApi {
      */
     @PostMapping("/sendOrderData")
     BaseResult<Boolean> sendOrderData(@RequestBody SendOrderDataDTO sendOrderDataDTO);
+
+    /**
+     * 开始推送媒体流
+     *
+     * @param startPushUrlDTO
+     * @return
+     */
+    @PostMapping("/startPushUrl")
+    BaseResult<StartPushUrlVO> startPushUrl(@RequestBody StartPushUrlDTO startPushUrlDTO);
+
+    /**
+     * 停止推送媒体流
+     *
+     * @param stopPushUrlDTO
+     * @return
+     */
+    @PostMapping("/stopPushUrl")
+    BaseResult<Boolean> stopPushUrl(@RequestBody StopPushUrlDTO stopPushUrlDTO);
+
+    /**
+     * 开始拉取媒体流
+     *
+     * @param startPullUrlDTO
+     * @return
+     */
+    @PostMapping("/startPullUrl")
+    BaseResult<StartPullUrlVO> startPullUrl(@RequestBody StartPullUrlDTO startPullUrlDTO);
+
+    /**
+     * 停止拉取媒体流
+     *
+     * @param stopPullUrlDTO
+     * @return
+     */
+    @PostMapping("/stopPullUrl")
+    BaseResult<Boolean> stopPullUrl(@RequestBody StopPullUrlDTO stopPullUrlDTO);
 }

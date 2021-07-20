@@ -418,18 +418,18 @@ public class UmsDeviceTask implements Runnable {
                         if (executorService == null) {
                             return;
                         }
-
-                        int corePoolSize = executorService.getCorePoolSize();
-                        int largestPoolSize = executorService.getLargestPoolSize();
-                        int maximumPoolSize = executorService.getMaximumPoolSize();
-                        int activeCount = executorService.getActiveCount();
-                        int poolSize = executorService.getPoolSize();
-                        long taskCount = executorService.getTaskCount();
-                        boolean shutdown = executorService.isShutdown();
-                        boolean terminated = executorService.isTerminated();
-                        long completedTaskCount = executorService.getCompletedTaskCount();
-                        log.info("executorService:{} corePoolSize:{} largestPoolSize:{} maximumPoolSize:{} activeCount:{} poolSize:{} taskCount:{} completedTaskCount:{} shutdown:{} terminated:{}",
-                                executorService, corePoolSize, largestPoolSize, maximumPoolSize, activeCount, poolSize, taskCount, completedTaskCount, shutdown, terminated);
+//
+//                        int corePoolSize = executorService.getCorePoolSize();
+//                        int largestPoolSize = executorService.getLargestPoolSize();
+//                        int maximumPoolSize = executorService.getMaximumPoolSize();
+//                        int activeCount = executorService.getActiveCount();
+//                        int poolSize = executorService.getPoolSize();
+//                        long taskCount = executorService.getTaskCount();
+//                        boolean shutdown = executorService.isShutdown();
+//                        boolean terminated = executorService.isTerminated();
+//                        long completedTaskCount = executorService.getCompletedTaskCount();
+//                        log.info("executorService:{} corePoolSize:{} largestPoolSize:{} maximumPoolSize:{} activeCount:{} poolSize:{} taskCount:{} completedTaskCount:{} shutdown:{} terminated:{}",
+//                                executorService, corePoolSize, largestPoolSize, maximumPoolSize, activeCount, poolSize, taskCount, completedTaskCount, shutdown, terminated);
 
                         try {
                             Thread.sleep(1000);

@@ -1,9 +1,9 @@
-package com.kedacom.device.core.msp;
+package com.kedacom.device.core.remoteSdk.msp;
 
 import com.kedacom.acl.network.data.avIntegration.tvplay.*;
 import com.kedacom.avIntegration.request.tvplay.*;
-import com.kedacom.device.core.config.config.DeviceFastJsonConfig;
-import com.kedacom.device.core.msp.fallback.TvPlayManageSdkFallbackFactory;
+import com.kedacom.device.core.config.RemoteFeignConfig;
+import com.kedacom.device.core.remoteSdk.msp.fallback.TvPlayManageSdkFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
         url = "${zf.msp.server_addr}",
         path = "/api/v1/manage/tvplay",
         fallbackFactory = TvPlayManageSdkFallbackFactory.class,
-        configuration = DeviceFastJsonConfig.class)
+        configuration = RemoteFeignConfig.class)
 public interface TvPlayManageSdk {
 
     /**

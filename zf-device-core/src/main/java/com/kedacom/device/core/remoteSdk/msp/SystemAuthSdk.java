@@ -1,13 +1,13 @@
-package com.kedacom.device.core.msp;
+package com.kedacom.device.core.remoteSdk.msp;
 
 import com.kedacom.acl.network.data.avIntegration.auth.SystemKeepAliveResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemLogOutResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemLoginResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemVersionResponse;
 import com.kedacom.avIntegration.request.RequestBaseParam;
-import com.kedacom.device.core.config.config.DeviceFastJsonConfig;
-import com.kedacom.device.core.msp.entity.SystemLoginDTO;
-import com.kedacom.device.core.msp.fallback.SystemAuthSdkFallbackFactory;
+import com.kedacom.device.core.config.RemoteFeignConfig;
+import com.kedacom.device.core.remoteSdk.msp.entity.SystemLoginDTO;
+import com.kedacom.device.core.remoteSdk.msp.fallback.SystemAuthSdkFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
         url = "${zf.msp.server_addr}",
         path = "/api/v1/manage/system",
         fallbackFactory = SystemAuthSdkFallbackFactory.class,
-        configuration = DeviceFastJsonConfig.class)
+        configuration = RemoteFeignConfig.class)
 public interface SystemAuthSdk {
     /**
      * 登录显控服务

@@ -1,4 +1,4 @@
-package com.kedacom.device.core.msp.entity;
+package com.kedacom.device.core.remoteSdk.msp.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

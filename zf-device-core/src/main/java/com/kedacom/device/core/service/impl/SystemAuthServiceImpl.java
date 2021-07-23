@@ -13,11 +13,10 @@ import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.exception.MspException;
 import com.kedacom.device.core.mapper.DeviceMapper;
-import com.kedacom.device.core.msp.SystemAuthSdk;
-import com.kedacom.device.core.msp.entity.SystemLoginDTO;
+import com.kedacom.device.core.remoteSdk.msp.entity.SystemLoginDTO;
 import com.kedacom.device.core.service.SystemAuthService;
 import com.kedacom.device.core.utils.HandleResponseUtil;
-import com.kedacom.device.core.utils.MspRestTemplate;
+import com.kedacom.device.core.utils.RemoteRestTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,16 +31,13 @@ import org.springframework.stereotype.Service;
 public class SystemAuthServiceImpl implements SystemAuthService {
 
     @Autowired
-    private SystemAuthSdk systemAuthSdk;
-
-    @Autowired
     private HandleResponseUtil responseUtil;
 
     @Autowired
     private DeviceMapper deviceMapper;
 
     @Autowired
-    private MspRestTemplate mspRestTemplate;
+    private RemoteRestTemplate remoteRestTemplate;
 
     @Value("${zf.msp.server_addr}")
     private String mspUrl;
@@ -61,10 +57,8 @@ public class SystemAuthServiceImpl implements SystemAuthService {
         systemLoginDTO.setPassword(entity.getMspPassword());
         log.info("登录显控统一服务feign接口入参:{}", JSON.toJSONString(systemLoginDTO));
 
-        String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "login", JSON.toJSONString(systemLoginDTO), String.class);
+        String response = remoteRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "login", JSON.toJSONString(systemLoginDTO), String.class);
         SystemLoginResponse systemLoginResponse = JSONObject.parseObject(response, SystemLoginResponse.class);
-
-        //     String response = systemAuthSdk.login(JSON.toJSONString(systemLoginDTO));
 
         log.info("登录显控统一服务应答:{}", systemLoginResponse);
         if (systemLoginResponse != null) {
@@ -77,10 +71,8 @@ public class SystemAuthServiceImpl implements SystemAuthService {
     public void keepAlive(RequestBaseParam request) {
         log.info("保活入参:{}", JSON.toJSONString(request));
 
-        String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "keepalive", JSON.toJSONString(request), String.class);
+        String response = remoteRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "keepalive", JSON.toJSONString(request), String.class);
         SystemKeepAliveResponse aliveResponse = JSONObject.parseObject(response, SystemKeepAliveResponse.class);
-
-        // SystemKeepAliveResponse response = systemAuthSdk.keepAlive(request);
 
         log.info("保活应答:{}", aliveResponse);
         if (aliveResponse != null) {
@@ -92,10 +84,8 @@ public class SystemAuthServiceImpl implements SystemAuthService {
     public SystemVersionResponse version(RequestBaseParam request) {
         log.info("显控统一服务API版本号入参:{}", JSON.toJSONString(request));
 
-        String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "version", JSON.toJSONString(request), String.class);
+        String response = remoteRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "version", JSON.toJSONString(request), String.class);
         SystemVersionResponse versionResponse = JSONObject.parseObject(response, SystemVersionResponse.class);
-
-        //  SystemVersionResponse response = systemAuthSdk.version(request);
 
         log.info("显控统一服务API版本号应答:{}", response);
         if (versionResponse != null) {
@@ -108,10 +98,8 @@ public class SystemAuthServiceImpl implements SystemAuthService {
     public void logout(RequestBaseParam request) {
         log.info("退出显控统一服务入参:{}", JSON.toJSONString(request));
 
-        String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "logout", JSON.toJSONString(request), String.class);
+        String response = remoteRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "logout", JSON.toJSONString(request), String.class);
         SystemLogOutResponse outResponse = JSONObject.parseObject(response, SystemLogOutResponse.class);
-
-        // SystemLogOutResponse response = systemAuthSdk.logout(request);
 
         log.info("退出显控统一服务应答:{}", outResponse);
         if (outResponse != null) {

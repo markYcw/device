@@ -5,10 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.kedacom.acl.network.data.avIntegration.tvwall.*;
 import com.kedacom.avIntegration.request.tvwall.*;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
-import com.kedacom.device.core.msp.TvWallManageSdk;
 import com.kedacom.device.core.service.TvWallService;
 import com.kedacom.device.core.utils.HandleResponseUtil;
-import com.kedacom.device.core.utils.MspRestTemplate;
+import com.kedacom.device.core.utils.RemoteRestTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,13 +22,10 @@ import org.springframework.stereotype.Service;
 public class TvWallServiceImpl implements TvWallService {
 
     @Autowired
-    private TvWallManageSdk tvWallManageSdk;
-
-    @Autowired
     private HandleResponseUtil responseUtil;
 
     @Autowired
-    private MspRestTemplate mspRestTemplate;
+    private RemoteRestTemplate remoteRestTemplate;
 
     @Value("${zf.msp.server_addr}")
     private String mspUrl;
@@ -40,10 +36,8 @@ public class TvWallServiceImpl implements TvWallService {
     public TvWallListResponse ls(TvWallListRequest request) {
         log.info("获取所有大屏配置入参:{}", JSON.toJSONString(request));
 
-        String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "ls", JSON.toJSONString(request), String.class);
+        String response = remoteRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "ls", JSON.toJSONString(request), String.class);
         TvWallListResponse tvWallListResponse = JSONObject.parseObject(response, TvWallListResponse.class);
-
-        //       TvWallListResponse response = tvWallManageSdk.ls(request);
 
         log.info("获取所有大屏配置应答:{}", tvWallListResponse);
         if (tvWallListResponse != null) {
@@ -56,10 +50,8 @@ public class TvWallServiceImpl implements TvWallService {
     public TvWallLayoutResponse layout(TvWallLayoutRequest request) {
         log.info("获取大屏布局入参:{}", JSON.toJSONString(request));
 
-        String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "layout", JSON.toJSONString(request), String.class);
+        String response = remoteRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "layout", JSON.toJSONString(request), String.class);
         TvWallLayoutResponse tvWallListResponse = JSONObject.parseObject(response, TvWallLayoutResponse.class);
-
-      //      TvWallLayoutResponse response = tvWallManageSdk.layout(request);
 
         log.info("获取大屏布局应答:{}", response);
         if (tvWallListResponse != null) {
@@ -72,10 +64,8 @@ public class TvWallServiceImpl implements TvWallService {
     public TvWallQueryPipelineResponse query(TvWallQueryPipelineRequest request) {
         log.info("查询虚拟屏入参:{}", JSON.toJSONString(request));
 
-        String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "query", JSON.toJSONString(request), String.class);
+        String response = remoteRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "query", JSON.toJSONString(request), String.class);
         TvWallQueryPipelineResponse queryPipelineResponse = JSONObject.parseObject(response, TvWallQueryPipelineResponse.class);
-
-        //    TvWallQueryPipelineResponse response = tvWallManageSdk.query(request);
 
         log.info("查询虚拟屏应答:{}", queryPipelineResponse);
         if (queryPipelineResponse != null) {
@@ -88,10 +78,8 @@ public class TvWallServiceImpl implements TvWallService {
     public TvWallConfigResponse config(TvWallConfigRequest request) {
         log.info("配置虚拟屏入参:{}", JSON.toJSONString(request));
 
-        String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "config", JSON.toJSONString(request), String.class);
+        String response = remoteRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "config", JSON.toJSONString(request), String.class);
         TvWallConfigResponse configResponse = JSONObject.parseObject(response, TvWallConfigResponse.class);
-
-        //       TvWallConfigResponse response = tvWallManageSdk.config(request);
 
         log.info("配置虚拟屏应答:{}", configResponse);
         if (configResponse != null) {
@@ -104,10 +92,8 @@ public class TvWallServiceImpl implements TvWallService {
     public TvWallPipelineBindResponse configBind(TvWallPipelineBindRequest request) {
         log.info("配置虚拟屏窗口与资源的绑定关系入参:{}", JSON.toJSONString(request));
 
-        String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "config/bind", JSON.toJSONString(request), String.class);
+        String response = remoteRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "config/bind", JSON.toJSONString(request), String.class);
         TvWallPipelineBindResponse bindResponse = JSONObject.parseObject(response, TvWallPipelineBindResponse.class);
-
-        //  TvWallPipelineBindResponse response = tvWallManageSdk.configBind(request);
 
         log.info("配置虚拟屏窗口与资源的绑定关系应答-:{}", bindResponse);
         if (bindResponse != null) {
@@ -120,10 +106,8 @@ public class TvWallServiceImpl implements TvWallService {
     public void delete(TvWallDeleteRequest request) {
         log.info("大屏删除入参:{}", JSON.toJSONString(request));
 
-        String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "delete", JSON.toJSONString(request), String.class);
+        String response = remoteRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "delete", JSON.toJSONString(request), String.class);
         TvWallDeleteResponse deleteResponse = JSONObject.parseObject(response, TvWallDeleteResponse.class);
-
-        //       TvWallDeleteResponse response = tvWallManageSdk.delete(request);
 
         log.info("大屏删除应答:{}", deleteResponse);
         if (deleteResponse != null) {

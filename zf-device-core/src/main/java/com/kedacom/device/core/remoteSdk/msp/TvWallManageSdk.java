@@ -1,9 +1,9 @@
-package com.kedacom.device.core.msp;
+package com.kedacom.device.core.remoteSdk.msp;
 
 import com.kedacom.acl.network.data.avIntegration.tvwall.*;
 import com.kedacom.avIntegration.request.tvwall.*;
-import com.kedacom.device.core.config.config.DeviceFastJsonConfig;
-import com.kedacom.device.core.msp.fallback.TvWallManageSdkFallbackFactory;
+import com.kedacom.device.core.config.RemoteFeignConfig;
+import com.kedacom.device.core.remoteSdk.msp.fallback.TvWallManageSdkFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
         url = "${zf.msp.server_addr}",
         path = "/api/v1/manage/tvwall",
         fallbackFactory = TvWallManageSdkFallbackFactory.class,
-        configuration = DeviceFastJsonConfig.class)
+        configuration = RemoteFeignConfig.class)
 public interface TvWallManageSdk {
 
     /**

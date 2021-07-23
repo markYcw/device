@@ -1,4 +1,4 @@
-package com.kedacom.device.core.msp;
+package com.kedacom.device.core.remoteSdk.msp;
 
 
 import com.kedacom.acl.network.data.avIntegration.decoder.OsdConfigResponse;
@@ -9,8 +9,8 @@ import com.kedacom.avIntegration.request.decoder.OsdConfigRequest;
 import com.kedacom.avIntegration.request.decoder.OsdDeleteRequest;
 import com.kedacom.avIntegration.request.decoder.StyleConfigRequest;
 import com.kedacom.avIntegration.request.decoder.StyleQueryRequest;
-import com.kedacom.device.core.config.config.DeviceFastJsonConfig;
-import com.kedacom.device.core.msp.fallback.DecoderManageSdkFallbackFactory;
+import com.kedacom.device.core.config.RemoteFeignConfig;
+import com.kedacom.device.core.remoteSdk.msp.fallback.DecoderManageSdkFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
         url = "${zf.msp.server_addr}",
         path = "/api/v1/manage/decoder",
         fallbackFactory = DecoderManageSdkFallbackFactory.class,
-        configuration = DeviceFastJsonConfig.class)
+        configuration = RemoteFeignConfig.class)
 public interface DecoderManageSdk {
 
     /**

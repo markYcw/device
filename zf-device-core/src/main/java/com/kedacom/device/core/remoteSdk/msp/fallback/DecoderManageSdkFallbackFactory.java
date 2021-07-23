@@ -1,4 +1,4 @@
-package com.kedacom.device.core.msp.fallback;
+package com.kedacom.device.core.remoteSdk.msp.fallback;
 
 
 import com.kedacom.avIntegration.request.decoder.OsdConfigRequest;
@@ -10,7 +10,7 @@ import com.kedacom.acl.network.data.avIntegration.decoder.OsdDeleteResponse;
 import com.kedacom.acl.network.data.avIntegration.decoder.StyleConfigResponse;
 import com.kedacom.acl.network.data.avIntegration.decoder.StyleQueryResponse;
 import com.kedacom.device.core.exception.MspRemoteCallException;
-import com.kedacom.device.core.msp.DecoderManageSdk;
+import com.kedacom.device.core.remoteSdk.msp.DecoderManageSdk;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
 

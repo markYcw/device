@@ -16,7 +16,7 @@ import java.util.List;
  * @Date: 2021/7/12 14:01
  */
 @Component
-public class MspRestTemplate {
+public class RemoteRestTemplate {
 
     private static final RestTemplate restTemplate;
 

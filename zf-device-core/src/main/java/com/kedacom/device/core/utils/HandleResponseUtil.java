@@ -2,7 +2,6 @@ package com.kedacom.device.core.utils;
 
 import cn.hutool.core.util.StrUtil;
 import com.kedacom.core.pojo.BaseResponse;
-import com.kedacom.device.common.exception.OperatorException;
 import com.kedacom.device.core.config.AvIntegrationErrCode;
 import com.kedacom.device.core.config.KmErrCode;
 import com.kedacom.device.core.constant.DeviceConstants;
@@ -25,9 +24,9 @@ public class HandleResponseUtil {
 
     @Autowired
     private AvIntegrationErrCode integrationErrCode;
+
     @Autowired
     private KmErrCode kmErrCode;
-
 
     /**
      * 处理拼控服务响应消息

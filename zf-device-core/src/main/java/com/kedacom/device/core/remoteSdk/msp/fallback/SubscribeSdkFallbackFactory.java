@@ -1,4 +1,4 @@
-package com.kedacom.device.core.msp.fallback;
+package com.kedacom.device.core.remoteSdk.msp.fallback;
 
 import org.springframework.stereotype.Component;
 

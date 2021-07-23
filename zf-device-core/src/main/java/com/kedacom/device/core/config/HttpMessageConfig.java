@@ -1,40 +1,28 @@
-package com.kedacom.device.core.config.config;
+package com.kedacom.device.core.config;
 
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-import org.springframework.beans.factory.ObjectFactory;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
-import org.springframework.cloud.openfeign.support.ResponseEntityDecoder;
-import org.springframework.cloud.openfeign.support.SpringDecoder;
-import org.springframework.cloud.openfeign.support.SpringEncoder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-@Configuration
-public class DeviceFastJsonConfig {
+/**
+ * @Auther: hxj
+ * @Date: 2021/7/22 15:11
+ */
+public class HttpMessageConfig {
 
-    @Bean
-    public ResponseEntityDecoder feignDecoder() {
-        HttpMessageConverter fastJsonConverter = createFastJsonConverter();
-        ObjectFactory<HttpMessageConverters> objectFactory = () -> new HttpMessageConverters(fastJsonConverter);
-        return new ResponseEntityDecoder(new SpringDecoder(objectFactory));
+    public static HttpMessageConverter stringConverter() {
+        StringHttpMessageConverter converter = new StringHttpMessageConverter(Charset.forName("UTF-8"));
+        return converter;
     }
 
-    @Bean
-    public SpringEncoder feignEncoder() {
-        HttpMessageConverter fastJsonConverter = createFastJsonConverter();
-        ObjectFactory<HttpMessageConverters> objectFactory = () -> new HttpMessageConverters(fastJsonConverter);
-        return new SpringEncoder(objectFactory);
-    }
-
-    private HttpMessageConverter createFastJsonConverter() {
-
+    public static HttpMessageConverter fastConverter() {
         //创建fastJson消息转换器
         FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
 
@@ -69,10 +57,14 @@ public class DeviceFastJsonConfig {
         //WriteMapNullValue：是否输出值为null的字段,默认为false
         fastJsonConfig.setSerializerFeatures(
                 SerializerFeature.DisableCircularReferenceDetect,
-                SerializerFeature.WriteMapNullValue
+                SerializerFeature.WriteMapNullValue,
+                SerializerFeature.DisableCheckSpecialChar
         );
         fastConverter.setFastJsonConfig(fastJsonConfig);
 
         return fastConverter;
     }
+
+
 }
+

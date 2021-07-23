@@ -14,7 +14,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication(scanBasePackages = "com.kedacom")
 @EnableAsync
 @ZFApplicationCloud
-@EnableFeignClients(basePackages = "com.kedacom.device.core.msp")
+@EnableFeignClients(basePackages = "com.kedacom.device.core.remoteSdk")
 @EnableKmProxy(proxyPackages = "com.kedacom.device", ipAddr = "${zf.kmProxy.server_addr}", notifyPackages = "com.kedacom.device.core.event")
 public class DeviceServer {
     public static void main(String[] args) {

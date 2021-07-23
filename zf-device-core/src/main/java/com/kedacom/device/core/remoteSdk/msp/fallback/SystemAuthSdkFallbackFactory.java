@@ -1,4 +1,4 @@
-package com.kedacom.device.core.msp.fallback;
+package com.kedacom.device.core.remoteSdk.msp.fallback;
 
 import com.alibaba.fastjson.JSON;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemKeepAliveResponse;
@@ -7,8 +7,8 @@ import com.kedacom.acl.network.data.avIntegration.auth.SystemLoginResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemVersionResponse;
 import com.kedacom.avIntegration.request.RequestBaseParam;
 import com.kedacom.device.core.exception.MspRemoteCallException;
-import com.kedacom.device.core.msp.SystemAuthSdk;
-import com.kedacom.device.core.msp.entity.SystemLoginDTO;
+import com.kedacom.device.core.remoteSdk.msp.SystemAuthSdk;
+import com.kedacom.device.core.remoteSdk.msp.entity.SystemLoginDTO;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
 

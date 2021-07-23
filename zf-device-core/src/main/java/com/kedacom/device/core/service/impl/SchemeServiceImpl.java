@@ -7,10 +7,9 @@ import com.kedacom.acl.network.data.avIntegration.scheme.SchemeQueryResponse;
 import com.kedacom.avIntegration.request.scheme.SchemeConfigRequest;
 import com.kedacom.avIntegration.request.scheme.SchemeQueryRequest;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
-import com.kedacom.device.core.msp.SchemeManageSdk;
 import com.kedacom.device.core.service.SchemeService;
 import com.kedacom.device.core.utils.HandleResponseUtil;
-import com.kedacom.device.core.utils.MspRestTemplate;
+import com.kedacom.device.core.utils.RemoteRestTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,13 +24,10 @@ import org.springframework.stereotype.Service;
 public class SchemeServiceImpl implements SchemeService {
 
     @Autowired
-    private SchemeManageSdk schemeManageSdk;
-
-    @Autowired
     private HandleResponseUtil responseUtil;
 
     @Autowired
-    private MspRestTemplate mspRestTemplate;
+    private RemoteRestTemplate remoteRestTemplate;
 
     @Value("${zf.msp.server_addr}")
     private String mspUrl;
@@ -42,10 +38,8 @@ public class SchemeServiceImpl implements SchemeService {
     public SchemeConfigResponse config(SchemeConfigRequest request) {
         log.info("预案的画面布局配置入参:{}", JSON.toJSONString(request));
 
-        String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "config", JSON.toJSONString(request), String.class);
+        String response = remoteRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "config", JSON.toJSONString(request), String.class);
         SchemeConfigResponse configResponse = JSONObject.parseObject(response, SchemeConfigResponse.class);
-
-        // SchemeConfigResponse response = schemeManageSdk.config(request);
 
         log.info("预案的画面布局配置应答:{}", configResponse);
         if (configResponse != null) {
@@ -58,10 +52,8 @@ public class SchemeServiceImpl implements SchemeService {
     public SchemeQueryResponse query(SchemeQueryRequest request) {
         log.info("查询预案布局，窗口位置信息入参:{}", JSON.toJSONString(request));
 
-        String response = mspRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "query", JSON.toJSONString(request), String.class);
+        String response = remoteRestTemplate.getRestTemplate().postForObject(mspUrl + mspPath + "query", JSON.toJSONString(request), String.class);
         SchemeQueryResponse queryResponse = JSONObject.parseObject(response, SchemeQueryResponse.class);
-
-        //     SchemeQueryResponse response = schemeManageSdk.query(request);
 
         log.info("查询预案布局，窗口位置信息应答:{}", queryResponse);
         if (queryResponse != null) {

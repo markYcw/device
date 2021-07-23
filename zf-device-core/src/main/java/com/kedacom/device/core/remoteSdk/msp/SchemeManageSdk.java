@@ -1,10 +1,10 @@
-package com.kedacom.device.core.msp;
+package com.kedacom.device.core.remoteSdk.msp;
 
-import com.kedacom.avIntegration.request.scheme.SchemeConfigRequest;
-import com.kedacom.avIntegration.request.scheme.SchemeQueryRequest;
 import com.kedacom.acl.network.data.avIntegration.scheme.SchemeConfigResponse;
 import com.kedacom.acl.network.data.avIntegration.scheme.SchemeQueryResponse;
-import com.kedacom.device.core.msp.fallback.SchemeManageSdkFallbackFactory;
+import com.kedacom.avIntegration.request.scheme.SchemeConfigRequest;
+import com.kedacom.avIntegration.request.scheme.SchemeQueryRequest;
+import com.kedacom.device.core.remoteSdk.msp.fallback.SchemeManageSdkFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +22,7 @@ public interface SchemeManageSdk {
 
     /**
      * 预案的画面布局配置
+     *
      * @param request
      * @return
      */
@@ -30,6 +31,7 @@ public interface SchemeManageSdk {
 
     /**
      * 查询预案布局，窗口位置信息
+     *
      * @param request
      * @return
      */

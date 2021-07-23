@@ -1,6 +1,6 @@
-package com.kedacom.device.core.msp;
+package com.kedacom.device.core.remoteSdk.msp;
 
-import com.kedacom.device.core.msp.fallback.SubscribeSdkFallbackFactory;
+import com.kedacom.device.core.remoteSdk.msp.fallback.SubscribeSdkFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 
 /**
@@ -13,9 +13,6 @@ import org.springframework.cloud.openfeign.FeignClient;
         path = "/api/v1/manage/subscribe",
         fallbackFactory = SubscribeSdkFallbackFactory.class)
 public interface SubscribeSdk {
-
-
-
 
 
 }

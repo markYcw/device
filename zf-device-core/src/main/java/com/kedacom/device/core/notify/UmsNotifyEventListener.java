@@ -103,8 +103,10 @@ public class UmsNotifyEventListener {
                             .eq(GroupInfoEntity::getGroupId, umsGroupEntity.getGroupId());
                     GroupInfoEntity checkUmsGroup = groupMapper.selectOne(queryWrapper);
                     if (checkUmsGroup != null) {
-                        updateWrapper.eq(GroupInfoEntity::getGroupId, umsGroupEntity.getGroupId());
-                        groupMapper.update(umsGroupEntity, updateWrapper);
+                        umsGroupEntity.setId(checkUmsGroup.getId());
+                        groupMapper.updateById(umsGroupEntity);
+//                        updateWrapper.eq(GroupInfoEntity::getGroupId, umsGroupEntity.getGroupId());
+//                        groupMapper.update(umsGroupEntity, updateWrapper);
                     } else {
                         groupMapper.insert(umsGroupEntity);
                     }

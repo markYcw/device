@@ -138,22 +138,22 @@ public class UmsDeviceTask implements Runnable {
         if ((total == localTotal) && syncResult) {
             log.info("---------同步成功---------");
             syncStatus.compareAndSet(false, true);
-            SubDeviceMapper subDeviceMapper = getBean(SubDeviceMapper.class);
-            LambdaQueryWrapper<SubDeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
-            List<SubDeviceInfoEntity> selectList = subDeviceMapper.selectList(wrapper);
-            if (CollectionUtil.isNotEmpty(selectList)) {
-                log.info("统一设备项目设备同步成功后,设备名称拼音转化");
-                for (SubDeviceInfoEntity entity : selectList) {
-                    String name = entity.getName();
-                    String hanZiPinYin = PinYinUtils.getHanZiPinYin(name);
-                    String hanZiInitial = PinYinUtils.getHanZiInitials(name);
-                    String lowerCase = PinYinUtils.StrToLowerCase(hanZiInitial);
-                    entity.setPinyin(hanZiPinYin + "&&" + lowerCase);
-                    entity.setUpdateTime(new Date());
-                    subDeviceMapper.updateById(entity);
-                }
-                log.info("设备名称拼音转化完成");
-            }
+//            SubDeviceMapper subDeviceMapper = getBean(SubDeviceMapper.class);
+//            LambdaQueryWrapper<SubDeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
+//            List<SubDeviceInfoEntity> selectList = subDeviceMapper.selectList(wrapper);
+//            if (CollectionUtil.isNotEmpty(selectList)) {
+//                log.info("统一设备项目设备同步成功后,设备名称拼音转化");
+//                for (SubDeviceInfoEntity entity : selectList) {
+//                    String name = entity.getName();
+//                    String hanZiPinYin = PinYinUtils.getHanZiPinYin(name);
+//                    String hanZiInitial = PinYinUtils.getHanZiInitials(name);
+//                    String lowerCase = PinYinUtils.StrToLowerCase(hanZiInitial);
+//                    entity.setPinyin(hanZiPinYin + "&&" + lowerCase);
+//                    entity.setUpdateTime(new Date());
+//                    subDeviceMapper.updateById(entity);
+//                }
+//                log.info("设备名称拼音转化完成");
+//            }
         }
     }
 
@@ -176,7 +176,7 @@ public class UmsDeviceTask implements Runnable {
         //期望完成的任务数量
         long expectedCompletedTaskCount = totalPage + 1;
 
-        monitor(executorService);
+//        monitor(executorService);
 
         for (int i = 0; i <= totalPage + 1; i++) {
 
@@ -238,12 +238,11 @@ public class UmsDeviceTask implements Runnable {
     private Boolean doAlone(int curPage, int pageSize, UmsSubDeviceManager umsSubDeviceManager) {
 
         int retryTime = 0;
-        int index = 0;
 
         while (true) {
 
             log.info("获取设备请求：curPage:{}, pageSize:{}", curPage, pageSize);
-            Integer code = umsSubDeviceManager.selectAndInsertSubDeviceFromAvFeign(umsDeviceId, index, pageSize);
+            Integer code = umsSubDeviceManager.selectAndInsertSubDeviceFromAvFeign(umsDeviceId, curPage, pageSize);
             log.info("返回的code数据为:[{}]", code);
             if (code == Integer.MAX_VALUE) {
                 //到这里说明所有设备已经更新完成，那么模式还是同步中的设备则说明这次没有同步到，将模式改为未同步到
@@ -270,7 +269,7 @@ public class UmsDeviceTask implements Runnable {
             if (retryTime != 0) {
                 retryTime = 0;
             }
-            index++;
+            curPage++;
         }
     }
 

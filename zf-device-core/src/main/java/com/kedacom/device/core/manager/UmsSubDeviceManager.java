@@ -81,7 +81,7 @@ public class UmsSubDeviceManager extends ServiceImpl<SubDeviceMapper, SubDeviceI
                 umsSubDeviceInfoEntity.setParentId(umsDeviceId);
                 umsSubDeviceInfoEntity.setInstallDate(null);
                 LambdaQueryWrapper<SubDeviceInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
-                queryWrapper.eq(SubDeviceInfoEntity::getDeviceId, umsSubDeviceInfoEntity.getId())
+                queryWrapper.eq(SubDeviceInfoEntity::getGbid, umsSubDeviceInfoEntity.getGbid())
                         .eq(SubDeviceInfoEntity::getParentId, umsDeviceId);
                 SubDeviceInfoEntity subDeviceInfoEntity = subDeviceInfoMapper.selectOne(queryWrapper);
                 if (subDeviceInfoEntity != null) {

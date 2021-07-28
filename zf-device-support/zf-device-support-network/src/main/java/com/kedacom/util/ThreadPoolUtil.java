@@ -2,7 +2,6 @@ package com.kedacom.util;
 
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -16,15 +15,15 @@ import java.util.concurrent.TimeUnit;
  */
 public class ThreadPoolUtil {
 
-    private static volatile ExecutorService instance;
+    private static volatile ThreadPoolExecutor instance;
 
     private final static Object lock = new Object();
 
-    public static ExecutorService getInstance() {
+    public static ThreadPoolExecutor getInstance() {
         if (instance == null) {
             synchronized (lock) {
                 if (instance == null)
-                    instance = new ThreadPoolExecutor(2, 3, 60L, TimeUnit.SECONDS,
+                    instance = new ThreadPoolExecutor(2, 10, 60L, TimeUnit.SECONDS,
                             new LinkedBlockingQueue<>(100), new CustomizableThreadFactory("SyncDeviceData-"));
             }
         }

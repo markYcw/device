@@ -32,7 +32,7 @@ public class UmsSubDeviceStatusModel implements Serializable {
     @ApiModelProperty("设备父Id")
     private String parentId;
 
-    @ApiModelProperty("在线状态（1:在线；0:不在线）")
+    @ApiModelProperty("在线状态（0:在线；1:不在线）")
     private Integer devStatus;
 
     @ApiModelProperty("时间戳")

@@ -1,4 +1,4 @@
-package com.kedacom.device.core.kafka;
+package com.kedacom.kafka;
 
 /**
  * 统一设备通知topic

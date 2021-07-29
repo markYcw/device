@@ -2,6 +2,7 @@ package com.kedacom.device.core.kafka;
 
 import com.kedacom.device.core.constant.TopicConstant;
 import com.kedacom.device.core.entity.TransDataEntity;
+import com.kedacom.kafka.UmsProducerTopic;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;

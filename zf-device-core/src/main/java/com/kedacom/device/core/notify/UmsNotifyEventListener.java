@@ -161,11 +161,14 @@ public class UmsNotifyEventListener {
 
     @EventListener(DeviceAndGroupEvent.class)
     public void deviceStateNotify(DeviceAndGroupEvent event) {
-        log.info("设备与分组关联状态变更通知:{}", event);
-        LambdaUpdateWrapper<SubDeviceInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(SubDeviceInfoEntity::getGbid, event.getGbid())
-                .set(SubDeviceInfoEntity::getGroupId, event.getGroupId());
-        subDeviceMapper.update(null, updateWrapper);
+        List<DevAndGroup> devAndGroupList = event.getDevandgroup();
+        log.info("设备与分组关联状态变更通知 - devAndGroupList : [{}]", devAndGroupList);
+        for (DevAndGroup devAndGroup : devAndGroupList) {
+            LambdaUpdateWrapper<SubDeviceInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(SubDeviceInfoEntity::getGbid, devAndGroup.getGbid())
+                    .set(SubDeviceInfoEntity::getGroupId, devAndGroup.getGroupId());
+            subDeviceMapper.update(null, updateWrapper);
+        }
     }
 
     @EventListener(DeviceStateEvent.class)

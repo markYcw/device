@@ -6,6 +6,9 @@ import com.kedacom.core.pojo.Notify;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
+import org.apache.catalina.LifecycleState;
+
+import java.util.List;
 
 /**
  * @author wangxy
@@ -17,14 +20,7 @@ import lombok.ToString;
 @KmNotify(name = "devandgroupstatusnty")
 public class DeviceAndGroupEvent implements Notify {
 
-    @ApiModelProperty(value = "设备id")
-    private String id;
-
-    @ApiModelProperty(value = "分组id")
-    private String groupId;
-
-    @ApiModelProperty(value = "国标id")
-    private String gbid;
+    private List<DevAndGroup> devandgroup;
 
     @Override
     public Integer acquireSsno() {

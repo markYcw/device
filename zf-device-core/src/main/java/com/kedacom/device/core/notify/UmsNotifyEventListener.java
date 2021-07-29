@@ -134,6 +134,10 @@ public class UmsNotifyEventListener {
     @EventListener(DeviceGroupStateEvent.class)
     public void deviceGroupStateNotify(DeviceGroupStateEvent event) {
         log.info("设备分组状态变更通知:{}", event);
+        Integer ssid = event.getNty().getSsid();
+        LambdaQueryWrapper<DeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(DeviceInfoEntity::getSessionId, ssid);
+        String umsId = deviceMapper.selectOne(wrapper).getId();
         Integer operateType = event.getOperateType();
         LambdaQueryWrapper<GroupInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GroupInfoEntity::getGroupId, event.getId());
@@ -142,12 +146,14 @@ public class UmsNotifyEventListener {
             GroupInfoEntity groupInfoEntity = groupMapper.selectOne(queryWrapper);
             if (groupInfoEntity == null) {
                 GroupInfoEntity entity = new GroupInfoEntity();
+                entity.setGroupDevId(umsId);
                 entity.setGroupId(event.getId());
                 entity.setParentId(event.getParentId());
                 entity.setGroupName(event.getName());
                 entity.setSortIndex(event.getSortIndex());
                 groupMapper.insert(entity);
             } else {
+                groupInfoEntity.setGroupDevId(umsId);
                 groupInfoEntity.setGroupId(event.getId());
                 groupInfoEntity.setGroupName(event.getName());
                 groupInfoEntity.setParentId(event.getParentId());

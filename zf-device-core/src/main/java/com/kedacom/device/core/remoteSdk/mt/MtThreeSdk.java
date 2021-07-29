@@ -11,7 +11,7 @@ import org.springframework.cloud.openfeign.FeignClient;
  */
 @FeignClient(name = "mt",
         contextId = "mtThree",
-        url = "${zf.km.server_addr}",
+        url = "${zf.kmProxy.server_addr}",
         path = "/services/v1/mt3.0",
         fallbackFactory = MtThreeFallbackFactory.class,
         configuration = RemoteFeignConfig.class)

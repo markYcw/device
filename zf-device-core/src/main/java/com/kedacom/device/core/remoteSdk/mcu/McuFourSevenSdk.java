@@ -11,7 +11,7 @@ import org.springframework.cloud.openfeign.FeignClient;
  */
 @FeignClient(name = "mcu",
         contextId = "mcuFourSeven",
-        url = "${zf.km.server_addr}",
+        url = "${zf.kmProxy.server_addr}",
         path = "/services/v1/mcu4.7",
         fallbackFactory = McuFourSevenFallbackFactory.class,
         configuration = RemoteFeignConfig.class)

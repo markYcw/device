@@ -163,8 +163,7 @@ public class UmsNotifyEventListener {
     public void deviceStateNotify(DeviceAndGroupEvent event) {
         log.info("设备与分组关联状态变更通知:{}", event);
         LambdaUpdateWrapper<SubDeviceInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(SubDeviceInfoEntity::getDeviceId, event.getId())
-                .set(SubDeviceInfoEntity::getGbid, event.getGbid())
+        updateWrapper.eq(SubDeviceInfoEntity::getGbid, event.getGbid())
                 .set(SubDeviceInfoEntity::getGroupId, event.getGroupId());
         subDeviceMapper.update(null, updateWrapper);
     }

@@ -314,7 +314,7 @@ public class UmsNotifyEventListener {
         subDeviceInfoEntity.setDomainId(event.getDomainId());
         subDeviceInfoEntity.setGbid(event.getGbid());
         subDeviceInfoEntity.setGroupId(event.getGroupId());
-        subDeviceInfoEntity.setDeviceIp(event.getId());
+        subDeviceInfoEntity.setDeviceId(event.getId());
         subDeviceInfoEntity.setInstallDate(null);
         subDeviceInfoEntity.setLatitude(event.getLatitude());
         subDeviceInfoEntity.setLatitudeStr(event.getLatitudeStr());

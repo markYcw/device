@@ -3,6 +3,7 @@ package com.kedacom.device.core.event;
 import com.alibaba.fastjson.JSONException;
 import com.kedacom.core.anno.KmNotify;
 import com.kedacom.core.pojo.Notify;
+import com.kedacom.core.pojo.NotifyHead;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
@@ -16,6 +17,8 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @KmNotify(name = "devgroupstatusnty")
 public class DeviceGroupStateEvent implements Notify {
+
+    private NotifyHead nty;
 
     @ApiModelProperty(value = "分组ID")
     private String id;

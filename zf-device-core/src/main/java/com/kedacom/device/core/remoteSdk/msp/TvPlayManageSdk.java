@@ -1,7 +1,7 @@
 package com.kedacom.device.core.remoteSdk.msp;
 
 import com.kedacom.acl.network.data.avIntegration.tvplay.*;
-import com.kedacom.avIntegration.request.tvplay.*;
+import com.kedacom.msp.request.tvplay.*;
 import com.kedacom.device.core.config.RemoteFeignConfig;
 import com.kedacom.device.core.remoteSdk.msp.fallback.TvPlayManageSdkFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;

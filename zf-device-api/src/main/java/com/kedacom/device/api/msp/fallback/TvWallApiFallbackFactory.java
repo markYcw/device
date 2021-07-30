@@ -1,8 +1,8 @@
 package com.kedacom.device.api.msp.fallback;
 
 import com.kedacom.BaseResult;
-import com.kedacom.avIntegration.request.tvwall.*;
-import com.kedacom.avIntegration.response.tvwall.*;
+import com.kedacom.msp.request.tvwall.*;
+import com.kedacom.msp.response.tvwall.*;
 import com.kedacom.device.api.msp.TvWallApi;
 import feign.hystrix.FallbackFactory;
 

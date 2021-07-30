@@ -1,7 +1,7 @@
 package com.kedacom.device.core.service;
 
-import com.kedacom.avIntegration.request.RequestBaseParam;
-import com.kedacom.avIntegration.request.auth.SystemLoginRequest;
+import com.kedacom.msp.request.RequestBaseParam;
+import com.kedacom.msp.request.auth.SystemLoginRequest;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemLoginResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemVersionResponse;
 

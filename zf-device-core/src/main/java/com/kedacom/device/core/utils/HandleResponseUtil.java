@@ -2,7 +2,7 @@ package com.kedacom.device.core.utils;
 
 import cn.hutool.core.util.StrUtil;
 import com.kedacom.core.pojo.BaseResponse;
-import com.kedacom.device.core.config.AvIntegrationErrCode;
+import com.kedacom.device.core.config.MspErrCode;
 import com.kedacom.device.core.config.KmErrCode;
 import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 public class HandleResponseUtil {
 
     @Autowired
-    private AvIntegrationErrCode integrationErrCode;
+    private MspErrCode mspErrCode;
 
     @Autowired
     private KmErrCode kmErrCode;
@@ -41,9 +41,9 @@ public class HandleResponseUtil {
             if (StrUtil.isNotBlank(errMsg)) {
                 log.error(str, errCode, errorEnum.getCode(), errMsg);
                 throw new MspException(errorEnum.getCode(), errMsg);
-            } else if (StrUtil.isNotBlank(integrationErrCode.matchErrMsg(errCode))) {
-                log.error(str, errCode, errorEnum.getCode(), integrationErrCode.matchErrMsg(errCode));
-                throw new MspException(errorEnum.getCode(), integrationErrCode.matchErrMsg(errCode));
+            } else if (StrUtil.isNotBlank(mspErrCode.matchErrMsg(errCode))) {
+                log.error(str, errCode, errorEnum.getCode(), mspErrCode.matchErrMsg(errCode));
+                throw new MspException(errorEnum.getCode(), mspErrCode.matchErrMsg(errCode));
             } else {
                 log.error(str, errCode, errorEnum.getCode(), errorEnum.getMsg());
                 throw new MspException(errorEnum.getCode(), errorEnum.getMsg());

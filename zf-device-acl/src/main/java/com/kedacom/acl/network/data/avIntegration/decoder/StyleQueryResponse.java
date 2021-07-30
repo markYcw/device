@@ -1,6 +1,6 @@
 package com.kedacom.acl.network.data.avIntegration.decoder;
 
-import com.kedacom.avIntegration.response.decoder.ChnList;
+import com.kedacom.msp.response.decoder.ChnList;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

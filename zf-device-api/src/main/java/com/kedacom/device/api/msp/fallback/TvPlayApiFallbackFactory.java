@@ -1,8 +1,8 @@
 package com.kedacom.device.api.msp.fallback;
 
 import com.kedacom.BaseResult;
-import com.kedacom.avIntegration.request.tvplay.*;
-import com.kedacom.avIntegration.response.tvplay.TvPlayOpenVO;
+import com.kedacom.msp.request.tvplay.*;
+import com.kedacom.msp.response.tvplay.TvPlayOpenVO;
 import com.kedacom.device.api.msp.TvPlayApi;
 import feign.hystrix.FallbackFactory;
 

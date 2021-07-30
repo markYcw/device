@@ -3,7 +3,7 @@ package com.kedacom.device.core.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.kedacom.acl.network.data.avIntegration.tvwall.*;
-import com.kedacom.avIntegration.request.tvwall.*;
+import com.kedacom.msp.request.tvwall.*;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.service.TvWallService;
 import com.kedacom.device.core.utils.HandleResponseUtil;

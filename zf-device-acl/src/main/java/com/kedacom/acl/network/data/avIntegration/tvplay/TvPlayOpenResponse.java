@@ -1,6 +1,6 @@
 package com.kedacom.acl.network.data.avIntegration.tvplay;
 
-import com.kedacom.avIntegration.response.tvplay.Winds;
+import com.kedacom.msp.response.tvplay.Winds;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

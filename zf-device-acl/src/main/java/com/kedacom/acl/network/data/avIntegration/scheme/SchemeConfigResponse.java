@@ -1,6 +1,6 @@
 package com.kedacom.acl.network.data.avIntegration.scheme;
 
-import com.kedacom.avIntegration.info.LayoutData;
+import com.kedacom.msp.info.LayoutData;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

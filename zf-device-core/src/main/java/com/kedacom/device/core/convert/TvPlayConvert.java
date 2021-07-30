@@ -1,7 +1,7 @@
 package com.kedacom.device.core.convert;
 
 import com.kedacom.acl.network.data.avIntegration.tvplay.TvPlayOpenResponse;
-import com.kedacom.avIntegration.response.tvplay.TvPlayOpenVO;
+import com.kedacom.msp.response.tvplay.TvPlayOpenVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

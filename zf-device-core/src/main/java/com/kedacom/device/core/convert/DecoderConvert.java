@@ -1,7 +1,7 @@
 package com.kedacom.device.core.convert;
 
 import com.kedacom.acl.network.data.avIntegration.decoder.StyleQueryResponse;
-import com.kedacom.avIntegration.response.decoder.StyleQueryVO;
+import com.kedacom.msp.response.decoder.StyleQueryVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

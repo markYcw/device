@@ -2,8 +2,8 @@ package com.kedacom.device.core.remoteSdk.msp;
 
 import com.kedacom.acl.network.data.avIntegration.scheme.SchemeConfigResponse;
 import com.kedacom.acl.network.data.avIntegration.scheme.SchemeQueryResponse;
-import com.kedacom.avIntegration.request.scheme.SchemeConfigRequest;
-import com.kedacom.avIntegration.request.scheme.SchemeQueryRequest;
+import com.kedacom.msp.request.scheme.SchemeConfigRequest;
+import com.kedacom.msp.request.scheme.SchemeQueryRequest;
 import com.kedacom.device.core.remoteSdk.msp.fallback.SchemeManageSdkFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;

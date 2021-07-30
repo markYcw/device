@@ -1,12 +1,12 @@
 package com.kedacom.device.controller;
 
 import com.kedacom.BaseResult;
-import com.kedacom.avIntegration.request.scheme.SchemeConfigRequest;
-import com.kedacom.avIntegration.request.scheme.SchemeQueryRequest;
+import com.kedacom.msp.request.scheme.SchemeConfigRequest;
+import com.kedacom.msp.request.scheme.SchemeQueryRequest;
 import com.kedacom.acl.network.data.avIntegration.scheme.SchemeConfigResponse;
 import com.kedacom.acl.network.data.avIntegration.scheme.SchemeQueryResponse;
-import com.kedacom.avIntegration.response.scheme.SchemeConfigVO;
-import com.kedacom.avIntegration.response.scheme.SchemeQueryVO;
+import com.kedacom.msp.response.scheme.SchemeConfigVO;
+import com.kedacom.msp.response.scheme.SchemeQueryVO;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.convert.SchemeConvert;
 import com.kedacom.device.core.service.SchemeService;

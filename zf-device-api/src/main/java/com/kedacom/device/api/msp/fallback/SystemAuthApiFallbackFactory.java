@@ -1,10 +1,10 @@
 package com.kedacom.device.api.msp.fallback;
 
 import com.kedacom.BaseResult;
-import com.kedacom.avIntegration.request.RequestBaseParam;
-import com.kedacom.avIntegration.request.auth.SystemLoginRequest;
-import com.kedacom.avIntegration.response.auth.SystemLoginVO;
-import com.kedacom.avIntegration.response.auth.SystemVersionVO;
+import com.kedacom.msp.request.RequestBaseParam;
+import com.kedacom.msp.request.auth.SystemLoginRequest;
+import com.kedacom.msp.response.auth.SystemLoginVO;
+import com.kedacom.msp.response.auth.SystemVersionVO;
 import com.kedacom.device.api.msp.SystemAuthApi;
 import feign.hystrix.FallbackFactory;
 

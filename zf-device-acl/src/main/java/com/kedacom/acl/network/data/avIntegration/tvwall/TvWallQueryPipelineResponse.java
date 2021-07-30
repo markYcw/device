@@ -1,6 +1,6 @@
 package com.kedacom.acl.network.data.avIntegration.tvwall;
 
-import com.kedacom.avIntegration.info.TvWallWndInfo;
+import com.kedacom.msp.info.TvWallWndInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

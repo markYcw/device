@@ -1,12 +1,12 @@
 package com.kedacom.device.controller;
 
 import com.kedacom.BaseResult;
-import com.kedacom.avIntegration.request.RequestBaseParam;
-import com.kedacom.avIntegration.request.auth.SystemLoginRequest;
+import com.kedacom.msp.request.RequestBaseParam;
+import com.kedacom.msp.request.auth.SystemLoginRequest;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemLoginResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemVersionResponse;
-import com.kedacom.avIntegration.response.auth.SystemLoginVO;
-import com.kedacom.avIntegration.response.auth.SystemVersionVO;
+import com.kedacom.msp.response.auth.SystemLoginVO;
+import com.kedacom.msp.response.auth.SystemVersionVO;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.convert.SystemAuthConvert;
 import com.kedacom.device.core.service.SystemAuthService;

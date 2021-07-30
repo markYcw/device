@@ -1,6 +1,6 @@
 package com.kedacom.device.core.service;
 
-import com.kedacom.avIntegration.request.tvplay.*;
+import com.kedacom.msp.request.tvplay.*;
 import com.kedacom.acl.network.data.avIntegration.tvplay.TvPlayOpenResponse;
 
 /**

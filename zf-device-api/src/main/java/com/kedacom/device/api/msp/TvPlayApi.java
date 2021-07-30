@@ -2,8 +2,8 @@ package com.kedacom.device.api.msp;
 
 
 import com.kedacom.BaseResult;
-import com.kedacom.avIntegration.request.tvplay.*;
-import com.kedacom.avIntegration.response.tvplay.TvPlayOpenVO;
+import com.kedacom.msp.request.tvplay.*;
+import com.kedacom.msp.response.tvplay.TvPlayOpenVO;
 import com.kedacom.device.api.msp.fallback.TvPlayApiFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;

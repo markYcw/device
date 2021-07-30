@@ -2,10 +2,10 @@ package com.kedacom.device.api.msp.fallback;
 
 
 import com.kedacom.BaseResult;
-import com.kedacom.avIntegration.request.scheme.SchemeConfigRequest;
-import com.kedacom.avIntegration.request.scheme.SchemeQueryRequest;
-import com.kedacom.avIntegration.response.scheme.SchemeConfigVO;
-import com.kedacom.avIntegration.response.scheme.SchemeQueryVO;
+import com.kedacom.msp.request.scheme.SchemeConfigRequest;
+import com.kedacom.msp.request.scheme.SchemeQueryRequest;
+import com.kedacom.msp.response.scheme.SchemeConfigVO;
+import com.kedacom.msp.response.scheme.SchemeQueryVO;
 import com.kedacom.device.api.msp.SchemeApi;
 import feign.hystrix.FallbackFactory;
 

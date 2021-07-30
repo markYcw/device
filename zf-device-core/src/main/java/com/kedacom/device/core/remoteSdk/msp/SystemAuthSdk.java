@@ -4,7 +4,7 @@ import com.kedacom.acl.network.data.avIntegration.auth.SystemKeepAliveResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemLogOutResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemLoginResponse;
 import com.kedacom.acl.network.data.avIntegration.auth.SystemVersionResponse;
-import com.kedacom.avIntegration.request.RequestBaseParam;
+import com.kedacom.msp.request.RequestBaseParam;
 import com.kedacom.device.core.config.RemoteFeignConfig;
 import com.kedacom.device.core.remoteSdk.msp.entity.SystemLoginDTO;
 import com.kedacom.device.core.remoteSdk.msp.fallback.SystemAuthSdkFallbackFactory;

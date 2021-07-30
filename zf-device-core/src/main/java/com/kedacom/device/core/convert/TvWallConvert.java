@@ -1,7 +1,7 @@
 package com.kedacom.device.core.convert;
 
 import com.kedacom.acl.network.data.avIntegration.tvwall.*;
-import com.kedacom.avIntegration.response.tvwall.*;
+import com.kedacom.msp.response.tvwall.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

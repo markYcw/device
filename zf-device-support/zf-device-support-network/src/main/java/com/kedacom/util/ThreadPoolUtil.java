@@ -22,9 +22,10 @@ public class ThreadPoolUtil {
     public static ThreadPoolExecutor getInstance() {
         if (instance == null) {
             synchronized (lock) {
-                if (instance == null)
+                if (instance == null) {
                     instance = new ThreadPoolExecutor(2, 10, 60L, TimeUnit.SECONDS,
                             new LinkedBlockingQueue<>(100), new CustomizableThreadFactory("SyncDeviceData-"));
+                }
             }
         }
         return instance;

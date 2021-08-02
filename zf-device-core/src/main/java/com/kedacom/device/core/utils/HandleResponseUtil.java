@@ -2,8 +2,6 @@ package com.kedacom.device.core.utils;
 
 import cn.hutool.core.util.StrUtil;
 import com.kedacom.core.pojo.BaseResponse;
-import com.kedacom.device.core.config.MspErrCode;
-import com.kedacom.device.core.config.KmErrCode;
 import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.exception.MspException;

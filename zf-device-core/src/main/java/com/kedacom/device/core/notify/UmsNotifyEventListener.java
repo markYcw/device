@@ -1,6 +1,5 @@
 package com.kedacom.device.core.notify;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -119,12 +118,16 @@ public class UmsNotifyEventListener {
                 groupMapper.delete(updateWrapper);
                 queryWrapper.clear();
                 NotifyCallback notifyCallback = listenerMap.get(ssid + "_" + deviceGroupEvent.getNty().getSsno());
-                if (notifyCallback != null) notifyCallback.success();
+                if (notifyCallback != null) {
+                    notifyCallback.success();
+                }
             }
         } catch (Exception e) {
             log.error("deviceGroupNotify  failure:{},retry,exception:{}", ssid + "_" + deviceGroupEvent.getNty().getSsno(), e);
             NotifyCallback notifyCallback = listenerMap.get(ssid + "_" + deviceGroupEvent.getNty().getSsno());
-            if (notifyCallback != null) notifyCallback.failure();
+            if (notifyCallback != null) {
+                notifyCallback.failure();
+            }
             deviceGroupMap.clear();
             log.error("deviceGroupNotify finally failure:{}", ssid + "_" + deviceGroupEvent.getNty().getSsno());
         }

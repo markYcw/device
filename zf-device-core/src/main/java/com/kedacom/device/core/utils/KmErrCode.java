@@ -1,4 +1,4 @@
-package com.kedacom.device.core.config;
+package com.kedacom.device.core.utils;
 
 import org.springframework.stereotype.Component;
 
@@ -12,12 +12,13 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 拼控服务错误码
+ * 调度设备服务错误码
+ *
  * @Auther: hxj
  * @Date: 2021/5/10 15:38
  */
 @Component
-public class MspErrCode {
+public class KmErrCode {
 
     private static Map<Integer, String> errCodeMap = new ConcurrentHashMap<>(64);
 
@@ -27,7 +28,7 @@ public class MspErrCode {
 
         //处理映射配置信息
         Properties mappingProperties = new Properties();
-        InputStream mappingPropertiesInStream = loader.getResourceAsStream("Msp.properties");
+        InputStream mappingPropertiesInStream = loader.getResourceAsStream("Km.properties");
         assert mappingPropertiesInStream != null;
         BufferedReader bf = new BufferedReader(new InputStreamReader(mappingPropertiesInStream));
         try {
@@ -49,11 +50,11 @@ public class MspErrCode {
             errCodeMap.put(Integer.valueOf(key), value);
         }
 
-
     }
 
     /**
      * 根据错误码获取错误信息
+     *
      * @param errCode
      * @return
      */

@@ -2,6 +2,7 @@ package com.kedacom.device;
 
 import com.kedacom.common.annotation.ZFApplicationCloud;
 import com.kedacom.core.anno.EnableKmProxy;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -16,6 +17,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @ZFApplicationCloud
 @EnableFeignClients(basePackages = "com.kedacom.device.core.remoteSdk")
 @EnableKmProxy(proxyPackages = "com.kedacom.device", ipAddr = "${zf.kmProxy.server_addr}", notifyPackages = "com.kedacom.device.core.event")
+@MapperScan(basePackages = "com.kedacom.device.core.mapper")
 public class DeviceServer {
     public static void main(String[] args) {
         SpringApplication.run(DeviceServer.class);

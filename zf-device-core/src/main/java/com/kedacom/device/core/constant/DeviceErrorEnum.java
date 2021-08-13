@@ -1,12 +1,14 @@
 package com.kedacom.device.core.constant;
 
 /**
- * @Auther: hxj
- * @Date: 2021/5/10 15:09
+ * @auther: hxj
+ * @date: 2021/5/10 15:09
  */
 public enum DeviceErrorEnum {
 
     PARAM_ERROR(1001, ""),
+
+    URL_ERROR(1002, "调用会议平台的URL为空"),
 
     UMS_SERVICE_ERROR(2000, "统一设备服务失败"),
 
@@ -69,11 +71,13 @@ public enum DeviceErrorEnum {
     DECODER_STYLE_QUERY_FAILED(3093, ""),
     DECODER_STYLE_CONFIG_FAILED(3094, ""),
 
-    SCHEDULE_ADD_DEVICE_FAILED(9001,"添加调度组成员设备失败"),
-    SCHEDULE_DELETE_DEVICE_FAILED(9002,"删除调度组成员设备失败"),
-    SCHEDULE_CREATE_FAILED(9003,"创建调度组失败"),
-    SCHEDULE_DISCUSSION_DEVICE_FAILED(9004,"查询讨论组成员为空"),
-    MEETING_SERVICE_NOT_ONLINE(9005,"会议服务不在线"),
+    MCU_ERROR(4001, "会议平台操作失败"),
+
+    SCHEDULE_ADD_DEVICE_FAILED(9001, "添加调度组成员设备失败"),
+    SCHEDULE_DELETE_DEVICE_FAILED(9002, "删除调度组成员设备失败"),
+    SCHEDULE_CREATE_FAILED(9003, "创建调度组失败"),
+    SCHEDULE_DISCUSSION_DEVICE_FAILED(9004, "查询讨论组成员为空"),
+    MEETING_SERVICE_NOT_ONLINE(9005, "会议服务不在线"),
     SUBSCRIBE_SCHEDULE_INFO_FAILED(9006, "订阅调度组信息失败"),
     SCHEDULE_SET_BROADCAST_FAILED(9007, "设置调度组广播源失败"),
     SCHEDULE_SET_MEDIA_FAILED(9008, "设置调度组媒体源失败"),

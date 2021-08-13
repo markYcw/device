@@ -1,13 +1,12 @@
 package com.kedacom.device.core.utils;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.kedacom.core.pojo.BaseResponse;
 import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
-import com.kedacom.device.core.exception.MspException;
-import com.kedacom.device.core.exception.StreamMediaException;
-import com.kedacom.device.core.exception.UmsNotifyException;
-import com.kedacom.device.core.exception.UmsOperateException;
+import com.kedacom.device.core.exception.*;
+import com.kedacom.device.meetingPlatform.MeetingResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,7 +34,7 @@ public class HandleResponseUtil {
      * @param errMsg
      */
     public void handleMSPRes(String str, DeviceErrorEnum errorEnum, Integer errCode, String errMsg) {
-        if (errCode != DeviceConstants.SUCCESS) {
+        if (ObjectUtil.notEqual(errCode, DeviceConstants.SUCCESS)) {
             if (StrUtil.isNotBlank(errMsg)) {
                 log.error(str, errCode, errorEnum.getCode(), errMsg);
                 throw new MspException(errorEnum.getCode(), errMsg);
@@ -57,7 +56,7 @@ public class HandleResponseUtil {
      * @param res
      */
     public void handleSMSRes(String str, DeviceErrorEnum errorEnum, BaseResponse res) {
-        if (res.acquireErrcode() != DeviceConstants.SUCCESS) {
+        if (ObjectUtil.notEqual(res.acquireErrcode(), DeviceConstants.SUCCESS)) {
             if (StrUtil.isNotBlank(kmErrCode.matchErrMsg(res.acquireErrcode()))) {
                 log.error(str, res.acquireErrcode(), errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
                 throw new StreamMediaException(errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
@@ -76,7 +75,7 @@ public class HandleResponseUtil {
      * @param res
      */
     public void handleUMSNotifyRes(String str, DeviceErrorEnum errorEnum, BaseResponse res) {
-        if (!res.acquireErrcode().equals(DeviceConstants.SUCCESS)) {
+        if (ObjectUtil.notEqual(res.acquireErrcode(), DeviceConstants.SUCCESS)) {
             if (StrUtil.isNotBlank(kmErrCode.matchErrMsg(res.acquireErrcode()))) {
                 log.error(str, res.acquireErrcode(), errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
                 throw new UmsNotifyException(errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
@@ -89,12 +88,13 @@ public class HandleResponseUtil {
 
     /**
      * 处理 融合调度 异常
+     *
      * @param str
      * @param errorEnum
      * @param res
      */
     public void handleOperateRes(String str, DeviceErrorEnum errorEnum, BaseResponse res) {
-        if (!res.acquireErrcode().equals(DeviceConstants.SUCCESS)) {
+        if (ObjectUtil.notEqual(res.acquireErrcode(), DeviceConstants.SUCCESS)) {
             if (StrUtil.isNotBlank(kmErrCode.matchErrMsg(res.acquireErrcode()))) {
                 log.error(str, res.acquireErrcode(), errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
                 throw new UmsOperateException(errorEnum.getCode(), kmErrCode.matchErrMsg(res.acquireErrcode()));
@@ -102,6 +102,19 @@ public class HandleResponseUtil {
                 log.error(str, res.acquireErrcode(), errorEnum.getCode(), errorEnum.getMsg());
                 throw new UmsOperateException(errorEnum.getCode(), errorEnum.getMsg());
             }
+        }
+    }
+
+    /**
+     * 处理会议平台异常
+     *
+     * @param str
+     * @param errorEnum
+     * @param res
+     */
+    public void handleMpRes(String str, DeviceErrorEnum errorEnum, MeetingResponse res) {
+        if (ObjectUtil.notEqual(res.getCode(), DeviceConstants.SUCCESS)) {
+            throw new MpException(DeviceErrorEnum.MCU_ERROR);
         }
     }
 }

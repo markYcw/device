@@ -27,8 +27,8 @@ import java.util.Arrays;
  * @date 2021-08-12 10:19:30
  */
 @RestController
-@RequestMapping("ums/mcu")
-@Api(value = "会议平台", tags = "会议平台")
+@RequestMapping("ums/meetingplatform")
+@Api(value = "会议平台信息", tags = "会议平台信息")
 public class UmsMeetingPlatformController {
 
     @Autowired

@@ -13,7 +13,7 @@ import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.exception.MspException;
 import com.kedacom.device.core.mapper.DeviceMapper;
-import com.kedacom.device.core.remoteSdk.msp.entity.SystemLoginDTO;
+import com.kedacom.device.core.entity.SystemLoginDTO;
 import com.kedacom.device.core.service.SystemAuthService;
 import com.kedacom.device.core.utils.HandleResponseUtil;
 import com.kedacom.device.core.utils.RemoteRestTemplate;

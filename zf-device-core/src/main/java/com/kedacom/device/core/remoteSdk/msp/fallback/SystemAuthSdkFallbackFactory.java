@@ -8,7 +8,7 @@ import com.kedacom.acl.network.data.avIntegration.auth.SystemVersionResponse;
 import com.kedacom.msp.request.RequestBaseParam;
 import com.kedacom.device.core.exception.MspRemoteCallException;
 import com.kedacom.device.core.remoteSdk.msp.SystemAuthSdk;
-import com.kedacom.device.core.remoteSdk.msp.entity.SystemLoginDTO;
+import com.kedacom.device.core.entity.SystemLoginDTO;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
 

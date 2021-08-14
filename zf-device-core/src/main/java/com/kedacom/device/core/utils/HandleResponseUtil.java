@@ -6,7 +6,8 @@ import com.kedacom.core.pojo.BaseResponse;
 import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.exception.*;
-import com.kedacom.device.meetingPlatform.MeetingResponse;
+import com.kedacom.device.meetingPlatform.MpResponse;
+import com.kedacom.meeting.mcu.entity.UmsMeetingPlatformEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -112,9 +113,23 @@ public class HandleResponseUtil {
      * @param errorEnum
      * @param res
      */
-    public void handleMpRes(String str, DeviceErrorEnum errorEnum, MeetingResponse res) {
+    public void handleMpRes(String str, DeviceErrorEnum errorEnum, MpResponse res) {
         if (ObjectUtil.notEqual(res.getCode(), DeviceConstants.SUCCESS)) {
-            throw new MpException(DeviceErrorEnum.MCU_ERROR);
+            throw new MpException(DeviceErrorEnum.MCU_OPERATE_FAILED);
         }
     }
+
+    /**
+     *  处理会议平台
+     * @param entity
+     */
+    public void handleMp(UmsMeetingPlatformEntity entity) {
+        if (ObjectUtil.isNull(entity)){
+            throw new MpException(DeviceErrorEnum.MCU_FAILED);
+        }
+        if (StrUtil.isBlank(entity.getSsid())){
+            throw new MpException(DeviceErrorEnum.MCU_SSID_FAILED);
+        }
+    }
+
 }

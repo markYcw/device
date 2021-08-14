@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel(value = "会议统一返回结果")
-public class MeetingResponse implements Serializable {
+public class MpResponse implements Serializable {
 
     @ApiModelProperty(value = "流水号")
     private String ssno;

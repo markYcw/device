@@ -71,7 +71,9 @@ public enum DeviceErrorEnum {
     DECODER_STYLE_QUERY_FAILED(3093, ""),
     DECODER_STYLE_CONFIG_FAILED(3094, ""),
 
-    MCU_ERROR(4001, "会议平台操作失败"),
+    MCU_FAILED(4000, "会议平台不存在，请先创建会议平台"),
+    MCU_OPERATE_FAILED(4001, "会议平台操作失败"),
+    MCU_SSID_FAILED(4002, "会议平台ssid为空,请先登录会议平台"),
 
     SCHEDULE_ADD_DEVICE_FAILED(9001, "添加调度组成员设备失败"),
     SCHEDULE_DELETE_DEVICE_FAILED(9002, "删除调度组成员设备失败"),

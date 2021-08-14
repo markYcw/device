@@ -4,6 +4,8 @@ import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.McuService;
 import com.kedacom.meeting.mcu.McuRequestDTO;
+import com.kedacom.meeting.mcu.request.McuAccountDTO;
+import com.kedacom.meeting.mcu.request.McuConfsDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +32,35 @@ public class McuController {
 
     @ApiOperation("登录平台")
     @PostMapping("/login")
-    public BaseResult login(@Valid @RequestBody McuRequestDTO mcuRequestDTO, BindingResult br) {
+    public BaseResult login(@Valid @RequestBody McuRequestDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        return mcuService.login(mcuRequestDTO);
+        return mcuService.login(dto);
     }
+
+    @ApiOperation("登出平台")
+    @PostMapping("/logout")
+    public BaseResult logout(@Valid @RequestBody McuRequestDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return mcuService.logout(dto);
+    }
+
+    @ApiOperation("创建/删除账户")
+    @PostMapping("/account")
+    public BaseResult account(@Valid @RequestBody McuAccountDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return mcuService.account(dto);
+    }
+
+    @ApiOperation("获取会议列表")
+    @PostMapping("/confs")
+    public BaseResult confs(@Valid @RequestBody McuConfsDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return mcuService.confs(dto);
+    }
+
+
 }

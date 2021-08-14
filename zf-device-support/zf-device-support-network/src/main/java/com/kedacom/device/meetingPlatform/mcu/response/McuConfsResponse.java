@@ -1,6 +1,6 @@
 package com.kedacom.device.meetingPlatform.mcu.response;
 
-import com.kedacom.device.meetingPlatform.MeetingResponse;
+import com.kedacom.device.meetingPlatform.MpResponse;
 import com.kedacom.meeting.mcu.pojo.ConfInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,7 +17,7 @@ import java.util.List;
 @Data
 @ToString(callSuper = true)
 @ApiModel(value = "获取会议列表中间件响应")
-public class McuConfsResponse extends MeetingResponse {
+public class McuConfsResponse extends MpResponse {
 
     @ApiModelProperty(value = "会议列表")
     private List<ConfInfo> confInfo;

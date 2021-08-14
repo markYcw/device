@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -15,7 +16,8 @@ import java.io.Serializable;
 @ApiModel(value = "会议平台基本请求参数")
 public class McuRequestDTO implements Serializable {
 
-    @ApiModelProperty(value = "会议平台数据库id")
+    @ApiModelProperty(value = "会议平台数据库id", required = true)
+    @NotNull(message = "会议平台id不能那个为空")
     private Long mcuId;
 
 }

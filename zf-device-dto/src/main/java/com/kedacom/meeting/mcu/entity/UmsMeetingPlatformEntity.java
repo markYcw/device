@@ -30,8 +30,8 @@ public class UmsMeetingPlatformEntity implements Serializable {
     /**
      * 登录成功后会话id
      */
-    @ApiModelProperty(value = "登录成功后会话id", required = true)
-    private Integer ssid;
+    @ApiModelProperty(value = "登录成功后会话id")
+    private String ssid;
     /**
      * 会议平台名称
      */

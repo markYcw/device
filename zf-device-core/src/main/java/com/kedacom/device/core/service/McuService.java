@@ -2,6 +2,8 @@ package com.kedacom.device.core.service;
 
 import com.kedacom.BaseResult;
 import com.kedacom.meeting.mcu.McuRequestDTO;
+import com.kedacom.meeting.mcu.request.McuAccountDTO;
+import com.kedacom.meeting.mcu.request.McuConfsDTO;
 
 /**
  * @author hxj
@@ -10,6 +12,12 @@ import com.kedacom.meeting.mcu.McuRequestDTO;
  */
 public interface McuService {
 
-    BaseResult login(McuRequestDTO entity);
+    BaseResult login(McuRequestDTO dto);
+
+    BaseResult logout(McuRequestDTO dto);
+
+    BaseResult account(McuAccountDTO dto);
+
+    BaseResult confs(McuConfsDTO dto);
 
 }

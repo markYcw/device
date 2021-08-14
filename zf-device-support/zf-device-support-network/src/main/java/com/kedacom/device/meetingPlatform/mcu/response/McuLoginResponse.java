@@ -1,6 +1,6 @@
 package com.kedacom.device.meetingPlatform.mcu.response;
 
-import com.kedacom.device.meetingPlatform.MeetingResponse;
+import com.kedacom.device.meetingPlatform.MpResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,7 +14,7 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @ApiModel(value = "会议平台登录中间件返回")
-public class McuLoginResponse extends MeetingResponse {
+public class McuLoginResponse extends MpResponse {
 
     @ApiModelProperty(value = "登录成功后会话id")
     private String ssid;

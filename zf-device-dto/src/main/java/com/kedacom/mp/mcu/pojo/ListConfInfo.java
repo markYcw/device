@@ -9,10 +9,10 @@ import java.io.Serializable;
 /**
  * @author hxj
  * @date: 2021/8/16 11:01
- * @description 会议模板的结果列表
+ * @description 会议列表
  */
 @Data
-@ApiModel(value = "会议模板的结果列表")
+@ApiModel(value = "会议列表")
 public class ListConfInfo implements Serializable {
 
     @ApiModelProperty(value = "会议号码")

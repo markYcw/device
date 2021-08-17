@@ -42,7 +42,7 @@ public class LostEventListener {
     @Resource
     private DeviceManagerService deviceManagerService;
 
-    private static final AtomicInteger anInt = new AtomicInteger(0);
+    private static final AtomicInteger ATOMIC_INTEGER = new AtomicInteger(0);
 
     static Retryer<Boolean> retryer;
 
@@ -67,7 +67,7 @@ public class LostEventListener {
                     retryer.call(() -> {
                         LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertDeviceInfo(deviceInfoEntity);
                         LoginResponse response = umsClient.login(loginRequest);
-                        log.info("LostCntNty login retry,times:{},deviceInfoEntity:{},loginRequest:{},response:{}", anInt.incrementAndGet(), deviceInfoEntity, loginRequest, response);
+                        log.info("LostCntNty login retry,times:{},deviceInfoEntity:{},loginRequest:{},response:{}", ATOMIC_INTEGER.incrementAndGet(), deviceInfoEntity, loginRequest, response);
                         if (response.acquireErrcode() == 0) {
                             deviceInfoEntity.setSessionId(String.valueOf(response.acquireSsid()));
                             deviceInfoEntity.setUpdateTime(new Date());
@@ -87,16 +87,16 @@ public class LostEventListener {
                                     }
                                 });
                             }
-                            anInt.set(0);
+                            ATOMIC_INTEGER.set(0);
                             return true;
                         }
                         return false;
                     });
                 }
             } catch (ExecutionException e) {
-                log.error("LostCntNty login ExecutionException,times:{},error:{}", anInt, e.getMessage());
+                log.error("LostCntNty login ExecutionException,times:{},error:{}", ATOMIC_INTEGER, e.getMessage());
             } catch (RetryException e) {
-                log.error("LostCntNty login RetryException,times:{},error:{}", anInt, e.getMessage());
+                log.error("LostCntNty login RetryException,times:{},error:{}", ATOMIC_INTEGER, e.getMessage());
             }
         }
     }

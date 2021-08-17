@@ -1,10 +1,10 @@
 package com.kedacom.device.mp.mcu.response;
 
+import com.kedacom.device.mp.MpResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Data
 @ApiModel(value = "获取与会成员中间件响应")
-public class McuMtmembersResponse implements Serializable {
+public class McuMtmembersResponse extends MpResponse {
 
     @ApiModelProperty(value = "终端列表，终端id")
     private List<String> mtInfos;

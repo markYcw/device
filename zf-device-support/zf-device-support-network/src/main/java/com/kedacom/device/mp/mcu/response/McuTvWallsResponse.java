@@ -1,11 +1,11 @@
 package com.kedacom.device.mp.mcu.response;
 
+import com.kedacom.device.mp.MpResponse;
 import com.kedacom.mp.mcu.pojo.TvWall;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Data
 @ApiModel(value = "获取电视墙列表中间件响应")
-public class McuTvWallsResponse implements Serializable {
+public class McuTvWallsResponse extends MpResponse {
 
     @ApiModelProperty(value = "电视墙列表")
     private List<TvWall> tvWalls;

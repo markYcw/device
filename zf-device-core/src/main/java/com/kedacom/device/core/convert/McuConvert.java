@@ -1,16 +1,10 @@
 package com.kedacom.device.core.convert;
 
-import com.kedacom.device.mp.mcu.request.McuAccountRequest;
-import com.kedacom.device.mp.mcu.request.McuConfsRequest;
-import com.kedacom.device.mp.mcu.request.McuLoginRequest;
-import com.kedacom.device.mp.mcu.request.McuTemplatesRequest;
-import com.kedacom.device.mp.mcu.response.McuConfsResponse;
-import com.kedacom.device.mp.mcu.response.McuTemplatesResponse;
+import com.kedacom.device.mp.mcu.request.*;
+import com.kedacom.device.mp.mcu.response.*;
 import com.kedacom.mp.mcu.entity.UmsMeetingPlatformEntity;
-import com.kedacom.mp.mcu.request.McuAccountDTO;
-import com.kedacom.mp.mcu.request.McuConfsDTO;
-import com.kedacom.mp.mcu.request.McuTemplatesDTO;
-import com.kedacom.mp.mcu.response.McuConfsVO;
+import com.kedacom.mp.mcu.request.*;
+import com.kedacom.mp.mcu.response.*;
 import org.mapstruct.Mapper;
 
 /**
@@ -32,5 +26,55 @@ public interface McuConvert {
     McuTemplatesRequest templates(McuTemplatesDTO dto);
 
     McuConfsVO templatesRes(McuTemplatesResponse response);
+
+    McuConfInfoRequest confinfo(McuConfInfoDTO dto);
+
+    McuConfInfoVO confinfoRes(McuConfInfoResponse response);
+
+    McuConfVO confRes(McuConfResponse response);
+
+    McuConfRequest conf(McuConfDTO dto);
+
+    McuConfTemplateRequest confTemplate(McuConfTemplateDTO dto);
+
+    McuMtMembersRequest mtMembers(McuMtMembersDTO dto);
+
+    McuMtmembersVO mtMembersRes(McuMtmembersResponse response);
+
+    McuMtRequest mt(McuMtDTO dto);
+
+    McuMtCallRequest mtCall(McuMtCallDTO dto);
+
+    McuSpeakerRequest speaker(McuSpeakerDTO dto);
+
+    McuChairmanRequest chairman(McuChairmanDTO dto);
+
+    McuSilenceRequest silence(McuSilenceDTO dto);
+
+    McuMuteRequest mute(McuMuteDTO dto);
+
+    McuVolumeRequest volume(McuVolumeDTO dto);
+
+    McuDualRequest dual(McuDualDTO dto);
+
+    McuIntaudioMixRequest intaudioMix(McuIntaudioMixDTO dto);
+
+    McuAudioMixRequest audioMix(McuAudioMixDTO dto);
+
+    McuAudioMixMemberRequest audioMixMember(McuAudioMixMemberDTO dto);
+
+    McuRecRequest rec(McuRecDTO dto);
+
+    McuRecVO recRes(McuRecResponse response);
+
+    McuTvWallsVO tvWallsRes(McuTvWallsResponse response);
+
+    McuTvWallRequest tvwall(McuTvWallDTO dto);
+
+    McuExchangeRequest exchange(McuExchangeDTO dto);
+
+    McuMessageRequest message(McuMessageDTO dto);
+
+    McuVideoMixRequest videoMix(McuVideoMixDTO dto);
 
 }

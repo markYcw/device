@@ -25,7 +25,7 @@ public interface McuService {
 
     BaseResult conf(McuConfDTO dto);
 
-    BaseResult conftemplate(McuConfTemplateDTO dto);
+    BaseResult confTemplate(McuConfTemplateDTO dto);
 
     BaseResult mtMembers(McuMtMembersDTO dto);
 
@@ -58,6 +58,8 @@ public interface McuService {
     BaseResult tvWalls(McuRequestDTO dto);
 
     BaseResult tvwall(McuTvWallDTO dto);
+
+    BaseResult exchange(McuExchangeDTO dto);
 
     BaseResult message(McuMessageDTO dto);
 

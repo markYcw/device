@@ -41,7 +41,7 @@ public class ConnectorListenerImpl implements ConnectorListener {
     @Resource
     private DeviceManagerService deviceManagerService;
 
-    private static final AtomicInteger anInt = new AtomicInteger(0);
+    private static final AtomicInteger ATOMIC_INTEGER = new AtomicInteger(0);
 
     static Retryer<Boolean> retryer;
 
@@ -68,7 +68,7 @@ public class ConnectorListenerImpl implements ConnectorListener {
                     retryer.call(() -> {
                         LoginRequest loginRequest = UmsDeviceConvert.INSTANCE.convertDeviceInfo(deviceInfoEntity);
                         LoginResponse response = umsClient.login(loginRequest);
-                        log.info("onConnected device login retry,times:{},loginRequest:{},deviceInfoEntity:{},response:{}", anInt.incrementAndGet(), loginRequest, deviceInfoEntity, response);
+                        log.info("onConnected device login retry,times:{},loginRequest:{},deviceInfoEntity:{},response:{}", ATOMIC_INTEGER.incrementAndGet(), loginRequest, deviceInfoEntity, response);
                         if (response.acquireErrcode() == 0) {
                             deviceInfoEntity.setSessionId(String.valueOf(response.acquireSsid()));
                             deviceInfoEntity.setUpdateTime(new Date());
@@ -83,16 +83,16 @@ public class ConnectorListenerImpl implements ConnectorListener {
                                     deviceManagerService.syncDeviceData(request);
                                 }
                             });
-                            anInt.set(0);
+                            ATOMIC_INTEGER.set(0);
                             return true;
                         }
                         return false;
                     });
                 }
             } catch (ExecutionException e) {
-                log.error("onConnected device login ExecutionException,times:{},error:{}", anInt, e.getMessage());
+                log.error("onConnected device login ExecutionException,times:{},error:{}", ATOMIC_INTEGER, e.getMessage());
             } catch (RetryException e) {
-                log.error("onConnected device login RetryException,times:{},error:{}", anInt, e.getMessage());
+                log.error("onConnected device login RetryException,times:{},error:{}", ATOMIC_INTEGER, e.getMessage());
             }
         }
 

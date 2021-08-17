@@ -86,11 +86,11 @@ public class McuController {
     }
 
     @ApiOperation("开启会议模板")
-    @PostMapping("/conftemplate")
-    public BaseResult conftemplate(@Valid @RequestBody McuConfTemplateDTO dto, BindingResult br) {
+    @PostMapping("/confTemplate")
+    public BaseResult confTemplate(@Valid @RequestBody McuConfTemplateDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        return mcuService.conftemplate(dto);
+        return mcuService.confTemplate(dto);
     }
 
     @ApiOperation("获取与会成员")
@@ -221,6 +221,13 @@ public class McuController {
         return mcuService.tvwall(dto);
     }
 
+    @ApiOperation("开始/停止码流交换")
+    @PostMapping("/exchange")
+    public BaseResult exchange(@Valid @RequestBody McuExchangeDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return mcuService.exchange(dto);
+    }
 
     @ApiOperation("发送短消息")
     @PostMapping("/message")

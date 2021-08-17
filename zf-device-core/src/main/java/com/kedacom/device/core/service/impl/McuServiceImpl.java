@@ -12,18 +12,12 @@ import com.kedacom.device.core.utils.McuBasicTool;
 import com.kedacom.device.core.utils.McuUrlFactory;
 import com.kedacom.device.core.utils.RemoteRestTemplate;
 import com.kedacom.device.mp.MpResponse;
-import com.kedacom.device.mp.mcu.request.McuAccountRequest;
-import com.kedacom.device.mp.mcu.request.McuConfsRequest;
-import com.kedacom.device.mp.mcu.request.McuLoginRequest;
-import com.kedacom.device.mp.mcu.request.McuTemplatesRequest;
-import com.kedacom.device.mp.mcu.response.McuConfsResponse;
-import com.kedacom.device.mp.mcu.response.McuLoginResponse;
-import com.kedacom.device.mp.mcu.response.McuTemplatesResponse;
+import com.kedacom.device.mp.mcu.request.*;
+import com.kedacom.device.mp.mcu.response.*;
 import com.kedacom.mp.mcu.McuRequestDTO;
 import com.kedacom.mp.mcu.entity.UmsMeetingPlatformEntity;
 import com.kedacom.mp.mcu.request.*;
-import com.kedacom.mp.mcu.response.McuConfsVO;
-import com.kedacom.mp.mcu.response.McuLoginVO;
+import com.kedacom.mp.mcu.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -175,102 +169,406 @@ public class McuServiceImpl implements McuService {
 
     @Override
     public BaseResult confinfo(McuConfInfoDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu获取会议信息:{};entity:{}", dto, entity);
+
+        McuConfInfoRequest request = convert.confinfo(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/confinfo/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        McuConfInfoResponse response = JSON.parseObject(string, McuConfInfoResponse.class);
+
+        log.info("mcu获取会议信息中间件应答:{}", response);
+        String errorMsg = "mcu获取会议信息失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        McuConfInfoVO vo = convert.confinfoRes(response);
+        return BaseResult.succeed(vo);
     }
 
     @Override
     public BaseResult conf(McuConfDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu创建/删除会议:{};entity:{}", dto, entity);
+
+        McuConfRequest request = convert.conf(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/conf/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        McuConfResponse response = JSON.parseObject(string, McuConfResponse.class);
+
+        log.info("mcu创建/删除会议中间件应答:{}", response);
+        String errorMsg = "mcu创建/删除会议失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        McuConfVO vo = convert.confRes(response);
+        return BaseResult.succeed(vo);
     }
 
     @Override
-    public BaseResult conftemplate(McuConfTemplateDTO dto) {
-        return null;
+    public BaseResult confTemplate(McuConfTemplateDTO dto) {
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu开启会议模板:{};entity:{}", dto, entity);
+
+        McuConfTemplateRequest request = convert.confTemplate(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/conftemplate/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+
+        log.info("mcu开启会议模板中间件应答:{}", response);
+        String errorMsg = "mcu开启会议模板失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        return BaseResult.succeed("开启成功");
     }
 
     @Override
     public BaseResult mtMembers(McuMtMembersDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu获取与会成员:{};entity:{}", dto, entity);
+
+        McuMtMembersRequest request = convert.mtMembers(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/mtmembers/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        McuMtmembersResponse response = JSON.parseObject(string, McuMtmembersResponse.class);
+
+        log.info("mcu获取与会成员中间件应答:{}", response);
+        String errorMsg = "mcu获取与会成员失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        McuMtmembersVO vo = convert.mtMembersRes(response);
+        return BaseResult.succeed(vo);
     }
 
     @Override
     public BaseResult mt(McuMtDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu添加/删除终端:{};entity:{}", dto, entity);
+
+        McuMtRequest request = convert.mt(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/mt/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+
+        log.info("mcu添加/删除终端中间件应答:{}", response);
+        String errorMsg = "mcu添加/删除终端失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        return BaseResult.succeed("操作成功");
     }
 
     @Override
     public BaseResult mtCall(McuMtCallDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu呼叫/挂断终端:{};entity:{}", dto, entity);
+
+        McuMtCallRequest request = convert.mtCall(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/mtcall/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+
+        log.info("mcu呼叫/挂断终端中间件应答:{}", response);
+        String errorMsg = "mcu呼叫/挂断终端失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        return BaseResult.succeed("操作成功");
     }
 
     @Override
     public BaseResult speaker(McuSpeakerDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu设置/取消发言人:{};entity:{}", dto, entity);
+
+        McuSpeakerRequest request = convert.speaker(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/speaker/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+
+        log.info("mcu设置/取消发言人中间件应答:{}", response);
+        String errorMsg = "mcu设置/取消发言人失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        return BaseResult.succeed("操作成功");
     }
 
     @Override
     public BaseResult chairman(McuChairmanDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu设置/取消主席:{};entity:{}", dto, entity);
+
+        McuChairmanRequest request = convert.chairman(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/chairman/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+
+        log.info("mcu设置/取消主席中间件应答:{}", response);
+        String errorMsg = "mcu设置/取消主席失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        return BaseResult.succeed("操作成功");
     }
 
     @Override
     public BaseResult silence(McuSilenceDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu静音:{};entity:{}", dto, entity);
+
+        McuSilenceRequest request = convert.silence(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/silence/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+
+        log.info("mcu静音中间件应答:{}", response);
+        String errorMsg = "mcu静音失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        return BaseResult.succeed("操作成功");
     }
 
     @Override
     public BaseResult mute(McuMuteDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu哑音:{};entity:{}", dto, entity);
+
+        McuMuteRequest request = convert.mute(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/mute/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+
+        log.info("mcu哑音中间件应答:{}", response);
+        String errorMsg = "mcu哑音失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        return BaseResult.succeed("操作成功");
     }
 
     @Override
     public BaseResult volume(McuVolumeDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu调节音量:{};entity:{}", dto, entity);
+
+        McuVolumeRequest request = convert.volume(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/volume/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+
+        log.info("mcu调节音量中间件应答:{}", response);
+        String errorMsg = "mcu调节音量失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        return BaseResult.succeed("操作成功");
     }
 
     @Override
     public BaseResult dual(McuDualDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu终端双流控制:{};entity:{}", dto, entity);
+
+        McuDualRequest request = convert.dual(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/dual/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+
+        log.info("mcu终端双流控制中间件应答:{}", response);
+        String errorMsg = "mcu终端双流控制音量失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        return BaseResult.succeed("操作成功");
     }
 
     @Override
     public BaseResult videoMix(McuVideoMixDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu开始/停止画面合成:{};entity:{}", dto, entity);
+
+        McuVideoMixRequest request = convert.videoMix(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/videomix/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+
+        log.info("mcu开始/停止画面合成中间件应答:{}", response);
+        String errorMsg = "mcu开始/停止画面合成失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        return BaseResult.succeed("操作成功");
     }
 
     @Override
     public BaseResult intaudioMix(McuIntaudioMixDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu智能混音:{};entity:{}", dto, entity);
+
+        McuIntaudioMixRequest request = convert.intaudioMix(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/intaudiomix/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+
+        log.info("mcu智能混音中间件应答:{}", response);
+        String errorMsg = "mcu智能混音失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        return BaseResult.succeed("操作成功");
     }
 
     @Override
     public BaseResult audioMix(McuAudioMixDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu开始/停止混音:{};entity:{}", dto, entity);
+
+        McuAudioMixRequest request = convert.audioMix(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/audiomix/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+
+        log.info("mcu开始/停止混音中间件应答:{}", response);
+        String errorMsg = "mcu开始/停止混音失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        return BaseResult.succeed("操作成功");
     }
 
     @Override
     public BaseResult audioMixMember(McuAudioMixMemberDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu添加/删除混音成员:{};entity:{}", dto, entity);
+
+        McuAudioMixMemberRequest request = convert.audioMixMember(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/mtmembers/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+
+        log.info("mcu添加/删除混音成员中间件应答:{}", response);
+        String errorMsg = "mcu添加/删除混音成员失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        return BaseResult.succeed("操作成功");
     }
 
     @Override
     public BaseResult rec(McuRecDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu开始/暂停/恢复/停止录像:{};entity:{}", dto, entity);
+
+        McuRecRequest request = convert.rec(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/rec/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        McuRecResponse response = JSON.parseObject(string, McuRecResponse.class);
+
+        log.info("mcu开始/暂停/恢复/停止录像中间件应答:{}", response);
+        String errorMsg = "mcu开始/暂停/恢复/停止录像失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        McuRecVO vo = convert.recRes(response);
+        return BaseResult.succeed(vo);
     }
 
     @Override
     public BaseResult tvWalls(McuRequestDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu获取电视墙列表:{};entity:{}", dto, entity);
+
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/tvwalls/{ssid}/{ssno}", null, String.class, param.getParamMap());
+        McuTvWallsResponse response = JSON.parseObject(string, McuTvWallsResponse.class);
+
+        log.info("mcu获取电视墙列表中间件应答:{}", response);
+        String errorMsg = "mcu获取电视墙列表失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        McuTvWallsVO vo = convert.tvWallsRes(response);
+        return BaseResult.succeed(vo);
     }
 
     @Override
     public BaseResult tvwall(McuTvWallDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu开始/停止上电视墙:{};entity:{}", dto, entity);
+
+        McuTvWallRequest request = convert.tvwall(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/tvwall/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+
+        log.info("mcu开始/停止上电视墙中间件响应:{}", response);
+        String errorMsg = "mcu开始/停止上电视墙失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        return BaseResult.succeed("操作成功");
+    }
+
+    @Override
+    public BaseResult exchange(McuExchangeDTO dto) {
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu开始/停止码流交换:{};entity:{}", dto, entity);
+
+        McuExchangeRequest request = convert.exchange(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/exchange/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+
+        log.info("mcu开始/停止码流交换中间件响应:{}", response);
+        String errorMsg = "mcu开始/停止码流交换失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        return BaseResult.succeed("操作成功");
     }
 
     @Override
     public BaseResult message(McuMessageDTO dto) {
-        return null;
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu发送短消息:{};entity:{}", dto, entity);
+
+        McuMessageRequest request = convert.message(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/message/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+
+        log.info("mcu发送短消息中间件响应:{}", response);
+        String errorMsg = "mcu发送短消息失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        return BaseResult.succeed("操作成功");
     }
+
 }
 

@@ -37,6 +37,7 @@ public class UmsKafkaMessageProducer {
 
     /**
      * 设备更新通知
+     *
      * @param umsSubDeviceChangeModelStr
      * @return
      */
@@ -65,6 +66,7 @@ public class UmsKafkaMessageProducer {
 
     /**
      * 调度组状态通知
+     *
      * @param scheduleStatusEventStr
      * @return
      */
@@ -72,6 +74,18 @@ public class UmsKafkaMessageProducer {
 
         log.info("--------kafka开始推送调度组状态通知--------");
         return kafkaTemplate.send(UmsProducerTopic.DEVICE_SCHEDULE_GROUP_STATUS_NTY, scheduleStatusEventStr);
+    }
+
+    public ListenableFuture<SendResult<Object, Object>> deviceGroupStatus(String model) {
+
+        log.info("--------kafka开始设备分组状态通知--------");
+        return kafkaTemplate.send(UmsProducerTopic.DEVICE_GROUP_STATUS_NTY, model);
+    }
+
+    public ListenableFuture<SendResult<Object, Object>> deviceAndGroupStatus(String model) {
+
+        log.info("--------kafka开始设备与分组关联状态变更通知--------");
+        return kafkaTemplate.send(UmsProducerTopic.DEVICE_AND_GROUP_STATUS_NTY, model);
     }
 }
 

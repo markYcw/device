@@ -20,7 +20,7 @@ import java.util.List;
  * @describe
  * @date 2021/5/10
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UmsDeviceConvert {
 
     UmsDeviceConvert INSTANCE = Mappers.getMapper(UmsDeviceConvert.class);

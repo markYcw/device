@@ -1,7 +1,11 @@
 package com.kedacom.device.core.convert;
 
 import com.kedacom.device.core.entity.GroupInfoEntity;
+import com.kedacom.device.core.event.DeviceAndGroupEvent;
+import com.kedacom.device.core.event.DeviceAndGroupModel;
+import com.kedacom.device.core.event.DeviceGroupStateEvent;
 import com.kedacom.device.ums.DeviceGroupVo;
+import com.kedacom.ums.entity.DeviceGroupStatusModel;
 import com.kedacom.ums.responsedto.SelectChildUmsGroupResponseDto;
 import com.kedacom.ums.responsedto.UmsScheduleGroupItemQueryResponseDto;
 import org.mapstruct.Mapper;
@@ -16,7 +20,7 @@ import java.util.List;
  * @describe
  * @date 2021/5/11
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UmsGroupConvert {
 
     UmsGroupConvert INSTANCE = Mappers.getMapper(UmsGroupConvert.class);
@@ -31,5 +35,9 @@ public interface UmsGroupConvert {
     GroupInfoEntity groupVOToInfo(DeviceGroupVo groupVo);
 
     List<GroupInfoEntity> convertGroupInfoEntityList(List<DeviceGroupVo> list);
+
+    DeviceGroupStatusModel deviceGroupStatus(DeviceGroupStateEvent event);
+
+    DeviceAndGroupModel deviceAndGroup(DeviceAndGroupEvent event);
 
 }

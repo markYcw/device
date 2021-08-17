@@ -1,6 +1,7 @@
 package com.kedacom.device.core.notify;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.kedacom.core.DeviceStatusListenerManager;
@@ -16,9 +17,11 @@ import com.kedacom.device.core.mapper.DeviceMapper;
 import com.kedacom.device.core.mapper.GroupMapper;
 import com.kedacom.device.core.mapper.SubDeviceMapper;
 import com.kedacom.device.ums.DeviceGroupVo;
+import com.kedacom.ums.entity.DeviceGroupStatusModel;
 import com.kedacom.ums.entity.UmsSubDeviceChangeModel;
 import com.kedacom.ums.entity.UmsSubDeviceStatusModel;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
@@ -50,6 +53,9 @@ public class UmsNotifyEventListener {
 
     @Resource
     UmsKafkaMessageProducer umsKafkaMessageProducer;
+
+    @Autowired
+    private UmsGroupConvert convert;
 
     private ExecutorService executorService = new ThreadPoolExecutor(2, 5, 0L, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>(20));
@@ -135,7 +141,7 @@ public class UmsNotifyEventListener {
     }
 
     @EventListener(DeviceGroupStateEvent.class)
-    public void deviceGroupStateNotify(DeviceGroupStateEvent event) {
+    public void deviceGroupStatusNotify(DeviceGroupStateEvent event) {
         log.info("设备分组状态变更通知:{}", event);
         Integer ssid = event.getNty().getSsid();
         LambdaQueryWrapper<DeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
@@ -166,6 +172,8 @@ public class UmsNotifyEventListener {
         } else {
             groupMapper.delete(queryWrapper);
         }
+        DeviceGroupStatusModel model = convert.deviceGroupStatus(event);
+        sendKafkaDeviceGroupStatus(model);
     }
 
     @EventListener(DeviceAndGroupEvent.class)
@@ -178,6 +186,8 @@ public class UmsNotifyEventListener {
                     .set(SubDeviceInfoEntity::getGroupId, devAndGroup.getGroupId());
             subDeviceMapper.update(null, updateWrapper);
         }
+        DeviceAndGroupModel model = convert.deviceAndGroup(event);
+        sendKafkaDeviceAndGroupStatus(model);
     }
 
     @EventListener(DeviceStateEvent.class)
@@ -301,6 +311,39 @@ public class UmsNotifyEventListener {
                 @Override
                 public void onSuccess(SendResult<Object, Object> objectObjectSendResult) {
                     log.info("调度组ID为{}的状态变更消息发送成功，成功信息为：{}", scheduleStatusEvent.getGroupID(), objectObjectSendResult);
+                }
+            });
+        });
+    }
+
+    private void sendKafkaDeviceAndGroupStatus(DeviceAndGroupModel model) {
+        List<String> collect = model.getDevandgroup().stream().map(DevAndGroup::getId).collect(Collectors.toList());
+        executorService.submit(() -> {
+            umsKafkaMessageProducer.deviceAndGroupStatus(JSON.toJSONString(model)).addCallback(new ListenableFutureCallback<SendResult<Object, Object>>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    log.error("ID为{}的设备与分组关联状态变更通知消息发送失败，失败信息为：{}", collect.toArray(), throwable);
+                }
+
+                @Override
+                public void onSuccess(SendResult<Object, Object> objectObjectSendResult) {
+                    log.info("ID为{}的设备与分组关联状态变更通知消息发送成功，成功信息为：{}", collect.toArray(), objectObjectSendResult);
+                }
+            });
+        });
+    }
+
+    private void sendKafkaDeviceGroupStatus(DeviceGroupStatusModel model) {
+        executorService.submit(() -> {
+            umsKafkaMessageProducer.deviceGroupStatus(JSON.toJSONString(model)).addCallback(new ListenableFutureCallback<SendResult<Object, Object>>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    log.error("ID为{}的设备分组状态变更消息发送失败，失败信息为：{}", model.getId(), throwable);
+                }
+
+                @Override
+                public void onSuccess(SendResult<Object, Object> objectObjectSendResult) {
+                    log.info("ID为{}的设备分组状态变更消息发送成功，成功信息为：{}", model.getId(), objectObjectSendResult);
                 }
             });
         });

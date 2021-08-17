@@ -18,7 +18,7 @@ import java.util.List;
  * @describe
  * @date 2021/5/13
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UmsSubDeviceConvert {
 
     UmsSubDeviceConvert INSTANCE = Mappers.getMapper(UmsSubDeviceConvert.class);

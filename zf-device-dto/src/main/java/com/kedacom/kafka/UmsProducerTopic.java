@@ -2,6 +2,7 @@ package com.kedacom.kafka;
 
 /**
  * 统一设备通知topic
+ *
  * @author van.shu
  * @create 2020/9/25 15:08
  */
@@ -65,4 +66,14 @@ public interface UmsProducerTopic {
      * 调度组状态信息通知topic
      */
     String DEVICE_SCHEDULE_GROUP_STATUS_NTY = "zf_ums_topic_AV_GROUP_STATUS_NTY";
+
+    /**
+     * 分组状态变更通知
+     */
+    String DEVICE_GROUP_STATUS_NTY = "zf_ums_topic_DEVICE_GROUP_STATUS_NTY";
+    /**
+     * 设备与分组状态变更通知
+     */
+    String DEVICE_AND_GROUP_STATUS_NTY = "zf_ums_topic_DEVICE_AND_GROUP_STATUS_NTY";
+
 }

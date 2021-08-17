@@ -13,7 +13,7 @@ import java.util.List;
  * @describe
  * @date 2021/5/11
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UmsAlarmTypeConvert {
 
     UmsAlarmTypeConvert INSTANCE = Mappers.getMapper(UmsAlarmTypeConvert.class);

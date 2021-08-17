@@ -11,18 +11,21 @@ import com.kedacom.device.core.utils.HandleResponseUtil;
 import com.kedacom.device.core.utils.McuBasicTool;
 import com.kedacom.device.core.utils.McuUrlFactory;
 import com.kedacom.device.core.utils.RemoteRestTemplate;
-import com.kedacom.device.meetingPlatform.MpResponse;
-import com.kedacom.device.meetingPlatform.mcu.request.McuAccountRequest;
-import com.kedacom.device.meetingPlatform.mcu.request.McuConfsRequest;
-import com.kedacom.device.meetingPlatform.mcu.request.McuLoginRequest;
-import com.kedacom.device.meetingPlatform.mcu.response.McuConfsResponse;
-import com.kedacom.device.meetingPlatform.mcu.response.McuLoginResponse;
-import com.kedacom.meeting.mcu.McuRequestDTO;
-import com.kedacom.meeting.mcu.entity.UmsMeetingPlatformEntity;
-import com.kedacom.meeting.mcu.request.McuAccountDTO;
-import com.kedacom.meeting.mcu.request.McuConfsDTO;
-import com.kedacom.meeting.mcu.response.McuConfsVO;
-import com.kedacom.meeting.mcu.response.McuLoginVO;
+import com.kedacom.device.mp.MpResponse;
+import com.kedacom.device.mp.mcu.request.McuAccountRequest;
+import com.kedacom.device.mp.mcu.request.McuConfsRequest;
+import com.kedacom.device.mp.mcu.request.McuLoginRequest;
+import com.kedacom.device.mp.mcu.request.McuTemplatesRequest;
+import com.kedacom.device.mp.mcu.response.McuConfsResponse;
+import com.kedacom.device.mp.mcu.response.McuLoginResponse;
+import com.kedacom.device.mp.mcu.response.McuTemplatesResponse;
+import com.kedacom.mp.mcu.McuRequestDTO;
+import com.kedacom.mp.mcu.entity.UmsMeetingPlatformEntity;
+import com.kedacom.mp.mcu.request.McuAccountDTO;
+import com.kedacom.mp.mcu.request.McuConfsDTO;
+import com.kedacom.mp.mcu.request.McuTemplatesDTO;
+import com.kedacom.mp.mcu.response.McuConfsVO;
+import com.kedacom.mp.mcu.response.McuLoginVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -61,6 +64,13 @@ public class McuServiceImpl implements McuService {
     @Autowired
     private McuConvert convert;
 
+//    @Value("${zf.mcuNtyUrl.server_addr}")
+//    private String mcuNtyUrl;
+
+    private final static String REQUEST_HEAD = "http://";
+
+    private final static String NOTIFY_URL = "/api/api-device/ums/mp/notify";
+
     @Override
     public BaseResult login(McuRequestDTO dto) {
         RestTemplate template = remoteRestTemplate.getRestTemplate();
@@ -68,6 +78,9 @@ public class McuServiceImpl implements McuService {
         responseUtil.handleMp(entity);
         log.info("mcu登录平台入参信息:{};entity:{};", dto, entity);
         McuLoginRequest request = convert.login(entity);
+//
+//        String ntyUrl = REQUEST_HEAD + mcuNtyUrl + NOTIFY_URL;
+//        request.setNtyUrl(ntyUrl);
 
         String url = factory.geturl(entity.getMcutype());
         Map<String, Long> paramMap = new HashMap<>();
@@ -139,6 +152,26 @@ public class McuServiceImpl implements McuService {
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
 
         McuConfsVO vo = convert.accountRes(response);
+        return BaseResult.succeed(vo);
+    }
+
+    @Override
+    public BaseResult templates(McuTemplatesDTO dto) {
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMeetingPlatformEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        log.info("mcu获取会议模板列表:{};entity:{}", dto, entity);
+
+        McuTemplatesRequest request = convert.templates(dto);
+        McuBasicParam param = tool.getParam(entity);
+        String string = template.postForObject(param.getUrl() + "/confs/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        McuTemplatesResponse response = JSON.parseObject(string, McuTemplatesResponse.class);
+
+        log.info("mcu获取会议模板列表中间件应答:{}", response);
+        String errorMsg = "mcu获取会议模板列表失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+
+        McuConfsVO vo = convert.templatesRes(response);
         return BaseResult.succeed(vo);
     }
 }

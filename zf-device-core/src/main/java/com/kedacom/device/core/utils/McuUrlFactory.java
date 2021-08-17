@@ -20,14 +20,14 @@ public class McuUrlFactory {
     @Value("${zf.kmProxy.server_addr}")
     private String kmProxy;
 
-    private final static String REQUEST_HEAD = "http://";
+    private final static String MCU_REQUEST_HEAD = "http://";
 
     private final static String MCU_FIVE = "/services/v1/mcu5.0";
 
     private final static ConcurrentHashMap<Integer, String> map = new ConcurrentHashMap<>();
 
     public void setMap() {
-        map.put(DeviceTypeEnum.MCUFIVE.getCode(), REQUEST_HEAD + kmProxy + MCU_FIVE);
+        map.put(DeviceTypeEnum.MCUFIVE.getCode(), MCU_REQUEST_HEAD + kmProxy + MCU_FIVE);
     }
 
     public String geturl(Integer type) {

@@ -1,9 +1,10 @@
 package com.kedacom.device.core.service;
 
 import com.kedacom.BaseResult;
-import com.kedacom.meeting.mcu.McuRequestDTO;
-import com.kedacom.meeting.mcu.request.McuAccountDTO;
-import com.kedacom.meeting.mcu.request.McuConfsDTO;
+import com.kedacom.mp.mcu.McuRequestDTO;
+import com.kedacom.mp.mcu.request.McuAccountDTO;
+import com.kedacom.mp.mcu.request.McuConfsDTO;
+import com.kedacom.mp.mcu.request.McuTemplatesDTO;
 
 /**
  * @author hxj
@@ -19,5 +20,7 @@ public interface McuService {
     BaseResult account(McuAccountDTO dto);
 
     BaseResult confs(McuConfsDTO dto);
+
+    BaseResult templates(McuTemplatesDTO dto);
 
 }

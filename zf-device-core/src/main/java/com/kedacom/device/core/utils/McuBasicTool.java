@@ -1,7 +1,7 @@
 package com.kedacom.device.core.utils;
 
 import com.kedacom.device.core.entity.McuBasicParam;
-import com.kedacom.meeting.mcu.entity.UmsMeetingPlatformEntity;
+import com.kedacom.mp.mcu.entity.UmsMeetingPlatformEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

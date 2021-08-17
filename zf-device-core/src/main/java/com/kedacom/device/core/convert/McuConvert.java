@@ -1,13 +1,16 @@
 package com.kedacom.device.core.convert;
 
-import com.kedacom.device.meetingPlatform.mcu.request.McuAccountRequest;
-import com.kedacom.device.meetingPlatform.mcu.request.McuConfsRequest;
-import com.kedacom.device.meetingPlatform.mcu.request.McuLoginRequest;
-import com.kedacom.device.meetingPlatform.mcu.response.McuConfsResponse;
-import com.kedacom.meeting.mcu.entity.UmsMeetingPlatformEntity;
-import com.kedacom.meeting.mcu.request.McuAccountDTO;
-import com.kedacom.meeting.mcu.request.McuConfsDTO;
-import com.kedacom.meeting.mcu.response.McuConfsVO;
+import com.kedacom.device.mp.mcu.request.McuAccountRequest;
+import com.kedacom.device.mp.mcu.request.McuConfsRequest;
+import com.kedacom.device.mp.mcu.request.McuLoginRequest;
+import com.kedacom.device.mp.mcu.request.McuTemplatesRequest;
+import com.kedacom.device.mp.mcu.response.McuConfsResponse;
+import com.kedacom.device.mp.mcu.response.McuTemplatesResponse;
+import com.kedacom.mp.mcu.entity.UmsMeetingPlatformEntity;
+import com.kedacom.mp.mcu.request.McuAccountDTO;
+import com.kedacom.mp.mcu.request.McuConfsDTO;
+import com.kedacom.mp.mcu.request.McuTemplatesDTO;
+import com.kedacom.mp.mcu.response.McuConfsVO;
 import org.mapstruct.Mapper;
 
 /**
@@ -25,5 +28,9 @@ public interface McuConvert {
     McuConfsRequest confs(McuConfsDTO dto);
 
     McuConfsVO accountRes(McuConfsResponse confsResponse);
+
+    McuTemplatesRequest templates(McuTemplatesDTO dto);
+
+    McuConfsVO templatesRes(McuTemplatesResponse response);
 
 }

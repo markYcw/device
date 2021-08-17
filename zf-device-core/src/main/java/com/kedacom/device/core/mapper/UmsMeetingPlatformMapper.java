@@ -2,7 +2,7 @@ package com.kedacom.device.core.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.kedacom.meeting.mcu.entity.UmsMeetingPlatformEntity;
+import com.kedacom.mp.mcu.entity.UmsMeetingPlatformEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

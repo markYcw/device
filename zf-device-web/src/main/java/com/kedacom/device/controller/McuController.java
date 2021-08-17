@@ -3,9 +3,10 @@ package com.kedacom.device.controller;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.McuService;
-import com.kedacom.meeting.mcu.McuRequestDTO;
-import com.kedacom.meeting.mcu.request.McuAccountDTO;
-import com.kedacom.meeting.mcu.request.McuConfsDTO;
+import com.kedacom.mp.mcu.McuRequestDTO;
+import com.kedacom.mp.mcu.request.McuAccountDTO;
+import com.kedacom.mp.mcu.request.McuConfsDTO;
+import com.kedacom.mp.mcu.request.McuTemplatesDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,14 @@ public class McuController {
         ValidUtils.paramValid(br);
 
         return mcuService.confs(dto);
+    }
+
+    @ApiOperation("获取会议模板列表")
+    @PostMapping("/templates")
+    public BaseResult templates(@Valid @RequestBody McuTemplatesDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return mcuService.templates(dto);
     }
 
 

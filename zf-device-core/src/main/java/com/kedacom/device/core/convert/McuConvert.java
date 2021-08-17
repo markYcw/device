@@ -2,7 +2,7 @@ package com.kedacom.device.core.convert;
 
 import com.kedacom.device.mp.mcu.request.*;
 import com.kedacom.device.mp.mcu.response.*;
-import com.kedacom.mp.mcu.entity.UmsMeetingPlatformEntity;
+import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import com.kedacom.mp.mcu.request.*;
 import com.kedacom.mp.mcu.response.*;
 import org.mapstruct.Mapper;
@@ -15,7 +15,7 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface McuConvert {
 
-    McuLoginRequest login(UmsMeetingPlatformEntity entity);
+    McuLoginRequest login(UmsMcuEntity entity);
 
     McuAccountRequest account(McuAccountDTO dto);
 

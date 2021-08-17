@@ -7,7 +7,7 @@ import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.exception.*;
 import com.kedacom.device.mp.MpResponse;
-import com.kedacom.mp.mcu.entity.UmsMeetingPlatformEntity;
+import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -123,7 +123,7 @@ public class HandleResponseUtil {
      *  处理会议平台
      * @param entity
      */
-    public void handleMp(UmsMeetingPlatformEntity entity) {
+    public void handleMp(UmsMcuEntity entity) {
         if (ObjectUtil.isNull(entity)){
             throw new MpException(DeviceErrorEnum.MCU_FAILED);
         }

@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -17,8 +16,8 @@ import java.util.Date;
  * @date 2021-08-12 10:19:30
  */
 @Data
-@TableName("ums_meeting_platform")
-public class UmsMeetingPlatformEntity implements Serializable {
+@TableName("ums_mcu")
+public class UmsMcuEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -46,8 +45,7 @@ public class UmsMeetingPlatformEntity implements Serializable {
     /**
      * 会议平台端口
      */
-    @ApiModelProperty(value = "会议平台端口", required = true)
-    @NotNull(message = "会议平台端口不能为空")
+    @ApiModelProperty(value = "会议平台端口")
     private Integer port;
     /**
      * 登录会议平台用户名
@@ -66,7 +64,7 @@ public class UmsMeetingPlatformEntity implements Serializable {
      */
     @ApiModelProperty(value = "获取token使用", required = true)
     @NotBlank(message = "key不能为空")
-    private String key;
+    private String mcuKey;
     /**
      * 获取token使用
      */
@@ -77,12 +75,12 @@ public class UmsMeetingPlatformEntity implements Serializable {
      * 会议平台版本
      */
     @ApiModelProperty(value = "会议平台版本", required = true)
-    private Integer mcutype;
+    private Integer mcuType;
     /**
      * 会议平台版本名称
      */
     @ApiModelProperty(value = "会议平台版本名称", required = true)
-    private String mcuname;
+    private String mcuVersion;
     /**
      * 创建时间
      */

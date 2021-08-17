@@ -3,8 +3,8 @@ package com.kedacom.device.controller;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
-import com.kedacom.device.core.service.UmsMeetingPlatformService;
-import com.kedacom.mp.mcu.entity.UmsMeetingPlatformEntity;
+import com.kedacom.device.core.service.UmsMcuService;
+import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import com.kedacom.mp.mcu.pojo.McuPageQueryDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,12 +26,12 @@ import java.util.Arrays;
  */
 @Slf4j
 @RestController
-@RequestMapping("ums/mp")
+@RequestMapping("ums/umsMcu")
 @Api(value = "会议平台信息", tags = "会议平台信息")
-public class UmsMeetingPlatformController {
+public class UmsMcuController {
 
     @Autowired
-    private UmsMeetingPlatformService platformService;
+    private UmsMcuService umsMcuService;
 
     /**
      * 会议平台信息分页查询
@@ -39,7 +39,7 @@ public class UmsMeetingPlatformController {
     @PostMapping("/pageQuery")
     @ApiOperation(value = "会议平台信息分页查询")
     public BaseResult pageQuery(@RequestBody McuPageQueryDTO queryDTO) {
-        BaseResult<BasePage<UmsMeetingPlatformEntity>> basepPage = platformService.pageQuery(queryDTO);
+        BaseResult<BasePage<UmsMcuEntity>> basepPage = umsMcuService.pageQuery(queryDTO);
 
         return basepPage;
     }
@@ -50,7 +50,7 @@ public class UmsMeetingPlatformController {
     @PostMapping("/info/{id}")
     @ApiOperation(value = "根据id获取会议平台信息")
     public BaseResult info(@PathVariable("id") Long id) {
-        UmsMeetingPlatformEntity umsMeetingPlatform = platformService.getById(id);
+        UmsMcuEntity umsMeetingPlatform = umsMcuService.getById(id);
 
         return BaseResult.succeed(umsMeetingPlatform);
     }
@@ -60,11 +60,11 @@ public class UmsMeetingPlatformController {
      */
     @PostMapping("/save")
     @ApiOperation(value = "新增会议平台信息")
-    public BaseResult save(@Valid @RequestBody UmsMeetingPlatformEntity umsMeetingPlatform, BindingResult br) {
+    public BaseResult save(@Valid @RequestBody UmsMcuEntity umsMeetingPlatform, BindingResult br) {
         ValidUtils.paramValid(br);
-        platformService.save(umsMeetingPlatform);
+        umsMcuService.save(umsMeetingPlatform);
 
-        return BaseResult.succeed("新增成功");
+        return BaseResult.succeed(umsMeetingPlatform);
     }
 
     /**
@@ -72,8 +72,8 @@ public class UmsMeetingPlatformController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "修改会议平台信息")
-    public BaseResult update(@RequestBody UmsMeetingPlatformEntity umsMeetingPlatform) {
-        platformService.updateById(umsMeetingPlatform);
+    public BaseResult update(@RequestBody UmsMcuEntity umsMeetingPlatform) {
+        umsMcuService.updateById(umsMeetingPlatform);
 
         return BaseResult.succeed("修改成功");
     }
@@ -84,7 +84,7 @@ public class UmsMeetingPlatformController {
     @PostMapping("/delete")
     @ApiOperation(value = "删除会议平台信息")
     public BaseResult delete(@RequestBody Long[] ids) {
-        platformService.removeByIds(Arrays.asList(ids));
+        umsMcuService.removeByIds(Arrays.asList(ids));
 
         return BaseResult.succeed("删除成功");
     }

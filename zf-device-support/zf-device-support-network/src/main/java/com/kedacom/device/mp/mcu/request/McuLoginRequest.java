@@ -35,13 +35,13 @@ public class McuLoginRequest implements Serializable {
      * 登录会议平台密码
      */
     @ApiModelProperty(value = "登录会议平台密码")
-    @JSONField(name = "passWord")
     private String password;
     /**
      * 获取token使用
      */
     @ApiModelProperty(value = "获取token使用")
-    private String key;
+    @JSONField(name = "key")
+    private String mcuKey;
     /**
      * 获取token使用
      */

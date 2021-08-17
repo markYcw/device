@@ -40,10 +40,6 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.kedacom</groupId>
             <artifactId>zf-device-core</artifactId>
             <version>1.0.0</version>

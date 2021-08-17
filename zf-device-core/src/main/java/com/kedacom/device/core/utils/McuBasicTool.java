@@ -1,7 +1,7 @@
 package com.kedacom.device.core.utils;
 
 import com.kedacom.device.core.entity.McuBasicParam;
-import com.kedacom.mp.mcu.entity.UmsMeetingPlatformEntity;
+import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +19,10 @@ public class McuBasicTool {
     @Autowired
     private McuUrlFactory factory;
 
-    public McuBasicParam getParam(UmsMeetingPlatformEntity entity){
+    public McuBasicParam getParam(UmsMcuEntity entity){
         McuBasicParam param = new McuBasicParam();
 
-        String url = factory.geturl(entity.getMcutype());
+        String url = factory.geturl(entity.getMcuType());
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("ssid", entity.getSsid());
         paramMap.put("ssno", System.currentTimeMillis());

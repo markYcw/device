@@ -4,7 +4,7 @@ package com.kedacom.device.core.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.mp.mcu.entity.UmsMeetingPlatformEntity;
+import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import com.kedacom.mp.mcu.pojo.McuPageQueryDTO;
 
 /**
@@ -14,9 +14,9 @@ import com.kedacom.mp.mcu.pojo.McuPageQueryDTO;
  * @email hexijian@kedacom.com
  * @date 2021-08-12 10:19:30
  */
-public interface UmsMeetingPlatformService extends IService<UmsMeetingPlatformEntity> {
+public interface UmsMcuService extends IService<UmsMcuEntity> {
 
-    BaseResult<BasePage<UmsMeetingPlatformEntity>> pageQuery(McuPageQueryDTO queryDTO);
+    BaseResult<BasePage<UmsMcuEntity>> pageQuery(McuPageQueryDTO queryDTO);
 
 }
 

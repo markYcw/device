@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.device.core.mapper.UmsMeetingPlatformMapper;
-import com.kedacom.device.core.service.UmsMeetingPlatformService;
-import com.kedacom.mp.mcu.entity.UmsMeetingPlatformEntity;
+import com.kedacom.device.core.mapper.UmsMcuMapper;
+import com.kedacom.device.core.service.UmsMcuService;
+import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import com.kedacom.mp.mcu.pojo.McuPageQueryDTO;
 import org.springframework.stereotype.Service;
 
@@ -16,23 +16,23 @@ import java.util.List;
 
 
 @Service("umsMeetingPlatformService")
-public class UmsMeetingPlatformServiceImpl extends ServiceImpl<UmsMeetingPlatformMapper, UmsMeetingPlatformEntity> implements UmsMeetingPlatformService {
+public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> implements UmsMcuService {
 
     @Resource
-    private UmsMeetingPlatformMapper mapper;
+    private UmsMcuMapper mapper;
 
     @Override
-    public BaseResult<BasePage<UmsMeetingPlatformEntity>> pageQuery(McuPageQueryDTO queryDTO) {
-        Page<UmsMeetingPlatformEntity> page = new Page<>();
+    public BaseResult<BasePage<UmsMcuEntity>> pageQuery(McuPageQueryDTO queryDTO) {
+        Page<UmsMcuEntity> page = new Page<>();
         page.setCurrent(queryDTO.getCurPage());
         page.setSize(queryDTO.getPageSize());
 
-        LambdaQueryWrapper<UmsMeetingPlatformEntity> queryWrapper = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<UmsMcuEntity> queryWrapper = new LambdaQueryWrapper<>();
 
-        Page<UmsMeetingPlatformEntity> platformEntityPage = mapper.selectPage(page, queryWrapper);
-        List<UmsMeetingPlatformEntity> records = platformEntityPage.getRecords();
+        Page<UmsMcuEntity> platformEntityPage = mapper.selectPage(page, queryWrapper);
+        List<UmsMcuEntity> records = platformEntityPage.getRecords();
 
-        BasePage<UmsMeetingPlatformEntity> basePage = new BasePage<>();
+        BasePage<UmsMcuEntity> basePage = new BasePage<>();
         basePage.setTotal(platformEntityPage.getTotal());
         basePage.setTotalPage(platformEntityPage.getPages());
         basePage.setCurPage(queryDTO.getCurPage());

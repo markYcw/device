@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,6 +91,7 @@ public class McuServiceImpl implements McuService {
         String errorMsg = "mcu登录平台失败:{},{},{}";
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
         entity.setSsid(response.getSsid());
+        entity.setModifyTime(new Date());
         mapper.updateById(entity);
 
         McuLoginVO loginVO = new McuLoginVO();
@@ -107,14 +109,16 @@ public class McuServiceImpl implements McuService {
 
         ResponseEntity<String> responseEntity = template.exchange(param.getUrl() + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, param.getParamMap());
         String string = responseEntity.getBody();
-        log.info("mcu登录平台中间件应答:{}", string);
+        log.info("mcu登出平台中间件应答:{}", string);
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu登出平台失败:{},{},{}";
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
 
         LambdaUpdateWrapper<UmsMcuEntity> wrapper = new LambdaUpdateWrapper();
-        wrapper.set(UmsMcuEntity::getSsid, null).eq(UmsMcuEntity::getId, dto.getMcuId());
+        wrapper.set(UmsMcuEntity::getSsid, null)
+                .set(UmsMcuEntity::getModifyTime, new Date())
+                .eq(UmsMcuEntity::getId, dto.getMcuId());
         mapper.update(null, wrapper);
         return BaseResult.succeed("登出成功");
     }

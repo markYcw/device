@@ -2,9 +2,7 @@ package com.kedacom.device.core.service;
 
 import com.kedacom.BaseResult;
 import com.kedacom.mp.mcu.McuRequestDTO;
-import com.kedacom.mp.mcu.request.McuAccountDTO;
-import com.kedacom.mp.mcu.request.McuConfsDTO;
-import com.kedacom.mp.mcu.request.McuTemplatesDTO;
+import com.kedacom.mp.mcu.request.*;
 
 /**
  * @author hxj
@@ -22,5 +20,45 @@ public interface McuService {
     BaseResult confs(McuConfsDTO dto);
 
     BaseResult templates(McuTemplatesDTO dto);
+
+    BaseResult confinfo(McuConfInfoDTO dto);
+
+    BaseResult conf(McuConfDTO dto);
+
+    BaseResult conftemplate(McuConfTemplateDTO dto);
+
+    BaseResult mtMembers(McuMtMembersDTO dto);
+
+    BaseResult mt(McuMtDTO dto);
+
+    BaseResult mtCall(McuMtCallDTO dto);
+
+    BaseResult speaker(McuSpeakerDTO dto);
+
+    BaseResult chairman(McuChairmanDTO dto);
+
+    BaseResult silence(McuSilenceDTO dto);
+
+    BaseResult mute(McuMuteDTO dto);
+
+    BaseResult volume(McuVolumeDTO dto);
+
+    BaseResult dual(McuDualDTO dto);
+
+    BaseResult videoMix(McuVideoMixDTO dto);
+
+    BaseResult intaudioMix(McuIntaudioMixDTO dto);
+
+    BaseResult audioMix(McuAudioMixDTO dto);
+
+    BaseResult audioMixMember(McuAudioMixMemberDTO dto);
+
+    BaseResult rec(McuRecDTO dto);
+
+    BaseResult tvWalls(McuRequestDTO dto);
+
+    BaseResult tvwall(McuTvWallDTO dto);
+
+    BaseResult message(McuMessageDTO dto);
 
 }

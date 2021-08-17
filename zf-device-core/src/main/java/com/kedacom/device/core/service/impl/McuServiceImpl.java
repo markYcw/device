@@ -21,9 +21,7 @@ import com.kedacom.device.mp.mcu.response.McuLoginResponse;
 import com.kedacom.device.mp.mcu.response.McuTemplatesResponse;
 import com.kedacom.mp.mcu.McuRequestDTO;
 import com.kedacom.mp.mcu.entity.UmsMeetingPlatformEntity;
-import com.kedacom.mp.mcu.request.McuAccountDTO;
-import com.kedacom.mp.mcu.request.McuConfsDTO;
-import com.kedacom.mp.mcu.request.McuTemplatesDTO;
+import com.kedacom.mp.mcu.request.*;
 import com.kedacom.mp.mcu.response.McuConfsVO;
 import com.kedacom.mp.mcu.response.McuLoginVO;
 import lombok.extern.slf4j.Slf4j;
@@ -173,6 +171,106 @@ public class McuServiceImpl implements McuService {
 
         McuConfsVO vo = convert.templatesRes(response);
         return BaseResult.succeed(vo);
+    }
+
+    @Override
+    public BaseResult confinfo(McuConfInfoDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult conf(McuConfDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult conftemplate(McuConfTemplateDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult mtMembers(McuMtMembersDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult mt(McuMtDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult mtCall(McuMtCallDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult speaker(McuSpeakerDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult chairman(McuChairmanDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult silence(McuSilenceDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult mute(McuMuteDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult volume(McuVolumeDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult dual(McuDualDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult videoMix(McuVideoMixDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult intaudioMix(McuIntaudioMixDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult audioMix(McuAudioMixDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult audioMixMember(McuAudioMixMemberDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult rec(McuRecDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult tvWalls(McuRequestDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult tvwall(McuTvWallDTO dto) {
+        return null;
+    }
+
+    @Override
+    public BaseResult message(McuMessageDTO dto) {
+        return null;
     }
 }
 

@@ -76,4 +76,9 @@ public interface UmsProducerTopic {
      */
     String DEVICE_AND_GROUP_STATUS_NTY = "zf_ums_topic_DEVICE_AND_GROUP_STATUS_NTY";
 
+    /**
+     * 发送透明通道数据
+     */
+    public static final String DEVICE_TRANS_DATA_NOTIFY = "device_trans_data_notify";
+
 }

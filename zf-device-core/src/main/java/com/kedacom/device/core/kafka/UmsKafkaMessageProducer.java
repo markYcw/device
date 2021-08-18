@@ -1,6 +1,5 @@
 package com.kedacom.device.core.kafka;
 
-import com.kedacom.device.core.constant.TopicConstant;
 import com.kedacom.device.core.entity.TransDataEntity;
 import com.kedacom.kafka.UmsProducerTopic;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +49,7 @@ public class UmsKafkaMessageProducer {
     public void sendTransDataNotifyKafka(TransDataEntity entity) {
         log.info("接收透明通道数据通知进行推送:{}", entity);
         ListenableFuture<SendResult<Object, Object>> future;
-        future = kafkaTemplate.send(TopicConstant.DEVICE_TRANS_DATA_NOTIFY, entity.toString());
+        future = kafkaTemplate.send(UmsProducerTopic.DEVICE_TRANS_DATA_NOTIFY, entity.toString());
         future.addCallback(new ListenableFutureCallback<SendResult<Object, Object>>() {
             @Override
             public void onFailure(Throwable ex) {

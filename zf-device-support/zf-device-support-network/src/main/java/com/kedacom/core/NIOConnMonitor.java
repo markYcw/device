@@ -3,6 +3,7 @@ package com.kedacom.core;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -24,10 +25,12 @@ public class NIOConnMonitor {
      */
     public static final long HEART_BEAT_INTERVAL = 15 * 1000;
 
+    private final static Integer OLD_PORT = 45670;
+
     private NIOConnector connector;
 
 
-    public NIOConnMonitor( NIOConnector connector) {
+    public NIOConnMonitor(NIOConnector connector) {
 
         this.connector = connector;
     }
@@ -42,11 +45,13 @@ public class NIOConnMonitor {
      */
     public synchronized void start(String serverIp, Integer serverPort) {
 
-        if (task == null) {
-            task = new MonitorThread(serverIp, serverPort);
-            task.setName("Conn-Monitor");
-            task.setDaemon(true);
-            task.start();
+        if (Objects.equals(serverPort, OLD_PORT)) {
+            if (task == null) {
+                task = new MonitorThread(serverIp, serverPort);
+                task.setName("Conn-Monitor");
+                task.setDaemon(true);
+                task.start();
+            }
         }
 
     }
@@ -75,7 +80,7 @@ public class NIOConnMonitor {
 
         private Integer serverPort;
 
-        public MonitorThread( String serverIp, Integer serverPort) {
+        public MonitorThread(String serverIp, Integer serverPort) {
             this.serverIp = serverIp;
             this.serverPort = serverPort;
         }
@@ -88,7 +93,7 @@ public class NIOConnMonitor {
                 try {
                     if (connector.connect(serverIp, serverPort)) {
                         isConnected.compareAndSet(false, true);
-                    }else {
+                    } else {
                         //连接失败，等待15s后继续重试
                         Thread.sleep(CONNECT_RETRY_INTERVAL);
                     }

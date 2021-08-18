@@ -4,6 +4,7 @@ import com.kedacom.core.ConnectorListener;
 import com.kedacom.core.ConnectorListenerManager;
 import com.kedacom.device.core.utils.McuUrlFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -23,10 +24,17 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
     @Autowired
     private McuUrlFactory factory;
 
+    @Value("${zf.kmProxy.server_addr}")
+    private String kmProxy;
+
+    private final static String OLD_PORT = "45670";
+
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
         factory.setMap();
-        ConnectorListenerManager.getInstance().register(connectorListener);
+        if (kmProxy.contains(OLD_PORT)) {
+            ConnectorListenerManager.getInstance().register(connectorListener);
+        }
     }
 
 }

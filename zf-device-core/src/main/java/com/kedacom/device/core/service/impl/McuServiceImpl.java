@@ -23,7 +23,6 @@ import com.kedacom.mp.mcu.request.*;
 import com.kedacom.mp.mcu.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -61,12 +60,12 @@ public class McuServiceImpl implements McuService {
     @Autowired
     private McuConvert convert;
 
-    @Value("${zf.mcuNtyUrl.server_addr}")
-    private String mcuNtyUrl;
+//    @Value("${zf.mcuNtyUrl.server_addr}")
+//    private String mcuNtyUrl;
 
     private final static String REQUEST_HEAD = "http://";
 
-    private final static String NOTIFY_URL = "/api/api-device/ums/mp/notify";
+    private final static String NOTIFY_URL = "/api/api-device/ums/umsMcu/notify";
 
     @Override
     public BaseResult login(McuRequestDTO dto) {
@@ -77,8 +76,8 @@ public class McuServiceImpl implements McuService {
             throw new MpException(DeviceErrorEnum.MCU_FAILED);
         }
         McuLoginRequest request = convert.login(entity);
-        String ntyUrl = REQUEST_HEAD + mcuNtyUrl + NOTIFY_URL;
-        request.setNtyUrl(ntyUrl);
+//        String ntyUrl = REQUEST_HEAD + mcuNtyUrl + NOTIFY_URL;
+//        request.setNtyUrl(ntyUrl);
         String url = factory.geturl(entity.getMcuType());
         Map<String, Long> paramMap = new HashMap<>();
         paramMap.put("ssno", System.currentTimeMillis());

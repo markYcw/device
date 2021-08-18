@@ -4,6 +4,7 @@ import com.kedacom.device.core.convert.StreamMediaConvert;
 import com.kedacom.device.core.entity.TransDataEntity;
 import com.kedacom.device.core.event.TransDataNotifyEvent;
 import com.kedacom.device.core.kafka.UmsKafkaMessageProducer;
+import com.kedacom.util.ThreadPoolUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -28,7 +29,10 @@ public class StreamMediaEventListener {
 
         TransDataEntity entity = streamMediaConvert.convertTransDataNotifyEvent(event);
 
-        kafkaMessageProducer.sendTransDataNotifyKafka(entity);
+        ThreadPoolUtil.getInstance().submit(() -> {
+            kafkaMessageProducer.sendTransDataNotifyKafka(entity);
+        });
+
     }
 
 }

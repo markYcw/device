@@ -51,4 +51,8 @@ public interface StreamMediaService {
 
     Boolean stopPullUrl(StopPullUrlDTO stopPullUrlDTO);
 
+    Boolean keepVideoMixAlive(VideoMixKeepAliveDTO request);
+
+    Boolean recKeepAlive(RecKeepAliveDTO request);
+
 }

@@ -39,4 +39,7 @@ public class StartRecDTO implements Serializable {
     @ApiModelProperty("会议或者虚拟终端填设备id需要填音频设备叠加图片参数")
     private BackgroundPicParam background_pic_param;
 
+    @ApiModelProperty(value = "保活时长，单位秒，默认为0，不保活；支持时长区间[30,600]")
+    private Integer keepalive;
+
 }

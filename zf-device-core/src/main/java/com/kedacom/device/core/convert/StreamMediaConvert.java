@@ -58,4 +58,8 @@ public interface StreamMediaConvert {
 
     StopPullUrlRequest convertStopPullUrlDTO(StopPullUrlDTO request);
 
+    VideoMixKeepAliveRequest keepVideoMixAlive(VideoMixKeepAliveDTO request);
+
+    RecKeepAliveRequest recKeepAlive(RecKeepAliveDTO request);
+
 }

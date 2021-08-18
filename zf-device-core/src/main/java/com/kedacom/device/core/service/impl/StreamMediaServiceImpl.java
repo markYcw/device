@@ -103,6 +103,28 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     }
 
     @Override
+    public Boolean recKeepAlive(RecKeepAliveDTO request) {
+        log.info("录像任务保活入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        RecKeepAliveRequest recKeepAliveRequest = streamMediaConvert.recKeepAlive(request);
+        recKeepAliveRequest.setAccountToken("123");
+        recKeepAliveRequest.setRequestId("321321");
+        recKeepAliveRequest.setSsid(ssid);
+        log.info("录像任务保活交互参数:{}", recKeepAliveRequest);
+        BaseResponse response = client.recKeepAlive(recKeepAliveRequest);
+        log.info("录像任务保活应答信息:{}", response);
+        String error = "录像任务保活失败:{},{},{}";
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.STOP_REC_FAILED, response);
+        return true;
+    }
+
+    @Override
     public StartAudioMixResponseVO startAudioMix(StartAudioMixDTO request) {
         String error = "开启音频混音失败:{},{},{}";
         log.info("开启音频混音入参信息:{}", request);
@@ -313,6 +335,27 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("查询画面信息应答信息:{}", res);
         responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_VIDEO_MIX_FAILED, res);
         return res.acquireData(QueryVideoMixResponseVO.class);
+    }
+
+    @Override
+    public Boolean keepVideoMixAlive(VideoMixKeepAliveDTO request) {
+        String error = "合成画面保活失败:{},{},{}";
+        log.info("合成画面保活入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        VideoMixKeepAliveRequest keepVideoMixAlive = streamMediaConvert.keepVideoMixAlive(request);
+        keepVideoMixAlive.setSsid(ssid);
+        keepVideoMixAlive.setGroupID(request.getGroupID());
+        log.info("合成画面保活交互参数:{}", keepVideoMixAlive);
+        VideoMixKeepAliveResponse res = client.keepVideoMixAlive(keepVideoMixAlive);
+        log.info("合成画面保活应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_VIDEO_MIX_FAILED, res);
+        return true;
     }
 
     @Override

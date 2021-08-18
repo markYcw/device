@@ -57,6 +57,15 @@ public class StreamMediaController {
         return BaseResult.succeed(queryRec);
     }
 
+    @ApiOperation("录像任务保活")
+    @PostMapping("/recKeepAlive")
+    public BaseResult<Boolean> recKeepAlive(@Valid @RequestBody RecKeepAliveDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean alive = streamMediaService.recKeepAlive(dto);
+        return BaseResult.succeed("保活成功", alive);
+    }
+
     @ApiOperation("开启音频混音:返回混音设备分组id、混音ID")
     @PostMapping("/startAudioMix")
     public BaseResult<StartAudioMixResponseVO> startAudioMix(@Valid @RequestBody StartAudioMixDTO startAudioMixDTO, BindingResult br) {
@@ -83,7 +92,6 @@ public class StreamMediaController {
         Boolean updateAudioMix = streamMediaService.updateAudioMix(updateAudioMixDTO);
         return BaseResult.succeed(updateAudioMix);
     }
-
 
     @ApiOperation("查询所有混音 返回混音ID集合")
     @PostMapping("/queryAllAudioMix")
@@ -146,6 +154,15 @@ public class StreamMediaController {
 
         QueryVideoMixResponseVO queryVideoMixResponseVO = streamMediaService.queryVideoMix(queryVideoMixDTO);
         return BaseResult.succeed(queryVideoMixResponseVO);
+    }
+
+    @ApiOperation("合成画面保活")
+    @PostMapping("/keepVideoMixAlive")
+    public BaseResult<Boolean> keepVideoMixAlive(@Valid @RequestBody VideoMixKeepAliveDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean alive = streamMediaService.keepVideoMixAlive(dto);
+        return BaseResult.succeed("保活成功", alive);
     }
 
     @ApiOperation("发送透明通道数据")

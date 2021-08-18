@@ -3,9 +3,7 @@ package com.kedacom.device.stream.request;
 import com.kedacom.core.pojo.BaseRequest;
 import com.kedacom.streamMedia.info.BackgroundPicParam;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -41,6 +39,14 @@ public class StartRecRequest extends BaseRequest {
 
     @ApiModelProperty("音频设备叠加图片参数overlay_background=1 时生效")
     private BackgroundPicParam background_pic_param;
+
+    @ApiModelProperty(value = "开启任务保活功能，单位:秒。\n" +
+            "范围：30-600（秒），推荐60秒。\n" +
+            "默认0：不开启任务保活功能；\n" +
+            "保活时间小于30秒，实际生效30秒；\n" +
+            "保活时间大于600秒时，实际生效600秒；\n" +
+            "不设置保活时，需要客户端主动去结束该合成任务。")
+    private Integer keepalive;
 
     @Override
     public String name() {

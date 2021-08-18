@@ -47,6 +47,15 @@ public interface StreamMediaApi {
     BaseResult<QueryRecResponseVO> queryRec(@RequestBody QueryRecDTO queryrecDTO);
 
     /**
+     * 录像任务保活
+     *
+     * @param dto
+     * @return
+     */
+    @PostMapping("/recKeepAlive")
+    BaseResult<Boolean> recKeepAlive(@RequestBody RecKeepAliveDTO dto);
+
+    /**
      * 开启音频混音:返回混音设备分组id、混音ID
      *
      * @param startAudioMixDTO
@@ -146,6 +155,15 @@ public interface StreamMediaApi {
      */
     @PostMapping("/queryVideoMix")
     BaseResult<QueryVideoMixResponseVO> queryVideoMix(@RequestBody QueryVideoMixDTO queryVideoMixDTO);
+
+    /**
+     * 合成画面保活
+     *
+     * @param dto
+     * @return
+     */
+    @PostMapping("/keepVideoMixAlive")
+    BaseResult<Boolean> keepVideoMixAlive(@RequestBody VideoMixKeepAliveDTO dto);
 
     /**
      * 发送透明通道数据

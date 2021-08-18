@@ -30,6 +30,11 @@ public class StreamMediaApiFallbackFactory implements FallbackFactory<StreamMedi
             }
 
             @Override
+            public BaseResult<Boolean> recKeepAlive(RecKeepAliveDTO dto) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
             public BaseResult<StartAudioMixResponseVO> startAudioMix(StartAudioMixDTO startAudioMixDTO) {
                 return BaseResult.failed("服务出错，请稍后重试");
             }
@@ -76,6 +81,11 @@ public class StreamMediaApiFallbackFactory implements FallbackFactory<StreamMedi
 
             @Override
             public BaseResult<QueryVideoMixResponseVO> queryVideoMix(QueryVideoMixDTO queryVideoMixDTO) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<Boolean> keepVideoMixAlive(VideoMixKeepAliveDTO dto) {
                 return BaseResult.failed("服务出错，请稍后重试");
             }
 

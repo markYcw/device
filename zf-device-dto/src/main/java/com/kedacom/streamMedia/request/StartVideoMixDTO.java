@@ -30,6 +30,14 @@ public class StartVideoMixDTO implements Serializable {
             "1 - 填充满画面窗口（可能会出现图像宽高比失调）\n")
     private Integer full_window;
 
+    @ApiModelProperty(value = "开启任务保活功能，单位:秒。\n" +
+            "范围：30-600（秒），推荐60秒。\n" +
+            "默认0：不开启任务保活功能；\n" +
+            "保活时间小于30秒，实际生效30秒；\n" +
+            "保活时间大于600秒时，实际生效600秒；\n" +
+            "不设置保活时，需要客户端主动去结束该合成任务。")
+    private Integer keepalive;
+
     @ApiModelProperty("是否支持非语音激励场景下，画面合成第一个通道克隆某一其他通道资源:0、不克隆;1、克隆1通道的通道资源;2、克隆2通道的通道资源")
     private Integer clone_window;
 

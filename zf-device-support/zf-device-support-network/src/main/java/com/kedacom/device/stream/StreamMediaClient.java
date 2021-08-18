@@ -183,4 +183,18 @@ public interface StreamMediaClient {
      */
     StopPullUrlResponse stopPullUrl(StopPullUrlRequest stopPullUrlRequest);
 
+    /**
+     * 合成画面保活
+     * @param keepVideoMixAlive
+     * @return
+     */
+    VideoMixKeepAliveResponse keepVideoMixAlive(VideoMixKeepAliveRequest keepVideoMixAlive);
+
+    /**
+     * 录像任务保活
+     * @param recKeepAliveRequest
+     * @return
+     */
+    BaseResponse recKeepAlive(RecKeepAliveRequest recKeepAliveRequest);
+
 }

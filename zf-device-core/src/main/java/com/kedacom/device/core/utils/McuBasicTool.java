@@ -2,6 +2,7 @@ package com.kedacom.device.core.utils;
 
 import com.kedacom.device.core.entity.McuBasicParam;
 import com.kedacom.mp.mcu.entity.UmsMcuEntity;
+import com.kedacom.util.NumGen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,13 +20,14 @@ public class McuBasicTool {
     @Autowired
     private McuUrlFactory factory;
 
-    public McuBasicParam getParam(UmsMcuEntity entity){
+    public McuBasicParam getParam(UmsMcuEntity entity) {
         McuBasicParam param = new McuBasicParam();
 
         String url = factory.geturl(entity.getMcuType());
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("ssid", entity.getSsid());
-        paramMap.put("ssno", System.currentTimeMillis());
+        Map<String, Long> paramMap = new HashMap<>();
+        paramMap.put("ssid", Long.valueOf(entity.getSsid()));
+//        paramMap.put("ssno", System.currentTimeMillis());
+        paramMap.put("ssno", Long.valueOf(NumGen.getNum()));
 
         param.setUrl(url);
         param.setParamMap(paramMap);

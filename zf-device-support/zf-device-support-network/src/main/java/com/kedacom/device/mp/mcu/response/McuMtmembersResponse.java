@@ -1,6 +1,7 @@
 package com.kedacom.device.mp.mcu.response;
 
 import com.kedacom.device.mp.MpResponse;
+import com.kedacom.mp.mcu.pojo.MtInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,6 +18,6 @@ import java.util.List;
 public class McuMtmembersResponse extends MpResponse {
 
     @ApiModelProperty(value = "终端列表，终端id")
-    private List<String> mtInfos;
+    private List<MtInfo> mtInfos;
 
 }

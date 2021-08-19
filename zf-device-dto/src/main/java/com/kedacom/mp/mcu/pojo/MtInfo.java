@@ -18,4 +18,7 @@ public class MtInfo implements Serializable {
     @ApiModelProperty(value = "终端ip或者e164号")
     private String mtId;
 
+    @ApiModelProperty(value = "终端号")
+    private String mtAccount;
+
 }

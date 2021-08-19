@@ -1,6 +1,6 @@
 package com.kedacom.device.api.mcu.fallback;
 
-import com.kedacom.device.api.mcu.MeetingPlatformApi;
+import com.kedacom.device.api.mcu.McuApi;
 import feign.hystrix.FallbackFactory;
 
 /**
@@ -8,9 +8,9 @@ import feign.hystrix.FallbackFactory;
  * @Date: 2021/8/12 13:41
  * @Description 会议平台api熔断类
  */
-public class MeetingPlatformApiFallbackFactory implements FallbackFactory<MeetingPlatformApi> {
+public class McuApiFallbackFactory implements FallbackFactory<McuApi> {
     @Override
-    public MeetingPlatformApi create(Throwable cause) {
+    public McuApi create(Throwable cause) {
         return null;
     }
 }

@@ -15,6 +15,6 @@ public class McuBasicParam implements Serializable {
 
     private String url;
 
-    private Map<String, Object> paramMap;
+    private Map<String, Long> paramMap;
 
 }

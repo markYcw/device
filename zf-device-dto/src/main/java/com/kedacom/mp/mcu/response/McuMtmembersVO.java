@@ -1,5 +1,6 @@
 package com.kedacom.mp.mcu.response;
 
+import com.kedacom.mp.mcu.pojo.MtInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,6 +18,6 @@ import java.util.List;
 public class McuMtmembersVO implements Serializable {
 
     @ApiModelProperty(value = "终端列表，终端id")
-    private List<String> mtInfos;
+    private List<MtInfo> mtInfos;
 
 }

@@ -16,6 +16,9 @@ import java.io.Serializable;
 @ApiModel(value = "开始/停止画面合成向中间件请求参数")
 public class McuVideoMixRequest implements Serializable {
 
+    @ApiModelProperty(value = "0：开始，1：停止", required = true)
+    private Integer type;
+
     @ApiModelProperty(value = "会议号码")
     private String confId;
 

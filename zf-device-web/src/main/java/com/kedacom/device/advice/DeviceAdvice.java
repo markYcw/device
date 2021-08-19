@@ -113,6 +113,19 @@ public class DeviceAdvice {
     }
 
     /**
+     * mcu异常捕获
+     *
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler({MpException.class})
+    public BaseResult handleException(MpException e) {
+        log.error("mcu异常捕获:{}", e.getMessage());
+        return BaseResult.failed(e.getMessage());
+    }
+
+    /**
      * 统一设备异常捕获
      *
      * @param e

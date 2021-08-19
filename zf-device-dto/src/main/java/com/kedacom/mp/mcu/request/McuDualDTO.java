@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author hxj
@@ -15,6 +16,10 @@ import javax.validation.constraints.NotBlank;
 @Data
 @ApiModel(value = "终端双流控制入参")
 public class McuDualDTO extends McuRequestDTO {
+
+    @NotNull(message = "类型不能为空")
+    @ApiModelProperty(value = "0：开始，1：停止")
+    private Integer type;
 
     @NotBlank(message = "会议号码不能为空")
     @ApiModelProperty(value = "会议号码", required = true)

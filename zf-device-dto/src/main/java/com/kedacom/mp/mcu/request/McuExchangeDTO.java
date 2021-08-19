@@ -25,13 +25,15 @@ public class McuExchangeDTO extends McuRequestDTO {
     @ApiModelProperty(value = "会议号码", required = true)
     private String confId;
 
+    @ApiModelProperty(value = "选看模式 1：视频 2：音频 3：音视频")
+    private Integer mode;
+
     @ApiModelProperty(value = "源终端e164号，开始时必填")
     private String mtSrcInfo;
 
     @ApiModelProperty(value = "目的终端e164号")
     private String mtDstInfo;
 
-    @ApiModelProperty(value = "选看模式 1：视频 2：音频 3：音视频")
-    private Integer mode;
+
 
 }

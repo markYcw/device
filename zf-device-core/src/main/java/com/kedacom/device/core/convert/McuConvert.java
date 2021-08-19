@@ -57,8 +57,6 @@ public interface McuConvert {
 
     McuDualRequest dual(McuDualDTO dto);
 
-    McuIntaudioMixRequest intaudioMix(McuIntaudioMixDTO dto);
-
     McuAudioMixRequest audioMix(McuAudioMixDTO dto);
 
     McuAudioMixMemberRequest audioMixMember(McuAudioMixMemberDTO dto);
@@ -76,5 +74,9 @@ public interface McuConvert {
     McuMessageRequest message(McuMessageDTO dto);
 
     McuVideoMixRequest videoMix(McuVideoMixDTO dto);
+
+    McuMtVO mtRes(McuMtResponse response);
+
+    McuAudioMixMemberVO audioMixMemberRes(McuAudioMixMemberResponse response);
 
 }

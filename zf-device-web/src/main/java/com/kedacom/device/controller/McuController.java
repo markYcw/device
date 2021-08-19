@@ -173,14 +173,6 @@ public class McuController {
         return mcuService.videoMix(dto);
     }
 
-    @ApiOperation("智能混音")
-    @PostMapping("/intaudioMix")
-    public BaseResult intaudioMix(@Valid @RequestBody McuIntaudioMixDTO dto, BindingResult br) {
-        ValidUtils.paramValid(br);
-
-        return mcuService.intaudioMix(dto);
-    }
-
     @ApiOperation("开始/停止混音")
     @PostMapping("/audioMix")
     public BaseResult audioMix(@Valid @RequestBody McuAudioMixDTO dto, BindingResult br) {

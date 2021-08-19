@@ -26,6 +26,9 @@ public class HandleResponseUtil {
     @Autowired
     private KmErrCode kmErrCode;
 
+    @Autowired
+    private McuErrCode mcuErrCode;
+
     /**
      * 处理拼控服务响应消息
      *
@@ -115,19 +118,26 @@ public class HandleResponseUtil {
      */
     public void handleMpRes(String str, DeviceErrorEnum errorEnum, MpResponse res) {
         if (ObjectUtil.notEqual(res.getCode(), DeviceConstants.SUCCESS)) {
-            throw new MpException(DeviceErrorEnum.MCU_OPERATE_FAILED);
+            if (StrUtil.isNotBlank(mcuErrCode.matchErrMsg(res.getCode()))) {
+                log.error(str, res.getCode(), errorEnum.getCode(), mcuErrCode.matchErrMsg(res.getCode()));
+                throw new MpException(errorEnum.getCode(), mcuErrCode.matchErrMsg(res.getCode()));
+            } else {
+                log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
+                throw new MpException(errorEnum.getCode(), errorEnum.getMsg());
+            }
         }
     }
 
     /**
-     *  处理会议平台
+     * 处理会议平台基本错误
+     *
      * @param entity
      */
     public void handleMp(UmsMcuEntity entity) {
-        if (ObjectUtil.isNull(entity)){
+        if (ObjectUtil.isNull(entity)) {
             throw new MpException(DeviceErrorEnum.MCU_FAILED);
         }
-        if (StrUtil.isBlank(entity.getSsid())){
+        if (StrUtil.isBlank(entity.getSsid())) {
             throw new MpException(DeviceErrorEnum.MCU_SSID_FAILED);
         }
     }

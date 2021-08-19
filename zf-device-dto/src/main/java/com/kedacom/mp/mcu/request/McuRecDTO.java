@@ -29,6 +29,12 @@ public class McuRecDTO extends McuRequestDTO {
     @ApiModelProperty(value = "录像id，非开始时必填")
     private String recId;
 
+    @ApiModelProperty(value = "录像模式\n" +
+            "1-录像；\n" +
+            "2-直播；\n" +
+            "3-录像+直播；",required = true)
+    private Integer recorderMode;
+
     @ApiModelProperty(value = "录像参数，开始时必填")
     private RecParam recParam;
 

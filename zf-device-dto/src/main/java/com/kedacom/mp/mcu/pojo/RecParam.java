@@ -32,9 +32,6 @@ public class RecParam implements Serializable {
     @ApiModelProperty(value = "是否支持免登陆观看直播:0-不支持；1-支持；")
     private Integer anonymous;
 
-    @ApiModelProperty(value = "录像模式:1-录像；2-直播；3-录像+直播；")
-    private Integer recorderMode;
-
     @ApiModelProperty(value = "是否录主格式码流（视频+音频）:0-否；1-是；")
     private Integer mainStream;
 
@@ -44,7 +41,7 @@ public class RecParam implements Serializable {
     @ApiModelProperty(value = "vrs的id信息,用于指定录像的vr")
     private String vrsId;
 
-    @ApiModelProperty(value = "开启录像终端数组 仅当开启终端录像需要填写")
-    private List<RecMember> recMembers;
+    @ApiModelProperty(value = "开启录像终端ID列表，当开启终端录像需要填写")
+    private List<String> mtInfos;
 
 }

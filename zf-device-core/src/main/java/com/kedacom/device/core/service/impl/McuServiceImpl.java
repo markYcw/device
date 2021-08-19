@@ -275,10 +275,11 @@ public class McuServiceImpl implements McuService {
         String string = template.postForObject(param.getUrl() + "/mt/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
         log.info("mcu添加/删除终端中间件应答:{}", string);
 
-        MpResponse response = JSON.parseObject(string, MpResponse.class);
+        McuMtResponse response = JSON.parseObject(string, McuMtResponse.class);
         String errorMsg = "mcu添加/删除终端失败:{},{},{}";
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
-        return BaseResult.succeed("操作成功");
+        McuMtVO vo = convert.mtRes(response);
+        return BaseResult.succeed(vo);
     }
 
     @Override
@@ -436,25 +437,6 @@ public class McuServiceImpl implements McuService {
     }
 
     @Override
-    public BaseResult intaudioMix(McuIntaudioMixDTO dto) {
-        log.info("mcu智能混音:{}", dto);
-        RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
-        McuIntaudioMixRequest request = convert.intaudioMix(dto);
-        McuBasicParam param = tool.getParam(entity);
-
-        log.info("mcu智能混音中间件入参信息:{}", JSON.toJSONString(request));
-        String string = template.postForObject(param.getUrl() + "/intaudiomix/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
-        log.info("mcu智能混音中间件应答:{}", string);
-
-        MpResponse response = JSON.parseObject(string, MpResponse.class);
-        String errorMsg = "mcu智能混音失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
-        return BaseResult.succeed("操作成功");
-    }
-
-    @Override
     public BaseResult audioMix(McuAudioMixDTO dto) {
         log.info("mcu开始/停止混音:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
@@ -486,10 +468,11 @@ public class McuServiceImpl implements McuService {
         String string = template.postForObject(param.getUrl() + "/mtmembers/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
         log.info("mcu添加/删除混音成员中间件应答:{}", string);
 
-        MpResponse response = JSON.parseObject(string, MpResponse.class);
+        McuAudioMixMemberResponse response = JSON.parseObject(string, McuAudioMixMemberResponse.class);
         String errorMsg = "mcu添加/删除混音成员失败:{},{},{}";
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
-        return BaseResult.succeed("操作成功");
+        McuAudioMixMemberVO vo = convert.audioMixMemberRes(response);
+        return BaseResult.succeed(vo);
     }
 
     @Override
@@ -521,7 +504,7 @@ public class McuServiceImpl implements McuService {
         responseUtil.handleMp(entity);
         McuBasicParam param = tool.getParam(entity);
 
-        String string = template.postForObject(param.getUrl() + "/tvwalls/{ssid}/{ssno}", null, String.class, param.getParamMap());
+        String string = template.getForObject(param.getUrl() + "/tvwalls/{ssid}/{ssno}", String.class, param.getParamMap());
         log.info("mcu获取电视墙列表中间件应答:{}", string);
 
         McuTvWallsResponse response = JSON.parseObject(string, McuTvWallsResponse.class);

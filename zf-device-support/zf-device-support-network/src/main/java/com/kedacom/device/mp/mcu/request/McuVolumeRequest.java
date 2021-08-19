@@ -4,8 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -17,19 +15,15 @@ import java.io.Serializable;
 @ApiModel(value = "调节音量向中间件请求参数")
 public class McuVolumeRequest implements Serializable {
 
-    @NotNull(message = "类型不能为空")
     @ApiModelProperty(value = "0：输出，1：输入", required = true)
     private Integer type;
 
-    @NotBlank(message = "会议号码不能为空")
     @ApiModelProperty(value = "会议号码", required = true)
     private String confId;
 
-    @NotBlank(message = "终端ip或者e164号不能为空")
     @ApiModelProperty(value = "终端ip或者e164号", required = true)
     private String mtId;
 
-    @NotNull(message = "音量值不能为空")
     @ApiModelProperty(value = "音量值:Pcmt 0~255;普通keda终端 0~32", required = true)
     private Integer volume;
 

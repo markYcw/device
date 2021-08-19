@@ -25,7 +25,7 @@ public class MixInfo implements Serializable {
     @ApiModelProperty(value = "风格")
     private Integer style;
 
-    @ApiModelProperty(value = "终端列表")
-    private List<MtInfo> mtInfos;
+    @ApiModelProperty(value = "终端id")
+    private List<String> mtInfos;
 
 }

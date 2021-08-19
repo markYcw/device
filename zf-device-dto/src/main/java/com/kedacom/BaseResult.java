@@ -25,6 +25,10 @@ public class BaseResult<T> implements Serializable {
     @ApiModelProperty("具体结果数据")
     private T data;
 
+    public static <T> BaseResult<T> succeed() {
+        return builder(0, null, null);
+    }
+
     public static <T> BaseResult<T> succeed(String errMsg) {
         return builder(0, errMsg, null);
     }

@@ -47,8 +47,6 @@ public interface McuService {
 
     BaseResult videoMix(McuVideoMixDTO dto);
 
-    BaseResult intaudioMix(McuIntaudioMixDTO dto);
-
     BaseResult audioMix(McuAudioMixDTO dto);
 
     BaseResult audioMixMember(McuAudioMixMemberDTO dto);

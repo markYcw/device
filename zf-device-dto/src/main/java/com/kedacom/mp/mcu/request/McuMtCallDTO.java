@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author hxj
@@ -15,6 +16,10 @@ import javax.validation.constraints.NotBlank;
 @Data
 @ApiModel(value = "呼叫/挂断终端入参")
 public class McuMtCallDTO extends McuRequestDTO {
+
+    @NotNull(message = "类型不能为空")
+    @ApiModelProperty(value = "0：呼叫，1：挂断")
+    private Integer type;
 
     @NotBlank(message = "会议号码不能为空")
     @ApiModelProperty(value = "会议号码",required = true)

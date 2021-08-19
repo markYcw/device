@@ -1,7 +1,6 @@
 package com.kedacom.mp.mcu.request;
 
 import com.kedacom.mp.mcu.McuRequestDTO;
-import com.kedacom.mp.mcu.pojo.MtInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -27,6 +26,11 @@ public class McuAudioMixDTO extends McuRequestDTO {
     @ApiModelProperty(value = "会议号码", required = true)
     private String confId;
 
-    @ApiModelProperty(value = "混音成员，开始时必填")
-    private List<MtInfo> mtInfos;
+    @ApiModelProperty(value = "混音模式\n" +
+            "1-智能混音；\n" +
+            "2-定制混音；")
+    private Integer mode;
+
+    @ApiModelProperty(value = "混音成员，终端ID列表，开始时必填")
+    private List<String> mtInfos;
 }

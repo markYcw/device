@@ -4,8 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -17,11 +15,9 @@ import java.io.Serializable;
 @ApiModel(value = "添加/删除混音成员向中间件请求参数")
 public class McuAudioMixMemberRequest implements Serializable {
 
-    @NotNull(message = "类型不能为空")
     @ApiModelProperty(value = "0：添加，1：删除", required = true)
     private Integer type;
 
-    @NotBlank(message = "会议号码不能为空")
     @ApiModelProperty(value = "会议号码", required = true)
     private String confId;
 

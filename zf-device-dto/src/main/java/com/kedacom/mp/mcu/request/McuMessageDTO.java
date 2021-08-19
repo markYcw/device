@@ -1,7 +1,6 @@
 package com.kedacom.mp.mcu.request;
 
 import com.kedacom.mp.mcu.McuRequestDTO;
-import com.kedacom.mp.mcu.pojo.MtInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -44,10 +43,10 @@ public class McuMessageDTO extends McuRequestDTO {
             "0-自右至左滚动；\n" +
             "1-翻页滚动；\n" +
             "2-全页滚动；", required = true)
-    private Integer type;
+    private Integer messageType;
 
-    @NotEmpty(message = "终端列表不能为空")
-    @ApiModelProperty(value = "终端列表", required = true)
-    private List<MtInfo> mtInfos;
+    @NotEmpty(message = "终端id列表不能为空")
+    @ApiModelProperty(value = "终端id列表", required = true)
+    private List<String> mtInfos;
 
 }

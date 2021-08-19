@@ -18,5 +18,7 @@ public interface UmsMcuService extends IService<UmsMcuEntity> {
 
     BaseResult<BasePage<UmsMcuEntity>> pageQuery(McuPageQueryDTO queryDTO);
 
+    void mcuNotify(String notify);
+
 }
 

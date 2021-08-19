@@ -92,12 +92,12 @@ public class UmsMcuController {
     /**
      * 删除
      */
-    @PostMapping("/notify")
+    @PostMapping("/mcuNotify")
     @ApiOperation(value = "会议平台通知")
-    public void notify(@RequestBody String notify) {
-
-
+    public void mcuNotify(@RequestBody String notify) {
         log.info("会议平台通知:{}", notify);
+
+        umsMcuService.mcuNotify(notify);
     }
 
 

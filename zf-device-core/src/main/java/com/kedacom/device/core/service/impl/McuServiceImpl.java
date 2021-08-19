@@ -66,7 +66,7 @@ public class McuServiceImpl implements McuService {
 
     private final static String REQUEST_HEAD = "http://";
 
-    private final static String NOTIFY_URL = "/api/api-device/ums/umsMcu/notify";
+    private final static String NOTIFY_URL = "/api/api-device/ums/umsMcu/mcuNotify";
 
     @Override
     public BaseResult login(McuRequestDTO dto) {

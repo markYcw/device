@@ -6,7 +6,7 @@ package com.kedacom.device.core.constant;
  */
 public class DeviceConstants {
 
-    public static final int SUCCESS = 0 ;
+    public static final int SUCCESS = 0;
 
     public static final Integer ADD_UMS = 1;
 
@@ -20,5 +20,10 @@ public class DeviceConstants {
 
     //统一平台类型
     public static final Integer DEVICETYPE = 28;
+
+    /**
+     * 设备掉线通知类型
+     */
+    public final static Integer DEVICE_OFFLINE_NOTIFICATION = 1;
 
 }

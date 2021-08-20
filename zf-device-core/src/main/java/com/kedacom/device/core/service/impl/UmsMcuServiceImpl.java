@@ -1,5 +1,6 @@
 package com.kedacom.device.core.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,14 +57,17 @@ public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> i
 
         JSONObject jsonObject = JSONObject.parseObject(notify);
         Integer type = (Integer) jsonObject.get("type");
-        if (Objects.equals(type, DeviceConstants.DEVICE_OFFLINE_NOTIFICATION)) {
-            List<UmsMcuEntity> mcuEntities = mapper.selectList(null);
-            for (UmsMcuEntity umsMcuEntity : mcuEntities) {
+        String ssid = (String) jsonObject.get("ssid");
+        if (Objects.equals(type, DeviceConstants.DEVICE_OFFLINE_NOTIFICATION) && StrUtil.isNotBlank(ssid)) {
+            LambdaQueryWrapper<UmsMcuEntity> wrapper = new LambdaQueryWrapper<UmsMcuEntity>();
+            wrapper.eq(UmsMcuEntity::getSsid, ssid);
+            List<UmsMcuEntity> mcuEntities = mapper.selectList(wrapper);
+            for (Iterator<UmsMcuEntity> it = mcuEntities.iterator(); it.hasNext(); ) {
                 McuRequestDTO dto = new McuRequestDTO();
-                dto.setMcuId(umsMcuEntity.getId());
+                dto.setMcuId(it.next().getId());
                 mcuService.login(dto);
             }
         }
-
     }
+
 }

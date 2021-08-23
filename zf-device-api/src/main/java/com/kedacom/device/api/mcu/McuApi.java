@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * @Author hxj
  * @Date: 2021/8/12 13:37
- * @Description 会议平台qpi
+ * @Description 会议平台操作qpi
  */
 @FeignClient(name = "device-server", contextId = "mcuApi", path = "/api-device/ums/mcu", fallbackFactory = McuApiFallbackFactory.class)
 public interface McuApi {

@@ -72,8 +72,8 @@ public class UmsMcuController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "修改会议平台信息")
-    public BaseResult update(@RequestBody UmsMcuEntity umsMeetingPlatform) {
-        umsMcuService.updateById(umsMeetingPlatform);
+    public BaseResult update(@RequestBody UmsMcuEntity entity) {
+        umsMcuService.updateById(entity);
 
         return BaseResult.succeed("修改成功");
     }
@@ -99,6 +99,5 @@ public class UmsMcuController {
 
         umsMcuService.mcuNotify(notify);
     }
-
 
 }

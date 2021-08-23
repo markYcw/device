@@ -38,7 +38,7 @@ public class UmsMcuController {
      */
     @PostMapping("/pageQuery")
     @ApiOperation(value = "会议平台信息分页查询")
-    public BaseResult pageQuery(@RequestBody McuPageQueryDTO queryDTO) {
+    public BaseResult<BasePage<UmsMcuEntity>> pageQuery(@RequestBody McuPageQueryDTO queryDTO) {
         BaseResult<BasePage<UmsMcuEntity>> basepPage = umsMcuService.pageQuery(queryDTO);
 
         return basepPage;
@@ -49,10 +49,10 @@ public class UmsMcuController {
      */
     @PostMapping("/info/{id}")
     @ApiOperation(value = "根据id获取会议平台信息")
-    public BaseResult info(@PathVariable("id") Long id) {
-        UmsMcuEntity umsMeetingPlatform = umsMcuService.getById(id);
+    public BaseResult<UmsMcuEntity> info(@PathVariable("id") Long id) {
+        UmsMcuEntity entity = umsMcuService.getById(id);
 
-        return BaseResult.succeed(umsMeetingPlatform);
+        return BaseResult.succeed(entity);
     }
 
     /**
@@ -60,11 +60,11 @@ public class UmsMcuController {
      */
     @PostMapping("/save")
     @ApiOperation(value = "新增会议平台信息")
-    public BaseResult save(@Valid @RequestBody UmsMcuEntity umsMeetingPlatform, BindingResult br) {
+    public BaseResult<UmsMcuEntity> save(@Valid @RequestBody UmsMcuEntity entity, BindingResult br) {
         ValidUtils.paramValid(br);
-        umsMcuService.save(umsMeetingPlatform);
+        umsMcuService.save(entity);
 
-        return BaseResult.succeed(umsMeetingPlatform);
+        return BaseResult.succeed(entity);
     }
 
     /**

@@ -2,16 +2,18 @@ package com.kedacom.network.niohdl.impl;
 
 
 
-import com.kedacom.network.niohdl.core.Receiver;
-import com.kedacom.network.niohdl.core.Sender;
 import com.kedacom.network.niohdl.core.IoArgs;
 import com.kedacom.network.niohdl.core.IoProvider;
+import com.kedacom.network.niohdl.core.Receiver;
+import com.kedacom.network.niohdl.core.Sender;
 import com.kedacom.network.utils.CloseUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@Slf4j
 public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
     private final AtomicBoolean isClosed = new AtomicBoolean(false);
     private final SocketChannel channel;
@@ -113,6 +115,18 @@ public class SocketChannelAdapter implements Sender, Receiver, Cloneable {
             try {
                 // 具体的读取操作
                 if (args.readFrom(channel) > 0 ) {
+
+//                    try {
+//                        Charset charset = Charset.forName("UTF-8");
+//                        CharsetDecoder decoder = charset.newDecoder();
+//                        CharBuffer charBuffer = decoder.decode(args.getBuffer());
+//                        args.getBuffer().flip();
+//
+//                        log.error("三个:{}",charBuffer.toString());
+//                    } catch (CharacterCodingException e) {
+//                        e.printStackTrace();
+//                    }
+
                     // 读取完成回调
                     processor.onConsumeCompleted(args);
                 } else {

@@ -5,6 +5,7 @@ import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.McuService;
 import com.kedacom.mp.mcu.McuRequestDTO;
 import com.kedacom.mp.mcu.request.*;
+import com.kedacom.mp.mcu.response.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class McuController {
 
     @ApiOperation("登录平台")
     @PostMapping("/login")
-    public BaseResult login(@Valid @RequestBody McuRequestDTO dto, BindingResult br) {
+    public BaseResult<McuLoginVO> login(@Valid @RequestBody McuRequestDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return mcuService.login(dto);
@@ -55,7 +56,7 @@ public class McuController {
 
     @ApiOperation("获取会议列表")
     @PostMapping("/confs")
-    public BaseResult confs(@Valid @RequestBody McuConfsDTO dto, BindingResult br) {
+    public BaseResult<McuConfsVO> confs(@Valid @RequestBody McuConfsDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return mcuService.confs(dto);
@@ -63,7 +64,7 @@ public class McuController {
 
     @ApiOperation("获取会议模板列表")
     @PostMapping("/templates")
-    public BaseResult templates(@Valid @RequestBody McuTemplatesDTO dto, BindingResult br) {
+    public BaseResult<McuConfsVO> templates(@Valid @RequestBody McuTemplatesDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return mcuService.templates(dto);
@@ -71,7 +72,7 @@ public class McuController {
 
     @ApiOperation("获取会议信息")
     @PostMapping("/confinfo")
-    public BaseResult confinfo(@Valid @RequestBody McuConfInfoDTO dto, BindingResult br) {
+    public BaseResult<McuConfInfoVO> confinfo(@Valid @RequestBody McuConfInfoDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return mcuService.confinfo(dto);
@@ -79,7 +80,7 @@ public class McuController {
 
     @ApiOperation("创建/删除会议")
     @PostMapping("/conf")
-    public BaseResult conf(@Valid @RequestBody McuConfDTO dto, BindingResult br) {
+    public BaseResult<McuConfVO> conf(@Valid @RequestBody McuConfDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return mcuService.conf(dto);
@@ -95,7 +96,7 @@ public class McuController {
 
     @ApiOperation("获取与会成员")
     @PostMapping("/mtMembers")
-    public BaseResult mtMembers(@Valid @RequestBody McuMtMembersDTO dto, BindingResult br) {
+    public BaseResult<McuMtmembersVO> mtMembers(@Valid @RequestBody McuMtMembersDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return mcuService.mtMembers(dto);
@@ -103,7 +104,7 @@ public class McuController {
 
     @ApiOperation("添加/删除终端")
     @PostMapping("/mt")
-    public BaseResult mt(@Valid @RequestBody McuMtDTO dto, BindingResult br) {
+    public BaseResult<McuMtVO> mt(@Valid @RequestBody McuMtDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return mcuService.mt(dto);
@@ -183,7 +184,7 @@ public class McuController {
 
     @ApiOperation("添加/删除混音成员")
     @PostMapping("/audioMixMember")
-    public BaseResult audioMixMember(@Valid @RequestBody McuAudioMixMemberDTO dto, BindingResult br) {
+    public BaseResult<McuAudioMixMemberVO> audioMixMember(@Valid @RequestBody McuAudioMixMemberDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return mcuService.audioMixMember(dto);
@@ -199,7 +200,7 @@ public class McuController {
 
     @ApiOperation("获取电视墙列表")
     @PostMapping("/tvWalls")
-    public BaseResult tvWalls(@Valid @RequestBody McuRequestDTO dto, BindingResult br) {
+    public BaseResult<McuTvWallsVO> tvWalls(@Valid @RequestBody McuRequestDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return mcuService.tvWalls(dto);

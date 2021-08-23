@@ -3,6 +3,7 @@ package com.kedacom.device.core.service;
 import com.kedacom.BaseResult;
 import com.kedacom.mp.mcu.McuRequestDTO;
 import com.kedacom.mp.mcu.request.*;
+import com.kedacom.mp.mcu.response.*;
 
 /**
  * @author hxj
@@ -11,25 +12,25 @@ import com.kedacom.mp.mcu.request.*;
  */
 public interface McuService {
 
-    BaseResult login(McuRequestDTO dto);
+    BaseResult<McuLoginVO> login(McuRequestDTO dto);
 
     BaseResult logout(McuRequestDTO dto);
 
     BaseResult account(McuAccountDTO dto);
 
-    BaseResult confs(McuConfsDTO dto);
+    BaseResult<McuConfsVO> confs(McuConfsDTO dto);
 
-    BaseResult templates(McuTemplatesDTO dto);
+    BaseResult<McuConfsVO> templates(McuTemplatesDTO dto);
 
-    BaseResult confinfo(McuConfInfoDTO dto);
+    BaseResult<McuConfInfoVO> confinfo(McuConfInfoDTO dto);
 
-    BaseResult conf(McuConfDTO dto);
+    BaseResult<McuConfVO> conf(McuConfDTO dto);
 
     BaseResult confTemplate(McuConfTemplateDTO dto);
 
-    BaseResult mtMembers(McuMtMembersDTO dto);
+    BaseResult<McuMtmembersVO> mtMembers(McuMtMembersDTO dto);
 
-    BaseResult mt(McuMtDTO dto);
+    BaseResult<McuMtVO> mt(McuMtDTO dto);
 
     BaseResult mtCall(McuMtCallDTO dto);
 
@@ -49,11 +50,11 @@ public interface McuService {
 
     BaseResult audioMix(McuAudioMixDTO dto);
 
-    BaseResult audioMixMember(McuAudioMixMemberDTO dto);
+    BaseResult<McuAudioMixMemberVO> audioMixMember(McuAudioMixMemberDTO dto);
 
     BaseResult rec(McuRecDTO dto);
 
-    BaseResult tvWalls(McuRequestDTO dto);
+    BaseResult<McuTvWallsVO> tvWalls(McuRequestDTO dto);
 
     BaseResult tvwall(McuTvWallDTO dto);
 

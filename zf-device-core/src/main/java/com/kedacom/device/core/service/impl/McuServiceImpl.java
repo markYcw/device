@@ -69,7 +69,7 @@ public class McuServiceImpl implements McuService {
     private final static String NOTIFY_URL = "/api/api-device/ums/umsMcu/mcuNotify";
 
     @Override
-    public BaseResult login(McuRequestDTO dto) {
+    public BaseResult<McuLoginVO> login(McuRequestDTO dto) {
         log.info("mcu登录平台入参信息:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
@@ -143,7 +143,7 @@ public class McuServiceImpl implements McuService {
     }
 
     @Override
-    public BaseResult confs(McuConfsDTO dto) {
+    public BaseResult<McuConfsVO> confs(McuConfsDTO dto) {
         log.info("mcu获取会议列表:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
@@ -163,7 +163,7 @@ public class McuServiceImpl implements McuService {
     }
 
     @Override
-    public BaseResult templates(McuTemplatesDTO dto) {
+    public BaseResult<McuConfsVO> templates(McuTemplatesDTO dto) {
         log.info("mcu获取会议模板列表:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
@@ -183,7 +183,7 @@ public class McuServiceImpl implements McuService {
     }
 
     @Override
-    public BaseResult confinfo(McuConfInfoDTO dto) {
+    public BaseResult<McuConfInfoVO> confinfo(McuConfInfoDTO dto) {
         log.info("mcu获取会议信息:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
@@ -203,7 +203,7 @@ public class McuServiceImpl implements McuService {
     }
 
     @Override
-    public BaseResult conf(McuConfDTO dto) {
+    public BaseResult<McuConfVO> conf(McuConfDTO dto) {
         log.info("mcu创建/删除会议:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
@@ -242,7 +242,7 @@ public class McuServiceImpl implements McuService {
     }
 
     @Override
-    public BaseResult mtMembers(McuMtMembersDTO dto) {
+    public BaseResult<McuMtmembersVO> mtMembers(McuMtMembersDTO dto) {
         log.info("mcu获取与会成员:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
@@ -263,7 +263,7 @@ public class McuServiceImpl implements McuService {
     }
 
     @Override
-    public BaseResult mt(McuMtDTO dto) {
+    public BaseResult<McuMtVO> mt(McuMtDTO dto) {
         log.info("mcu添加/删除终端:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
@@ -456,7 +456,7 @@ public class McuServiceImpl implements McuService {
     }
 
     @Override
-    public BaseResult audioMixMember(McuAudioMixMemberDTO dto) {
+    public BaseResult<McuAudioMixMemberVO> audioMixMember(McuAudioMixMemberDTO dto) {
         log.info("mcu添加/删除混音成员:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
@@ -476,7 +476,7 @@ public class McuServiceImpl implements McuService {
     }
 
     @Override
-    public BaseResult rec(McuRecDTO dto) {
+    public BaseResult<McuRecVO> rec(McuRecDTO dto) {
         log.info("mcu开始/暂停/恢复/停止录像:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
@@ -497,7 +497,7 @@ public class McuServiceImpl implements McuService {
     }
 
     @Override
-    public BaseResult tvWalls(McuRequestDTO dto) {
+    public BaseResult<McuTvWallsVO> tvWalls(McuRequestDTO dto) {
         log.info("mcu获取电视墙列表:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());

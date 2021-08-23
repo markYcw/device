@@ -34,7 +34,7 @@ public class UmsMcuEntity implements Serializable {
     /**
      * 会议平台名称
      */
-    @ApiModelProperty(value = "会议平台名称", required = true)
+    @ApiModelProperty(value = "自定义此会议平台名称", required = true)
     private String name;
     /**
      * 会议平台IP
@@ -74,12 +74,12 @@ public class UmsMcuEntity implements Serializable {
     /**
      * 会议平台版本
      */
-    @ApiModelProperty(value = "会议平台版本", required = true)
+    @ApiModelProperty(value = "会议平台版本:1、mcu4.7;2、mcu5.0", required = true)
     private Integer mcuType;
     /**
      * 会议平台版本名称
      */
-    @ApiModelProperty(value = "会议平台版本名称", required = true)
+    @ApiModelProperty(value = "会议平台版本名称,例如mcu5.0", required = true)
     private String mcuVersion;
     /**
      * 创建时间

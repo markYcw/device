@@ -10,7 +10,7 @@ public enum DeviceTypeEnum {
     // 会议平台4.7 mcu4.7
     MCUFOURSEVEN(1),
     // 会议平台5.0 mcu5.0
-    MCUFIVE(2);
+    MCUFIVE(4);
 
     private Integer code;
 

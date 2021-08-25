@@ -27,12 +27,14 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
     @Value("${zf.kmProxy.server_addr}")
     private String kmProxy;
 
-    private final static String OLD_PORT = "45670";
+    private final static String DEVICE_PORT = "45670";
+
+    private final static String MCU_PORT = "13000";
 
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
         factory.setMap();
-        if (kmProxy.contains(OLD_PORT)) {
+        if (kmProxy.contains(DEVICE_PORT)) {
             ConnectorListenerManager.getInstance().register(connectorListener);
         }
     }

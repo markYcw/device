@@ -64,23 +64,27 @@ public class UmsMcuEntity implements Serializable {
      */
     @ApiModelProperty(value = "获取token使用", required = true)
     @NotBlank(message = "key不能为空")
-    private String mcuKey;
+    @TableField(value = "mcu_key")
+    private String sdkkey;
     /**
      * 获取token使用
      */
     @ApiModelProperty(value = "获取token使用", required = true)
     @NotBlank(message = "secret不能为空")
-    private String secret;
+    @TableField(value = "secret")
+    private String sdksecret;
     /**
      * 会议平台版本
      */
-    @ApiModelProperty(value = "会议平台版本:1、mcu4.7;2、mcu5.0", required = true)
-    private Integer mcuType;
+    @ApiModelProperty(value = "会议平台版本:1、mcu4.7;4、mcu5.0", example = "1、mcu4.7;4、mcu5.0", required = true)
+    @TableField(value = "mcu_type")
+    private Integer devtype;
     /**
      * 会议平台版本名称
      */
-    @ApiModelProperty(value = "会议平台版本名称,例如mcu5.0", required = true)
-    private String mcuVersion;
+    @ApiModelProperty(value = "会议平台版本名称:5.0平台、4.7平台等", example = "例如: 5.0平台", required = true)
+    @TableField(value = "mcu_version")
+    private String mcuname;
     /**
      * 创建时间
      */

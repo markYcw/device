@@ -79,7 +79,7 @@ public class McuServiceImpl implements McuService {
         McuLoginRequest request = convert.login(entity);
         String ntyUrl = REQUEST_HEAD + mcuNtyUrl + NOTIFY_URL;
         request.setNtyUrl(ntyUrl);
-        String url = factory.geturl(entity.getMcuType());
+        String url = factory.geturl(entity.getDevtype());
         Map<String, Long> paramMap = new HashMap<>();
         paramMap.put("ssno", System.currentTimeMillis());
 

@@ -23,7 +23,7 @@ public class McuBasicTool {
     public McuBasicParam getParam(UmsMcuEntity entity) {
         McuBasicParam param = new McuBasicParam();
 
-        String url = factory.geturl(entity.getMcuType());
+        String url = factory.geturl(entity.getDevtype());
         Map<String, Long> paramMap = new HashMap<>();
         paramMap.put("ssid", Long.valueOf(entity.getSsid()));
 //        paramMap.put("ssno", System.currentTimeMillis());

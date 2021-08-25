@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 开始/暂停/恢复/停止录像响应
  */
 @Data
-@ApiModel(value = "开始/暂停/恢复/停止录像响应")
+@ApiModel(description =  "开始/暂停/恢复/停止录像响应")
 public class McuRecVO implements Serializable {
 
     @ApiModelProperty(value = "录像机id，开始成功时返回")

@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/4/30 14:11
  */
 @Data
-@ApiModel("开始画面合成应答")
+@ApiModel(description = "开始画面合成应答")
 public class StartVideoMixResponseVO implements Serializable {
 
     @ApiModelProperty("画面合成设备分组id")

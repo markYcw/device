@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/6 14:39
  */
 @Data
-@ApiModel("大屏-窗口信息")
+@ApiModel(description = "大屏-窗口信息")
 public class TvWallWndInfo implements Serializable {
 
     @ApiModelProperty(value = "窗口索引 - 从1开始，从上到下，从左到右排布")

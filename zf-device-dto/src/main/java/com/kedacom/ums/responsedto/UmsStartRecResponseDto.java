@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "开启录像响应参数类")
+@ApiModel(description =  "开启录像响应参数类")
 public class UmsStartRecResponseDto implements Serializable {
 
     @ApiModelProperty(value = "成员设备Id")

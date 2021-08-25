@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Date: 2021/4/29 18:45
  */
 @Data
-@ApiModel("开启录像业务交互参数")
+@ApiModel(description = "开启录像业务交互参数")
 public class StartRecRequestDTO implements Serializable {
 
     @ApiModelProperty("登录token")

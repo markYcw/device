@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Date: 2021/7/19 14:51
  */
 @Data
-@ApiModel(value = "开始拉取实时网络媒体流入参")
+@ApiModel(description =  "开始拉取实时网络媒体流入参")
 public class StartPullUrlDTO implements Serializable {
 
     @NotBlank(message = "平台id不能为空")

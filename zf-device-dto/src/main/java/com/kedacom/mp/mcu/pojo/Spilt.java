@@ -13,7 +13,7 @@ import java.util.List;
  * @description 四分屏
  */
 @Data
-@ApiModel(value = "四分屏")
+@ApiModel(description =  "四分屏")
 public class Spilt implements Serializable {
 
     @ApiModelProperty(value = "分屏成员")

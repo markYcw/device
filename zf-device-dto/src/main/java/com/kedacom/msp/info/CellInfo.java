@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/6 14:28
  */
 @Data
-@ApiModel("大屏布局坐标")
+@ApiModel(description = "大屏布局坐标")
 public class CellInfo implements Serializable {
 
     @ApiModelProperty(value = "窗口起始X坐标")

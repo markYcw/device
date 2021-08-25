@@ -10,7 +10,7 @@ import lombok.ToString;
  * @Date: 2021/7/19 15:13
  */
 @Data
-@ApiModel("停止拉取媒体流应答")
+@ApiModel(description = "停止拉取媒体流应答")
 @ToString(callSuper = true)
 public class StopPullUrlResponse extends BaseResponse {
 }

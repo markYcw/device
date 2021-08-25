@@ -16,7 +16,7 @@ import java.util.List;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "查询合成画面响应参数类")
+@ApiModel(description =  "查询合成画面响应参数类")
 public class UmsScheduleGroupQueryVmpMixResponseDto implements Serializable {
 
     @ApiModelProperty(value = "画面合成资源ID")

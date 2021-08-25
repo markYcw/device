@@ -16,7 +16,7 @@ import java.util.Date;
  * @date 2021/5/10
  */
 @Data
-@ApiModel(value = "查询统一设备响应参数类")
+@ApiModel(description =  "查询统一设备响应参数类")
 public class UmsDeviceInfoSelectResponseDto implements Serializable {
 
     @ApiModelProperty(value = "设备id")

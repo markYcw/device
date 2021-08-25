@@ -15,7 +15,7 @@ import java.util.List;
  * @Date: 2021/5/8 18:20
  */
 @Data
-@ApiModel("录入大屏列表入参")
+@ApiModel(description = "录入大屏列表入参")
 public class VirtualTvWallRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")

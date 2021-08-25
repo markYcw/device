@@ -14,7 +14,7 @@ import java.util.List;
  * @Date: 2021/4/30 13:55
  */
 @Data
-@ApiModel("查询混音信息入参")
+@ApiModel(description = "查询混音信息入参")
 public class QueryAudioMixDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

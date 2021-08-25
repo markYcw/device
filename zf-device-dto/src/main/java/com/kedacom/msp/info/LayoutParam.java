@@ -12,7 +12,7 @@ import java.util.List;
  * @Date: 2021/5/6 15:52
  */
 @Data
-@ApiModel("设置预案布局入参-窗口数组")
+@ApiModel(description = "设置预案布局入参-窗口数组")
 public class LayoutParam implements Serializable {
 
 

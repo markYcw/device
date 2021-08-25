@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @description 创建/删除会议向中间件请求参数
  */
 @Data
-@ApiModel(value = "创建/删除会议向中间件请求参数")
+@ApiModel(description =  "创建/删除会议向中间件请求参数")
 public class McuConfRequest implements Serializable {
 
     @ApiModelProperty(value = "0：创建即时会议;1：创建会议模板;2：结束即时会议;3：删除会议模板")

@@ -12,7 +12,7 @@ import java.util.List;
  * @Date: 2021/5/8 17:55
  */
 @Data
-@ApiModel(value = "获取解码通道风格信息应答")
+@ApiModel(description =  "获取解码通道风格信息应答")
 public class StyleQueryVO implements Serializable {
 
     @ApiModelProperty(value = "解码通道风格信息")

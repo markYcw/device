@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 添加/删除终端响应
  */
 @Data
-@ApiModel(value = "添加/删除终端响应")
+@ApiModel(description =  "添加/删除终端响应")
 public class McuMtVO implements Serializable {
 
     @ApiModelProperty(value = "终端ID")

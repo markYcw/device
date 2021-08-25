@@ -15,7 +15,7 @@ import java.util.List;
  * @description 合成画面保活入参
  */
 @Data
-@ApiModel(value = "合成画面保活入参")
+@ApiModel(description =  "合成画面保活入参")
 public class VideoMixKeepAliveDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

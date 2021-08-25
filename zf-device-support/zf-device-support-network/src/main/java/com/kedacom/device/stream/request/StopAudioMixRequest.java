@@ -15,7 +15,7 @@ import java.util.List;
  */
 @ToString(callSuper = true)
 @Data
-@ApiModel("停止音频混音业务交互参数")
+@ApiModel(description = "停止音频混音业务交互参数")
 public class StopAudioMixRequest extends BaseRequest {
 
     private static final String COMMAND = "stopaudiomix";

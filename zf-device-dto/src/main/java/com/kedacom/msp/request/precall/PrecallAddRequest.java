@@ -13,7 +13,7 @@ import java.util.List;
  * @Date: 2021/5/8 15:32
  */
 @Data
-@ApiModel("新建预加载任务入参")
+@ApiModel(description = "新建预加载任务入参")
 public class PrecallAddRequest implements Serializable {
 
     @NotEmpty

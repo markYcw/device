@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @Date: 2021/7/19 14:16
  */
 @Data
-@ApiModel(value = "停止推送媒体流入参")
+@ApiModel(description =  "停止推送媒体流入参")
 public class StopPushUrlDTO implements Serializable {
 
     @NotBlank(message = "平台id不能为空")

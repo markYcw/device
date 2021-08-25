@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "加入讨论组成员信息(DeviceID为设备国标id-DeviceType不填)")
+@ApiModel(description =  "加入讨论组成员信息(DeviceID为设备国标id-DeviceType不填)")
 public class UmsScheduleGroupDiscussionGroupMembersRequestDto implements Serializable {
 
     @NotBlank(message = "成员设备类型不能为空")

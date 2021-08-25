@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @Date: 2021/6/9 10:12
  */
 @Data
-@ApiModel(value = "发送宏指令数据")
+@ApiModel(description =  "发送宏指令数据")
 public class SendOrderDataDTO implements Serializable {
 
     @NotBlank(message = "平台id不能为空")

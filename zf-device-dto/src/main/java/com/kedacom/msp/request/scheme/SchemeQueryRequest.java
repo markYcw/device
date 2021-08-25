@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @Date: 2021/5/6 16:02
  */
 @Data
-@ApiModel("查询预案布局入参")
+@ApiModel(description = "查询预案布局入参")
 public class SchemeQueryRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")

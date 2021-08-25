@@ -15,7 +15,7 @@ import java.util.List;
  * @Date: 2021/5/8 17:59
  */
 @Data
-@ApiModel("设置矩阵切换入参")
+@ApiModel(description = "设置矩阵切换入参")
 public class MatrixConfigRequest implements Serializable {
 
     @NotEmpty(message = "token令牌不能为空")

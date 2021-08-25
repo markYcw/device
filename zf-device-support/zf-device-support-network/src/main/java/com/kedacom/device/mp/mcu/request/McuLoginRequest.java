@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @Description 会议平台登录向中间件请求参数
  */
 @Data
-@ApiModel(value = "会议平台登录向中间件请求参数")
+@ApiModel(description =  "会议平台登录向中间件请求参数")
 public class McuLoginRequest implements Serializable {
 
     /**

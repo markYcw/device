@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Date: 2021/4/30 09:38
  */
 @Data
-@ApiModel("混音成员资源")
+@ApiModel(description = "混音成员资源")
 public class AudioMixer implements Serializable {
 
     @NotBlank(message = "参与混音方终端ID不能为空")

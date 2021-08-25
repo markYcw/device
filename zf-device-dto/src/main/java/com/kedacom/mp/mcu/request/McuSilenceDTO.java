@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
  * @description 静音入参
  */
 @Data
-@ApiModel(value = "静音入参")
+@ApiModel(description =  "静音入参")
 public class McuSilenceDTO extends McuRequestDTO {
 
     @NotNull(message = "类型不能为空")

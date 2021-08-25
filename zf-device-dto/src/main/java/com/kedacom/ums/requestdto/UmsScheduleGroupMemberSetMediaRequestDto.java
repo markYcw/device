@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "设置调度组成员媒体源信息请求参数类")
+@ApiModel(description =  "设置调度组成员媒体源信息请求参数类")
 public class UmsScheduleGroupMemberSetMediaRequestDto implements Serializable {
 
     @ApiModelProperty(value = "调度组成员设备类型")

@@ -13,7 +13,7 @@ import java.util.List;
  * @description 轮询信息
  */
 @Data
-@ApiModel(value = "轮询信息")
+@ApiModel(description =  "轮询信息")
 public class Poll implements Serializable {
 
     @ApiModelProperty(value = "轮询次数")

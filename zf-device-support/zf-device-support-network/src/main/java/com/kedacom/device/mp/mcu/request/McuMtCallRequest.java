@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 呼叫/挂断终端向中间件请求参数
  */
 @Data
-@ApiModel(value = "呼叫/挂断终端向中间件请求参数")
+@ApiModel(description =  "呼叫/挂断终端向中间件请求参数")
 public class McuMtCallRequest implements Serializable {
 
     @ApiModelProperty(value = "0：呼叫，1：挂断")

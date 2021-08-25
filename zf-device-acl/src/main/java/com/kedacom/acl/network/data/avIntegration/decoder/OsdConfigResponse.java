@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/8 17:49
  */
 @Data
-@ApiModel(value = "配置解码通道字幕信息应答")
+@ApiModel(description =  "配置解码通道字幕信息应答")
 public class OsdConfigResponse implements Serializable {
 
     @ApiModelProperty("响应状态码 成功0 失败4")

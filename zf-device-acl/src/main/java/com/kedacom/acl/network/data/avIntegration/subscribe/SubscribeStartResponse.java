@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/8 10:23
  */
 @Data
-@ApiModel("订阅应答")
+@ApiModel(description = "订阅应答")
 public class SubscribeStartResponse implements Serializable {
 
     @ApiModelProperty("响应状态码")

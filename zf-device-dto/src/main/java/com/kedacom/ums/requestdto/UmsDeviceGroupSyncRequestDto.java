@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
  * @Date: 2021/7/13 09:59
  */
 @Data
-@ApiModel(value = "通知同步设备列表")
+@ApiModel(description =  "通知同步设备列表")
 public class UmsDeviceGroupSyncRequestDto {
 
     @NotNull(message = "统一平台Id")

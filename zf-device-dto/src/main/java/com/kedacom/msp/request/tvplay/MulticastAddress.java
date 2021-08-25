@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Date: 2021/5/6 19:38
  */
 @Data
-@ApiModel("组播地址信息")
+@ApiModel(description = "组播地址信息")
 @NoArgsConstructor
 public class MulticastAddress implements Serializable {
 

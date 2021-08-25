@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 电视墙
  */
 @Data
-@ApiModel(value = "电视墙")
+@ApiModel(description =  "电视墙")
 public class TvWall implements Serializable {
 
     @ApiModelProperty(value = "电视墙id")

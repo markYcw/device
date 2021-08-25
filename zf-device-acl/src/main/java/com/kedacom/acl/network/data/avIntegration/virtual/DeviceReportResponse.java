@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/8 18:17
  */
 @Data
-@ApiModel("拼控器通道推送应答")
+@ApiModel(description = "拼控器通道推送应答")
 public class DeviceReportResponse implements Serializable {
 
     @ApiModelProperty("响应状态码 成功0 失败4")

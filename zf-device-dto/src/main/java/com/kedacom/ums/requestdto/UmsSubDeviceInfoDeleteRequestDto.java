@@ -13,7 +13,7 @@ import java.util.List;
  * @date 2021/5/11
  */
 @Data
-@ApiModel(value = "删除统一平台下的子设备")
+@ApiModel(description =  "删除统一平台下的子设备")
 public class UmsSubDeviceInfoDeleteRequestDto implements Serializable {
 
     @ApiModelProperty(value = "设备id集合")

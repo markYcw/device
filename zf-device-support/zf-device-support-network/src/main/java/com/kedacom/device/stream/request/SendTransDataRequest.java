@@ -13,7 +13,7 @@ import lombok.ToString;
  */
 @ToString(callSuper = true)
 @Data
-@ApiModel("发送透明通道数据交互参数")
+@ApiModel(description = "发送透明通道数据交互参数")
 public class SendTransDataRequest extends BaseRequest {
 
     private static final String COMMAND = "sendtransdata";

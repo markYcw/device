@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/5/11
  */
 @Data
-@ApiModel(value = "根据当前分组ID查询子分组集合响应参数类")
+@ApiModel(description =  "根据当前分组ID查询子分组集合响应参数类")
 public class SelectChildUmsGroupResponseDto implements Serializable {
 
     @ApiModelProperty(value = "分组Id")

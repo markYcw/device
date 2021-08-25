@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 通道信息
  */
 @Data
-@ApiModel(value = "通道信息")
+@ApiModel(description =  "通道信息")
 public class Chns implements Serializable {
 
     @ApiModelProperty(value = "电视墙模式：1-选看；2-四分屏(仅传统会议有效)；3-单通道轮询；")

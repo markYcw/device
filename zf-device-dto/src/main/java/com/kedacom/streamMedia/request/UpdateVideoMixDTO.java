@@ -15,7 +15,7 @@ import java.util.List;
  * @Date: 2021/4/30 14:32
  */
 @Data
-@ApiModel("更新画面合成入参")
+@ApiModel(description = "更新画面合成入参")
 public class UpdateVideoMixDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

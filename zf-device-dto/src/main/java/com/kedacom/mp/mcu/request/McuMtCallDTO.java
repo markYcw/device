@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
  * @description 呼叫/挂断终端入参
  */
 @Data
-@ApiModel(value = "呼叫/挂断终端入参")
+@ApiModel(description =  "呼叫/挂断终端入参")
 public class McuMtCallDTO extends McuRequestDTO {
 
     @NotNull(message = "类型不能为空")

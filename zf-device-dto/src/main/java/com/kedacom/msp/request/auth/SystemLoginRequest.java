@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Date: 2021/5/6 09:29
  */
 @Data
-@ApiModel("鉴权登录入参")
+@ApiModel(description = "鉴权登录入参")
 public class SystemLoginRequest implements Serializable {
 
     @NotBlank(message = "统一平台id不能为空")

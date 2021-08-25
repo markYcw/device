@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author hxj
  * @date: 2021/8/19 13:34
- * @description TODO
+ * @description mcu错误码
  */
 @Component
 public class McuErrCode {

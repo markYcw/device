@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Date: 2021/4/30 13:51
  */
 @Data
-@ApiModel("查询所有混音入参")
+@ApiModel(description = "查询所有混音入参")
 public class QueryAllAudioMixDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

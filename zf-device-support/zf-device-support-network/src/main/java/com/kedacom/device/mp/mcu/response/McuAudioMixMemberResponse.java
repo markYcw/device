@@ -14,7 +14,7 @@ import java.util.List;
  * @description mcu添加/删除混音成员中间件响应
  */
 @Data
-@ApiModel(value = "mcu添加/删除混音成员中间件响应")
+@ApiModel(description =  "mcu添加/删除混音成员中间件响应")
 public class McuAudioMixMemberResponse extends MpResponse {
 
     @ApiModelProperty(value = "终端")

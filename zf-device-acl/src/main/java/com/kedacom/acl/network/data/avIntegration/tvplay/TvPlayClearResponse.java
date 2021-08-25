@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/6 19:46
  */
 @Data
-@ApiModel("清空窗口显示应答")
+@ApiModel(description = "清空窗口显示应答")
 public class TvPlayClearResponse implements Serializable {
 
     @ApiModelProperty("响应状态码 成功0 失败4")

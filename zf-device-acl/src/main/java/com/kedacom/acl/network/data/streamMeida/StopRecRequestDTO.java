@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/4/29 19:34
  */
 @Data
-@ApiModel("停止录像业务交互参数")
+@ApiModel(description = "停止录像业务交互参数")
 public class StopRecRequestDTO implements Serializable {
 
     @ApiModelProperty("登录token")

@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "取消调度组广播源请求参数类")
+@ApiModel(description =  "取消调度组广播源请求参数类")
 public class UmsScheduleGroupCancelBroadcastRequestDto implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
  */
 @ToString(callSuper = true)
 @Data
-@ApiModel("查询录像记录业务交互参数")
+@ApiModel(description = "查询录像记录业务交互参数")
 public class QueryRecRequest extends BaseRequest {
 
     private static final String COMMAND = "queryrec";

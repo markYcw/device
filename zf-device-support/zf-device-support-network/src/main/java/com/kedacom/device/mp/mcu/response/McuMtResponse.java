@@ -11,7 +11,7 @@ import lombok.Data;
  * @description 添加/删除终端中间件响应
  */
 @Data
-@ApiModel(value = "添加/删除终端中间件响应")
+@ApiModel(description =  "添加/删除终端中间件响应")
 public class McuMtResponse extends MpResponse {
 
     @ApiModelProperty(value = "终端ID")

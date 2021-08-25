@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/6 10:13
  */
 @Data
-@ApiModel("鉴权获取版本应答")
+@ApiModel(description = "鉴权获取版本应答")
 public class SystemVersionResponse implements Serializable {
 
     @ApiModelProperty("响应状态码 成功0 失败4")

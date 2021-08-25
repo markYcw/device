@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @description 开始/暂停/恢复/停止录像向中间件请求参数
  */
 @Data
-@ApiModel(value = "开始/暂停/恢复/停止录像向中间件请求参数")
+@ApiModel(description =  "开始/暂停/恢复/停止录像向中间件请求参数")
 public class McuRecRequest implements Serializable {
 
     @ApiModelProperty(value = "0：开始，1：暂停，2：恢复，3：停止", required = true)

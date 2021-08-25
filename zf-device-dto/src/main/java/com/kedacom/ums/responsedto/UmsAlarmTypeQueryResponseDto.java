@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/5/11
  */
 @Data
-@ApiModel(value = "查询告警类型信息响应参数类")
+@ApiModel(description =  "查询告警类型信息响应参数类")
 public class UmsAlarmTypeQueryResponseDto implements Serializable {
 
     @ApiModelProperty(value = "报警类型标识")

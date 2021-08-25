@@ -13,7 +13,7 @@ import java.util.List;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "查询录像列表请求参数类")
+@ApiModel(description =  "查询录像列表请求参数类")
 public class UmsQueryRecListResponseDto implements Serializable {
 
     @ApiModelProperty(value = "录像文件总数")

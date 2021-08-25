@@ -13,7 +13,7 @@ import java.util.List;
  * @date 2021/5/11
  */
 @Data
-@ApiModel(value = "根据设备数据库的id查询统一平台下挂载的子设备信息")
+@ApiModel(description =  "根据设备数据库的id查询统一平台下挂载的子设备信息")
 public class UmsSubDeviceInfoQueryByIdsRequestDto implements Serializable {
 
     @ApiModelProperty(value = "设备id集合")

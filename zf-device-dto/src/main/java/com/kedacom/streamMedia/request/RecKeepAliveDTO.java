@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @description 录像任务保活入参
  */
 @Data
-@ApiModel("录像任务保活入参")
+@ApiModel(description = "录像任务保活入参")
 public class RecKeepAliveDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

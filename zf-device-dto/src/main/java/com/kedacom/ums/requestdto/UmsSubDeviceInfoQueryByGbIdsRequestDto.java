@@ -13,7 +13,7 @@ import java.util.List;
  * @date 2021/5/11
  */
 @Data
-@ApiModel(value = "根据国标id查询子设备信息请求参数类")
+@ApiModel(description =  "根据国标id查询子设备信息请求参数类")
 public class UmsSubDeviceInfoQueryByGbIdsRequestDto implements Serializable {
 
     @ApiModelProperty(value = "国标id")

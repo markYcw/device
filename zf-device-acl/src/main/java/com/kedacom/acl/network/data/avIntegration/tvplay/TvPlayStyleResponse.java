@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/8 09:55
  */
 @Data
-@ApiModel("设置窗口风格应答")
+@ApiModel(description = "设置窗口风格应答")
 public class TvPlayStyleResponse implements Serializable {
 
     @ApiModelProperty("响应状态码 成功0 失败4")

@@ -16,7 +16,7 @@ import java.util.List;
  * @description 发送短消息入参
  */
 @Data
-@ApiModel(value = "发送短消息入参")
+@ApiModel(description =  "发送短消息入参")
 public class McuMessageDTO extends McuRequestDTO {
 
     @NotBlank(message = "会议号码不能为空")

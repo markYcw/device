@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/8 11:04
  */
 @Data
-@ApiModel("停止订阅应答")
+@ApiModel(description = "停止订阅应答")
 public class SubscribeStopResponse implements Serializable {
 
     @ApiModelProperty("响应状态码")

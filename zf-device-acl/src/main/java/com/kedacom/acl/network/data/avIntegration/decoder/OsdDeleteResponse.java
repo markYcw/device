@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/8 17:52
  */
 @Data
-@ApiModel(value = "删除解码通道字幕信息应答")
+@ApiModel(description =  "删除解码通道字幕信息应答")
 public class OsdDeleteResponse implements Serializable {
 
 

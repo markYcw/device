@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Date: 2021/5/8 18:06
  */
 @Data
-@ApiModel("查询矩阵切换入参")
+@ApiModel(description = "查询矩阵切换入参")
 public class MatrixSwitchRequest implements Serializable {
 
     @NotEmpty(message = "token令牌不能为空")

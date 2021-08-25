@@ -11,7 +11,7 @@ import lombok.Data;
  * @description 创建/删除会议中间件响应
  */
 @Data
-@ApiModel(value = "创建/删除会议中间件响应")
+@ApiModel(description =  "创建/删除会议中间件响应")
 public class McuConfResponse extends MpResponse {
 
     @ApiModelProperty(value = "会议号码，创建时返回")

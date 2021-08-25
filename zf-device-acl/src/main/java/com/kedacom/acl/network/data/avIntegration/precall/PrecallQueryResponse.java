@@ -13,7 +13,7 @@ import java.util.List;
  * @Date: 2021/5/8 15:18
  */
 @Data
-@ApiModel("获取预加载任务详细信息入参")
+@ApiModel(description = "获取预加载任务详细信息入参")
 public class PrecallQueryResponse implements Serializable {
 
     @ApiModelProperty("响应状态码 成功0 失败-1")

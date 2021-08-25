@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 选看参数
  */
 @Data
-@ApiModel(value = "选看参数")
+@ApiModel(description =  "选看参数")
 public class Specific implements Serializable {
 
     @ApiModelProperty(value = "选看类型\n" +

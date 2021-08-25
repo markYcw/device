@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
  * @description 终端双流控制入参
  */
 @Data
-@ApiModel(value = "终端双流控制入参")
+@ApiModel(description =  "终端双流控制入参")
 public class McuDualDTO extends McuRequestDTO {
 
     @NotNull(message = "类型不能为空")

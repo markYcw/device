@@ -14,7 +14,7 @@ import java.util.List;
  * @description 获取电视墙列表入参
  */
 @Data
-@ApiModel(value = "获取电视墙列表响应")
+@ApiModel(description =  "获取电视墙列表响应")
 public class McuTvWallsVO implements Serializable {
 
     @ApiModelProperty(value = "电视墙列表")

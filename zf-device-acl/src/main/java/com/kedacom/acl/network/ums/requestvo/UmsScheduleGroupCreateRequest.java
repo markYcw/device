@@ -14,7 +14,7 @@ import java.util.List;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "创建调度组交互参数类")
+@ApiModel(description =  "创建调度组交互参数类")
 public class UmsScheduleGroupCreateRequest implements Serializable {
 
     @ApiModelProperty("调度组成员列表")

@@ -7,7 +7,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-@ApiModel(value = "窗口信息")
+@ApiModel(description =  "窗口信息")
 public class Winds implements Serializable {
 
     @ApiModelProperty(value = "窗口ID")

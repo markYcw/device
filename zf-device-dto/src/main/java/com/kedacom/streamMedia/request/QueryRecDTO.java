@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Date: 2021/4/29 19:44
  */
 @Data
-@ApiModel("查询录像记录入参")
+@ApiModel(description = "查询录像记录入参")
 public class QueryRecDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

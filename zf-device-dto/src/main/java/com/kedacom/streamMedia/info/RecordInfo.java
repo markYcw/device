@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/4/30 09:20
  */
 @Data
-@ApiModel("录像信息")
+@ApiModel(description = "录像信息")
 public class RecordInfo implements Serializable {
 
     @ApiModelProperty("本段录像的开始时间，日期格式为:YYYY-MM-DDThh:mm:ss，如：2020-10-01T00:00:00")

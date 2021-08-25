@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "停止画面合成请求参数类")
+@ApiModel(description =  "停止画面合成请求参数类")
 public class UmsScheduleGroupStopVmpMixRequestDto implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

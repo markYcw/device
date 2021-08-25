@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 录像终端数组
  */
 @Data
-@ApiModel(value = "录像终端")
+@ApiModel(description =  "录像终端")
 public class RecMember implements Serializable {
 
     @ApiModelProperty(value = "终端ip或者e164")

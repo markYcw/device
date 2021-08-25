@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/6 16:00
  */
 @Data
-@ApiModel("查询预案布局应答-窗口布局参数")
+@ApiModel(description = "查询预案布局应答-窗口布局参数")
 public class LayoutInfo implements Serializable {
 
     @ApiModelProperty(value = "窗口ID - 只读")

@@ -13,7 +13,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(callSuper = true)
-@ApiModel(value = "会议平台登录中间件返回")
+@ApiModel(description =  "会议平台登录中间件返回")
 public class McuLoginResponse extends MpResponse {
 
     @ApiModelProperty(value = "登录成功后会话id")

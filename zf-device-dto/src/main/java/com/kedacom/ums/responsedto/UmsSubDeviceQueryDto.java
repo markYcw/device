@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/5/11
  */
 @Data
-@ApiModel(value = "查询子设备部分信息响应参数类")
+@ApiModel(description =  "查询子设备部分信息响应参数类")
 public class UmsSubDeviceQueryDto implements Serializable {
 
     @ApiModelProperty(value = "设备id")

@@ -14,7 +14,7 @@ import java.util.List;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "分页查询统一平台下子设备信息请求参数类")
+@ApiModel(description =  "分页查询统一平台下子设备信息请求参数类")
 public class UmsSubDeviceInfoQueryRequestDto extends BasePage implements Serializable {
 
     @ApiModelProperty(value = "统一设备Id")

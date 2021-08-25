@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/5/13
  */
 @Data
-@ApiModel(value = "DeviceID为设备国标id")
+@ApiModel(description =  "DeviceID为设备国标id")
 public class QueryMediaResponseDto implements Serializable {
 
     @ApiModelProperty(value = "设备类型")

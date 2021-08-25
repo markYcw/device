@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/8 17:57
  */
 @Data
-@ApiModel(value = "设置解码通道风格信息应答")
+@ApiModel(description =  "设置解码通道风格信息应答")
 public class StyleConfigResponse implements Serializable {
 
 

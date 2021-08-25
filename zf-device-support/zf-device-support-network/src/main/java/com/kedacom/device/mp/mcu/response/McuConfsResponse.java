@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Data
 @ToString(callSuper = true)
-@ApiModel(value = "获取会议列表中间件响应")
+@ApiModel(description =  "获取会议列表中间件响应")
 public class McuConfsResponse extends MpResponse {
 
     @ApiModelProperty(value = "会议列表")

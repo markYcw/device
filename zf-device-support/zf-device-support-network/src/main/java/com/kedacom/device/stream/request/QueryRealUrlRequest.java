@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
  * @Date: 2021/5/26 14:46
  */
 @Data
-@ApiModel("查询实时资源URL请求")
+@ApiModel(description = "查询实时资源URL请求")
 @ToString(callSuper = true)
 public class QueryRealUrlRequest extends BaseRequest {
 

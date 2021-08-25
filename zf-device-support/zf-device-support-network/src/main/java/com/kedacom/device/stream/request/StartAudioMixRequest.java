@@ -16,7 +16,7 @@ import java.util.List;
  */
 @ToString(callSuper = true)
 @Data
-@ApiModel("开启音频混音业务交互参数")
+@ApiModel(description = "开启音频混音业务交互参数")
 public class StartAudioMixRequest extends BaseRequest {
 
     private static final String COMMAND = "startaudiomix";

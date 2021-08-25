@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/4/30 13:51
  */
 @Data
-@ApiModel("查询所有混音业务交互参数")
+@ApiModel(description = "查询所有混音业务交互参数")
 public class QueryAllAudioMixRequestDTO implements Serializable {
 
     @ApiModelProperty("使用32位UUID（无横线）")

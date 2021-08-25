@@ -14,7 +14,7 @@ import java.util.List;
  * @Date: 2021/5/6 19:42
  */
 @Data
-@ApiModel("关闭窗口显示入参")
+@ApiModel(description = "关闭窗口显示入参")
 public class BatchStopRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")

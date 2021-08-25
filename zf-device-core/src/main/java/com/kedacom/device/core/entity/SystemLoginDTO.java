@@ -7,7 +7,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-@ApiModel("鉴权登录入参")
+@ApiModel(description = "鉴权登录入参")
 public class SystemLoginDTO implements Serializable {
 
     /**

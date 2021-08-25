@@ -13,7 +13,7 @@ import java.util.List;
  * @description 混音信息
  */
 @Data
-@ApiModel(value = "混音信息")
+@ApiModel(description =  "混音信息")
 public class Mix implements Serializable {
 
     @ApiModelProperty(value = "混音模式:-智能混音；2-定制混音；")

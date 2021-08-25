@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 获取会议列表向中间件请求参数
  */
 @Data
-@ApiModel(value = "获取会议列表向中间件请求参数")
+@ApiModel(description =  "获取会议列表向中间件请求参数")
 public class McuConfsRequest implements Serializable {
 
     @ApiModelProperty(value = "本次开始查询索引", required = true)

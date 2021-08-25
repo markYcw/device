@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/6/18 08:58
  */
 @Data
-@ApiModel(value = "远程点设备信息")
+@ApiModel(description =  "远程点设备信息")
 public class RemDev implements Serializable {
 
     @JSONField(name = "Name")

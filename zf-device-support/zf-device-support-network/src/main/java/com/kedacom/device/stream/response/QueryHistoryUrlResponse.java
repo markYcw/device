@@ -11,7 +11,7 @@ import lombok.ToString;
  * @Date: 2021/5/26 14:50
  */
 @Data
-@ApiModel("查询历史资源URL应答")
+@ApiModel(description = "查询历史资源URL应答")
 @ToString(callSuper = true)
 public class QueryHistoryUrlResponse extends BaseResponse {
 

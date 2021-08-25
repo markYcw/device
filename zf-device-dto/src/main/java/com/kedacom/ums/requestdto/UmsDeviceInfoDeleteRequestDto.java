@@ -14,7 +14,7 @@ import java.util.List;
  * @date 2021/5/7
  */
 @Data
-@ApiModel(value = "删除统一设备信息请求参数类")
+@ApiModel(description =  "删除统一设备信息请求参数类")
 public class UmsDeviceInfoDeleteRequestDto implements Serializable {
 
     @NotEmpty(message = "UMS平台Id不能为空")

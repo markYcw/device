@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/4/29 18:45
  */
 @Data
-@ApiModel("开启录像应答")
+@ApiModel(description = "开启录像应答")
 public class StartRecResponseVO implements Serializable {
 
     @ApiModelProperty("唯一请求ID（用户自定义数据）")

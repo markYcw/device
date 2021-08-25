@@ -13,7 +13,7 @@ import lombok.ToString;
  */
 @ToString(callSuper = true)
 @Data
-@ApiModel("查询所有混音业务交互参数")
+@ApiModel(description = "查询所有混音业务交互参数")
 public class QueryAllAudioMixRequest extends BaseRequest {
 
     private static final String COMMAND = "queryallaudiomix";

@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
  * @Description 会议平台创建/删除账号入参
  */
 @Data
-@ApiModel(value = "会议平台创建/删除账号入参")
+@ApiModel(description =  "会议平台创建/删除账号入参")
 public class McuAccountDTO extends McuRequestDTO {
 
     @NotNull(message = "操作账号类型不能为空")

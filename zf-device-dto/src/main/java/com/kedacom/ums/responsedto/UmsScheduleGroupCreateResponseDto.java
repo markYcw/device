@@ -13,7 +13,7 @@ import java.util.List;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "创建调度组响应参数类")
+@ApiModel(description =  "创建调度组响应参数类")
 public class UmsScheduleGroupCreateResponseDto implements Serializable {
 
     @ApiModelProperty(value = "调度组Id")

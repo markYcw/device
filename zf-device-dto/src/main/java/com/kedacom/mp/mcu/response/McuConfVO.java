@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 创建/删除会议响应
  */
 @Data
-@ApiModel(value = "创建/删除会议响应")
+@ApiModel(description =  "创建/删除会议响应")
 public class McuConfVO implements Serializable {
 
     @ApiModelProperty(value = "会议号码，创建时返回")

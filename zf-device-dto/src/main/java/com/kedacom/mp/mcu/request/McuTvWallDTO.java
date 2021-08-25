@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
  * @description 开始/停止上电视墙入参
  */
 @Data
-@ApiModel(value = "开始/停止上电视墙入参")
+@ApiModel(description =  "开始/停止上电视墙入参")
 public class McuTvWallDTO extends McuRequestDTO {
 
     @NotNull(message = "类型不能为空")

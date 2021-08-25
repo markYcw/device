@@ -13,7 +13,7 @@ import java.util.List;
  * @Date: 2021/5/8 17:55
  */
 @Data
-@ApiModel(value = "获取解码通道风格信息应答")
+@ApiModel(description =  "获取解码通道风格信息应答")
 public class StyleQueryResponse implements Serializable {
 
     @ApiModelProperty("响应状态码 成功0 失败4")

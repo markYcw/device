@@ -14,7 +14,7 @@ import java.util.List;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "呼叫设备上线请求参数类")
+@ApiModel(description =  "呼叫设备上线请求参数类")
 public class UmsScheduleGroupSubDeviceCallUpRequestDto implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

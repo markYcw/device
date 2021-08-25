@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 混音成员
  */
 @Data
-@ApiModel(value = "混音成员")
+@ApiModel(description =  "混音成员")
 public class MixMember implements Serializable {
 
     @ApiModelProperty(value = "发言人名称 最大字符长度：128个字节")

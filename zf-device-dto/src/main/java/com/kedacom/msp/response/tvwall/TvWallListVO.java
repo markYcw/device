@@ -13,7 +13,7 @@ import java.util.List;
  * @Date: 2021/5/6 11:06
  */
 @Data
-@ApiModel("获取大屏列表返回")
+@ApiModel(description = "获取大屏列表返回")
 public class TvWallListVO implements Serializable {
 
     @ApiModelProperty(value = "窗口个数")

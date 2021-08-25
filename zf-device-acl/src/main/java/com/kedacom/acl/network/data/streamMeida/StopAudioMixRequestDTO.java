@@ -12,7 +12,7 @@ import java.util.List;
  * @Date: 2021/4/30 10:28
  */
 @Data
-@ApiModel("停止音频混音业务交互参数")
+@ApiModel(description = "停止音频混音业务交互参数")
 public class StopAudioMixRequestDTO implements Serializable {
 
     @ApiModelProperty("使用32位UUID（无横线）")

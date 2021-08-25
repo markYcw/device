@@ -13,7 +13,7 @@ import java.util.List;
  * @Date: 2021/5/6 14:27
  */
 @Data
-@ApiModel("大屏布局返回")
+@ApiModel(description = "大屏布局返回")
 public class TvWallLayoutVO implements Serializable {
 
     @ApiModelProperty(value = "大屏id")

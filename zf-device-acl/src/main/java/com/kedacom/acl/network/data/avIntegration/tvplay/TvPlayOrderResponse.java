@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/8 10:02
  */
 @Data
-@ApiModel("窗口排序应答")
+@ApiModel(description = "窗口排序应答")
 public class TvPlayOrderResponse implements Serializable {
 
     @ApiModelProperty("响应状态码 成功0 失败4")

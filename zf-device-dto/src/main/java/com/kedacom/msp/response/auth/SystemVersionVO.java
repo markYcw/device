@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/6 10:13
  */
 @Data
-@ApiModel("鉴权获取版本返回")
+@ApiModel(description = "鉴权获取版本返回")
 public class SystemVersionVO implements Serializable {
 
     @ApiModelProperty("版本")

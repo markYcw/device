@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/26 14:50
  */
 @Data
-@ApiModel("查询实时资源URL应答")
+@ApiModel(description = "查询实时资源URL应答")
 public class QueryRealUrlVO implements Serializable {
 
     @ApiModelProperty("实时资源url地址")

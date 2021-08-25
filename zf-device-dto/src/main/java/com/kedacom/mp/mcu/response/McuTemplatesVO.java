@@ -14,7 +14,7 @@ import java.util.List;
  * @description 获取会议模板列表响应
  */
 @Data
-@ApiModel(value = "获取会议模板列表响应")
+@ApiModel(description =  "获取会议模板列表响应")
 public class McuTemplatesVO implements Serializable {
 
     @ApiModelProperty(value = "结果列表")

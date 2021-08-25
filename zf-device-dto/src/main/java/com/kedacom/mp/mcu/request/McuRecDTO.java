@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
  * @description 开始/暂停/恢复/停止录像入参
  */
 @Data
-@ApiModel(value = "开始/暂停/恢复/停止录像入参")
+@ApiModel(description =  "开始/暂停/恢复/停止录像入参")
 public class McuRecDTO extends McuRequestDTO {
 
     @NotNull(message = "类型不能为空")

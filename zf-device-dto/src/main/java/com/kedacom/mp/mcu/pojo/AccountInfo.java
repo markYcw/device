@@ -13,7 +13,7 @@ import java.util.List;
  * @Description 账户信息
  */
 @Data
-@ApiModel(value = "账户信息")
+@ApiModel(description =  "账户信息")
 public class AccountInfo implements Serializable {
 
     @ApiModelProperty(value = "账号启用停用标识:0-停用;1-启用")

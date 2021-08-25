@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/5/11
  */
 @Data
-@ApiModel(value = "查询统一平台分组集合信息请求参数类")
+@ApiModel(description =  "查询统一平台分组集合信息请求参数类")
 public class UmsScheduleGroupItemQueryResponseDto implements Serializable {
 
     @ApiModelProperty(value = "分组Id")

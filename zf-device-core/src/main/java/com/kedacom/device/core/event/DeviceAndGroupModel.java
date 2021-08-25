@@ -12,7 +12,7 @@ import java.util.List;
  * @description 设备与分组状态变更kafka通知类
  */
 @Data
-@ApiModel(value = "设备与分组状态变更kafka通知类")
+@ApiModel(description =  "设备与分组状态变更kafka通知类")
 public class DeviceAndGroupModel implements Serializable {
 
     private List<DevAndGroup> devandgroup;

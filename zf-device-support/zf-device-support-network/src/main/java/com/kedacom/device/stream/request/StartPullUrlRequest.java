@@ -13,7 +13,7 @@ import lombok.ToString;
  */
 @ToString(callSuper = true)
 @Data
-@ApiModel("开始推送媒体流交互参数")
+@ApiModel(description = "开始推送媒体流交互参数")
 public class StartPullUrlRequest extends BaseRequest {
 
     private static final String COMMAND = "startpullurl";

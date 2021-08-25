@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @ToString(callSuper = true)
-@ApiModel(value = "获取会议模板列表入参")
+@ApiModel(description =  "获取会议模板列表入参")
 public class McuTemplatesDTO extends McuRequestDTO {
 
     @NotNull(message = "本次开始查询索引不能为空")

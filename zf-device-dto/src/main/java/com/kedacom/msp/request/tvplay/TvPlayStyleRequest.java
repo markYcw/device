@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @Date: 2021/5/8 09:54
  */
 @Data
-@ApiModel("设置窗口风格入参")
+@ApiModel(description = "设置窗口风格入参")
 public class TvPlayStyleRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")

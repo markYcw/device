@@ -12,7 +12,7 @@ import lombok.Data;
  * @description 创建/删除会议入参
  */
 @Data
-@ApiModel(value = "创建/删除会议入参")
+@ApiModel(description =  "创建/删除会议入参")
 public class McuConfDTO extends McuRequestDTO {
 
     @ApiModelProperty(value = "0：创建即时会议;1：创建会议模板;2：结束即时会议;3：删除会议模板")

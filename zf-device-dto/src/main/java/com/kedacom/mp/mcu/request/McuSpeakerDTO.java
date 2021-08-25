@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
  * @description 设置/取消发言人入参
  */
 @Data
-@ApiModel(value = "设置/取消发言人入参")
+@ApiModel(description =  "设置/取消发言人入参")
 public class McuSpeakerDTO extends McuRequestDTO {
 
     @NotNull(message = "类型不能为空")

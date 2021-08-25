@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 获取会议信息向中间件请求参数
  */
 @Data
-@ApiModel("获取会议信息向中间件请求参数")
+@ApiModel(description = "获取会议信息向中间件请求参数")
 public class McuConfInfoRequest implements Serializable {
 
     @ApiModelProperty(value = "会议号码")

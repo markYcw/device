@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/5/13
  */
 @Data
-@ApiModel(value = "-DeviceType不填")
+@ApiModel(description =  "-DeviceType不填")
 public class DualStreamVo implements Serializable {
 
     @ApiModelProperty(value = "设备国标ID")

@@ -14,7 +14,7 @@ import java.util.List;
  * @description 获取与会成员中间件响应
  */
 @Data
-@ApiModel(value = "获取与会成员中间件响应")
+@ApiModel(description =  "获取与会成员中间件响应")
 public class McuMtmembersResponse extends MpResponse {
 
     @ApiModelProperty(value = "终端列表，终端id")

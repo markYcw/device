@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Description 登录成功响应
  */
 @Data
-@ApiModel(value = "登录成功响应")
+@ApiModel(description =  "登录成功响应")
 public class McuLoginVO implements Serializable {
 
     @ApiModelProperty(value = "登录成功后会话id")

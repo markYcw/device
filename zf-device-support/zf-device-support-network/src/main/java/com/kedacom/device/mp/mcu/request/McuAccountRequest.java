@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @description 会议平台创建/删除账号向中间件请求参数
  */
 @Data
-@ApiModel(value = "会议平台创建/删除账号向中间件请求参数")
+@ApiModel(description =  "会议平台创建/删除账号向中间件请求参数")
 public class McuAccountRequest implements Serializable {
 
     @ApiModelProperty(value = "0:创建账号;1:删除帐号", required = true)

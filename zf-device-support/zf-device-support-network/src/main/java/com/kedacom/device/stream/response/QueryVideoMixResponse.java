@@ -14,7 +14,7 @@ import java.util.List;
  * @Date: 2021/4/30 15:05
  */
 @Data
-@ApiModel("查询画面合成信息应答")
+@ApiModel(description = "查询画面合成信息应答")
 @ToString(callSuper = true)
 public class QueryVideoMixResponse extends BaseResponse {
 

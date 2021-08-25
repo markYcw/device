@@ -13,7 +13,7 @@ import java.util.List;
  * @Date: 2021/5/6 14:27
  */
 @Data
-@ApiModel("大屏布局应答")
+@ApiModel(description = "大屏布局应答")
 public class TvWallLayoutResponse implements Serializable {
 
     @ApiModelProperty("响应状态码 成功0 失败4")

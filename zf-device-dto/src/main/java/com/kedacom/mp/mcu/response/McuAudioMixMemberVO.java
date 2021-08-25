@@ -14,7 +14,7 @@ import java.util.List;
  * @description mcu添加/删除混音成员响应
  */
 @Data
-@ApiModel(value = "mcu添加/删除混音成员响应")
+@ApiModel(description = "mcu添加/删除混音成员响应")
 public class McuAudioMixMemberVO implements Serializable {
 
     @ApiModelProperty(value = "终端")

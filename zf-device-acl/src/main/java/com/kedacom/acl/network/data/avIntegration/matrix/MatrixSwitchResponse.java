@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-@ApiModel("查询矩阵切换应答")
+@ApiModel(description = "查询矩阵切换应答")
 public class MatrixSwitchResponse implements Serializable {
 
     @ApiModelProperty("响应状态码 成功0 失败4")

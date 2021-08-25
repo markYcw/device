@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/6 15:07
  */
 @Data
-@ApiModel("设置大屏返回")
+@ApiModel(description = "设置大屏返回")
 public class TvWallConfigVO implements Serializable {
 
     @ApiModelProperty(value = "大屏ID")

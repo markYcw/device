@@ -12,7 +12,7 @@ import lombok.Data;
  * @description 获取会议信息中间件响应
  */
 @Data
-@ApiModel(value = "获取会议信息中间件响应")
+@ApiModel(description =  "获取会议信息中间件响应")
 public class McuConfInfoResponse extends MpResponse {
 
     @ApiModelProperty(value = "会议信息")

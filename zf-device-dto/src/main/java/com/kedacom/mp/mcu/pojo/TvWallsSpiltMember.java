@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 电视墙列表分屏成员
  */
 @Data
-@ApiModel(value = "电视墙列表分屏成员")
+@ApiModel(description =  "电视墙列表分屏成员")
 public class TvWallsSpiltMember implements Serializable {
 
     @ApiModelProperty(value = "四分屏通道号, 从0开始到3")

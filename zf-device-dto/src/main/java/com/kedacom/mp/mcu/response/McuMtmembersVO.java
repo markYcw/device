@@ -14,7 +14,7 @@ import java.util.List;
  * @description 获取与会成员响应
  */
 @Data
-@ApiModel(value = "获取与会成员响应")
+@ApiModel(description =  "获取与会成员响应")
 public class McuMtmembersVO implements Serializable {
 
     @ApiModelProperty(value = "终端列表，终端id")

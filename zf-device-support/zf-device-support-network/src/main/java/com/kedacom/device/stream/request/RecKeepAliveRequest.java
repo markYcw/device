@@ -12,7 +12,7 @@ import lombok.Data;
  * @description 录像任务保活中间件入参
  */
 @Data
-@ApiModel("录像任务保活中间件入参")
+@ApiModel(description = "录像任务保活中间件入参")
 public class RecKeepAliveRequest extends BaseRequest {
 
     private static final String COMMAND = "reckeepalive";

@@ -14,7 +14,7 @@ import lombok.ToString;
  */
 @ToString(callSuper = true)
 @Data
-@ApiModel("发送宏指令数据交互参数")
+@ApiModel(description = "发送宏指令数据交互参数")
 public class SendOrderDataRequest extends BaseRequest {
 
     private static final String COMMAND = "sendorderdata";

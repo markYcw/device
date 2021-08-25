@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 获取与会成员入参
  */
 @Data
-@ApiModel(value = "获取与会成员向中间件请求参数")
+@ApiModel(description =  "获取与会成员向中间件请求参数")
 public class McuMtMembersRequest implements Serializable {
 
     @ApiModelProperty(value = "会议号码",required = true)

@@ -12,6 +12,6 @@ import java.io.Serializable;
  * @Description 会议平台信息分页查询
  */
 @Data
-@ApiModel(value = "会议平台信息分页查询")
+@ApiModel(description =  "会议平台信息分页查询")
 public class McuPageQueryDTO extends BasePage implements Serializable {
 }

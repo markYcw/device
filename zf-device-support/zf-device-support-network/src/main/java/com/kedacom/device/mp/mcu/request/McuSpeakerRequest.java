@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 设置/取消发言人向中间件请求参数
  */
 @Data
-@ApiModel(value = "设置/取消发言人向中间件请求参数")
+@ApiModel(description =  "设置/取消发言人向中间件请求参数")
 public class McuSpeakerRequest implements Serializable {
 
     @ApiModelProperty(value = "0：设置，1：取消",required = true)

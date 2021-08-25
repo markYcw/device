@@ -14,7 +14,7 @@ import java.util.List;
  * @Date: 2021/5/6 19:37
  */
 @Data
-@ApiModel(" 窗口显示-批量窗口信息")
+@ApiModel(description = " 窗口显示-批量窗口信息")
 public class BatchWndInfo implements Serializable {
 
     @NotNull(message = "窗口位置ID不能为空")

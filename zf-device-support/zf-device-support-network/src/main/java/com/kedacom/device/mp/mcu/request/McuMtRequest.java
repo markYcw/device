@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 添加/删除终端向中间件请求参数
  */
 @Data
-@ApiModel(value = "添加/删除终端向中间件请求参数")
+@ApiModel(description =  "添加/删除终端向中间件请求参数")
 public class McuMtRequest implements Serializable {
 
     @ApiModelProperty(value = "0：添加终端;1：删除终端",required = true)

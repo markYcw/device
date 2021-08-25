@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/10 15:32
  */
 @Data
-@ApiModel("鉴权登录返回参数")
+@ApiModel(description = "鉴权登录返回参数")
 public class SystemLoginVO implements Serializable {
 
     @ApiModelProperty("令牌")

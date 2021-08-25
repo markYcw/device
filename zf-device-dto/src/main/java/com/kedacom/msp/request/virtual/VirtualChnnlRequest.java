@@ -15,7 +15,7 @@ import java.util.List;
  * @Date: 2021/5/8 18:43
  */
 @Data
-@ApiModel("录入输入通道列表入参")
+@ApiModel(description = "录入输入通道列表入参")
 public class VirtualChnnlRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")

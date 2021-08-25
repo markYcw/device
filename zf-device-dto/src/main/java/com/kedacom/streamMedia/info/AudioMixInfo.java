@@ -12,7 +12,7 @@ import java.util.List;
  * @Date: 2021/4/30 13:57
  */
 @Data
-@ApiModel("混音信息")
+@ApiModel(description = "混音信息")
 public class AudioMixInfo implements Serializable {
 
     @ApiModelProperty("混音ID")

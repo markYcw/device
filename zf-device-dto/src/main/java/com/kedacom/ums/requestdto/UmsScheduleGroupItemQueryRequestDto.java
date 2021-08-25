@@ -12,7 +12,7 @@ import java.util.List;
  * @describe
  * @date 2021/5/11
  */
-@Data@ApiModel(value = "根据子设备条件查询统一平台下分组中设备状况信息请求参数类")
+@Data@ApiModel(description =  "根据子设备条件查询统一平台下分组中设备状况信息请求参数类")
 public class UmsScheduleGroupItemQueryRequestDto implements Serializable {
 
     @ApiModelProperty("统一平台id")

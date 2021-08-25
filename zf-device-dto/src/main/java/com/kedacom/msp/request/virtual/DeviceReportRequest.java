@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Date: 2021/5/8 18:18
  */
 @Data
-@ApiModel("拼控器通道推送入参")
+@ApiModel(description = "拼控器通道推送入参")
 public class DeviceReportRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")

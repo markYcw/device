@@ -14,7 +14,7 @@ import java.util.List;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "加入讨论组请求参数类")
+@ApiModel(description =  "加入讨论组请求参数类")
 public class UmsScheduleGroupJoinDiscussionGroupRequestDto implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

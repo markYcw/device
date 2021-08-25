@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 录像终端数组
  */
 @Data
-@ApiModel(value = "电视墙轮询成员")
+@ApiModel(description =  "电视墙轮询成员")
 public class TvWallsModeMember implements Serializable {
 
     @ApiModelProperty(value = "终端ip或者e164")

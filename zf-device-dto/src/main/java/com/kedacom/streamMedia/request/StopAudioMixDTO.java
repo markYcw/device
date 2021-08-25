@@ -14,7 +14,7 @@ import java.util.List;
  * @Date: 2021/4/30 10:28
  */
 @Data
-@ApiModel("停止音频混音入参")
+@ApiModel(description = "停止音频混音入参")
 public class StopAudioMixDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

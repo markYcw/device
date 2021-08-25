@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "删除调度组成员设备信息请求参数类")
+@ApiModel(description =  "删除调度组成员设备信息请求参数类")
 public class UmsScheduleGroupDeleteMembersRequest implements Serializable {
 
     @ApiModelProperty(value = "调度组Id")

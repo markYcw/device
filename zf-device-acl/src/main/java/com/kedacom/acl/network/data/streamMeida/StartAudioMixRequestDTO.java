@@ -14,7 +14,7 @@ import java.util.List;
  * @Date: 2021/4/30 09:35
  */
 @Data
-@ApiModel("开启音频混音业务交互参数")
+@ApiModel(description = "开启音频混音业务交互参数")
 public class StartAudioMixRequestDTO implements Serializable {
 
     @NotBlank(message = "使用32位UUID不能为空")

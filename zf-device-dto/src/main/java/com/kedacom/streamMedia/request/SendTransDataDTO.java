@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @Date: 2021/5/20 15:27
  */
 @Data
-@ApiModel(value = "发送透明通道数据")
+@ApiModel(description =  "发送透明通道数据")
 public class SendTransDataDTO implements Serializable {
 
     @NotBlank(message = "平台id不能为空")

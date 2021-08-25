@@ -13,7 +13,7 @@ import java.util.List;
  * @description 会议信息
  */
 @Data
-@ApiModel(value = "会议信息")
+@ApiModel(description =  "会议信息")
 public class ConfInfo implements Serializable {
 
     @ApiModelProperty(value = "会议名称")

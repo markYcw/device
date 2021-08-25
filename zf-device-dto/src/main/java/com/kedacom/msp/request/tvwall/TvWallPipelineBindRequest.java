@@ -15,7 +15,7 @@ import java.util.List;
  * @Date: 2021/5/6 14:50
  */
 @Data
-@ApiModel("配置大屏通道绑定入参")
+@ApiModel(description = "配置大屏通道绑定入参")
 public class TvWallPipelineBindRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")

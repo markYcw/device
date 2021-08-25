@@ -10,7 +10,7 @@ import lombok.Data;
  * @description 合成画面保活中间件响应
  */
 @Data
-@ApiModel(value = "合成画面保活中间件响应")
+@ApiModel(description =  "合成画面保活中间件响应")
 public class VideoMixKeepAliveResponse extends BaseResponse {
 
 }

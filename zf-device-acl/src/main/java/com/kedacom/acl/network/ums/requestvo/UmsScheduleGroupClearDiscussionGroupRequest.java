@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "清空讨论组请求参数类")
+@ApiModel(description =  "清空讨论组请求参数类")
 public class UmsScheduleGroupClearDiscussionGroupRequest implements Serializable {
 
     @ApiModelProperty(value = "调度组Id")

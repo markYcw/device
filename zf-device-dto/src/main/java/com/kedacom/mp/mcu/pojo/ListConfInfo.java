@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 会议列表
  */
 @Data
-@ApiModel(value = "会议列表")
+@ApiModel(description =  "会议列表")
 public class ListConfInfo implements Serializable {
 
     @ApiModelProperty(value = "会议号码")

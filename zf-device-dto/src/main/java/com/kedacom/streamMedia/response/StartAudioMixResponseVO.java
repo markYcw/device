@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date: 2021/5/12 15:42
  */
 @Data
-@ApiModel("开启音频混音应答")
+@ApiModel(description = "开启音频混音应答")
 public class StartAudioMixResponseVO implements Serializable {
 
     @ApiModelProperty("混音设备分组id")

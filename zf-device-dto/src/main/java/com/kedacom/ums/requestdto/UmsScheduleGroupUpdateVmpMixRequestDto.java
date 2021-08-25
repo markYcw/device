@@ -15,7 +15,7 @@ import java.util.List;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "更新画面合成请求参数类")
+@ApiModel(description =  "更新画面合成请求参数类")
 public class UmsScheduleGroupUpdateVmpMixRequestDto implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

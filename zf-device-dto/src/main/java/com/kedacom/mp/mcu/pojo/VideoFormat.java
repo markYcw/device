@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 主视频格式列表
  */
 @Data
-@ApiModel(value = "主视频格式列表")
+@ApiModel(description =  "主视频格式列表")
 public class VideoFormat implements Serializable {
 
     @ApiModelProperty(value = "主视频格式:1- MPEG;2- H.261;3- H.263;4- H.264_HP;5- H.264_BP;6- H.265;7- H.263+;")

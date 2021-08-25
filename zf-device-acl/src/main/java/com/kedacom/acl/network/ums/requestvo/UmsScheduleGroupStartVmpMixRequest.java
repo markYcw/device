@@ -15,7 +15,7 @@ import java.util.List;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "开始画面合成请求参数类")
+@ApiModel(description =  "开始画面合成请求参数类")
 public class UmsScheduleGroupStartVmpMixRequest implements Serializable {
 
     @ApiModelProperty(value = "调度组Id")

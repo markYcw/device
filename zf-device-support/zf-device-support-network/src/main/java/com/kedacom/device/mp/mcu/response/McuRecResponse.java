@@ -11,7 +11,7 @@ import lombok.Data;
  * @description 开始/暂停/恢复/停止录像中间件响应
  */
 @Data
-@ApiModel(value = "开始/暂停/恢复/停止录像中间件响应")
+@ApiModel(description =  "开始/暂停/恢复/停止录像中间件响应")
 public class McuRecResponse extends MpResponse {
 
     @ApiModelProperty(value = "录像机id，开始成功时返回")

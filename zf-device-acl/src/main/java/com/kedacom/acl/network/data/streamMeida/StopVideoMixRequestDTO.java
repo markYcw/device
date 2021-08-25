@@ -12,7 +12,7 @@ import java.util.List;
  * @Date: 2021/4/30 14:27
  */
 @Data
-@ApiModel("停止画面合成业务交互参数")
+@ApiModel(description = "停止画面合成业务交互参数")
 public class StopVideoMixRequestDTO implements Serializable {
 
     @ApiModelProperty("使用32位UUID（无横线）")

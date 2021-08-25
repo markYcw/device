@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 终端双流控制向中间件请求参数
  */
 @Data
-@ApiModel(value = "终端双流控制向中间件请求参数")
+@ApiModel(description =  "终端双流控制向中间件请求参数")
 public class McuDualRequest implements Serializable {
 
     @ApiModelProperty(value = "0：开始，1：停止")

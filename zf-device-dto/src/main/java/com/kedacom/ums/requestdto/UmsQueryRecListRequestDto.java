@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "查询录像记录请求参数类")
+@ApiModel(description =  "查询录像记录请求参数类")
 public class UmsQueryRecListRequestDto implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
  * @description 开启会议模板入参
  */
 @Data
-@ApiModel(value = "开启会议模板入参")
+@ApiModel(description =  "开启会议模板入参")
 public class McuConfTemplateDTO extends McuRequestDTO {
 
     @NotBlank(message = "会议号码不能为空")

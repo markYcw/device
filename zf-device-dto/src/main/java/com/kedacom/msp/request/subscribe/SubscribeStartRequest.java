@@ -15,7 +15,7 @@ import java.util.List;
  * @Date: 2021/5/8 10:16
  */
 @Data
-@ApiModel("订阅入参")
+@ApiModel(description = "订阅入参")
 public class SubscribeStartRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")

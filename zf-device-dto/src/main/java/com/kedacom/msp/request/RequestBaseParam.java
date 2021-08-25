@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Date: 2021/5/6 09:35
  */
 @Data
-@ApiModel("鉴权基本入参")
+@ApiModel(description = "鉴权基本入参")
 public class RequestBaseParam implements Serializable {
 
     @NotEmpty(message = "token令牌不能为空")

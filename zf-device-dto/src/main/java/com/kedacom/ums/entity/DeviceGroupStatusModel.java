@@ -9,10 +9,10 @@ import java.io.Serializable;
 /**
  * @author hxj
  * @date: 2021/8/17 9:29
- * @description TODO
+ * @description 分组状态kafka消息
  */
 @Data
-@ApiModel(value = "分组状态kafka消息")
+@ApiModel(description =  "分组状态kafka消息")
 public class DeviceGroupStatusModel implements Serializable {
 
     @ApiModelProperty(value = "分组ID")

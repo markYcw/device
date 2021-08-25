@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
  * @Date: 2021/5/26 14:56
  */
 @Data
-@ApiModel("查询历史资源URL入参")
+@ApiModel(description = "查询历史资源URL入参")
 @ToString(callSuper = true)
 public class QueryHistoryUrlRequest extends BaseRequest {
 

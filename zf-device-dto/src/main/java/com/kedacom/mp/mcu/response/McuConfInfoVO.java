@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @description 获取会议信息响应
  */
 @Data
-@ApiModel(value = "获取会议信息响应")
+@ApiModel(description =  "获取会议信息响应")
 public class McuConfInfoVO implements Serializable {
 
     @ApiModelProperty(value = "会议信息")

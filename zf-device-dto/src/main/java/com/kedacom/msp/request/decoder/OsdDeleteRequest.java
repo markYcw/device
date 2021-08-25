@@ -13,7 +13,7 @@ import java.util.List;
  * @Date: 2021/5/8 17:51
  */
 @Data
-@ApiModel(value = "删除解码通道字幕信息入参")
+@ApiModel(description =  "删除解码通道字幕信息入参")
 public class OsdDeleteRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")

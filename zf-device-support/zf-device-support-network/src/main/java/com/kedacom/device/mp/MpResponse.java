@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Description 会议统一返回结果
  */
 @Data
-@ApiModel(value = "会议统一返回结果")
+@ApiModel(description =  "会议统一返回结果")
 public class MpResponse implements Serializable {
 
     @ApiModelProperty(value = "流水号")

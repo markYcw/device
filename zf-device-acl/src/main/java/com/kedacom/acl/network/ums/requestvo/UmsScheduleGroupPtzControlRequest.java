@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "调度组PTZ控制请求参数类")
+@ApiModel(description =  "调度组PTZ控制请求参数类")
 public class UmsScheduleGroupPtzControlRequest implements Serializable {
 
     @ApiModelProperty(value = "调度组Id")

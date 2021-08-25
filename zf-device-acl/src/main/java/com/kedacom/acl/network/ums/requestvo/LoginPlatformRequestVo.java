@@ -2,7 +2,6 @@ package com.kedacom.acl.network.ums.requestvo;
 
 import com.kedacom.acl.network.anno.KmJsonClass;
 import com.kedacom.acl.network.anno.KmJsonField;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -15,7 +14,6 @@ import java.io.Serializable;
  */
 @Data
 @KmJsonClass
-@ApiModel(value = "")
 public class LoginPlatformRequestVo implements Serializable {
 
     @KmJsonField(name = "devtype")

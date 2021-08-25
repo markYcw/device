@@ -13,7 +13,7 @@ import java.util.List;
  * @description 合成参数
  */
 @Data
-@ApiModel(value = "合成参数")
+@ApiModel(description =  "合成参数")
 public class MixInfo implements Serializable {
 
     @ApiModelProperty(value = "是否广播:0：不广播;1：广播")

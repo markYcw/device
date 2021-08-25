@@ -13,7 +13,7 @@ import java.util.List;
  * @Date: 2021/5/6 15:57
  */
 @Data
-@ApiModel("查询预案布局应答")
+@ApiModel(description = "查询预案布局应答")
 public class SchemeQueryResponse implements Serializable {
 
     @ApiModelProperty("响应状态码 成功0 失败4")

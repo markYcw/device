@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Date: 2021/5/26 14:56
  */
 @Data
-@ApiModel("查询历史资源URL入参")
+@ApiModel(description = "查询历史资源URL入参")
 public class QueryHistoryUrlDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

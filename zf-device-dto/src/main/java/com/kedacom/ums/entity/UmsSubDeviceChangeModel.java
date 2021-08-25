@@ -22,7 +22,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ApiModel("统一设备变化通知类")
+@ApiModel(description = "统一设备变化通知类")
 public class UmsSubDeviceChangeModel implements Serializable {
 
     @ApiModelProperty("通知类型：0，新增；1，修改；2，删除")

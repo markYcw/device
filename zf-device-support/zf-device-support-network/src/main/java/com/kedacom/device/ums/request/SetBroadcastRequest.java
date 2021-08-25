@@ -14,7 +14,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(callSuper = true)
-@ApiModel(value = "设置调度组广播源")
+@ApiModel(description =  "设置调度组广播源")
 public class SetBroadcastRequest extends BaseRequest {
 
     private static final String COMMAND = "setbroadcast";

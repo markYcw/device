@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "查询录像信息响应参数类")
+@ApiModel(description =  "查询录像信息响应参数类")
 public class UmsQueryRecInfoResponseDto implements Serializable {
 
     @ApiModelProperty(value = "录像开始时间. 2020-10-12 12:00:00")

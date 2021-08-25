@@ -7,7 +7,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-@ApiModel(value = "解码通道风格信息")
+@ApiModel(description =  "解码通道风格信息")
 public class ChnList implements Serializable {
 
     @ApiModelProperty(value = "解码通道ID")

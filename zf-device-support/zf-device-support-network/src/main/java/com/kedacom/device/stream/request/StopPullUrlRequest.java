@@ -11,7 +11,7 @@ import lombok.Data;
  * @Date: 2021/7/19 15:02
  */
 @Data
-@ApiModel(value = "停止拉取媒体流交互参数")
+@ApiModel(description =  "停止拉取媒体流交互参数")
 public class StopPullUrlRequest extends BaseRequest {
 
     private static final String COMMAND = "stoppullurl";

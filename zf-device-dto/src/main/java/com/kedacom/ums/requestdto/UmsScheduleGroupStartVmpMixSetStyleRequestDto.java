@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "开始画面合成-风格设置参数类")
+@ApiModel(description =  "开始画面合成-风格设置参数类")
 public class UmsScheduleGroupStartVmpMixSetStyleRequestDto implements Serializable {
 
     @ApiModelProperty(value = "字体大小（0-小；1-中；2-大）默认为1")

@@ -13,7 +13,7 @@ import java.util.List;
  * @description 录像参数
  */
 @Data
-@ApiModel(value = "录像参数")
+@ApiModel(description =  "录像参数")
 public class RecParam implements Serializable {
 
     @ApiModelProperty(value = "录像类型:1-会议录像；2-终端录像；")

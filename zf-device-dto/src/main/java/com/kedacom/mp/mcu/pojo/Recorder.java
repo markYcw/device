@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 录像设置
  */
 @Data
-@ApiModel(value = "录像设置")
+@ApiModel(description =  "录像设置")
 public class Recorder implements Serializable {
 
     @ApiModelProperty(value = "发布模式:0-不发布；1-发布；")

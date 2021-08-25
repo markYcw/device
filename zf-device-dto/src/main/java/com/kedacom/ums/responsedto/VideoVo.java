@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/5/13
  */
 @Data
-@ApiModel(value = "DeviceID为国标id-DeviceType不填")
+@ApiModel(description =  "DeviceID为国标id-DeviceType不填")
 public class VideoVo implements Serializable {
 
     @ApiModelProperty(value = "设备国标ID")

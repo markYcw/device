@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "(DeviceID为国标id)")
+@ApiModel(description =  "(DeviceID为国标id)")
 public class UmsScheduleGroupDeleteMembersRequestDto implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

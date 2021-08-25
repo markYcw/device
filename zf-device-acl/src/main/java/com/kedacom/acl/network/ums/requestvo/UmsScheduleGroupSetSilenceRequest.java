@@ -14,7 +14,7 @@ import java.util.List;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "设置调度组静音请求参数类")
+@ApiModel(description =  "设置调度组静音请求参数类")
 public class UmsScheduleGroupSetSilenceRequest implements Serializable {
 
     @ApiModelProperty(value = "调度组Id")

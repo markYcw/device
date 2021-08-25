@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 选看源
  */
 @Data
-@ApiModel(value = "选看源")
+@ApiModel(description =  "选看源")
 public class MtSrc implements Serializable {
 
     @ApiModelProperty(value = "选看源类型\n" +

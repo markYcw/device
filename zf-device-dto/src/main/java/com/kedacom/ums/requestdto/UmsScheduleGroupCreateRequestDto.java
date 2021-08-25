@@ -14,7 +14,7 @@ import java.util.List;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "创建调度组请求参数类")
+@ApiModel(description =  "创建调度组请求参数类")
 public class UmsScheduleGroupCreateRequestDto implements Serializable {
 
     @ApiModelProperty(value = "平台id")

@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @date 2021/5/7
  */
 @Data
-@ApiModel(value = "修改统一设备信息请求参数类")
+@ApiModel(description =  "修改统一设备信息请求参数类")
 public class UmsDeviceInfoUpdateRequestDto implements Serializable {
 
     @NotBlank(message = "设备Id不能为空")

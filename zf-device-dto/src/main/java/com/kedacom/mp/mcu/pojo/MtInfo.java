@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 终端
  */
 @Data
-@ApiModel(value = "终端")
+@ApiModel(description =  "终端")
 public class MtInfo implements Serializable {
 
     @ApiModelProperty(value = "终端ip或者e164号")

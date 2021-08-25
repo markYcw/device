@@ -14,7 +14,7 @@ import java.util.List;
  * @description 合成画面保活中间件请求参数
  */
 @Data
-@ApiModel(value = "合成画面保活中间件请求参数")
+@ApiModel(description =  "合成画面保活中间件请求参数")
 public class VideoMixKeepAliveRequest extends BaseRequest {
 
     private static final String COMMAND = "videomixkeepalive";

@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
  * @description 开始/停止码流交换入参
  */
 @Data
-@ApiModel(value = "开始/停止码流交换入参")
+@ApiModel(description =  "开始/停止码流交换入参")
 public class McuExchangeDTO extends McuRequestDTO {
 
     @NotNull(message = "型不能为空")

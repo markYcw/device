@@ -15,7 +15,7 @@ import java.util.List;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "设置调度组成员媒体源请求参数类")
+@ApiModel(description =  "设置调度组成员媒体源请求参数类")
 public class UmsScheduleGroupSetMediaRequestDto implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

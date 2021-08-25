@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "查询调度组哑音信息响应参数类")
+@ApiModel(description =  "查询调度组哑音信息响应参数类")
 public class UmsScheduleGroupQueryMuteResponseDto implements Serializable {
 
     @ApiModelProperty(value = "状态（1:哑音 0:不哑音）")

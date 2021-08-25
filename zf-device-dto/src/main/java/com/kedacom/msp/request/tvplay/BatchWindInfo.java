@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Date: 2021/5/6 19:43
  */
 @Data
-@ApiModel("关闭窗口显示-批量窗口信息")
+@ApiModel(description = "关闭窗口显示-批量窗口信息")
 public class BatchWindInfo implements Serializable {
 
     @NotNull(message = "窗口ID不能为空")

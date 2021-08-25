@@ -13,7 +13,7 @@ import java.util.List;
  * @Date: 2021/5/8 17:54
  */
 @Data
-@ApiModel(value = "获取解码通道风格信息入参")
+@ApiModel(description =  "获取解码通道风格信息入参")
 public class StyleQueryRequest implements Serializable {
 
     @NotEmpty(message = "token令牌不能为空")

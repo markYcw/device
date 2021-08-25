@@ -13,7 +13,7 @@ import java.util.List;
  * @Date: 2021/5/8 09:59
  */
 @Data
-@ApiModel(value = "任意开窗应答")
+@ApiModel(description =  "任意开窗应答")
 public class TvPlayOpenResponse implements Serializable {
 
     @ApiModelProperty("响应状态码 成功0 失败4")

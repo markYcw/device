@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Date: 2021/4/29 19:34
  */
 @Data
-@ApiModel("停止录像入参")
+@ApiModel(description = "停止录像入参")
 public class StopRecDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

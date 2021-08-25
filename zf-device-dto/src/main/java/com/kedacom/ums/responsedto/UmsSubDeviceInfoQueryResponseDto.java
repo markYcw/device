@@ -14,7 +14,7 @@ import java.util.Date;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "分页查询统一平台下子设备信息响应参数类")
+@ApiModel(description =  "分页查询统一平台下子设备信息响应参数类")
 public class UmsSubDeviceInfoQueryResponseDto implements Serializable {
 
     @ApiModelProperty(value = "id")

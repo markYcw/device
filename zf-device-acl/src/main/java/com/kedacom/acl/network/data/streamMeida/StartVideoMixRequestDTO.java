@@ -14,7 +14,7 @@ import java.util.List;
  * @Date: 2021/4/30 14:11
  */
 @Data
-@ApiModel("开始画面合成业务交互参数")
+@ApiModel(description = "开始画面合成业务交互参数")
 public class StartVideoMixRequestDTO implements Serializable {
 
     @ApiModelProperty("使用32位UUID（无横线）")

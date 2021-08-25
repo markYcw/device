@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "创建调度组成员设备信息响应参数类")
+@ApiModel(description =  "创建调度组成员设备信息响应参数类")
 public class UmsScheduleGroupMembersResponseDto implements Serializable {
 
     @ApiModelProperty(value = "成员设备Id")

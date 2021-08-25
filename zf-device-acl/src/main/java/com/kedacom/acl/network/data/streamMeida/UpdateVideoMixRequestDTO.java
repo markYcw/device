@@ -15,7 +15,7 @@ import java.util.List;
  * @Date: 2021/4/30 14:32
  */
 @Data
-@ApiModel("更新画面合成业务交互参数")
+@ApiModel(description = "更新画面合成业务交互参数")
 public class UpdateVideoMixRequestDTO implements Serializable {
 
     @NotBlank(message = "使用32位UUID不能为空")

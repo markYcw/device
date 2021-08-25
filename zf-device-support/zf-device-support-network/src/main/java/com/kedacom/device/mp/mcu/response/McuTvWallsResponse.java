@@ -14,7 +14,7 @@ import java.util.List;
  * @description 获取电视墙列表中间件响应
  */
 @Data
-@ApiModel(value = "获取电视墙列表中间件响应")
+@ApiModel(description =  "获取电视墙列表中间件响应")
 public class McuTvWallsResponse extends MpResponse {
 
     @ApiModelProperty(value = "电视墙列表")

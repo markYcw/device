@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @date 2021/5/7
  */
 @Data
-@ApiModel(value = "查询统一设备请求参数类")
+@ApiModel(description =  "查询统一设备请求参数类")
 public class UmsDeviceInfoSelectRequestDto extends BasePage implements Serializable {
 
     @ApiModelProperty(value = "设备名称")

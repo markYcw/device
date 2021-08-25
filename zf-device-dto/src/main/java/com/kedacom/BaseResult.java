@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author van.shu
  * @create 2021/4/23 13:37
  */
-@ApiModel("统一结果")
+@ApiModel(description = "统一结果")
 @Getter
 public class BaseResult<T> implements Serializable {
 

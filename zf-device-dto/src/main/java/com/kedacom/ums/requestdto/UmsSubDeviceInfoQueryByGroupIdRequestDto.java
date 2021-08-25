@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @date 2021/5/11
  */
 @Data
-@ApiModel(value = "根据groupId查询子设备请求参数类")
+@ApiModel(description =  "根据groupId查询子设备请求参数类")
 public class UmsSubDeviceInfoQueryByGroupIdRequestDto implements Serializable {
 
     @NotNull(message = "统一平台Id")

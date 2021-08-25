@@ -21,7 +21,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ApiModel("统一设备状态通知类")
+@ApiModel(description = "统一设备状态通知类")
 public class UmsSubDeviceStatusModel implements Serializable {
 
     private static final long serialVersionUID = -3043800208734953292L;

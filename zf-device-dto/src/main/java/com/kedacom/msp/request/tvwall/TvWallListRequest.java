@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @Date: 2021/5/6 11:03
  */
 @Data
-@ApiModel("获取大屏列表入参")
+@ApiModel(description = "获取大屏列表入参")
 public class TvWallListRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")

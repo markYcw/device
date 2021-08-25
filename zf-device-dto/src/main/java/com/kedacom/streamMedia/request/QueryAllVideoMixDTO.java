@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Date: 2021/5/18 15:03
  */
 @Data
-@ApiModel("查询所有画面合成信息入参")
+@ApiModel(description = "查询所有画面合成信息入参")
 public class QueryAllVideoMixDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

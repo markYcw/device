@@ -15,7 +15,7 @@ import java.util.List;
  */
 @ToString(callSuper = true)
 @Data
-@ApiModel("查询画面合成信息业务交互参数")
+@ApiModel(description = "查询画面合成信息业务交互参数")
 public class QueryVideoMixRequest extends BaseRequest {
 
     private static final String COMMAND = "queryvideomix";

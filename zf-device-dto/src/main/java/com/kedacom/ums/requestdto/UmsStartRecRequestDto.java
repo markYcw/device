@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @date 2021/5/8
  */
 @Data
-@ApiModel(value = "开启录像请求参数类")
+@ApiModel(description =  "开启录像请求参数类")
 public class UmsStartRecRequestDto implements Serializable {
 
     @NotBlank(message = "umsId不能为空")

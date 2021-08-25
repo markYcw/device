@@ -15,7 +15,7 @@ import java.util.List;
  * @description 开始/停止混音入参
  */
 @Data
-@ApiModel(value = "开始/停止混音入参")
+@ApiModel(description =  "开始/停止混音入参")
 public class McuAudioMixDTO extends McuRequestDTO {
 
     @NotNull(message = "类型不能为空")

@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 @ToString(callSuper = true)
 @Data
-@ApiModel("接收透明通道数据通知实体")
+@ApiModel(description = "接收透明通道数据通知实体")
 public class TransDataEntity implements Serializable {
 
     @ApiModelProperty(value = "设备ID")

@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @Date: 2021/7/19 14:58
  */
 @Data
-@ApiModel(value = "开始拉取实时网络媒体流出参")
+@ApiModel(description =  "开始拉取实时网络媒体流出参")
 public class StartPullUrlVO implements Serializable {
 
     private Integer sessionID;

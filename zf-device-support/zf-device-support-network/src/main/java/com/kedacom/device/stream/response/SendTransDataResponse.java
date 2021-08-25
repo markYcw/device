@@ -10,7 +10,7 @@ import lombok.ToString;
  * @Date: 2021/5/20 15:37
  */
 @Data
-@ApiModel("发送透明通道数据应答")
+@ApiModel(description = "发送透明通道数据应答")
 @ToString(callSuper = true)
 public class SendTransDataResponse extends BaseResponse {
 

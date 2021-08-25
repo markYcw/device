@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description 主席
  */
 @Data
-@ApiModel(value = "主席")
+@ApiModel(description =  "主席")
 public class Chairman implements Serializable {
 
     @ApiModelProperty(value = "发言人名称 最大字符长度：128个字节")

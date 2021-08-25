@@ -12,7 +12,7 @@ import java.util.List;
  * @Date: 2021/5/8 09:59
  */
 @Data
-@ApiModel(value = "任意开窗应答")
+@ApiModel(description =  "任意开窗应答")
 public class TvPlayOpenVO implements Serializable {
 
     @ApiModelProperty(value = "窗口信息")

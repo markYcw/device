@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Description 部门信息
  */
 @Data
-@ApiModel(value = "部门信息")
+@ApiModel(description =  "部门信息")
 public class DepartmentInfo implements Serializable {
 
     @ApiModelProperty(value = "部门序号（UUID格式）")

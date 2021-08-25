@@ -15,7 +15,7 @@ import java.util.List;
  * @Date: 2021/5/6 15:46
  */
 @Data
-@ApiModel("设置预案布局入参")
+@ApiModel(description = "设置预案布局入参")
 public class SchemeConfigRequest implements Serializable {
 
     @NotBlank(message = "token令牌不能为空")

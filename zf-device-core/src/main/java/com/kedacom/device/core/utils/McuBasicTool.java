@@ -27,7 +27,7 @@ public class McuBasicTool {
         Map<String, Long> paramMap = new HashMap<>();
         paramMap.put("ssid", Long.valueOf(entity.getSsid()));
 //        paramMap.put("ssno", System.currentTimeMillis());
-        paramMap.put("ssno", Long.valueOf(NumGen.getNum()));
+        paramMap.put("ssno", (long) NumGen.getNum());
 
         param.setUrl(url);
         param.setParamMap(paramMap);

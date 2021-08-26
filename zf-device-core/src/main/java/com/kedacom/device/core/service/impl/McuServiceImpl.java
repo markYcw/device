@@ -21,6 +21,7 @@ import com.kedacom.mp.mcu.McuRequestDTO;
 import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import com.kedacom.mp.mcu.request.*;
 import com.kedacom.mp.mcu.response.*;
+import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -81,7 +82,7 @@ public class McuServiceImpl implements McuService {
         request.setNtyUrl(ntyUrl);
         String url = factory.geturl(entity.getDevtype());
         Map<String, Long> paramMap = new HashMap<>();
-        paramMap.put("ssno", System.currentTimeMillis());
+        paramMap.put("ssno", (long) NumGen.getNum());
 
         log.info("mcu登录平台中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(url + "/login/{ssno}", JSON.toJSONString(request), String.class, paramMap);

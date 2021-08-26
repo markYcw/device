@@ -41,12 +41,13 @@ public class McuLoginRequest implements Serializable {
      */
     @ApiModelProperty(value = "获取token使用")
     @JSONField(name = "key")
-    private String mcuKey;
+    private String sdkkey;
     /**
      * 获取token使用
      */
     @ApiModelProperty(value = "获取token使用")
-    private String secret;
+    @JSONField(name = "secret")
+    private String sdksecret;
     /**
      * 主动上报url，用于推送消息
      */

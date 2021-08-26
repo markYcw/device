@@ -1,8 +1,7 @@
 package com.kedacom.device.core.utils;
 
 import cn.hutool.core.util.ObjectUtil;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Component;
@@ -21,18 +20,19 @@ public class RemoteRestTemplate {
     private static final RestTemplate restTemplate;
 
     static {
-        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
-        httpRequestFactory.setConnectionRequestTimeout(15000);
+//        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+//        httpRequestFactory.setConnectionRequestTimeout(15000);
+//        httpRequestFactory.setConnectTimeout(15000);
+//        httpRequestFactory.setReadTimeout(15000);
+
+        OkHttp3ClientHttpRequestFactory httpRequestFactory = new OkHttp3ClientHttpRequestFactory();
         httpRequestFactory.setConnectTimeout(15000);
         httpRequestFactory.setReadTimeout(15000);
+        httpRequestFactory.setWriteTimeout(15000);
+
         restTemplate = new RestTemplate(httpRequestFactory);
         setRestTemplateEncode(restTemplate);
     }
-
-    @Value("${zf.msp.server_addr}")
-    private String mspUrl;
-
-    private static final String mspPath = "/api/v1/manage/decoder/";
 
     public RestTemplate getRestTemplate() {
         return restTemplate;

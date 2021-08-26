@@ -1,6 +1,7 @@
 package com.kedacom.mp.mcu.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -25,6 +26,7 @@ public class UmsMcuEntity implements Serializable {
      * 会议平台id
      */
     @TableId(type = IdType.ASSIGN_ID)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
     /**
      * 登录成功后会话id

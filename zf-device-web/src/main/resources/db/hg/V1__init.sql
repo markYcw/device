@@ -15,10 +15,11 @@ CREATE TABLE "ums_new_device"(
 "streaming_media_port" INT4 DEFAULT NULL ,
 "streaming_media_rec_port" INT4 DEFAULT NULL ,
 "last_sync_third_device_time" VARCHAR(125) DEFAULT NULL ,
-"create_time" TIMESTAMP DEFAULT NULL ,
-"update_time" TIMESTAMP DEFAULT NULL ,
+"create_time" TIMESTAMP(6) DEFAULT NULL ,
+"update_time" TIMESTAMP(6) DEFAULT NULL ,
 PRIMARY KEY ("id") 
 );
+COMMENT ON TABLE "ums_new_device" IS '平台信息表';
 COMMENT ON COLUMN "ums_new_device"."id" IS '数据库Id';
 COMMENT ON COLUMN "ums_new_device"."session_id" IS '会话';
 COMMENT ON COLUMN "ums_new_device"."name" IS '设备名称';
@@ -43,10 +44,11 @@ CREATE TABLE "ums_new_device_type"(
 "device_code" VARCHAR(5) DEFAULT NULL ,
 "device_value" VARCHAR(30) DEFAULT NULL ,
 "device_type_desc" VARCHAR(128) DEFAULT NULL ,
-"create_time" TIMESTAMP DEFAULT NULL ,
-"update_time" TIMESTAMP DEFAULT NULL ,
+"create_time" TIMESTAMP(6) DEFAULT NULL ,
+"update_time" TIMESTAMP(6) DEFAULT NULL ,
 PRIMARY KEY ("id") 
 );
+COMMENT ON TABLE "ums_new_device_type" IS '平台类型表';
 COMMENT ON COLUMN "ums_new_device_type"."id" IS '数据库Id';
 COMMENT ON COLUMN "ums_new_device_type"."device_code" IS '类型编码';
 COMMENT ON COLUMN "ums_new_device_type"."device_value" IS '设备类型';
@@ -60,10 +62,11 @@ CREATE TABLE "ums_new_alarm_type"(
 "id" VARCHAR(32) NOT NULL ,
 "alarm_code" VARCHAR(64) DEFAULT NULL ,
 "alarm_desc" VARCHAR(128) DEFAULT NULL ,
-"create_time" TIMESTAMP DEFAULT NULL ,
-"update_time" TIMESTAMP DEFAULT NULL ,
+"create_time" TIMESTAMP(6) DEFAULT NULL ,
+"update_time" TIMESTAMP(6) DEFAULT NULL ,
 PRIMARY KEY ("id") 
 );
+COMMENT ON TABLE "ums_new_alarm_type" IS '告警类型表';
 COMMENT ON COLUMN "ums_new_alarm_type"."id" IS '数据库Id';
 COMMENT ON COLUMN "ums_new_alarm_type"."alarm_code" IS '报警类型标识';
 COMMENT ON COLUMN "ums_new_alarm_type"."alarm_desc" IS '报警类型描述';
@@ -81,10 +84,11 @@ CREATE TABLE "ums_new_group"(
 "group_catalog" VARCHAR(128) DEFAULT NULL ,
 "group_code" VARCHAR(128) DEFAULT NULL ,
 "sort_index" INT4 DEFAULT '0' ,
-"create_time" TIMESTAMP DEFAULT NULL ,
-"update_time" TIMESTAMP DEFAULT NULL ,
+"create_time" TIMESTAMP(6) DEFAULT NULL ,
+"update_time" TIMESTAMP(6) DEFAULT NULL ,
 PRIMARY KEY ("id") 
 );
+COMMENT ON TABLE "ums_new_group" IS '分组表';
 COMMENT ON COLUMN "ums_new_group"."id" IS '数据库Id';
 COMMENT ON COLUMN "ums_new_group"."group_id" IS '分组Id';
 COMMENT ON COLUMN "ums_new_group"."parent_id" IS '父分组Id';
@@ -113,7 +117,7 @@ CREATE TABLE "ums_new_sub_device"(
 "longitude_str" VARCHAR(32) DEFAULT NULL ,
 "latitude" DECIMAL(10,7) DEFAULT NULL ,
 "latitude_str" VARCHAR(32) DEFAULT NULL ,
-"create_time" TIMESTAMP DEFAULT NULL ,
+"create_time" TIMESTAMP(6) DEFAULT NULL ,
 "device_mod" INT4 DEFAULT '0' ,
 "device_model" VARCHAR(255) DEFAULT NULL ,
 "civil_name" VARCHAR(255) DEFAULT NULL ,
@@ -121,12 +125,13 @@ CREATE TABLE "ums_new_sub_device"(
 "maintain_man" VARCHAR(255) DEFAULT NULL ,
 "maintain_contact" VARCHAR(255) DEFAULT NULL ,
 "address" VARCHAR(255) DEFAULT NULL ,
-"install_date" TIMESTAMP DEFAULT NULL ,
+"install_date" TIMESTAMP(6) DEFAULT NULL ,
 "domain_id" VARCHAR(255) DEFAULT NULL ,
 "pinyin" VARCHAR(255) DEFAULT NULL ,
-"update_time" TIMESTAMP DEFAULT NULL ,
+"update_time" TIMESTAMP(6) DEFAULT NULL ,
 PRIMARY KEY ("id") 
 );
+COMMENT ON TABLE "ums_new_sub_device" IS '子设备表';
 COMMENT ON COLUMN "ums_new_sub_device"."id" IS '设备Id';
 COMMENT ON COLUMN "ums_new_sub_device"."parent_id" IS '上级统一设备ID';
 COMMENT ON COLUMN "ums_new_sub_device"."name" IS '设备名称';

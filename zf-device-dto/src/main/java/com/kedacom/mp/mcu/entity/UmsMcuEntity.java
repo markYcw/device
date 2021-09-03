@@ -37,29 +37,34 @@ public class UmsMcuEntity implements Serializable {
      * 会议平台名称
      */
     @ApiModelProperty(value = "自定义此会议平台名称", required = true)
+    @TableField(value = "mcu_name")
     private String name;
     /**
      * 会议平台IP
      */
     @ApiModelProperty(value = "会议平台IP", required = true)
     @NotBlank(message = "会议平台IP不能为空")
+    @TableField(value = "mcu_ip")
     private String ip;
     /**
      * 会议平台端口
      */
     @ApiModelProperty(value = "会议平台端口")
+    @TableField(value = "mcu_port")
     private Integer port;
     /**
      * 登录会议平台用户名
      */
     @ApiModelProperty(value = "登录会议平台用户名", required = true)
     @NotBlank(message = "登录会议平台用户名不能为空")
+    @TableField(value = "mcu_user")
     private String user;
     /**
      * 登录会议平台密码
      */
     @ApiModelProperty(value = "登录会议平台密码", required = true)
     @NotBlank(message = "登录会议平台密码不能为空")
+    @TableField(value = "mcu_password")
     private String password;
     /**
      * 获取token使用
@@ -73,7 +78,7 @@ public class UmsMcuEntity implements Serializable {
      */
     @ApiModelProperty(value = "获取token使用", required = true)
     @NotBlank(message = "secret不能为空")
-    @TableField(value = "secret")
+    @TableField(value = "mcu_secret")
     private String sdksecret;
     /**
      * 会议平台版本

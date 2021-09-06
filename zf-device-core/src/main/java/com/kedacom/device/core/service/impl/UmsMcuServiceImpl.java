@@ -23,7 +23,10 @@ import java.util.List;
 import java.util.Objects;
 
 
-@Service("umsMeetingPlatformService")
+/**
+ * @author hexijian
+ */
+@Service("umsMcuServiceImpl")
 public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> implements UmsMcuService {
 
     @Resource
@@ -39,6 +42,12 @@ public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> i
         page.setSize(queryDTO.getPageSize());
 
         LambdaQueryWrapper<UmsMcuEntity> queryWrapper = new LambdaQueryWrapper<>();
+        if (StrUtil.isNotBlank(queryDTO.getIp())) {
+            queryWrapper.like(UmsMcuEntity::getIp, queryDTO.getIp());
+        }
+        if (StrUtil.isNotBlank(queryDTO.getName())) {
+            queryWrapper.like(UmsMcuEntity::getIp, queryDTO.getName());
+        }
 
         Page<UmsMcuEntity> platformEntityPage = mapper.selectPage(page, queryWrapper);
         List<UmsMcuEntity> records = platformEntityPage.getRecords();

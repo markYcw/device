@@ -40,8 +40,8 @@ import java.util.Map;
  * @date: 2021/8/13 13:50
  * @description 会议平台业务类
  */
-@Service(value = "mcuService")
 @Slf4j
+@Service(value = "mcuService")
 public class McuServiceImpl implements McuService {
 
     @Resource
@@ -62,7 +62,7 @@ public class McuServiceImpl implements McuService {
     @Autowired
     private McuConvert convert;
 
-    @Value("${zf.mcuNtyUrl.server_addr:127.0.0.1:10080}")
+    @Value("${zf.mcuNtyUrl.server_addr:127.0.0.1:9000}")
     private String mcuNtyUrl;
 
     private final static String REQUEST_HEAD = "http://";

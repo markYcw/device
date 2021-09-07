@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class McuRequestDTO implements Serializable {
 
     @ApiModelProperty(value = "会议平台数据库id", required = true)
-    @NotNull(message = "会议平台id不能那个为空")
+    @NotNull(message = "会议平台id不能为空")
     private Long mcuId;
 
 }

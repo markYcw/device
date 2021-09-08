@@ -120,8 +120,6 @@ public class CdConfInfo implements Serializable {
             "1-是；")
     private Integer muteFilter;
 
-    @ApiModelProperty(value = "预占资源(创会时就预占音视频适配器):0-不预占；1-预占；")
-    private Integer preoccupyResource;
 
     @ApiModelProperty(value = "是否强制广播:0-不强制广播；1-强制广播；")
     private Integer forceBroadCast;

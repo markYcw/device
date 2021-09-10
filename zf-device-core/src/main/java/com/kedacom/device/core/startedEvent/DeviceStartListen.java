@@ -3,6 +3,7 @@ package com.kedacom.device.core.startedEvent;
 import com.kedacom.core.ConnectorListener;
 import com.kedacom.core.ConnectorListenerManager;
 import com.kedacom.device.core.utils.McuUrlFactory;
+import com.kedacom.device.core.utils.SvrUrlFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -24,6 +25,9 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
     @Autowired
     private McuUrlFactory factory;
 
+    @Autowired
+    private SvrUrlFactory svrUrlFactory;
+
     @Value("${zf.kmProxy.server_addr}")
     private String kmProxy;
 
@@ -33,7 +37,12 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
 
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
+
+        //mcu访问地址初始化
         factory.setMap();
+        //svr访问地址初始化
+        svrUrlFactory.setMap();
+
         if (kmProxy.contains(DEVICE_PORT)) {
             ConnectorListenerManager.getInstance().register(connectorListener);
         }

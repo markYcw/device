@@ -7,6 +7,7 @@ import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.exception.*;
 import com.kedacom.device.mp.MpResponse;
+import com.kedacom.device.svr.SvrResponse;
 import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class HandleResponseUtil {
 
     @Autowired
     private McuErrCode mcuErrCode;
+
 
     /**
      * 处理拼控服务响应消息
@@ -125,6 +127,20 @@ public class HandleResponseUtil {
                 log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
                 throw new MpException(errorEnum.getCode(), errorEnum.getMsg());
             }
+        }
+    }
+
+    /**
+     * 处理SVR异常
+     *
+     * @param str
+     * @param errorEnum
+     * @param res
+     */
+    public void handleSvrRes(String str, DeviceErrorEnum errorEnum, SvrResponse res) {
+        if (ObjectUtil.notEqual(res.getCode(), DeviceConstants.SUCCESS)) {
+                log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
+                throw new SvrException(res.getCode(), errorEnum.getMsg());
         }
     }
 

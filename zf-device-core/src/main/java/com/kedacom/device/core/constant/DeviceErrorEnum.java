@@ -10,6 +10,10 @@ public enum DeviceErrorEnum {
 
     URL_ERROR(1002, "调用会议平台的URL为空"),
 
+    //全局统一错误码 addBy ycw
+    DEVICE_NOT_FOUND(1003,"设备未找到请检查"),
+    DEVICE_NOT_LOGIN(1004,"请先登录设备"),
+
     UMS_SERVICE_ERROR(2000, "统一设备服务失败"),
 
     DEVICE_SYNCHRONIZATION_FAILED(2010, "统一设备同步失败"),
@@ -71,9 +75,28 @@ public enum DeviceErrorEnum {
     DECODER_STYLE_QUERY_FAILED(3093, ""),
     DECODER_STYLE_CONFIG_FAILED(3094, ""),
 
+    //MCU相关错误码
     MCU_FAILED(4000, "会议平台不存在，请先创建会议平台"),
     MCU_OPERATE_FAILED(4001, "会议平台操作失败"),
     MCU_SSID_FAILED(4002, "会议平台ssid为空,请先登录会议平台"),
+
+    //SVR相关错误码 addBy ycw
+    SVR_LOGIN_FAILED(5001, "SVR登录失败"),
+    SVR_LOGOUT_FAILED(5002, "SVR登出失败"),
+    SVR_CAP_FAILED(5003, "获取SVR能力集失败"),
+    SVR_TIME_FAILED(5004, "获取SVR时间失败"),
+    SVR_SEARCH_DEV_FAILED(5005, "搜索编解码设备失败"),
+    SVR_EN_CHN_LIST_FAILED(5006, "获取编码通道列表失败"),
+    SVR_EN_CHN_FAILED(5007, "添加/删除编码通道失败"),
+    SVR_EN_CP_RESET_FAILED(5008, "获取编码器的预置位失败"),
+    SVR_CP_RESET_FAILED(5009, "修改编码器的预置位失败"),
+    SVR_DE_CHN_LIST_FAILED(5010, "获取解码通道列表失败"),
+    SVR_DE_CHN_FAILED(5011, "添加/删除解码通道失败"),
+    SVR_DEC_PARAM_FAILED(5012, "获取解码参数失败"),
+    SVR_EN_DEC_PARAM_FAILED(5013, "设置解码参数失败"),
+    SVR_PTZ_FAILED(5014, "PTZ控制失败"),
+    SVR_REMOTE_FAILED(5015, "启用/停止远程点失败"),
+    SVR_REMOTE_CFG_FAILED(5016, "获取远程点配置失败"),
 
     SCHEDULE_ADD_DEVICE_FAILED(9001, "添加调度组成员设备失败"),
     SCHEDULE_DELETE_DEVICE_FAILED(9002, "删除调度组成员设备失败"),
@@ -83,8 +106,10 @@ public enum DeviceErrorEnum {
     SUBSCRIBE_SCHEDULE_INFO_FAILED(9006, "订阅调度组信息失败"),
     SCHEDULE_SET_BROADCAST_FAILED(9007, "设置调度组广播源失败"),
     SCHEDULE_SET_MEDIA_FAILED(9008, "设置调度组媒体源失败"),
-    SCHEDULE_PTZ_CONTROLLER(9009, "调度组PTZ控制失败");
+    SCHEDULE_PTZ_CONTROLLER(9009, "调度组PTZ控制失败"),
 
+
+    ;
 
     private Integer code;
 

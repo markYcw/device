@@ -9,8 +9,8 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * @Auther: hxj
- * @Date: 2021/6/9 10:12
+ * @author : hxj
+ * @date : 2021/6/9 10:12
  */
 @Data
 @ApiModel(description =  "发送宏指令数据")

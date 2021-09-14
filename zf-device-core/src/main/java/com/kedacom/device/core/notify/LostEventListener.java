@@ -48,10 +48,14 @@ public class LostEventListener {
 
     static {
         retryer = RetryerBuilder.<Boolean>newBuilder()
-                .retryIfResult(aBoolean -> Objects.equals(aBoolean, false)) // 返回false时重试
-                .retryIfExceptionOfType(RuntimeException.class) // 抛出RuntimeException时重试
-                .withWaitStrategy(WaitStrategies.fixedWait(2000, TimeUnit.MILLISECONDS)) // 2s后重试
-                .withStopStrategy(StopStrategies.stopAfterAttempt(15)) // 重试10次后停止
+                // 返回false时重试
+                .retryIfResult(aBoolean -> Objects.equals(aBoolean, false))
+                // 抛出RuntimeException时重试
+                .retryIfExceptionOfType(RuntimeException.class)
+                // 2s后重试
+                .withWaitStrategy(WaitStrategies.fixedWait(2000, TimeUnit.MILLISECONDS))
+                // 重试10次后停止
+                .withStopStrategy(StopStrategies.stopAfterAttempt(15))
                 .build();
     }
 

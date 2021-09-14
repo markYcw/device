@@ -103,9 +103,6 @@ public class CdConfInfo implements Serializable {
     @ApiModelProperty(value = "混音信息")
     private Mix mix;
 
-    @ApiModelProperty(value = "制定混音时的混音成员列表")
-    private List<MixMember> members;
-
     @ApiModelProperty(value = "主视频格式列表")
     private List<VideoFormat> videoFormats;
 
@@ -114,32 +111,5 @@ public class CdConfInfo implements Serializable {
 
     @ApiModelProperty(value = "录像设置")
     private Recorder recorder;
-
-    @ApiModelProperty(value = "全场哑音例外，参数为1时，若执行全场哑音操作，主席和发言人不会被哑音，若执行单个哑音操作时可以被哑音\n" +
-            "0-否；\n" +
-            "1-是；")
-    private Integer muteFilter;
-
-
-    @ApiModelProperty(value = "是否强制广播:0-不强制广播；1-强制广播；")
-    private Integer forceBroadCast;
-
-    @ApiModelProperty(value = "是否支持码流纠错:0-关闭；1-开启；")
-    private Integer fecMode;
-
-    @ApiModelProperty(value = "语音激励敏感度(s)，最小值5s, 开启语音激励时有效")
-    private Integer vacInterval;
-
-    @ApiModelProperty(value = "是否在合成:0-否；1-是；")
-    private Integer vmpEnable;
-
-    @ApiModelProperty(value = "是否在混音0-否；1-是；")
-    private Integer mixEnable;
-
-    @ApiModelProperty(value = "是否在轮询:0-否；1-是；")
-    private Integer pollEnable;
-
-    @ApiModelProperty(value = "是否需要密码:0-否；1-是；")
-    private Integer needPassword;
 
 }

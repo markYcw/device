@@ -6,7 +6,6 @@ import com.kedacom.core.handler.ProcessRequests;
 import com.kedacom.core.pojo.*;
 import com.kedacom.core.spring.NotifyContext;
 import com.kedacom.exception.ConnectionException;
-import com.kedacom.exception.KMProxyException;
 import com.kedacom.exception.ParseDataException;
 import com.kedacom.network.niohdl.core.Connector;
 import com.kedacom.util.SingletonFactory;

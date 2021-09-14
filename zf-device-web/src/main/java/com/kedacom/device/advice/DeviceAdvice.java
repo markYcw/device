@@ -126,6 +126,18 @@ public class DeviceAdvice {
     }
 
     /**
+     * svr异常捕获
+     *
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler({SvrException.class})
+    public BaseResult handleException(SvrException e) {
+        log.error("svr异常捕获:{}", e.getMessage());
+        return BaseResult.failed(e.getMessage());
+    }
+    /**
      * 统一设备异常捕获
      *
      * @param e

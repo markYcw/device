@@ -177,7 +177,7 @@ public class SvrController {
     }
 
     @ApiOperation("添加/删除解码通道")
-    @PostMapping("/enChn")
+    @PostMapping("/deChn")
     public BaseResult<String> deChn(@RequestBody DeChnDto dto) {
 
         return svrService.deChn(dto);

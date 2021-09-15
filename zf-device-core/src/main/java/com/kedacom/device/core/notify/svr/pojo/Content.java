@@ -1,5 +1,6 @@
-package com.kedacom.device.svr.pojo;
+package com.kedacom.device.core.notify.svr.pojo;
 
+import com.kedacom.device.svr.pojo.DeviceInfo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -14,9 +15,6 @@ import java.util.List;
 @Data
 public class Content {
 
-    @ApiModelProperty("设备总数")
-    private Integer totalNum;
-
     @ApiModelProperty("当前数量")
     private Integer curNum;
 
@@ -25,6 +23,5 @@ public class Content {
 
     @ApiModelProperty("设备列表")
     private List<DeviceInfo> devList;
-
 
 }

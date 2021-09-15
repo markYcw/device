@@ -3,6 +3,7 @@ package com.kedacom.device.core.utils;
 import com.kedacom.device.core.entity.SvrBasicParam;
 import com.kedacom.svr.entity.SvrEntity;
 import com.kedacom.util.NumGen;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import java.util.Map;
  * @description svr基本工具类
  */
 @Component
+@Slf4j
 public class SvrBasicTool {
 
     @Autowired
@@ -25,9 +27,12 @@ public class SvrBasicTool {
 
         String url = factory.geturl(entity.getDevType());
         Map<String, Long> paramMap = new HashMap<>();
-        paramMap.put("ssid", Long.valueOf(entity.getSsid()));
-        paramMap.put("ssno", (long) NumGen.getNum());
+        Long s = Long.valueOf(entity.getSsid());
+        Long n = (long) NumGen.getNum();
+        paramMap.put("ssid",s);
+        paramMap.put("ssno",n);
 
+        log.info("==========此次请求ssid为：{},ssno为：{}",s,n);
         param.setUrl(url);
         param.setParamMap(paramMap);
 

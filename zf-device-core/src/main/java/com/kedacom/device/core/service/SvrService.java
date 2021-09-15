@@ -143,4 +143,101 @@ public interface SvrService extends IService<SvrEntity> {
      */
     BaseResult<RemoteCfgVo> remoteCfg(Integer dbId);
 
+    /**
+     * 修改远程点配置
+     * @param dto
+     * @return
+     */
+    BaseResult<String> remotePutCfg(RemotePutCfgDto dto);
+
+    /**
+     * 发送双流
+     * @param dto
+     * @return
+     */
+    BaseResult<String> dual(DualDto dto);
+
+    /**
+     * 刻录控制
+     * @param dto
+     * @return
+     */
+    BaseResult<String> burn(BurnDto dto);
+
+    /**
+     * 补刻
+     * @param dto
+     * @return
+     */
+    BaseResult<String> reBurn(ReBurnDto dto);
+
+    /**
+     * 追加刻录任务
+     * @param dto
+     * @return
+     */
+    BaseResult<String> appendBurn(AppendBurnDto dto);
+
+    /**
+     * 新建刻录任务
+     * @param dto
+     * @return
+     */
+    BaseResult<String> createBurn(CreateBurnDto dto);
+
+    /**
+     * 获取刻录任务
+     * @param dto
+     * @return
+     */
+    BaseResult<BurnTaskVo> burnTaskList(BurnTaskListDto dto);
+
+    /**
+     * DVD仓门控制
+     * @param dto
+     * @return
+     */
+    BaseResult<String> dvdDoor(DvdDoorDto dto);
+
+    /**
+     * 查询录像
+     * @param dto
+     * @return
+     */
+    BaseResult<RecListVo> recList(RecListDto dto);
+
+    /**
+     * 获取画面合成
+     * @param dbId
+     * @return
+     */
+    BaseResult<GetMergeVo> getMerge(Integer dbId);
+
+    /**
+     * 设置画面合成
+     * @param dto
+     * @return
+     */
+    BaseResult<String> merge(MergeInfoDto dto);
+
+    /**
+     * 获取画面叠加
+     * @param dbId
+     * @return
+     */
+    BaseResult<GetOsdVo> getOsd(Integer dbId);
+
+    /**
+     * 设置画面叠加
+     * @param dto
+     * @return
+     */
+    BaseResult<String> osd(OsdDto dto);
+
+    /**
+     * 语音激励控制
+     * @param dto
+     * @return
+     */
+    BaseResult<String> audioAct(AudioActDto dto);
 }

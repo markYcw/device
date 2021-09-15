@@ -220,6 +220,107 @@ public class SvrController {
         return svrService.remoteCfg(dbId);
     }
 
+    @ApiOperation("修改远程点配置")
+    @PostMapping("/remotePutCfg")
+    public BaseResult<String> remotePutCfg(@RequestBody RemotePutCfgDto dto) {
+
+        return svrService.remotePutCfg(dto);
+    }
+
+    @ApiOperation("发送双流")
+    @PostMapping("/dual")
+    public BaseResult<String> dual(@RequestBody DualDto dto) {
+
+        return svrService.dual(dto);
+    }
+
+    @ApiOperation("刻录控制")
+    @PostMapping("/burn")
+    public BaseResult<String> burn(@RequestBody BurnDto dto) {
+
+        return svrService.burn(dto);
+    }
+
+    @ApiOperation("补刻")
+    @PostMapping("/reBurn")
+    public BaseResult<String> reBurn(@RequestBody ReBurnDto dto) {
+
+        return svrService.reBurn(dto);
+    }
+
+    @ApiOperation("追加刻录任务")
+    @PostMapping("/appendBurn")
+    public BaseResult<String> appendBurn(@RequestBody AppendBurnDto dto) {
+
+        return svrService.appendBurn(dto);
+    }
+
+    @ApiOperation("新建刻录任务")
+    @PostMapping("/createBurn")
+    public BaseResult<String> createBurn(@RequestBody CreateBurnDto dto) {
+
+        return svrService.createBurn(dto);
+    }
+
+    @ApiOperation("获取刻录任务")
+    @PostMapping("/burnTaskList")
+    public BaseResult<BurnTaskVo> burnTaskList(@RequestBody BurnTaskListDto dto) {
+
+        return svrService.burnTaskList(dto);
+    }
+
+    @ApiOperation("DVD仓门控制")
+    @PostMapping("/dvdDoor")
+    public BaseResult<String> dvdDoor(@RequestBody DvdDoorDto dto) {
+
+        return svrService.dvdDoor(dto);
+    }
+
+    @ApiOperation("查询录像")
+    @PostMapping("/recList")
+    public BaseResult<RecListVo> recList(@RequestBody RecListDto  dto) {
+
+        return svrService.recList(dto);
+    }
+
+    @ApiOperation("获取画面合成")
+    @PostMapping("/getMerge")
+    @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
+    public BaseResult<GetMergeVo> getMerge(@RequestParam Integer dbId) {
+
+        return svrService.getMerge(dbId);
+    }
+
+    @ApiOperation("设置画面合成")
+    @PostMapping("/merge")
+    public BaseResult<String> merge(@RequestBody MergeInfoDto dto) {
+
+        return svrService.merge(dto);
+    }
+
+    @ApiOperation("获取画面叠加")
+    @PostMapping("/getOsd")
+    @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
+    public BaseResult<GetOsdVo> getOsd(@RequestParam Integer dbId) {
+
+        return svrService.getOsd(dbId);
+    }
+
+    @ApiOperation("设置画面叠加")
+    @PostMapping("/osd")
+    public BaseResult<String> osd(@RequestBody OsdDto dto) {
+
+        return svrService.osd(dto);
+    }
+
+    @ApiOperation("语音激励控制")
+    @PostMapping("/audioAct")
+    public BaseResult<String> audioAct(@RequestBody AudioActDto dto) {
+
+        return svrService.audioAct(dto);
+    }
+
+
 
 
 }

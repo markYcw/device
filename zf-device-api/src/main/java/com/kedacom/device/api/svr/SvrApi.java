@@ -120,5 +120,58 @@ public interface SvrApi {
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
     BaseResult<RemoteCfgVo> remoteCfg(@RequestParam Integer dbId);
 
+    @ApiOperation("修改远程点配置")
+    @PostMapping("/remotePutCfg")
+    BaseResult<RemoteCfgVo> remotePutCfg(@RequestBody RemotePutCfgDto dto);
+
+    @ApiOperation("发送双流")
+    @PostMapping("/dual")
+    BaseResult<String> dual(@RequestBody DualDto dto);
+
+    @ApiOperation("刻录控制")
+    @PostMapping("/burn")
+    BaseResult<String> burn(@RequestBody BurnDto dto);
+
+    @ApiOperation("补刻")
+    @PostMapping("/reBurn")
+    BaseResult<String> reBurn(@RequestBody ReBurnDto dto);
+
+    @ApiOperation("追加刻录任务")
+    @PostMapping("/appendBurn")
+    BaseResult<String> appendBurn(@RequestBody AppendBurnDto dto);
+
+    @ApiOperation("新建刻录任务")
+    @PostMapping("/createBurn")
+    BaseResult<String> createBurn(@RequestBody CreateBurnDto dto);
+
+    @ApiOperation("获取刻录任务")
+    @PostMapping("/burnTaskList")
+    BaseResult<BurnTaskVo> burnTaskList(@RequestBody BurnTaskListDto dto);
+
+    @ApiOperation("DVD仓门控制")
+    @PostMapping("/dvdDoor")
+    BaseResult<String> dvdDoor(@RequestBody DvdDoorDto dto);
+
+    @ApiOperation("查询录像")
+    @PostMapping("/recList")
+    BaseResult<RecListVo> recList(@RequestBody RecListDto  dto);
+
+    @ApiOperation("获取画面合成")
+    @PostMapping("/getMerge")
+    @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
+    BaseResult<GetMergeVo> getMerge(@RequestParam Integer dbId);
+
+    @ApiOperation("获取画面叠加")
+    @PostMapping("/getOsd")
+    @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
+    BaseResult<GetOsdVo> getOsd(@RequestParam Integer dbId);
+
+    @ApiOperation("设置画面叠加")
+    @PostMapping("/osd")
+    BaseResult<String> osd(@RequestBody OsdDto dto);
+
+    @ApiOperation("语音激励控制")
+    @PostMapping("/audioAct")
+    BaseResult<String> audioAct(@RequestBody AudioActDto dto);
 
 }

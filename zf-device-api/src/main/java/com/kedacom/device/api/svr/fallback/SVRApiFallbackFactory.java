@@ -125,6 +125,71 @@ public class SVRApiFallbackFactory implements FallbackFactory<SvrApi> {
             public BaseResult<RemoteCfgVo> remoteCfg(Integer dbId) {
                 return  BaseResult.failed(throwable.getMessage());
             }
+
+            @Override
+            public BaseResult<RemoteCfgVo> remotePutCfg(RemotePutCfgDto dto) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<String> dual(DualDto dto) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<String> burn(BurnDto dto) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<String> reBurn(ReBurnDto dto) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<String> appendBurn(AppendBurnDto dto) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<String> createBurn(CreateBurnDto dto) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<BurnTaskVo> burnTaskList(BurnTaskListDto dto) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<String> dvdDoor(DvdDoorDto dto) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<RecListVo> recList(RecListDto dto) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<GetMergeVo> getMerge(Integer dbId) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<GetOsdVo> getOsd(Integer dbId) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<String> osd(OsdDto dto) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<String> audioAct(AudioActDto dto) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
         };
     }
 }

@@ -14,9 +14,10 @@ import com.kedacom.device.core.entity.SvrBasicParam;
 import com.kedacom.device.core.exception.SvrException;
 import com.kedacom.device.core.mapper.SvrMapper;
 import com.kedacom.device.core.service.SvrService;
+import com.kedacom.device.core.stragegy.NotifyHandler;
 import com.kedacom.device.core.utils.*;
+import com.kedacom.device.devType.DeviceType;
 import com.kedacom.device.svr.SvrResponse;
-import com.kedacom.device.svr.notify.SvrSearchDevNotify;
 import com.kedacom.device.svr.request.SvrLoginRequest;
 import com.kedacom.device.svr.response.*;
 import com.kedacom.svr.entity.SvrEntity;
@@ -102,7 +103,13 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     @Override
     public void svrNotify(String notify) {
         log.info("svr通知:{}", notify);
-        SvrSearchDevNotify svrSearchDevNotify = JSONObject.parseObject(notify, SvrSearchDevNotify.class);
+        JSONObject jsonObject = JSONObject.parseObject(notify);
+        Integer type = (Integer) jsonObject.get("type");
+        String ssid = (String) jsonObject.get("ssid");
+        if(!StringUtils.isEmpty(ssid)){
+           NotifyHandler.getInstance().distributeMessages(DeviceType.SVR.getValue(),type,notify);
+        }
+
     }
 
     @Override
@@ -345,6 +352,201 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_REMOTE_CFG_FAILED,response);
         RemoteCfgVo remoteCfgVo = convert.convertToRemoteCfgVo(response);
         return BaseResult.succeed("获取远程点配置成功",remoteCfgVo);
+    }
+
+    @Override
+    public BaseResult<String> remotePutCfg(RemotePutCfgDto dto) {
+        log.info("修改远程点配置接口入参RemotePutCfgDto:{}",dto);
+        SvrEntity entity = svrMapper.selectById(dto.getDbId());
+        check(entity);
+        SvrBasicParam param = tool.getParam(entity);
+        String obj = JSON.toJSONString(dto);
+        HttpEntity<String> httpEntity = new HttpEntity<>(obj, remoteRestTemplate.getHttpHeaders());
+        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/remotecfg/{ssid}/{ssno}", HttpMethod.PUT, httpEntity, String.class, param.getParamMap());
+        SvrResponse response = JSON.parseObject(exchange.getBody(), SvrResponse.class);
+        String errorMsg = "修改远程点配置失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_REMOTE_PUT_CFG_FAILED,response);
+        return BaseResult.succeed("修改远程点配置成功");
+    }
+
+    @Override
+    public BaseResult<String> dual(DualDto dto) {
+        log.info("发送双流接口入参DualDto:{}",dto);
+        Integer dbId = dto.getDbId();
+        SvrEntity entity = svrMapper.selectById(dbId);
+        check(entity);
+        SvrBasicParam param = tool.getParam(entity);
+        String jsonObj = JSON.toJSONString(dto);
+        HttpEntity<String> httpEntity = new HttpEntity<>(jsonObj, remoteRestTemplate.getHttpHeaders());
+        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/dual/{ssid}/{ssno}", HttpMethod.PUT, httpEntity, String.class, param.getParamMap());
+        SvrResponse response = JSON.parseObject(exchange.getBody(), SvrResponse.class);
+        String errorMsg = "发送双流失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_DUAL_FAILED,response);
+        return BaseResult.succeed("发送双流成功");
+    }
+
+    @Override
+    public BaseResult<String> burn(BurnDto dto) {
+        log.info("刻录控制接口入参BurnDto:{}",dto);
+        SvrEntity entity = svrMapper.selectById(dto.getDbId());
+        check(entity);
+        SvrBasicParam param = tool.getParam(entity);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/burn/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        SvrResponse response = JSON.parseObject(s, SvrResponse.class);
+        String errorMsg = "刻录控制失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_BURN_FAILED,response);
+        return BaseResult.succeed("刻录控制成功");
+    }
+
+    @Override
+    public BaseResult<String> reBurn(ReBurnDto dto) {
+        log.info("补刻接口入参ReBurnDto:{}",dto);
+        SvrEntity entity = svrMapper.selectById(dto.getDbId());
+        check(entity);
+        SvrBasicParam param = tool.getParam(entity);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/reburn/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        SvrResponse response = JSON.parseObject(s, SvrResponse.class);
+        String errorMsg = "补刻失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_RE_BURN_FAILED,response);
+        return BaseResult.succeed("补刻成功");
+    }
+
+    @Override
+    public BaseResult<String> appendBurn(AppendBurnDto dto) {
+        log.info("追加刻录任务接口入参AppendBurnDto:{}",dto);
+        SvrEntity entity = svrMapper.selectById(dto.getDbId());
+        check(entity);
+        SvrBasicParam param = tool.getParam(entity);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/appendburn/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        SvrResponse response = JSON.parseObject(s, SvrResponse.class);
+        String errorMsg = "追加刻录任务失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_APPEND_BURN_FAILED,response);
+        return BaseResult.succeed("追加刻录任务成功");
+    }
+
+    @Override
+    public BaseResult<String> createBurn(CreateBurnDto dto) {
+        log.info("新建刻录任务接口入参CreateBurnDto:{}",dto);
+        SvrEntity entity = svrMapper.selectById(dto.getDbId());
+        check(entity);
+        SvrBasicParam param = tool.getParam(entity);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/createburn/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        SvrResponse response = JSON.parseObject(s, SvrResponse.class);
+        String errorMsg = "新建刻录任务失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_CREATE_BURN_FAILED,response);
+        return BaseResult.succeed("新建刻录任务成功");
+    }
+
+    @Override
+    public BaseResult<BurnTaskVo> burnTaskList(BurnTaskListDto dto) {
+        log.info("获取刻录任务接口入参BurnTaskListDto:{}",dto);
+        SvrEntity entity = svrMapper.selectById(dto.getDbId());
+        check(entity);
+        SvrBasicParam param = tool.getParam(entity);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/burntasklist/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        BurnTaskResponse response = JSON.parseObject(s, BurnTaskResponse.class);
+        String errorMsg = "获取刻录任务失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_BURN_TASK_LIST_FAILED,response);
+        BurnTaskVo vo = convert.convertTOBurnTaskVo(response);
+        return BaseResult.succeed("获取刻录任务成功",vo);
+    }
+
+    @Override
+    public BaseResult<String> dvdDoor(DvdDoorDto dto) {
+        log.info("DVD仓门控制接口入参DvdDoorDto:{}",dto);
+        SvrEntity entity = svrMapper.selectById(dto.getDbId());
+        check(entity);
+        SvrBasicParam param = tool.getParam(entity);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/dvddoor/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        SvrResponse response = JSON.parseObject(s, SvrResponse.class);
+        String errorMsg = "DVD仓门控制失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_DVD_DOOR_FAILED,response);
+        return BaseResult.succeed("DVD仓门控制成功");
+    }
+
+    @Override
+    public BaseResult<RecListVo> recList(RecListDto dto) {
+        log.info("查询录像接口入参RecListDto:{}",dto);
+        SvrEntity entity = svrMapper.selectById(dto.getDbId());
+        check(entity);
+        SvrBasicParam param = tool.getParam(entity);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/reclist/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        RecListResponse response = JSON.parseObject(s, RecListResponse.class);
+        String errorMsg = "查询录像失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_REC_LIST_FAILED,response);
+        RecListVo vo = convert.convertToRecListVo(response);
+        return BaseResult.succeed("查询录像成功",vo);
+    }
+
+    @Override
+    public BaseResult<GetMergeVo> getMerge(Integer dbId) {
+        log.info("获取画面合成接口入参dbId:{}",dbId);
+        SvrEntity entity = svrMapper.selectById(dbId);
+        check(entity);
+        SvrBasicParam param = tool.getParam(entity);
+        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/merge/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
+        GetMergeResponse response = JSON.parseObject(exchange.getBody(), GetMergeResponse.class);
+        String errorMsg = "获取画面合成失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_GET_MERGE_FAILED,response);
+        GetMergeVo vo = convert.convertToGetMergeVo(response);
+        return BaseResult.succeed("获取画面合成成功",vo);
+    }
+
+    @Override
+    public BaseResult<String> merge(MergeInfoDto dto) {
+        log.info("设置画面合成接口入参MergeInfoDto:{}",dto);
+        SvrEntity entity = svrMapper.selectById(dto.getDbId());
+        check(entity);
+        SvrBasicParam param = tool.getParam(entity);
+        String jsonObj = JSON.toJSONString(dto);
+        HttpEntity<String> httpEntity = new HttpEntity<>(jsonObj, remoteRestTemplate.getHttpHeaders());
+        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/merge/{ssid}/{ssno}",HttpMethod.PUT,httpEntity, String.class, param.getParamMap());
+        SvrResponse response = JSON.parseObject(exchange.getBody(), SvrResponse.class);
+        String errorMsg = "设置画面合成失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_MERGE_FAILED,response);
+        return BaseResult.succeed("设置画面合成成功");
+    }
+
+    @Override
+    public BaseResult<GetOsdVo> getOsd(Integer dbId) {
+        log.info("获取画面叠加接口入参dbId:{}",dbId);
+        SvrEntity entity = svrMapper.selectById(dbId);
+        check(entity);
+        SvrBasicParam param = tool.getParam(entity);
+        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/osd/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
+        GetOsdResponse response = JSON.parseObject(exchange.getBody(), GetOsdResponse.class);
+        String errorMsg = "获取画面叠加失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_GET_OSD_FAILED,response);
+        GetOsdVo vo = convert.convertToGetOsdVo(response);
+        return BaseResult.succeed("获取画面叠加成功",vo);
+    }
+
+    @Override
+    public BaseResult<String> osd(OsdDto dto) {
+        log.info("设置画面叠加接口入参OsdDto:{}",dto);
+        SvrEntity entity = svrMapper.selectById(dto.getDbId());
+        check(entity);
+        SvrBasicParam param = tool.getParam(entity);
+        String jsonObj = JSON.toJSONString(dto);
+        HttpEntity<String> httpEntity = new HttpEntity<>(jsonObj, remoteRestTemplate.getHttpHeaders());
+        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/osd/{ssid}/{ssno}",HttpMethod.PUT,httpEntity, String.class, param.getParamMap());
+        SvrResponse response = JSON.parseObject(exchange.getBody(), SvrResponse.class);
+        String errorMsg = "设置画面叠加失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_OSD_FAILED,response);
+        return BaseResult.succeed("设置画面叠加成功");
+    }
+
+    @Override
+    public BaseResult<String> audioAct(AudioActDto dto) {
+        log.info("语音激励控制接口入参AudioActDto:{}",dto);
+        SvrEntity entity = svrMapper.selectById(dto.getDbId());
+        check(entity);
+        SvrBasicParam param = tool.getParam(entity);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/audioact/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        SvrResponse response = JSON.parseObject(s, SvrResponse.class);
+        String errorMsg = "语音激励控制失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_AUDIO_FAILED,response);
+        return BaseResult.succeed("语音激励控制成功");
     }
 
     /**

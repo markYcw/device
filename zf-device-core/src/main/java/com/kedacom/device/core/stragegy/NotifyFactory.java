@@ -1,5 +1,6 @@
 package com.kedacom.device.core.stragegy;
 
+import com.kedacom.device.core.stragegy.svr.DevStatusNotify;
 import com.kedacom.device.devType.DeviceType;
 import org.springframework.stereotype.Component;
 
@@ -20,10 +21,11 @@ public class NotifyFactory {
 
     //初始化通知类
     static {
-        //初始化SVR设备上报通知
-        HashMap<Integer, INotify> svrStatus = new HashMap<>();
-        svrStatus.put(300,new SvrDevStatusNotify());
-        map.put(DeviceType.SVR.getValue(),svrStatus);
+        //初始化SVR设备通知池
+        HashMap<Integer, INotify> svrNotifyPool = new HashMap<>();
+        svrNotifyPool.put(300,new DevStatusNotify());
+        //初始化刻录任务通知
+        map.put(DeviceType.SVR.getValue(),svrNotifyPool);
     }
 
     public INotify getNotify(Integer devType,Integer notifyType){

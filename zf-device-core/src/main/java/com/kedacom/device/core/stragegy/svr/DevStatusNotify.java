@@ -1,16 +1,17 @@
-package com.kedacom.device.core.stragegy;
+package com.kedacom.device.core.stragegy.svr;
 
 
 import com.alibaba.fastjson.JSON;
 import com.kedacom.device.core.notify.svr.pojo.SvrDeviceStatus;
+import com.kedacom.device.core.stragegy.INotify;
 
 /**
  * @author ycw
  * @version v1.0
  * @date 2021/9/15 15:42
- * @description 设备上报通知
+ * @description 编码器设备上报通知
  */
-public class SvrDevStatusNotify extends INotify{
+public class DevStatusNotify extends INotify {
     @Override
     public void consumeMessage(String message) {
         SvrDeviceStatus svrDeviceStatus = JSON.parseObject(message, SvrDeviceStatus.class);

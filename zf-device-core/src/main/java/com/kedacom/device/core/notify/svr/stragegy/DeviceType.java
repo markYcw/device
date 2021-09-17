@@ -1,4 +1,4 @@
-package com.kedacom.device.devType;
+package com.kedacom.device.core.notify.svr.stragegy;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,12 +1,10 @@
 package com.kedacom.device.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.SvrService;
 import com.kedacom.svr.entity.SvrEntity;
-import com.kedacom.svr.pojo.RemotePoint;
 import com.kedacom.svr.pojo.SvrPageQueryDTO;
 import com.kedacom.svr.dto.*;
 import com.kedacom.svr.vo.*;
@@ -15,13 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.w3c.dom.ls.LSException;
-import springfox.documentation.spring.web.json.Json;
-
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * SVR控制相关

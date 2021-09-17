@@ -13,10 +13,10 @@ import com.kedacom.device.core.convert.SvrConvert;
 import com.kedacom.device.core.entity.SvrBasicParam;
 import com.kedacom.device.core.exception.SvrException;
 import com.kedacom.device.core.mapper.SvrMapper;
+import com.kedacom.device.core.notify.svr.stragegy.DeviceType;
+import com.kedacom.device.core.notify.svr.stragegy.NotifyHandler;
 import com.kedacom.device.core.service.SvrService;
-import com.kedacom.device.core.stragegy.NotifyHandler;
 import com.kedacom.device.core.utils.*;
-import com.kedacom.device.devType.DeviceType;
 import com.kedacom.device.svr.SvrResponse;
 import com.kedacom.device.svr.request.SvrLoginRequest;
 import com.kedacom.device.svr.response.*;
@@ -105,9 +105,10 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("svr通知:{}", notify);
         JSONObject jsonObject = JSONObject.parseObject(notify);
         Integer type = (Integer) jsonObject.get("type");
-        String ssid = (String) jsonObject.get("ssid");
-        if(!StringUtils.isEmpty(ssid)){
-           NotifyHandler.getInstance().distributeMessages(DeviceType.SVR.getValue(),type,notify);
+        Integer ssid = (Integer) jsonObject.get("ssid");
+
+        if(ssid !=null){
+            NotifyHandler.getInstance().distributeMessages(ssid,DeviceType.SVR.getValue(),type,notify);
         }
 
     }

@@ -1,4 +1,4 @@
-package com.kedacom.device.core.stragegy;
+package com.kedacom.device.core.notify.svr.stragegy;
 
 /**
  * @author ycw
@@ -8,6 +8,6 @@ package com.kedacom.device.core.stragegy;
  */
 public abstract class INotify {
 
-    public abstract void consumeMessage(String message);
+    public abstract void consumeMessage(Integer ssid,String message);
 
 }

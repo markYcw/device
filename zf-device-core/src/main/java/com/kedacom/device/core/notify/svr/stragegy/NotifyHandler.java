@@ -1,8 +1,8 @@
-package com.kedacom.device.core.stragegy;
+package com.kedacom.device.core.notify.svr.stragegy;
 
+import com.kedacom.device.core.utils.ContextUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author ycw
@@ -13,9 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Data
 @Slf4j
 public class NotifyHandler {
-
-    @Autowired
-    private NotifyFactory notifyFactory;
 
     private static volatile NotifyHandler instance;
 
@@ -32,9 +29,9 @@ public class NotifyHandler {
         return instance;
     }
 
-    public void distributeMessages(Integer devType, Integer notifyType, String message){
-        INotify notify = notifyFactory.getNotify(devType, notifyType);
-        notify.consumeMessage(message);
+    public void distributeMessages(Integer ssid,Integer devType, Integer notifyType, String message){
+        INotify notify = ContextUtils.getBean(NotifyFactory.class).getNotify(devType, notifyType);
+        notify.consumeMessage(ssid,message);
     }
 
 }

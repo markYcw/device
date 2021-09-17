@@ -1,6 +1,5 @@
-package com.kedacom.device.core.notify.svr.pojo;
+package com.kedacom.svr.stragegy.svr.pojo;
 
-import com.kedacom.device.svr.pojo.DeviceInfo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

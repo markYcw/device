@@ -550,6 +550,19 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         return BaseResult.succeed("语音激励控制成功");
     }
 
+    @Override
+    public BaseResult<String> hb(Integer dbId) {
+        log.info("发送心跳接口入参dbId:{}",dbId);
+        SvrEntity entity = svrMapper.selectById(dbId);
+        check(entity);
+        SvrBasicParam param = tool.getParam(entity);
+        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/hb/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
+        SvrResponse response = JSON.parseObject(exchange.getBody(), SvrResponse.class);
+        String errorMsg = "发送心跳失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.DEVICE_HEART_BEAT_FAILED,response);
+        return BaseResult.succeed("发送心跳成功");
+    }
+
     /**
      * svr非空校验以及登录校验
      * @param entity

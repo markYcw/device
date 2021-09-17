@@ -240,4 +240,11 @@ public interface SvrService extends IService<SvrEntity> {
      * @return
      */
     BaseResult<String> audioAct(AudioActDto dto);
+
+    /**
+     * 发送心跳
+     * @param dbId
+     * @return
+     */
+    BaseResult<String> hb(Integer dbId);
 }

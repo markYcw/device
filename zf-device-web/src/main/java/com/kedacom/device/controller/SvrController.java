@@ -93,14 +93,22 @@ public class SvrController {
 
 
     @PostMapping("/loginById")
-    @ApiOperation(value = "根据id获取svr信息")
+    @ApiOperation(value = "根据ID登录SVR")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
     public BaseResult<SvrLoginVO> loginById(@RequestParam Integer dbId) {
 
         return svrService.loginById(dbId);
     }
 
-    @ApiOperation("登出svr")
+    @PostMapping("/hb")
+    @ApiOperation(value = "发送心跳")
+    @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
+    public BaseResult<String> hb(@RequestParam Integer dbId) {
+
+        return svrService.hb(dbId);
+    }
+
+    @ApiOperation("登出SVR")
     @PostMapping("/logoutById")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
     public BaseResult logoutById(@RequestParam Integer dbId) {

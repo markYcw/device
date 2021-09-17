@@ -13,6 +13,7 @@ public enum DeviceErrorEnum {
     //全局统一错误码 addBy ycw
     DEVICE_NOT_FOUND(1003,"设备未找到请检查"),
     DEVICE_NOT_LOGIN(1004,"请先登录设备"),
+    DEVICE_HEART_BEAT_FAILED(1005,"发送心跳失败"),
 
     UMS_SERVICE_ERROR(2000, "统一设备服务失败"),
 

@@ -42,4 +42,17 @@ public class SvrLoginRequest implements Serializable {
     @ApiModelProperty(value = "主动上报url，用于推送消息")
     private String ntyUrl;
 
+    /**
+     * svr的websocket端口，一般是9766
+     */
+    @ApiModelProperty(value = "svr的websocket端口，一般是9766")
+    private Integer webPort;
+
+    /**
+     * 心跳检测时间，单位分钟，默认为10
+     */
+    @ApiModelProperty(value = "心跳检测时间，单位分钟，默认为10 eg:10")
+    private Integer hbTime;
+
+
 }

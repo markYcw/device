@@ -42,6 +42,8 @@ public class SvrEntity {
 	@ApiModelProperty(value = "平台端口")
 	private Integer port;
 
+	@ApiModelProperty(value = "svr的websocket端口，一般是9766")
+	private Integer webPort;
 
 	@ApiModelProperty(value = "登录svr账号")
 	@NotBlank(message = "用户名不能为空")

@@ -23,7 +23,7 @@ public class SvrLoginRequest implements Serializable {
     /**
      * svr端口
      */
-    @ApiModelProperty(value = "svr端口")
+    @ApiModelProperty(value = "端口，一般是9765")
     private Integer port;
     /**
      * 登录svr用户名

@@ -7,6 +7,8 @@ import com.kedacom.device.svr.response.*;
 import com.kedacom.svr.entity.SvrEntity;
 import com.kedacom.svr.vo.*;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 /**
  * @author ycw
@@ -15,7 +17,7 @@ import org.mapstruct.Mapper;
  */
 @Mapper(componentModel = "spring")
 public interface SvrConvert {
-
+    @Mappings({@Mapping(target = "user",source = "username")})
     SvrLoginRequest convertToSvrLoginRequest(SvrEntity svrEntity);
 
     SvrCapVo convertTOSvrCapVo(SvrCapResponse response);

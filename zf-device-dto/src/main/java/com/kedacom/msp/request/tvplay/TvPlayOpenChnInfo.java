@@ -33,7 +33,7 @@ public class TvPlayOpenChnInfo implements Serializable {
     private Integer protocol;
 
     @ApiModelProperty(value = "组播地址信息")
-    private TvPlayOpenMulticast tvPlayOpenMulticast;
+    private TvPlayOpenMulticast multicast;
 
     @ApiModelProperty(value = "会议终端的国标ID - 注意老版本融合调度系统，只有是会议终端时有效，新版本融合调度系统该字段不用")
     private String chnidex;

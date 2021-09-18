@@ -118,7 +118,9 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("登录svr入参信息:{}", id);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         SvrEntity entity = svrMapper.selectById(id);
-        check(entity);
+        if(entity == null){
+            throw new SvrException(DeviceErrorEnum.DEVICE_NOT_FOUND);
+        }
         SvrLoginRequest request = convert.convertToSvrLoginRequest(entity);
         String ntyUrl = REQUEST_HEAD + svrNtyUrl + NOTIFY_URL;
         request.setNtyUrl(ntyUrl);

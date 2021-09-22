@@ -174,4 +174,9 @@ public interface SvrApi {
     @PostMapping("/audioAct")
     BaseResult<String> audioAct(@RequestBody AudioActDto dto);
 
+    @PostMapping("/hb")
+    @ApiOperation(value = "发送心跳")
+    @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
+    BaseResult<String> hb(@RequestParam Integer dbId);
+
 }

@@ -190,6 +190,11 @@ public class SVRApiFallbackFactory implements FallbackFactory<SvrApi> {
             public BaseResult<String> audioAct(AudioActDto dto) {
                 return  BaseResult.failed(throwable.getMessage());
             }
+
+            @Override
+            public BaseResult<String> hb(Integer dbId) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
         };
     }
 }

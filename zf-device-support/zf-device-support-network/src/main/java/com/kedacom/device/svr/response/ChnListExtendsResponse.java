@@ -5,6 +5,8 @@ import com.kedacom.device.svr.pojo.EnChnList;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author ycw
  * @version v1.0
@@ -15,5 +17,5 @@ import lombok.Data;
 public class ChnListExtendsResponse extends SvrResponse {
 
     @ApiModelProperty("编码器通道列表")
-    private EnChnList chnList;
+    private List<EnChnList> chnList;
 }

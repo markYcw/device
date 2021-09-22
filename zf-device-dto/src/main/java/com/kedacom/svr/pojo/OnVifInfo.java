@@ -24,13 +24,5 @@ public class OnVifInfo {
     @ApiModelProperty("onvif设备登录密码")
     private String passWord;
 
-    @ApiModelProperty("rtsp信息 protoType为2时生效")
-    private String rtspInfo;
-
-    @ApiModelProperty("rtsp的url")
-    private String rtspUrl;
-
-    @ApiModelProperty("rtsp传输模式 0:tcp 1:udp ")
-    private Integer transMode;
 
 }

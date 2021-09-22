@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * SVR控制相关
@@ -143,7 +144,7 @@ public class SvrController {
     @ApiOperation("获取编码通道列表")
     @PostMapping("/enChnList")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
-    public BaseResult<EnChnListVo> enChnList(@RequestParam Integer dbId) {
+    public BaseResult<List<EnChnListVo>> enChnList(@RequestParam Integer dbId) {
 
         return svrService.enChnList(dbId);
     }

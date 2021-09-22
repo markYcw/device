@@ -38,6 +38,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author ycw
@@ -204,17 +205,18 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     }
 
     @Override
-    public BaseResult<EnChnListVo> enChnList(Integer dbId) {
-        log.info("获取编解码通道列表接口入参{}",dbId);
+    public BaseResult<List<EnChnListVo>> enChnList(Integer dbId) {
+        log.info("获取编码通道列表接口入参{}",dbId);
         SvrEntity entity = svrMapper.selectById(dbId);
         check(entity);
         SvrBasicParam param = tool.getParam(entity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/encchnlist/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
+        log.info("===============获取编码设备回复:{}",exchange.getBody());
         ChnListExtendsResponse response = JSONObject.parseObject(exchange.getBody(), ChnListExtendsResponse.class);
-        String errorMsg = "获取编解码通道列表失败:{},{},{}";
+        String errorMsg = "获取编码通道列表失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_EN_CHN_LIST_FAILED,response);
-        EnChnListVo enChnListVo = convert.convertToEnChnListVo(response.getChnList());
-        return BaseResult.succeed("获取编解码通道列表成功",enChnListVo);
+        List<EnChnListVo> listVos = response.getChnList().stream().map(enChnList -> convert.convertToEnChnListVo(enChnList)).collect(Collectors.toList());
+        return BaseResult.succeed("获取编码通道列表成功",listVos);
     }
 
     @Override
@@ -223,7 +225,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         SvrEntity entity = svrMapper.selectById(enChnDto.getDbId());
         check(entity);
         SvrBasicParam param = tool.getParam(entity);
-        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/enchn/{ssid}/{ssno}", JSON.toJSONString(enChnDto), String.class, param.getParamMap());
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/encchn/{ssid}/{ssno}", JSON.toJSONString(enChnDto), String.class, param.getParamMap());
         SvrResponse response = JSONObject.parseObject(s, SvrResponse.class);
         String errorMsg = "添加/删除编码通道失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_EN_CHN_FAILED,response);

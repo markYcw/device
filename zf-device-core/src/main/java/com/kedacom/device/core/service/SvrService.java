@@ -8,6 +8,8 @@ import com.kedacom.svr.pojo.SvrPageQueryDTO;
 import com.kedacom.svr.dto.*;
 import com.kedacom.svr.vo.*;
 
+import java.util.List;
+
 /**
  * svr
  *
@@ -70,7 +72,7 @@ public interface SvrService extends IService<SvrEntity> {
      * @param dbId
      * @return
      */
-    BaseResult<EnChnListVo> enChnList(Integer dbId);
+    BaseResult<List<EnChnListVo>> enChnList(Integer dbId);
 
     /**
      * 添加/删除编码通道

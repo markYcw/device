@@ -25,7 +25,7 @@ public class McuChairmanDTO extends McuRequestDTO {
     @ApiModelProperty(value = "会议号码",required = true)
     private String confId;
 
-    @ApiModelProperty(value = "终端ip或者e164号,设置时必填")
+    @ApiModelProperty(value = "终端id,设置时必填")
     private String mtId;
 
 }

@@ -25,6 +25,6 @@ public class McuAudioMixMemberDTO extends McuRequestDTO {
     @ApiModelProperty(value = "会议号码", required = true)
     private String confId;
 
-    @ApiModelProperty(value = "终端ip或者e164号")
+    @ApiModelProperty(value = "终端ID")
     private String mtId;
 }

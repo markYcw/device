@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -15,7 +16,8 @@ import java.io.Serializable;
 @ApiModel(description =  "录像终端")
 public class RecMember implements Serializable {
 
-    @ApiModelProperty(value = "终端ip或者e164")
+    @NotBlank(message = "轮询终端不能为空")
+    @ApiModelProperty(value = "轮询终端 最大字符长度：48个字节",required = true)
     private String mtId;
 
 }

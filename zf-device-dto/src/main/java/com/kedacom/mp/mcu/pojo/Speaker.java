@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -15,13 +17,16 @@ import java.io.Serializable;
 @ApiModel(description =  "发言人")
 public class Speaker implements Serializable {
 
-    @ApiModelProperty(value = "发言人名称 最大字符长度：128个字节")
+    @NotBlank(message = "发言人名称不能为空")
+    @ApiModelProperty(value = "发言人名称 最大字符长度：128个字节",required = true)
     private String name;
 
-    @ApiModelProperty(value = "帐号 最大字符长度：128个字节")
+    @NotBlank(message = "帐号不能为空")
+    @ApiModelProperty(value = "帐号 最大字符长度：128个字节",required = true)
     private String account;
 
-    @ApiModelProperty(value = "帐号类型:1-moid；4-非系统邮箱；5-e164号码；6-电话；7-ip地址；8-别名@ip(监控前端)；")
+    @NotNull(message = "帐号类型不能为空")
+    @ApiModelProperty(value = "帐号类型:1-moid；4-非系统邮箱；5-e164号码；6-电话；7-ip地址；8-别名@ip(监控前端)；",required = true)
     private Integer accountType;
 
 }

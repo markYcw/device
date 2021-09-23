@@ -3,6 +3,7 @@ package com.kedacom.mp.mcu.pojo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -15,15 +16,15 @@ import javax.validation.constraints.NotNull;
 public class MtSrcInfo {
 
     @NotNull(message = "选看源类型不能为空")
-    @ApiModelProperty(value = "选看源类型 1-终端； 2-画面合成；")
+    @ApiModelProperty(value = "选看源类型 1-终端； 2-画面合成；",required = true)
     private Integer srcType;
 
-    @NotNull(message = "源终端号")
-    @ApiModelProperty(value = "源终端号(仅选看源类型为终端有效) 最大字符长度：48个字节")
+    @NotBlank(message = "源终端号")
+    @ApiModelProperty(value = "源终端号(仅选看源类型为终端有效) 最大字符长度：48个字节",required = true)
     private String mtId;
 
-    @NotNull(message = "目的终端号")
-    @ApiModelProperty(value = "目的终端号(选看源类型为画面合成时, 必须为主席终端号) 最大字符长度：48个字节")
+    @NotBlank(message = "目的终端号")
+    @ApiModelProperty(value = "目的终端号(选看源类型为画面合成时, 必须为主席终端号) 最大字符长度：48个字节",required = true)
     private String mtDst;
 
 }

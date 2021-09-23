@@ -15,19 +15,19 @@ import java.io.Serializable;
 @ApiModel(description =  "录像设置")
 public class Recorder implements Serializable {
 
-    @ApiModelProperty(value = "发布模式:0-不发布；1-发布；")
+    @ApiModelProperty(value = "发布模式:0-不发布；1-发布；",required = true)
     private Integer publishMode;
 
-    @ApiModelProperty(value = "是否内容共享录像:0-否；1-是；")
+    @ApiModelProperty(value = "是否内容共享录像:0-否；1-是；",required = true)
     private Integer dualStream;
 
-    @ApiModelProperty(value = "是否支持免登陆观看直播:0-不支持；1-支持；")
+    @ApiModelProperty(value = "是否支持免登陆观看直播:0-不支持；1-支持；",required = true)
     private Integer anonymous;
 
-    @ApiModelProperty(value = "录像模式:1-录像；2-直播；3-录像+直播；")
+    @ApiModelProperty(value = "录像模式:1-录像；2-直播；3-录像+直播；",required = true)
     private Integer recorderMode;
 
-    @ApiModelProperty(value = "VRS的moid")
+    @ApiModelProperty(value = "VRS的moid",required = true)
     private Integer vrsId;
 
 }

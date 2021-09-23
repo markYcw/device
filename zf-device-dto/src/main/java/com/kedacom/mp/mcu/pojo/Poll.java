@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,18 +18,22 @@ import java.util.List;
 @ApiModel(description =  "轮询信息")
 public class Poll implements Serializable {
 
-    @ApiModelProperty(value = "轮询次数")
+    @NotNull(message = "轮询次数不能为空")
+    @ApiModelProperty(value = "轮询次数",required = true)
     private Integer num;
 
-    @ApiModelProperty(value = "轮询间隔（秒）")
+    @NotNull(message = "轮询次数不能为空")
+    @ApiModelProperty(value = "轮询间隔（秒）",required = true)
     private Integer keepTime;
 
+    @NotNull(message = "轮询次数不能为空")
     @ApiModelProperty(value = "轮询方式\n" +
             "1-仅图像；\n" +
-            "3-音视频轮询；")
+            "3-音视频轮询；",required = true)
     private Integer mode;
 
-    @ApiModelProperty(value = "轮询成员")
+    @NotEmpty(message = "轮询次数不能为空")
+    @ApiModelProperty(value = "轮询成员",required = true)
     private List<RecMember> members;
 
 }

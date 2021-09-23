@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -15,16 +16,20 @@ import java.io.Serializable;
 @ApiModel(description =  "主视频格式列表")
 public class VideoFormat implements Serializable {
 
-    @ApiModelProperty(value = "主视频格式:1- MPEG;2- H.261;3- H.263;4- H.264_HP;5- H.264_BP;6- H.265;7- H.263+;")
+    @NotNull(message = "主视频格式不能为空")
+    @ApiModelProperty(value = "主视频格式:1- MPEG;2- H.261;3- H.263;4- H.264_HP;5- H.264_BP;6- H.265;7- H.263+;",required = true)
     private Integer format;
 
-    @ApiModelProperty(value = "主视频分辨率:1-QCIF;2-CIF;3-4CIF;12-720P;13-1080P;14-WCIF;15-W4CIF;16-4k;")
+    @NotNull(message = "主视频格式不能为空")
+    @ApiModelProperty(value = "主视频分辨率:1-QCIF;2-CIF;3-4CIF;12-720P;13-1080P;14-WCIF;15-W4CIF;16-4k;",required = true)
     private Integer resolution;
 
-    @ApiModelProperty(value = "帧率")
+    @NotNull(message = "主视频格式不能为空")
+    @ApiModelProperty(value = "帧率",required = true)
     private Integer frame;
 
-    @ApiModelProperty(value = "码率")
+    @NotNull(message = "主视频格式不能为空")
+    @ApiModelProperty(value = "码率",required = true)
     private Integer bitrate;
 
 }

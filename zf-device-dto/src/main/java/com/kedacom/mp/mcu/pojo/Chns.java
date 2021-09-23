@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -15,7 +16,8 @@ import java.io.Serializable;
 @ApiModel(description =  "通道信息")
 public class Chns implements Serializable {
 
-    @ApiModelProperty(value = "电视墙模式：1-选看；2-四分屏(仅传统会议有效)；3-单通道轮询；")
+    @NotNull(message = "类型不能为空")
+    @ApiModelProperty(value = "电视墙模式：1-选看；2-四分屏(仅传统会议有效)；3-单通道轮询；",required = true)
     private Integer mode;
 
     @ApiModelProperty(value = "选看参数")

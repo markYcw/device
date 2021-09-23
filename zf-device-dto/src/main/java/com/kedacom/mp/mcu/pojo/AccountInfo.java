@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.List;
 
@@ -19,10 +20,12 @@ public class AccountInfo implements Serializable {
     @ApiModelProperty(value = "账号启用停用标识:0-停用;1-启用")
     private Integer enable;
 
-    @ApiModelProperty(value = "账号真实姓名")
+    @ApiModelProperty(value = "账号真实姓名",required = true)
+    @NotBlank(message = "账号真实姓名 不能为空")
     private String name;
 
-    @ApiModelProperty(value = "密码")
+    @ApiModelProperty(value = "密码",required = true)
+    @NotBlank(message = "密码 不能为空")
     private String passWord;
 
     @ApiModelProperty(value = "邮箱\n" +

@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 public class McuDualDTO extends McuRequestDTO {
 
     @NotNull(message = "类型不能为空")
-    @ApiModelProperty(value = "0：开始，1：停止")
+    @ApiModelProperty(value = "0：开始，1：停止",required = true)
     private Integer type;
 
     @NotBlank(message = "会议号码不能为空")

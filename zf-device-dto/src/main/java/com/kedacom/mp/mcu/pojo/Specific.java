@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -22,13 +23,16 @@ public class Specific implements Serializable {
             "4-会议轮询跟随；\n" +
             "6-选看画面合成；\n" +
             "7-批量轮询；\n" +
-            "10-选看双流；")
+            "10-选看双流；",required = true)
+    @NotBlank(message = "选看类型不能为空")
     private String memberType;
 
-    @ApiModelProperty(value = "选看终端id，仅member_type为 1-指定 时生效 最大字符长度：48个字节")
+    @NotBlank(message = "选看终端id不能为空")
+    @ApiModelProperty(value = "选看终端id，仅member_type为 1-指定 时生效 最大字符长度：48个字节",required = true)
     private String mtId;
 
-    @ApiModelProperty(value = "选看画面合成id，仅member_type为 6-选看画面合成 时生效 最大字符长度：48个字节")
+    @NotBlank(message = "选看画面合成id不能为空")
+    @ApiModelProperty(value = "选看画面合成id，仅member_type为 6-选看画面合成 时生效 最大字符长度：48个字节",required = true)
     private String vmpId;
 
 }

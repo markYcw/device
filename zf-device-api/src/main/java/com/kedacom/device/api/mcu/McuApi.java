@@ -7,8 +7,11 @@ import com.kedacom.mp.mcu.request.*;
 import com.kedacom.mp.mcu.response.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.validation.Valid;
 
 /**
  * @Author hxj
@@ -117,4 +120,9 @@ public interface McuApi {
     @ApiOperation("发送短消息")
     @PostMapping("/message")
     BaseResult message(@RequestBody McuMessageDTO dto);
+
+    @ApiOperation("发送心跳")
+    @PostMapping("/hb")
+    BaseResult<String> hb(@Valid @RequestBody McuRequestDTO dto);
+
 }

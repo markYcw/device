@@ -7,6 +7,8 @@ import com.kedacom.mp.mcu.request.*;
 import com.kedacom.mp.mcu.response.*;
 import feign.hystrix.FallbackFactory;
 
+import javax.validation.Valid;
+
 /**
  * @Author hxj
  * @Date: 2021/8/12 13:41
@@ -138,6 +140,11 @@ public class McuApiFallbackFactory implements FallbackFactory<McuApi> {
 
             @Override
             public BaseResult message(McuMessageDTO dto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<String> hb(@Valid McuRequestDTO dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
         };

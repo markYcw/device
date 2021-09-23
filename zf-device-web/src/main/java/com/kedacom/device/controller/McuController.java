@@ -46,6 +46,14 @@ public class McuController {
         return mcuService.logout(dto);
     }
 
+    @ApiOperation("发送心跳")
+    @PostMapping("/hb")
+    public BaseResult<String> hb(@Valid @RequestBody McuRequestDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return mcuService.hb(dto);
+    }
+
     @ApiOperation("创建/删除账户")
     @PostMapping("/account")
     public BaseResult account(@Valid @RequestBody McuAccountDTO dto, BindingResult br) {

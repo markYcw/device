@@ -62,4 +62,5 @@ public interface McuService {
 
     BaseResult message(McuMessageDTO dto);
 
+    BaseResult<String> hb(McuRequestDTO dto);
 }

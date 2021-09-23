@@ -102,6 +102,7 @@ public enum DeviceErrorEnum {
     MCU_TV_WALL_FAILED(4022, "开始/停止上电视墙失败"),
     MCU_EXCHANGE_FAILED(4023, "开始/停止码流交换失败"),
     MCU_MESSAGE_FAILED(4024, "发送短消息失败"),
+    MCU_HB_FAILED(4025, "发送心跳失败"),
 
     //SVR相关错误码 addBy ycw
     SVR_LOGIN_FAILED(5001, "SVR登录失败"),

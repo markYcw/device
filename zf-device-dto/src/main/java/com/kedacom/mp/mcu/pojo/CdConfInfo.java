@@ -22,7 +22,7 @@ public class CdConfInfo implements Serializable {
     @ApiModelProperty(value = "会议时长 0为永久会议")
     private Integer duration;
 
-    @ApiModelProperty(value = "会议码率")
+    @ApiModelProperty(value = "会议码率 如：1024 2048等")
     private Integer bitrate;
 
     @ApiModelProperty(value = "会议免打扰:0-关闭；1-开启；")

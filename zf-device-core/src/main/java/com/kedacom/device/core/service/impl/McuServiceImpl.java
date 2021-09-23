@@ -75,7 +75,7 @@ public class McuServiceImpl implements McuService {
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
         if (ObjectUtil.isNull(entity)) {
-            throw new MpException(DeviceErrorEnum.MCU_FAILED);
+            throw new MpException(DeviceErrorEnum.DEVICE_NOT_FOUND);
         }
         McuLoginRequest request = convert.login(entity);
         String ntyUrl = REQUEST_HEAD + mcuNtyUrl + NOTIFY_URL;
@@ -90,7 +90,7 @@ public class McuServiceImpl implements McuService {
 
         McuLoginResponse response = JSON.parseObject(string, McuLoginResponse.class);
         String errorMsg = "mcu登录平台失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_LOGIN_FAILED, response);
         entity.setSsid(response.getSsid());
         entity.setModifyTime(new Date());
         mapper.updateById(entity);
@@ -114,7 +114,7 @@ public class McuServiceImpl implements McuService {
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu登出平台失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_LOGOUT_FAILED, response);
 
         LambdaUpdateWrapper<UmsMcuEntity> wrapper = new LambdaUpdateWrapper();
         wrapper.set(UmsMcuEntity::getSsid, null)
@@ -139,7 +139,7 @@ public class McuServiceImpl implements McuService {
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu创建账号失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_ACCOUNT_FAILED, response);
         return BaseResult.succeed("操作成功");
     }
 
@@ -158,7 +158,7 @@ public class McuServiceImpl implements McuService {
 
         McuConfsResponse response = JSON.parseObject(string, McuConfsResponse.class);
         String errorMsg = "mcu获取会议列表失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_CONF_S_FAILED, response);
         McuConfsVO vo = convert.accountRes(response);
         return BaseResult.succeed(vo);
     }
@@ -178,7 +178,7 @@ public class McuServiceImpl implements McuService {
 
         McuTemplatesResponse response = JSON.parseObject(string, McuTemplatesResponse.class);
         String errorMsg = "mcu获取会议模板列表失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_TEMPLATES_FAILED, response);
         McuConfsVO vo = convert.templatesRes(response);
         return BaseResult.succeed(vo);
     }
@@ -198,7 +198,7 @@ public class McuServiceImpl implements McuService {
 
         McuConfInfoResponse response = JSON.parseObject(string, McuConfInfoResponse.class);
         String errorMsg = "mcu获取会议信息失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_CONF_INFO_FAILED, response);
         McuConfInfoVO vo = convert.confinfoRes(response);
         return BaseResult.succeed(vo);
     }
@@ -218,7 +218,7 @@ public class McuServiceImpl implements McuService {
 
         McuConfResponse response = JSON.parseObject(string, McuConfResponse.class);
         String errorMsg = "mcu创建/删除会议失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_CONF_FAILED, response);
         McuConfVO vo = convert.confRes(response);
         return BaseResult.succeed(vo);
     }
@@ -238,7 +238,7 @@ public class McuServiceImpl implements McuService {
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu开启会议模板失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_CONF_TEMPLATE_FAILED, response);
         return BaseResult.succeed("开启成功");
     }
 
@@ -257,7 +257,7 @@ public class McuServiceImpl implements McuService {
 
         McuMtmembersResponse response = JSON.parseObject(string, McuMtmembersResponse.class);
         String errorMsg = "mcu获取与会成员失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_MT_MEMBERS_FAILED, response);
 
         McuMtmembersVO vo = convert.mtMembersRes(response);
         return BaseResult.succeed(vo);
@@ -278,7 +278,7 @@ public class McuServiceImpl implements McuService {
 
         McuMtResponse response = JSON.parseObject(string, McuMtResponse.class);
         String errorMsg = "mcu添加/删除终端失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_MT_FAILED, response);
         McuMtVO vo = convert.mtRes(response);
         return BaseResult.succeed(vo);
     }
@@ -298,7 +298,7 @@ public class McuServiceImpl implements McuService {
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu呼叫/挂断终端失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_MT_CALL_FAILED, response);
         return BaseResult.succeed("操作成功");
     }
 
@@ -317,7 +317,7 @@ public class McuServiceImpl implements McuService {
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu设置/取消发言人失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_SPEAKER_FAILED, response);
         return BaseResult.succeed("操作成功");
     }
 
@@ -336,7 +336,7 @@ public class McuServiceImpl implements McuService {
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu设置/取消主席失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_CHAIRMAN_FAILED, response);
 
         return BaseResult.succeed("操作成功");
     }
@@ -356,7 +356,7 @@ public class McuServiceImpl implements McuService {
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu静音失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_SILENCE_FAILED, response);
 
         return BaseResult.succeed("操作成功");
     }
@@ -376,7 +376,7 @@ public class McuServiceImpl implements McuService {
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu哑音失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_MUTE_FAILED, response);
         return BaseResult.succeed("操作成功");
     }
 
@@ -395,7 +395,7 @@ public class McuServiceImpl implements McuService {
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu调节音量失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_VOLUME_FAILED, response);
         return BaseResult.succeed("操作成功");
     }
 
@@ -413,8 +413,8 @@ public class McuServiceImpl implements McuService {
         log.info("mcu终端双流控制中间件应答:{}", string);
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);
-        String errorMsg = "mcu终端双流控制音量失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        String errorMsg = "mcu终端双流控制失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_DUAL_FAILED, response);
         return BaseResult.succeed("操作成功");
     }
 
@@ -433,7 +433,7 @@ public class McuServiceImpl implements McuService {
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu开始/停止画面合成失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_VIDEO_MIX_FAILED, response);
         return BaseResult.succeed("操作成功");
     }
 
@@ -452,7 +452,7 @@ public class McuServiceImpl implements McuService {
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu开始/停止混音失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_AUDIO_MIX_FAILED, response);
         return BaseResult.succeed("操作成功");
     }
 
@@ -471,7 +471,7 @@ public class McuServiceImpl implements McuService {
 
         McuAudioMixMemberResponse response = JSON.parseObject(string, McuAudioMixMemberResponse.class);
         String errorMsg = "mcu添加/删除混音成员失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_AUDIO_MIX_MEMBER_FAILED, response);
         McuAudioMixMemberVO vo = convert.audioMixMemberRes(response);
         return BaseResult.succeed(vo);
     }
@@ -491,7 +491,7 @@ public class McuServiceImpl implements McuService {
 
         McuRecResponse response = JSON.parseObject(string, McuRecResponse.class);
         String errorMsg = "mcu开始/暂停/恢复/停止录像失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_REC_FAILED, response);
 
         McuRecVO vo = convert.recRes(response);
         return BaseResult.succeed(vo);
@@ -510,7 +510,7 @@ public class McuServiceImpl implements McuService {
 
         McuTvWallsResponse response = JSON.parseObject(string, McuTvWallsResponse.class);
         String errorMsg = "mcu获取电视墙列表失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_TV_WALLS_FAILED, response);
         McuTvWallsVO vo = convert.tvWallsRes(response);
         return BaseResult.succeed(vo);
     }
@@ -530,7 +530,7 @@ public class McuServiceImpl implements McuService {
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu开始/停止上电视墙失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_TV_WALL_FAILED, response);
         return BaseResult.succeed("操作成功");
     }
 
@@ -549,7 +549,7 @@ public class McuServiceImpl implements McuService {
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu开始/停止码流交换失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_EXCHANGE_FAILED, response);
         return BaseResult.succeed("操作成功");
     }
 
@@ -568,7 +568,7 @@ public class McuServiceImpl implements McuService {
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu发送短消息失败:{},{},{}";
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_OPERATE_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_MESSAGE_FAILED, response);
         return BaseResult.succeed("操作成功");
     }
 

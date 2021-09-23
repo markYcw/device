@@ -151,10 +151,10 @@ public class HandleResponseUtil {
      */
     public void handleMp(UmsMcuEntity entity) {
         if (ObjectUtil.isNull(entity)) {
-            throw new MpException(DeviceErrorEnum.MCU_FAILED);
+            throw new MpException(DeviceErrorEnum.DEVICE_NOT_FOUND);
         }
         if (StrUtil.isBlank(entity.getSsid())) {
-            throw new MpException(DeviceErrorEnum.MCU_SSID_FAILED);
+            throw new MpException(DeviceErrorEnum.DEVICE_NOT_LOGIN);
         }
     }
 

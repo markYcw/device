@@ -11,21 +11,17 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author hxj
- * @date: 2021/8/17 14:29
- * @description 创建会议时会议信息
+ * @author ycw
+ * @date: 2021/9/24 14:29
+ * @description 会议模板信息
  */
 @Data
-@ApiModel(description =  "创建会议时会议信息")
-public class CdConfInfo implements Serializable {
+@ApiModel(description =  "会议模板信息")
+public class TemplateInfo implements Serializable {
 
     @NotBlank(message = "名称不能为空")
     @ApiModelProperty(value = "名称",required = true)
     private String name;
-
-    @NotNull(message = "会议时长不能为空")
-    @ApiModelProperty(value = "会议时长 0为永久会议",required = true)
-    private Integer duration;
 
     @NotNull(message = "会议码率不能为空")
     @ApiModelProperty(value = "会议码率 如：1024 2048等",required = true)
@@ -39,16 +35,28 @@ public class CdConfInfo implements Serializable {
     @ApiModelProperty(value = "会议安全:0-公开会议；1-隐藏会议；",required = true)
     private Integer safeConf;
 
+    @ApiModelProperty(value = "会议密码\n" +
+            "1.字符限制：仅支持 英文字母(大小写) 数字 下划线（_） 小数点（.）\n" +
+            "2.最大字符长度：32个字节")
+    private String passWord;
+
     @NotNull(message = "传输加密类型不能为空")
     @ApiModelProperty(value = "传输加密类型:0-不加密；2-AES加密；",required = true)
     private Integer encryptedType;
+
+    @ApiModelProperty(value = "终端双向认证\n" +
+            "0-关闭；\n" +
+            "1-开启；")
+    private Integer encryptedAuth;
+
 
     @NotNull(message = "会议类型不能为空")
     @ApiModelProperty(value = "会议类型:0-传统会议；1-端口会议；",required = true)
     private Integer confType;
 
+
     @NotNull(message = "呼叫模式不能为空")
-    @ApiModelProperty(value = "呼叫模式:0-手动呼叫；2-定时呼叫；",required = true)
+    @ApiModelProperty(value = "呼叫模式:0-手动呼叫；2-自动呼叫；",required = true)
     private Integer callMode;
 
     @NotNull(message = "呼叫次数不能为空")
@@ -72,21 +80,32 @@ public class CdConfInfo implements Serializable {
             "0-质量优先；1-速度优先；",required = true)
     private Integer videoQuality;
 
+    @NotNull(message = "归一重整不能为空")
+    @ApiModelProperty(value = "归一重整:0-不使用;1-使用；",required = true)
+    private Integer oneReforming;
+
     @NotNull(message = "传输加密AES加密密钥不能为空")
-    @ApiModelProperty(value = "传输加密AES加密密钥 最大字符长度：16字节",required = true)
+    @ApiModelProperty(value = "传输加密AES加密密钥 最大字符长度：16字节")
     private String encryptedKey;
 
     @NotNull(message = "双流权限不能为空")
     @ApiModelProperty(value = "双流权限:0-发言会场；1-任意会场",required = true)
     private Integer dualMode;
 
+    @ApiModelProperty(value = "成为发言人后立即发起内容共享 0-否； 1-是；")
+    private Integer doubleFlow;
+
     @NotNull(message = "是否开启语音激励不能为空")
     @ApiModelProperty(value = "是否开启语音激励:0-否；1-是；",required = true)
     private Integer voiceActivityDetection;
 
+    @ApiModelProperty(value = "语音激励敏感度(s),支持5、15、30、60")
+    private Integer vacInterval;
+
     @NotNull(message = "级联模式不能为空")
     @ApiModelProperty(value = "级联模式:0-简单级联；1-合并级联；",required = true)
     private Integer cascadeMode;
+
 
     @NotNull(message = "是否级联上传不能为空")
     @ApiModelProperty(value = "是否级联上传:0-否；1-是；",required = true)
@@ -118,9 +137,22 @@ public class CdConfInfo implements Serializable {
     @ApiModelProperty(value = "预占资源:0-否；1-是；",required = true)
     private Integer preoccpuyResource;
 
-    @NotNull(message = "归一重整不能为空")
-    @ApiModelProperty(value = "归一重整:0-不使用;1-使用；",required = true)
-    private Integer oneReforming;
+    @ApiModelProperty(value = "FEC开关\n" +
+            "0-关闭；\n" +
+            "1-开启；")
+    private Integer fecMode;
+
+    @ApiModelProperty(value = "是否开启全场哑音例外\n" +
+            "0-不对任何人例外；\n" +
+            "1-对发言方和管理方例外；")
+    private Integer muteFilter;
+
+    @ApiModelProperty(value = "会议时长 0为永久会议")
+    private Integer duration;
+
+    @NotBlank(message = "预分配会议号不能为空")
+    @ApiModelProperty(value = "预分配会议号",required = true)
+    private String bindE164;
 
     @ApiModelProperty(value = "发言人")
     private Speaker speaker;
@@ -137,6 +169,9 @@ public class CdConfInfo implements Serializable {
 
     @ApiModelProperty(value = "参会成员 创建虚拟会议室时可填")
     private List<InviteMember> inviteMembers;
+
+    @ApiModelProperty("画面合成设置")
+    private Vmp vmp;
 
     @ApiModelProperty(value = "录像设置")
     private Recorder recorder;

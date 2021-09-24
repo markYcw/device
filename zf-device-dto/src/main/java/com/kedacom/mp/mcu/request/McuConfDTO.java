@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 public class McuConfDTO extends McuRequestDTO {
 
     @NotNull(message = "type不能为空")
-    @ApiModelProperty(value = "0：创建即时会议;1：创建会议模板;2：结束即时会议;3：删除会议模板",required = true)
+    @ApiModelProperty(value = "0：创建即时会议 1：结束即时会议",required = true)
     private Integer type;
 
     @ApiModelProperty(value = "会议号码，除type 是0外必填,最大字符长度：48个字节")

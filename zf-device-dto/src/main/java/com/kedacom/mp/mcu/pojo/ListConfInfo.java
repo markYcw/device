@@ -15,8 +15,8 @@ import java.io.Serializable;
 @ApiModel(description =  "会议列表")
 public class ListConfInfo implements Serializable {
 
-    @ApiModelProperty(value = "会议号码")
-    private String confId;
+    @ApiModelProperty(value = "会议模板ID")
+    private String templateId;
 
     @ApiModelProperty(value = "名称")
     private String name;

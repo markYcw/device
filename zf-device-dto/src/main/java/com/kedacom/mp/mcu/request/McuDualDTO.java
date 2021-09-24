@@ -25,8 +25,7 @@ public class McuDualDTO extends McuRequestDTO {
     @ApiModelProperty(value = "会议号码", required = true)
     private String confId;
 
-    @NotBlank(message = "终端id不能为空")
-    @ApiModelProperty(value = "终端id", required = true)
+    @ApiModelProperty(value = "终端id")
     private String mtId;
 
 }

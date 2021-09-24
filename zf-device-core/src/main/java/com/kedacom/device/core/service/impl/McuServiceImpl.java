@@ -173,7 +173,7 @@ public class McuServiceImpl implements McuService {
         McuBasicParam param = tool.getParam(entity);
 
         log.info("mcu获取会议模板列表中间件入参信息:{}", JSON.toJSONString(request));
-        String string = template.postForObject(param.getUrl() + "/confs/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        String string = template.postForObject(param.getUrl() + "/templates/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
         log.info("mcu获取会议模板列表中间件应答:{}", string);
 
         McuTemplatesResponse response = JSON.parseObject(string, McuTemplatesResponse.class);

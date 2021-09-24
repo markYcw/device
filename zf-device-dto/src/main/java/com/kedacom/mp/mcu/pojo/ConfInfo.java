@@ -132,7 +132,9 @@ public class ConfInfo implements Serializable {
     @ApiModelProperty(value = "是否需要密码:0-否；1-是；")
     private Integer needPassword;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "归一重整，开启该功能后可增强对外厂商终端的兼容，但会使丢包重传失效\n" +
+            "0-不启用；\n" +
+            "1-启用；")
     private Integer oneReforming;
 
     @ApiModelProperty(value = "成为发言人后立即发起内容共享0-否；1-是；")

@@ -21,7 +21,7 @@ public interface McuService {
 
     BaseResult<McuConfsVO> confs(McuConfsDTO dto);
 
-    BaseResult<McuConfsVO> templates(McuTemplatesDTO dto);
+    BaseResult<McuConfTemplateVO> templates(McuTemplatesDTO dto);
 
     BaseResult<McuConfInfoVO> confinfo(McuConfInfoDTO dto);
 

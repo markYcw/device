@@ -165,7 +165,7 @@ public class McuServiceImpl implements McuService {
     }
 
     @Override
-    public BaseResult<McuConfsVO> templates(McuTemplatesDTO dto) {
+    public BaseResult<McuConfTemplateVO> templates(McuTemplatesDTO dto) {
         log.info("mcu获取会议模板列表:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
@@ -177,10 +177,10 @@ public class McuServiceImpl implements McuService {
         String string = template.postForObject(param.getUrl() + "/templates/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
         log.info("mcu获取会议模板列表中间件应答:{}", string);
 
-        McuTemplatesResponse response = JSON.parseObject(string, McuTemplatesResponse.class);
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu获取会议模板列表失败:{},{},{}";
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_TEMPLATES_FAILED, response);
-        McuConfsVO vo = convert.templatesRes(response);
+        McuConfTemplateVO vo = JSON.parseObject(string, McuConfTemplateVO.class);
         return BaseResult.succeed(vo);
     }
 

@@ -9,15 +9,15 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author hxj
+ * @author ycw
  * @date: 2021/8/12 19:24
  * @description 获取会议列表响应
  */
 @Data
-@ApiModel(description =  "获取会议列表响应")
-public class McuConfsVO implements Serializable {
+@ApiModel(description =  "获取会议模板列表响应")
+public class McuConfTemplateVO implements Serializable {
 
-    @ApiModelProperty(value = "会议列表")
-    private List<ListConfInfo> confInfo;
+    @ApiModelProperty(value = "会议模板列表")
+    private List<ListConfInfo> templateInfo;
 
 }

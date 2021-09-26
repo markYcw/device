@@ -73,7 +73,7 @@ public class McuController {
 
     @ApiOperation("获取会议模板列表")
     @PostMapping("/templates")
-    public BaseResult<McuConfsVO> templates(@Valid @RequestBody McuTemplatesDTO dto, BindingResult br) {
+    public BaseResult<McuConfTemplateVO> templates(@Valid @RequestBody McuTemplatesDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return mcuService.templates(dto);

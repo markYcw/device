@@ -1,6 +1,6 @@
 package com.kedacom.mp.mcu.response;
 
-import com.kedacom.mp.mcu.pojo.ListConfInfo;
+import com.kedacom.mp.mcu.pojo.ListConfTemplateInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,6 +18,6 @@ import java.util.List;
 public class McuConfTemplateVO implements Serializable {
 
     @ApiModelProperty(value = "会议模板列表")
-    private List<ListConfInfo> templateInfo;
+    private List<ListConfTemplateInfo> templateInfo;
 
 }

@@ -103,6 +103,7 @@ public enum DeviceErrorEnum {
     MCU_EXCHANGE_FAILED(4023, "开始/停止码流交换失败"),
     MCU_MESSAGE_FAILED(4024, "发送短消息失败"),
     MCU_HB_FAILED(4025, "发送心跳失败"),
+    MCU_CONF_TEMPLATE_S_FAILED(4026, "mcu创建/删除会议模板失败"),
 
     //SVR相关错误码 addBy ycw
     SVR_LOGIN_FAILED(5001, "SVR登录失败"),

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -42,6 +43,10 @@ public class Members {
     @NotNull(message = "在画画合成中的位置不能为空")
     @ApiModelProperty(value = "在画画合成中的位置",required = true)
     private Integer chnIdx;
+
+    @NotEmpty(message = "单通道轮询设置不能为空")
+    @ApiModelProperty(value = "单通道轮询设置",required = true)
+    private PollInfo poll;
 
 
 

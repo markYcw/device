@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @description
  */
 @Data
-@ApiModel(description = "创建/删除会议模板")
+@ApiModel(description = "创建/删除会议模板响应")
 public class ConfTemplateVo implements Serializable {
 
     @ApiModelProperty(value = "会议模板ID，创建时返回")

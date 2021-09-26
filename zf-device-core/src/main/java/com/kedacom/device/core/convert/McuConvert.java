@@ -79,4 +79,6 @@ public interface McuConvert {
 
     McuAudioMixMemberVO audioMixMemberRes(McuAudioMixMemberResponse response);
 
+    ConfTemplateVo convertToConfTemplateVo(ConfTemplateResponse response);
+
 }

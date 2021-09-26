@@ -4,6 +4,7 @@ import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.McuService;
 import com.kedacom.mp.mcu.McuRequestDTO;
+import com.kedacom.mp.mcu.pojo.ConfTemplateInfoVo;
 import com.kedacom.mp.mcu.request.*;
 import com.kedacom.mp.mcu.response.*;
 import io.swagger.annotations.Api;
@@ -92,6 +93,22 @@ public class McuController {
         ValidUtils.paramValid(br);
 
         return mcuService.conf(dto);
+    }
+
+    @ApiOperation("获取会议模板信息")
+    @PostMapping("/templateInfo")
+    public BaseResult<ConfTemplateInfoVo> templateInfo(@Valid @RequestBody GetConfTemplateDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return mcuService.templateInfo(dto);
+    }
+
+    @ApiOperation("创建/删除会议模板")
+    @PostMapping("/confTemplates")
+    public BaseResult<ConfTemplateVo> confTemplates(@Valid @RequestBody ConfTemplateDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return mcuService.confTemplates(dto);
     }
 
     @ApiOperation("开启会议模板")
@@ -237,5 +254,7 @@ public class McuController {
 
         return mcuService.message(dto);
     }
+
+
 
 }

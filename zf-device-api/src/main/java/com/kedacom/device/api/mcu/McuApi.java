@@ -3,6 +3,7 @@ package com.kedacom.device.api.mcu;
 import com.kedacom.BaseResult;
 import com.kedacom.device.api.mcu.fallback.McuApiFallbackFactory;
 import com.kedacom.mp.mcu.McuRequestDTO;
+import com.kedacom.mp.mcu.pojo.ConfTemplateInfoVo;
 import com.kedacom.mp.mcu.request.*;
 import com.kedacom.mp.mcu.response.*;
 import io.swagger.annotations.ApiOperation;
@@ -123,6 +124,14 @@ public interface McuApi {
 
     @ApiOperation("发送心跳")
     @PostMapping("/hb")
-    BaseResult<String> hb(@Valid @RequestBody McuRequestDTO dto);
+    BaseResult<String> hb(@RequestBody McuRequestDTO dto);
+
+    @ApiOperation("创建/删除会议模板")
+    @PostMapping("/confTemplates")
+    BaseResult<ConfTemplateVo> confTemplates(@RequestBody ConfTemplateDTO dto);
+
+    @ApiOperation("获取会议模板信息")
+    @PostMapping("/templateInfo")
+    BaseResult<ConfTemplateInfoVo> templateInfo(@RequestBody GetConfTemplateDTO dto);
 
 }

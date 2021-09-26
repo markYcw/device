@@ -6,17 +6,17 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author hxj
- * @date: 2021/8/17 13:32
- * @description 轮询信息
+ * @author ycw
+ * @version v1.0
+ * @date 2021/9/26 10:07
+ * @description 单通道轮询设置
  */
+@ApiModel(description = "单通道轮询设置")
 @Data
-@ApiModel(description =  "轮询信息")
-public class Poll implements Serializable {
+public class PollInfo {
 
     @NotNull(message = "轮询次数不能为空")
     @ApiModelProperty(value = "轮询次数",required = true)
@@ -32,8 +32,8 @@ public class Poll implements Serializable {
             "3-音视频轮询；",required = true)
     private Integer mode;
 
-    @NotEmpty(message = "轮询成员不能为空")
-    @ApiModelProperty(value = "轮询成员",required = true)
-    private List<RecMember> members;
+    @NotEmpty(message = "轮询成员列表不能为空")
+    @ApiModelProperty(value = "轮询成员列表",required = true)
+    private List<PollMember> members;
 
 }

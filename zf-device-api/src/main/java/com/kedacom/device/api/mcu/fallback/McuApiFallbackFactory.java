@@ -3,9 +3,11 @@ package com.kedacom.device.api.mcu.fallback;
 import com.kedacom.BaseResult;
 import com.kedacom.device.api.mcu.McuApi;
 import com.kedacom.mp.mcu.McuRequestDTO;
+import com.kedacom.mp.mcu.pojo.ConfTemplateInfoVo;
 import com.kedacom.mp.mcu.request.*;
 import com.kedacom.mp.mcu.response.*;
 import feign.hystrix.FallbackFactory;
+import org.springframework.validation.BindingResult;
 
 import javax.validation.Valid;
 
@@ -144,9 +146,21 @@ public class McuApiFallbackFactory implements FallbackFactory<McuApi> {
             }
 
             @Override
-            public BaseResult<String> hb(@Valid McuRequestDTO dto) {
+            public BaseResult<String> hb(McuRequestDTO dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
+
+            @Override
+            public BaseResult<ConfTemplateVo> confTemplates(ConfTemplateDTO dto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<ConfTemplateInfoVo> templateInfo(GetConfTemplateDTO dto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+
         };
     }
 }

@@ -2,6 +2,7 @@ package com.kedacom.device.core.service;
 
 import com.kedacom.BaseResult;
 import com.kedacom.mp.mcu.McuRequestDTO;
+import com.kedacom.mp.mcu.pojo.ConfTemplateInfoVo;
 import com.kedacom.mp.mcu.request.*;
 import com.kedacom.mp.mcu.response.*;
 
@@ -63,4 +64,8 @@ public interface McuService {
     BaseResult message(McuMessageDTO dto);
 
     BaseResult<String> hb(McuRequestDTO dto);
+
+    BaseResult<ConfTemplateVo> confTemplates(ConfTemplateDTO dto);
+
+    BaseResult<ConfTemplateInfoVo> templateInfo(GetConfTemplateDTO dto);
 }

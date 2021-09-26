@@ -19,6 +19,7 @@ import com.kedacom.device.mp.mcu.request.*;
 import com.kedacom.device.mp.mcu.response.*;
 import com.kedacom.mp.mcu.McuRequestDTO;
 import com.kedacom.mp.mcu.entity.UmsMcuEntity;
+import com.kedacom.mp.mcu.pojo.ConfTemplateInfoVo;
 import com.kedacom.mp.mcu.request.*;
 import com.kedacom.mp.mcu.response.*;
 import com.kedacom.util.NumGen;
@@ -584,6 +585,38 @@ public class McuServiceImpl implements McuService {
         MpResponse response = JSON.parseObject(exchange.getBody(), MpResponse.class);
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_HB_FAILED, response);
         return BaseResult.succeed("操作成功");
+    }
+
+    @Override
+    public BaseResult<ConfTemplateVo> confTemplates(ConfTemplateDTO dto) {
+        log.info("mcu创建/删除会议模板:{}", dto);
+        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        McuBasicParam param = tool.getParam(entity);
+        log.info("mcu创建/删除会议模板中间件入参:{}",JSON.toJSONString(dto));
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/templates/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        log.info("mcu创建/删除会议模板响应:{}", s);
+        String errorMsg = "mcu创建/删除会议模板失败:{},{},{}";
+        ConfTemplateResponse response = JSON.parseObject(s, ConfTemplateResponse.class);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_HB_FAILED, response);
+        ConfTemplateVo vo = convert.convertToConfTemplateVo(response);
+        return BaseResult.succeed("mcu创建/删除会议模板成功",vo);
+    }
+
+    @Override
+    public BaseResult<ConfTemplateInfoVo> templateInfo(GetConfTemplateDTO dto) {
+        log.info("mcu4.8获取会议模板信息:{}", dto);
+        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        McuBasicParam param = tool.getParam(entity);
+        log.info("mcu获取会议模板信息中间件入参:{}",JSON.toJSONString(dto));
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/templateinfo/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        log.info("mcu获取会议模板信息响应:{}", s);
+        String errorMsg = "mcu获取会议模板信息失败:{},{},{}";
+        MpResponse response = JSON.parseObject(s, MpResponse.class);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_HB_FAILED, response);
+        ConfTemplateInfoVo vo = JSON.parseObject(s, ConfTemplateInfoVo.class);
+        return BaseResult.succeed("mcu获取会议模板信息成功",vo);
     }
 
 }

@@ -22,8 +22,8 @@ public class ConfTemplateDTO extends McuRequestDTO {
     @ApiModelProperty(value = "0：0：创建会议模板 1：1：删除会议模板",required = true)
     private Integer type;
 
-    @ApiModelProperty(value = "会议号码，type 是1时必填")
-    private Integer templateId;
+    @ApiModelProperty(value = "会议模板ID，type 是1时必填")
+    private String templateId;
 
     @ApiModelProperty(value = "会议模板信息，创建时必填")
     private TemplateInfo templateInfo;

@@ -173,7 +173,19 @@ public class TemplateInfo implements Serializable {
     @ApiModelProperty("画面合成设置")
     private Vmp vmp;
 
+    @ApiModelProperty(value = "vip成员列表")
+    private List<Vips> vips;
+
+    @ApiModelProperty("轮询设置设置")
+    private PollInfo poll;
+
     @ApiModelProperty(value = "录像设置")
     private Recorder recorder;
+
+    @ApiModelProperty(value = "录像设置")
+    private KeepCallingMembers keepCallingMembers;
+
+    @ApiModelProperty(value = "数据协作")
+    private Dcs dcs;
 
 }

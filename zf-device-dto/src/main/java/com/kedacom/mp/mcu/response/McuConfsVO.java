@@ -17,6 +17,9 @@ import java.util.List;
 @ApiModel(description =  "获取会议列表响应")
 public class McuConfsVO implements Serializable {
 
+    @ApiModelProperty(value = "总数")
+    private Integer total;
+
     @ApiModelProperty(value = "会议列表")
     private List<ListConfInfo> confInfo;
 

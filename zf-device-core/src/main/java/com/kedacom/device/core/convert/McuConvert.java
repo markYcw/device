@@ -81,4 +81,6 @@ public interface McuConvert {
 
     ConfTemplateVo convertToConfTemplateVo(ConfTemplateResponse response);
 
+    AccountVo convertToAccountVo(AccountResponse response);
+
 }

@@ -16,8 +16,8 @@ import javax.validation.constraints.NotBlank;
 @ApiModel(description =  "开启会议模板入参")
 public class McuConfTemplateDTO extends McuRequestDTO {
 
-    @NotBlank(message = "会议号码不能为空")
-    @ApiModelProperty(value = "会议号码",required = true)
-    private String confId;
+    @NotBlank(message = "会议模板ID不能为空")
+    @ApiModelProperty(value = "会议模板ID",required = true)
+    private String templateId;
 
 }

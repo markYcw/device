@@ -126,7 +126,7 @@ public class McuServiceImpl implements McuService {
     }
 
     @Override
-    public BaseResult account(McuAccountDTO dto) {
+    public BaseResult<AccountVo> account(McuAccountDTO dto) {
         log.info("mcu创建/删除账户:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
@@ -138,10 +138,11 @@ public class McuServiceImpl implements McuService {
         String string = template.postForObject(param.getUrl() + "/account/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
         log.info("mcu创建账号中间件应答:{}", string);
 
-        MpResponse response = JSON.parseObject(string, MpResponse.class);
+        AccountResponse response = JSON.parseObject(string, AccountResponse.class);
         String errorMsg = "mcu创建账号失败:{},{},{}";
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_ACCOUNT_FAILED, response);
-        return BaseResult.succeed("操作成功");
+        AccountVo vo = convert.convertToAccountVo(response);
+        return BaseResult.succeed("操作成功",vo);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class McuApiFallbackFactory implements FallbackFactory<McuApi> {
             }
 
             @Override
-            public BaseResult account(McuAccountDTO dto) {
+            public BaseResult<AccountVo> account(McuAccountDTO dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 

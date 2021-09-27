@@ -22,14 +22,8 @@ public class McuAccountDTO extends McuRequestDTO {
     @ApiModelProperty(value = "0:创建账号;1:删除帐号", required = true)
     private Integer type;
 
-    @NotBlank
-    @ApiModelProperty(value = "账号自定义账号，登陆账号\n" +
-            "1.字符限制：\n" +
-            "  a.不支持输入特殊字符：% & * ^ ~ ' \" \" ? / \\ <> | ` \" $\n" +
-            "  b.且首字符和尾字符不支持输入，下划线（_） 减号（-） 小数点（.） @\n" +
-            "（除首尾字符可以输入）\n" +
-            "2.最大字符长度：64个字节", required = true)
-    private String account;
+    @ApiModelProperty(value = "删除时必填")
+    private String accountMoId;
 
     @ApiModelProperty(value = "账户信息，创建时必填")
     private AccountInfo accountInfo;

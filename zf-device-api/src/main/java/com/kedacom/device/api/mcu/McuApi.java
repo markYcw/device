@@ -32,7 +32,7 @@ public interface McuApi {
 
     @ApiOperation("创建/删除账户")
     @PostMapping("/account")
-    BaseResult account(@RequestBody McuAccountDTO dto);
+    BaseResult<AccountVo> account(@RequestBody McuAccountDTO dto);
 
     @ApiOperation("获取会议列表")
     @PostMapping("/confs")
@@ -104,11 +104,11 @@ public interface McuApi {
 
     @ApiOperation("开始/暂停/恢复/停止录像")
     @PostMapping("/rec")
-    public BaseResult rec(@RequestBody McuRecDTO dto);
+    BaseResult rec(@RequestBody McuRecDTO dto);
 
     @ApiOperation("获取电视墙列表")
     @PostMapping("/tvWalls")
-    public BaseResult<McuTvWallsVO> tvWalls(@RequestBody McuRequestDTO dto);
+    BaseResult<McuTvWallsVO> tvWalls(@RequestBody McuRequestDTO dto);
 
     @ApiOperation("开始/停止上电视墙")
     @PostMapping("/tvwall")

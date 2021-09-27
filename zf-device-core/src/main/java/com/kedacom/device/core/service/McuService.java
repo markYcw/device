@@ -17,7 +17,7 @@ public interface McuService {
 
     BaseResult logout(McuRequestDTO dto);
 
-    BaseResult account(McuAccountDTO dto);
+    BaseResult<AccountVo> account(McuAccountDTO dto);
 
     BaseResult<McuConfsVO> confs(McuConfsDTO dto);
 

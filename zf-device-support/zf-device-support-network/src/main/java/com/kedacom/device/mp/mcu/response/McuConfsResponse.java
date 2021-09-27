@@ -19,6 +19,9 @@ import java.util.List;
 @ApiModel(description =  "获取会议列表中间件响应")
 public class McuConfsResponse extends MpResponse {
 
+    @ApiModelProperty(value = "总数")
+    private Integer total;
+
     @ApiModelProperty(value = "会议列表")
     private List<ListConfInfo> confInfo;
 

@@ -57,11 +57,19 @@ public class McuController {
 
     @ApiOperation("创建/删除账户")
     @PostMapping("/account")
-    public BaseResult account(@Valid @RequestBody McuAccountDTO dto, BindingResult br) {
+    public BaseResult<AccountVo> account(@Valid @RequestBody McuAccountDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return mcuService.account(dto);
     }
+
+    /*@ApiOperation("查询所有账户")
+    @PostMapping("/accounts")
+    public BaseResult<AccountVo> accounts(@Valid @RequestBody McuAccountDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return mcuService.accounts(dto);
+    }*/
 
     @ApiOperation("获取会议列表")
     @PostMapping("/confs")

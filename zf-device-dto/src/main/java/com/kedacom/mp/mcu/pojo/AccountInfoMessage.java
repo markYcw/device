@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Data
 @ApiModel(description =  "账户信息")
-public class AccountInfo implements Serializable {
+public class AccountInfoMessage implements Serializable {
 
     @ApiModelProperty(value = "账号自定义账号，登陆账号 1.字符限制：  a.不支持输入特殊字符：% & * ^ ~ ' \" \" ? / \\ <> | ` \" $" +
             " b.且首字符和尾字符不支持输入，下划线（_） 减号（-） 小数点（.） @（除首尾字符可以输入）2.最大字符长度：64个字节")
@@ -52,7 +52,8 @@ public class AccountInfo implements Serializable {
     @ApiModelProperty(value = "出生日期 格式为ISO8601:20:00标准")
     private String dateOfBirth;
 
-    @ApiModelProperty(value = "电话号分机号如：025-5555522-2189电话：025-5555522；分机：2189 1.字符限制：数字、（、）、，、-、；、*、+、#、空格、")
+    @ApiModelProperty(value = "电话号分机号如：025-5555522-2189电话：025-5555522；分机：2189\n" +
+            "1.字符限制：数字、（、）、，、-、；、*、+、#、空格、")
     private String phone;
 
     @ApiModelProperty(value = "传真；1.字符限制：数字、“-”")

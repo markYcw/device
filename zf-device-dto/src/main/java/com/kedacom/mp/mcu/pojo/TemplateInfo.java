@@ -182,7 +182,7 @@ public class TemplateInfo implements Serializable {
     @ApiModelProperty(value = "录像设置")
     private Recorder recorder;
 
-    @ApiModelProperty(value = "录像设置")
+    @ApiModelProperty(value = "追呼成员数组")
     private KeepCallingMembers keepCallingMembers;
 
     @ApiModelProperty(value = "数据协作")

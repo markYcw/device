@@ -68,4 +68,6 @@ public interface McuService {
     BaseResult<ConfTemplateVo> confTemplates(ConfTemplateDTO dto);
 
     BaseResult<ConfTemplateInfoVo> templateInfo(GetConfTemplateDTO dto);
+
+    BaseResult<AccountsVo> accounts(AccountsDto dto);
 }

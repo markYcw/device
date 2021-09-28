@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -15,13 +16,14 @@ import java.io.Serializable;
 @ApiModel(description =  "部门信息")
 public class DepartmentInfo implements Serializable {
 
-    @ApiModelProperty(value = "部门序号（UUID格式）")
-    private String moid;
+    @NotBlank(message = "部门序号 不能为空")
+    @ApiModelProperty(value = "部门序号（UUID格式）",required = true)
+    private String departmentMoid;
 
     @ApiModelProperty(value = "部门名称")
-    private String name;
+    private String departmentName;
 
     @ApiModelProperty(value = "职位信息")
-    private String position;
+    private String departmentPosition;
 
 }

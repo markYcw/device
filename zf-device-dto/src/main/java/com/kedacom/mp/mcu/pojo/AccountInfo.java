@@ -17,8 +17,9 @@ import java.util.List;
 @ApiModel(description =  "账户信息")
 public class AccountInfo implements Serializable {
 
+    @NotBlank(message = "账号真实姓名 不能为空")
     @ApiModelProperty(value = "账号自定义账号，登陆账号 1.字符限制：  a.不支持输入特殊字符：% & * ^ ~ ' \" \" ? / \\ <> | ` \" $" +
-            " b.且首字符和尾字符不支持输入，下划线（_） 减号（-） 小数点（.） @（除首尾字符可以输入）2.最大字符长度：64个字节")
+            " b.且首字符和尾字符不支持输入，下划线（_） 减号（-） 小数点（.） @（除首尾字符可以输入）2.最大字符长度：64个字节",required = true)
     private String account;
 
     @ApiModelProperty(value = "账号启用停用标识:0-停用;1-启用")
@@ -28,19 +29,17 @@ public class AccountInfo implements Serializable {
     @NotBlank(message = "账号真实姓名 不能为空")
     private String name;
 
-    @ApiModelProperty(value = "密码",required = true)
+    @ApiModelProperty(value = "密码 1.字符限制：仅支持 英文字母(大小写)、数字、“_”、“.”",required = true)
     @NotBlank(message = "密码 不能为空")
     private String passWord;
 
-    @ApiModelProperty(value = "邮箱\n" +
-            "1.字符限制：仅支持 英文字母（大小写）、数字、“_”、“@”、“.”、“-”")
+    @ApiModelProperty(value = "邮箱 1.字符限制：仅支持 英文字母（大小写）、数字、“_”、“@”、“.”、“-”")
     private String email;
 
-    @ApiModelProperty(value = "手机\n" +
-            "1.字符限制：仅支持 数字、“.”、“_”、“-”、“*”、“#”、空格")
+    @ApiModelProperty(value = "手机 1.字符限制：仅支持 数字、“.”、“_”、“-”、“*”、“#”、空格")
     private String mobile;
 
-    @ApiModelProperty(value = "164号是否绑定自定义账号 0-否 1-是；")
+    @ApiModelProperty(value = "默认为自动分配 0-不绑定号码；1-手动分配； 2-自动分配；")
     private Integer binded;
 
     @ApiModelProperty(value = "e164号码（只有bind值为1时，才需要填值，其他情况不用填）")
@@ -53,24 +52,21 @@ public class AccountInfo implements Serializable {
     private String dateOfBirth;
 
     @ApiModelProperty(value = "电话号分机号如：025-5555522-2189电话：025-5555522；分机：2189 1.字符限制：数字、（、）、，、-、；、*、+、#、空格、")
-    private String phone;
+    private String extNum;
 
     @ApiModelProperty(value = "传真；1.字符限制：数字、“-”")
     private String fax;
 
     @ApiModelProperty(value = "办公地址")
-    private String officeLoc;
+    private String officeLocation;
 
     @ApiModelProperty(value = "部门信息列表")
     private List<DepartmentInfo> departments;
 
-    @ApiModelProperty(value = "账号编号/工号\n" +
-            "1.字符限制：数字、字母")
+    @ApiModelProperty(value = "账号编号/工号 1.字符限制：数字、字母")
     private String jobNum;
 
-    @ApiModelProperty(value = "是否为来宾用户,默认为0\n" +
-            "0-否；\n" +
-            "1-是；")
+    @ApiModelProperty(value = "是否为来宾用户,默认为0 0-否；1-是；")
     private Integer limited;
 
 }

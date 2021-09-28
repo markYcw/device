@@ -620,5 +620,21 @@ public class McuServiceImpl implements McuService {
         return BaseResult.succeed("mcu获取会议模板信息成功",vo);
     }
 
+    @Override
+    public BaseResult<AccountsVo> accounts(AccountsDto dto) {
+        log.info("4.4查询所有账户:{}", dto);
+        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        McuBasicParam param = tool.getParam(entity);
+        log.info("mcu查询所有账户中间件入参:{}",JSON.toJSONString(dto));
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/accounts/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        log.info("mcu查询所有账户响应:{}", s);
+        String errorMsg = "mcu查询所有账户失败:{},{},{}";
+        MpResponse response = JSON.parseObject(s, MpResponse.class);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_HB_FAILED, response);
+        AccountsVo vo = JSON.parseObject(s, AccountsVo.class);
+        return BaseResult.succeed("mcu查询所有账户成功",vo);
+    }
+
 }
 

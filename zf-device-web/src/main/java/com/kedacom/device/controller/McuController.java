@@ -63,13 +63,13 @@ public class McuController {
         return mcuService.account(dto);
     }
 
-    /*@ApiOperation("查询所有账户")
+    @ApiOperation("查询所有账户")
     @PostMapping("/accounts")
-    public BaseResult<AccountVo> accounts(@Valid @RequestBody McuAccountDTO dto, BindingResult br) {
+    public BaseResult<AccountsVo> accounts(@Valid @RequestBody AccountsDto dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return mcuService.accounts(dto);
-    }*/
+    }
 
     @ApiOperation("获取会议列表")
     @PostMapping("/confs")

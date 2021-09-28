@@ -14,8 +14,8 @@ import lombok.Data;
 @ApiModel(description = "创建/删除账号响应")
 public class AccountVo {
 
-    @ApiModelProperty(value = "会议模板ID，创建时返回")
-    private String templateId;
+    @ApiModelProperty(value = "账号moid 创建成功时返回")
+    private String accountMoId;
 
 
 }

@@ -95,7 +95,7 @@ public class McuController {
         return mcuService.confinfo(dto);
     }
 
-    @ApiOperation("创建/删除会议")
+    @ApiOperation("创建/结束会议")
     @PostMapping("/conf")
     public BaseResult<McuConfVO> conf(@Valid @RequestBody McuConfDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);

@@ -17,7 +17,7 @@ import java.util.List;
 @ApiModel(description = "查询所有账户响应")
 public class AccountsVo {
 
-    @ApiModelProperty(value = "会议模板ID，创建时返回")
+    @ApiModelProperty(value = "总数")
     private int total;
 
     @ApiModelProperty(value = "会议模板ID，创建时返回")

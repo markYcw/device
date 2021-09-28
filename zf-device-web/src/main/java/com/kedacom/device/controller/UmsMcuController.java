@@ -90,7 +90,7 @@ public class UmsMcuController {
     }
 
     /**
-     * 删除
+     * 通知
      */
     @PostMapping("/mcuNotify")
     @ApiOperation(value = "会议平台通知")

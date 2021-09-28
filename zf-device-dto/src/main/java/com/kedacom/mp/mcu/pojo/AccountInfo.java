@@ -17,7 +17,7 @@ import java.util.List;
 @ApiModel(description =  "账户信息")
 public class AccountInfo implements Serializable {
 
-    @NotBlank(message = "账号真实姓名 不能为空")
+    @NotBlank(message = "账号自定义账号 不能为空")
     @ApiModelProperty(value = "账号自定义账号，登陆账号 1.字符限制：  a.不支持输入特殊字符：% & * ^ ~ ' \" \" ? / \\ <> | ` \" $" +
             " b.且首字符和尾字符不支持输入，下划线（_） 减号（-） 小数点（.） @（除首尾字符可以输入）2.最大字符长度：64个字节",required = true)
     private String account;

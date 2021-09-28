@@ -46,7 +46,7 @@ public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> i
             queryWrapper.like(UmsMcuEntity::getIp, queryDTO.getIp());
         }
         if (StrUtil.isNotBlank(queryDTO.getName())) {
-            queryWrapper.like(UmsMcuEntity::getIp, queryDTO.getName());
+            queryWrapper.like(UmsMcuEntity::getName, queryDTO.getName());
         }
 
         Page<UmsMcuEntity> platformEntityPage = mapper.selectPage(page, queryWrapper);

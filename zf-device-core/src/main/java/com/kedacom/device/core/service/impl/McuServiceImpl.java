@@ -595,7 +595,7 @@ public class McuServiceImpl implements McuService {
         responseUtil.handleMp(entity);
         McuBasicParam param = tool.getParam(entity);
         log.info("mcu创建/删除会议模板中间件入参:{}",JSON.toJSONString(dto));
-        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/templates/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/template/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         log.info("mcu创建/删除会议模板响应:{}", s);
         String errorMsg = "mcu创建/删除会议模板失败:{},{},{}";
         ConfTemplateResponse response = JSON.parseObject(s, ConfTemplateResponse.class);

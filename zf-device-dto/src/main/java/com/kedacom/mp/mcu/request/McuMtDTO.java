@@ -25,19 +25,19 @@ public class McuMtDTO extends McuRequestDTO {
     @ApiModelProperty(value = "会议号码",required = true)
     private String confId;
 
-    @ApiModelProperty(value = "终端id 终端ID，删除时必填")
+    @ApiModelProperty(value = "终端ID，删除时必填")
     private String mtId;
 
     @ApiModelProperty(value = "终端号")
     private String mtAccount;
 
-    @ApiModelProperty(value = "终端类型 5-e164号码；6-电话；7-ip地址；8-别名@ip(监控前端)；")
+    @ApiModelProperty(value = "终端类型 5-e164号码；6-电话；7-ip地址；8-别名@ip(监控前端)； 添加时必填")
     private Integer mtType;
 
     @ApiModelProperty(value = "呼叫码率，添加时必填")
     private Integer bitrate;
 
-    @ApiModelProperty(value = "呼叫协议 0-H323；1-SIP；")
+    @ApiModelProperty(value = "呼叫协议 0-H323；1-SIP； 添加时必填")
     private Integer protocol;
 
 }

@@ -27,13 +27,7 @@ public class Vips {
     private String account;
 
     @NotNull(message = "帐号类型不能为空")
-    @ApiModelProperty(value = "帐号类型\n" +
-            "1-moid；\n" +
-            "4-非系统邮箱；\n" +
-            "5-e164号；\n" +
-            "6-电话；\n" +
-            "7-ip地址；\n" +
-            "8-别名@ip(监控前端)",required = true)
+    @ApiModelProperty(value = "帐号类型 1-moid； 4-非系统邮箱； 5-e164号；6-电话； 7-ip地址；8-别名@ip(监控前端)",required = true)
     private Integer accountType;
 
 

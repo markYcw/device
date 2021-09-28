@@ -27,9 +27,7 @@ public class Poll implements Serializable {
     private Integer keepTime;
 
     @NotNull(message = "轮询次数不能为空")
-    @ApiModelProperty(value = "轮询方式\n" +
-            "1-仅图像；\n" +
-            "3-音视频轮询；",required = true)
+    @ApiModelProperty(value = "轮询方式1-仅图像；3-音视频轮询；",required = true)
     private Integer mode;
 
     @NotEmpty(message = "轮询成员不能为空")

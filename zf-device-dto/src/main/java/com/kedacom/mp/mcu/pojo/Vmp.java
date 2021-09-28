@@ -20,9 +20,7 @@ import java.util.List;
 public class Vmp implements Serializable {
 
     @NotNull(message = "画面合成模式不能为空")
-    @ApiModelProperty(value = "画面合成模式\n" +
-            "1-定制画面合成；\n" +
-            "2-自动画面合成",required = true)
+    @ApiModelProperty(value = "画面合成模式 1-定制画面合成；2-自动画面合成",required = true)
     private Integer mode;
 
     @ApiModelProperty(value = "画面合成风格: 1-一画面全屏;  2-两画面: 2等大，居中(1行2列);  3-两画面: 1大1小，1大全屏，1小右下;  61-两画面: 1大1小，1大全屏，1小右上;" +
@@ -39,21 +37,15 @@ public class Vmp implements Serializable {
     private Integer layout;
 
     @NotNull(message = "是否识别声音来源不能为空")
-    @ApiModelProperty(value = "是否识别声音来源\n" +
-            "0-否；\n" +
-            "1-是；",required = true)
+    @ApiModelProperty(value = "是否识别声音来源0-否；1-是；",required = true)
     private Integer voiceHint;
 
     @NotNull(message = "是否向终端广播不能为空")
-    @ApiModelProperty(value = "是否向终端广播\n" +
-            "0-否；\n" +
-            "1-是；",required = true)
+    @ApiModelProperty(value = "是否向终端广播 0-否；1-是；",required = true)
     private Integer broadCast;
 
     @NotNull(message = "是否显示别名不能为空")
-    @ApiModelProperty(value = "是否显示别名\n" +
-            "0-否；\n" +
-            "1-是；",required = true)
+    @ApiModelProperty(value = "是否显示别名 0-否；1-是；",required = true)
     private Integer showMtName;
 
     @NotNull(message = "画面合成参数不能为空")

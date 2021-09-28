@@ -68,8 +68,7 @@ public class CdConfInfo implements Serializable {
     private Integer silence;
 
     @NotNull(message = "视频质量不能为空")
-    @ApiModelProperty(value = "视频质量,其中租赁环境默认设为质量优先，自建环境以api下参为准\n" +
-            "0-质量优先；1-速度优先；",required = true)
+    @ApiModelProperty(value = "视频质量,其中租赁环境默认设为质量优先，自建环境以api下参为准 0-质量优先；1-速度优先；",required = true)
     private Integer videoQuality;
 
     @NotNull(message = "传输加密AES加密密钥不能为空")
@@ -109,9 +108,7 @@ public class CdConfInfo implements Serializable {
     private Integer maxJoinMt;
 
     @NotNull(message = "会议中无终端时不能为空")
-    @ApiModelProperty(value = "会议中无终端时，是否自动结会，永久会议时默认为0\n" +
-            "0-否；\n" +
-            "1-是；",required = true)
+    @ApiModelProperty(value = "会议中无终端时，是否自动结会，永久会议时默认为0 0-否；1-是；",required = true)
     private Integer autoEnd;
 
     @NotNull(message = "预占资源不能为空")

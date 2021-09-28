@@ -16,14 +16,7 @@ import java.io.Serializable;
 @ApiModel(description =  "选看参数")
 public class Specific implements Serializable {
 
-    @ApiModelProperty(value = "选看类型\n" +
-            "1-指定；\n" +
-            "2-发言人跟随；\n" +
-            "3-主席跟随；\n" +
-            "4-会议轮询跟随；\n" +
-            "6-选看画面合成；\n" +
-            "7-批量轮询；\n" +
-            "10-选看双流；",required = true)
+    @ApiModelProperty(value = "选看类型1-指定； 2-发言人跟随；3-主席跟随；4-会议轮询跟随；6-选看画面合成；7-批量轮询；10-选看双流；",required = true)
     @NotBlank(message = "选看类型不能为空")
     private String memberType;
 

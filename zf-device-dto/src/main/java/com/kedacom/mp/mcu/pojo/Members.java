@@ -31,13 +31,7 @@ public class Members {
     private Integer accountType;
 
     @NotNull(message = "跟随类型不能为空")
-    @ApiModelProperty(value = "跟随类型\n" +
-            "1-会控指定；\n" +
-            "2-发言人跟随；\n" +
-            "3-管理方跟随；\n" +
-            "4-会议轮询跟随；\n" +
-            "6-单通道轮询；\n" +
-            "7-内容共享跟随",required = true)
+    @ApiModelProperty(value = "跟随类型 1-会控指定；2-发言人跟随；3-管理方跟随；4-会议轮询跟随；6-单通道轮询；7-内容共享跟随",required = true)
     private Integer memberType;
 
     @NotNull(message = "在画画合成中的位置不能为空")

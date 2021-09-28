@@ -35,18 +35,14 @@ public class TemplateInfo implements Serializable {
     @ApiModelProperty(value = "会议安全:0-公开会议；1-隐藏会议；",required = true)
     private Integer safeConf;
 
-    @ApiModelProperty(value = "会议密码\n" +
-            "1.字符限制：仅支持 英文字母(大小写) 数字 下划线（_） 小数点（.）\n" +
-            "2.最大字符长度：32个字节")
+    @ApiModelProperty(value = "会议密码 1.字符限制：仅支持 英文字母(大小写) 数字 下划线（_） 小数点（.） 2.最大字符长度：32个字节")
     private String passWord;
 
     @NotNull(message = "传输加密类型不能为空")
     @ApiModelProperty(value = "传输加密类型:0-不加密；2-AES加密；",required = true)
     private Integer encryptedType;
 
-    @ApiModelProperty(value = "终端双向认证\n" +
-            "0-关闭；\n" +
-            "1-开启；")
+    @ApiModelProperty(value = "终端双向认证 0-关闭；1-开启；")
     private Integer encryptedAuth;
 
 
@@ -76,8 +72,7 @@ public class TemplateInfo implements Serializable {
     private Integer silence;
 
     @NotNull(message = "视频质量不能为空")
-    @ApiModelProperty(value = "视频质量,其中租赁环境默认设为质量优先，自建环境以api下参为准\n" +
-            "0-质量优先；1-速度优先；",required = true)
+    @ApiModelProperty(value = "视频质量,其中租赁环境默认设为质量优先，自建环境以api下参为准 0-质量优先；1-速度优先；",required = true)
     private Integer videoQuality;
 
     @NotNull(message = "归一重整不能为空")
@@ -128,23 +123,17 @@ public class TemplateInfo implements Serializable {
     private Integer maxJoinMt;
 
     @NotNull(message = "会议中无终端时不能为空")
-    @ApiModelProperty(value = "会议中无终端时，是否自动结会，永久会议时默认为0\n" +
-            "0-否；\n" +
-            "1-是；",required = true)
+    @ApiModelProperty(value = "会议中无终端时，是否自动结会，永久会议时默认为0 0-否； 1-是；",required = true)
     private Integer autoEnd;
 
     @NotNull(message = "预占资源不能为空")
     @ApiModelProperty(value = "预占资源:0-否；1-是；",required = true)
     private Integer preoccpuyResource;
 
-    @ApiModelProperty(value = "FEC开关\n" +
-            "0-关闭；\n" +
-            "1-开启；")
+    @ApiModelProperty(value = "FEC开关 0-关闭；1-开启；")
     private Integer fecMode;
 
-    @ApiModelProperty(value = "是否开启全场哑音例外\n" +
-            "0-不对任何人例外；\n" +
-            "1-对发言方和管理方例外；")
+    @ApiModelProperty(value = "是否开启全场哑音例外 0-不对任何人例外；1-对发言方和管理方例外；")
     private Integer muteFilter;
 
     @ApiModelProperty(value = "会议时长 0为永久会议")

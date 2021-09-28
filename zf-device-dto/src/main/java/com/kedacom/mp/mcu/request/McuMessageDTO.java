@@ -32,17 +32,11 @@ public class McuMessageDTO extends McuRequestDTO {
     private Integer rollNum;
 
     @NotNull(message = "滚动速度不能为空")
-    @ApiModelProperty(value = "滚动速度\n" +
-            "1-慢速；\n" +
-            "2-中速；\n" +
-            "3-快速；", required = true)
+    @ApiModelProperty(value = "滚动速度 1-慢速； 2-中速；3-快速；", required = true)
     private Integer rollSpeed;
 
     @NotNull(message = "短消息类型不能为空")
-    @ApiModelProperty(value = "短消息类型\n" +
-            "0-自右至左滚动；\n" +
-            "1-翻页滚动；\n" +
-            "2-全页滚动；", required = true)
+    @ApiModelProperty(value = "短消息类型 0-自右至左滚动；1-翻页滚动；2-全页滚动；", required = true)
     private Integer messageType;
 
     @NotEmpty(message = "终端id列表不能为空")

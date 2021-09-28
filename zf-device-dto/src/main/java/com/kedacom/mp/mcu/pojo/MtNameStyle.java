@@ -24,12 +24,7 @@ public class MtNameStyle {
     private String fontColor;
 
     @NotNull(message = "台标显示位置不能为空")
-    @ApiModelProperty(value = "台标显示位置，默认为1\n" +
-            "0-左上角；\n" +
-            "1-左下角；\n" +
-            "2-右上角；\n" +
-            "3-右下角；\n" +
-            "4-底部中间；",required = true)
+    @ApiModelProperty(value = "台标显示位置，默认为1 0-左上角； 1-左下角； 2-右上角；3-右下角；4-底部中间；",required = true)
     private Integer position;
 
     @NotNull(message = "终端呼叫码率不能为空")

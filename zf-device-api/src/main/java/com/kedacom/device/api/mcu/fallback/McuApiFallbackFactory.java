@@ -36,12 +36,17 @@ public class McuApiFallbackFactory implements FallbackFactory<McuApi> {
             }
 
             @Override
+            public BaseResult<AccountsVo> accounts(@Valid AccountsDto dto, BindingResult br) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
             public BaseResult<McuConfsVO> confs(McuConfsDTO dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<McuConfsVO> templates(McuTemplatesDTO dto) {
+            public BaseResult<McuConfTemplateVO> templates(McuTemplatesDTO dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 

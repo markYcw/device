@@ -34,13 +34,17 @@ public interface McuApi {
     @PostMapping("/account")
     BaseResult<AccountVo> account(@RequestBody McuAccountDTO dto);
 
+    @ApiOperation("查询所有账户")
+    @PostMapping("/accounts")
+    BaseResult<AccountsVo> accounts(@Valid @RequestBody AccountsDto dto, BindingResult br);
+
     @ApiOperation("获取会议列表")
     @PostMapping("/confs")
     BaseResult<McuConfsVO> confs(@RequestBody McuConfsDTO dto);
 
     @ApiOperation("获取会议模板列表")
     @PostMapping("/templates")
-    BaseResult<McuConfsVO> templates(@RequestBody McuTemplatesDTO dto);
+    BaseResult<McuConfTemplateVO> templates(@RequestBody McuTemplatesDTO dto);
 
     @ApiOperation("获取会议信息")
     @PostMapping("/confinfo")
@@ -49,6 +53,10 @@ public interface McuApi {
     @ApiOperation("创建/删除会议")
     @PostMapping("/conf")
     BaseResult<McuConfVO> conf(@RequestBody McuConfDTO dto);
+
+    @ApiOperation("获取会议模板信息")
+    @PostMapping("/templateInfo")
+    BaseResult<ConfTemplateInfoVo> templateInfo(@Valid @RequestBody GetConfTemplateDTO dto);
 
     @ApiOperation("开启会议模板")
     @PostMapping("/confTemplate")
@@ -129,9 +137,5 @@ public interface McuApi {
     @ApiOperation("创建/删除会议模板")
     @PostMapping("/confTemplates")
     BaseResult<ConfTemplateVo> confTemplates(@RequestBody ConfTemplateDTO dto);
-
-    @ApiOperation("获取会议模板信息")
-    @PostMapping("/templateInfo")
-    BaseResult<ConfTemplateInfoVo> templateInfo(@RequestBody GetConfTemplateDTO dto);
 
 }

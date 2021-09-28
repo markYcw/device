@@ -49,7 +49,7 @@ public class AccountInfoMessage implements Serializable {
     private Integer binded;
 
     @ApiModelProperty(value = "e164号码（只有bind值为1时，才需要填值，其他情况不用填）")
-    private Integer e164;
+    private String e164;
 
     @ApiModelProperty(value = "int 性别 默认为1；0-女；1-男；")
     private Integer sex;

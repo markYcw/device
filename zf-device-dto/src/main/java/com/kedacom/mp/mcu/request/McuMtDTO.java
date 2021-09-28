@@ -28,11 +28,11 @@ public class McuMtDTO extends McuRequestDTO {
     @ApiModelProperty(value = "终端ID，删除时必填")
     private String mtId;
 
-    @ApiModelProperty(value = "终端号")
-    private String mtAccount;
+    @ApiModelProperty(value = "终端E164号,IP或电话号码 添加时必填")
+    private String account;
 
     @ApiModelProperty(value = "终端类型 5-e164号码；6-电话；7-ip地址；8-别名@ip(监控前端)； 添加时必填")
-    private Integer mtType;
+    private Integer accountType;
 
     @ApiModelProperty(value = "呼叫码率，添加时必填")
     private Integer bitrate;

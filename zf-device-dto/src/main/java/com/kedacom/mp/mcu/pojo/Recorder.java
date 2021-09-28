@@ -34,6 +34,6 @@ public class Recorder implements Serializable {
 
     @NotNull(message = "VRS的moid 不能为空")
     @ApiModelProperty(value = "VRS的moid",required = true)
-    private Integer vrsId;
+    private String vrsId;
 
 }

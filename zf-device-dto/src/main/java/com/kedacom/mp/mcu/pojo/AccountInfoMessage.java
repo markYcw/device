@@ -23,7 +23,7 @@ public class AccountInfoMessage implements Serializable {
     private String account;
 
     @ApiModelProperty(value = "账号moid")
-    private String accountMoid;
+    private String accountMoId;
 
     @ApiModelProperty(value = "文字聊天账号jid")
     private String accountJid;

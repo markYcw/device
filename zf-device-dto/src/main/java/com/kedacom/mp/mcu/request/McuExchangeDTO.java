@@ -34,5 +34,9 @@ public class McuExchangeDTO extends McuRequestDTO {
     @ApiModelProperty(value = "选看源，开始时必填")
     private MtSrcInfo mtSrc;
 
+    @NotBlank(message = "目的终端号")
+    @ApiModelProperty(value = "目的终端号(选看源类型为画面合成时, 必须为主席终端号) 最大字符长度：48个字节",required = true)
+    private String mtDst;
+
 
 }

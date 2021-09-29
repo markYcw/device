@@ -255,7 +255,7 @@ public class McuController {
         return mcuService.tvwall(dto);
     }
 
-    @ApiOperation("开始/停止码流交换")
+    @ApiOperation("开始/停止码流交换 第一：选看的目的终端必须是主席！！！ 第二：选看的画面合成必须是非广播的！！！如果合成是广播的，那就没必要选看，因为已经广播过去了")
     @PostMapping("/exchange")
     public BaseResult exchange(@Valid @RequestBody McuExchangeDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);

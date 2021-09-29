@@ -131,6 +131,11 @@ public class McuApiFallbackFactory implements FallbackFactory<McuApi> {
             }
 
             @Override
+            public BaseResult<McuRecStatusVO> recState(@Valid McuRecStatusDTO dto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
             public BaseResult<McuTvWallsVO> tvWalls(McuRequestDTO dto) {
                 return BaseResult.failed(throwable.getMessage());
             }

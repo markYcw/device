@@ -231,6 +231,14 @@ public class McuController {
         return mcuService.rec(dto);
     }
 
+    @ApiOperation("获取录像状态")
+    @PostMapping("/recState")
+    public BaseResult<McuRecStatusVO> recState(@Valid @RequestBody McuRecStatusDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return mcuService.recState(dto);
+    }
+
     @ApiOperation("获取电视墙列表")
     @PostMapping("/tvWalls")
     public BaseResult<McuTvWallsVO> tvWalls(@Valid @RequestBody McuRequestDTO dto, BindingResult br) {

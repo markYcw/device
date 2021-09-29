@@ -114,6 +114,10 @@ public interface McuApi {
     @PostMapping("/rec")
     BaseResult rec(@RequestBody McuRecDTO dto);
 
+    @ApiOperation("获取录像状态")
+    @PostMapping("/recState")
+    BaseResult<McuRecStatusVO> recState(@Valid @RequestBody McuRecStatusDTO dto);
+
     @ApiOperation("获取电视墙列表")
     @PostMapping("/tvWalls")
     BaseResult<McuTvWallsVO> tvWalls(@RequestBody McuRequestDTO dto);

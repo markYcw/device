@@ -599,7 +599,7 @@ public class McuServiceImpl implements McuService {
         log.info("mcu创建/删除会议模板响应:{}", s);
         String errorMsg = "mcu创建/删除会议模板失败:{},{},{}";
         ConfTemplateResponse response = JSON.parseObject(s, ConfTemplateResponse.class);
-        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_HB_FAILED, response);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_CONF_TEMPLATE_S_FAILED, response);
         ConfTemplateVo vo = convert.convertToConfTemplateVo(response);
         return BaseResult.succeed("mcu创建/删除会议模板成功",vo);
     }
@@ -634,6 +634,22 @@ public class McuServiceImpl implements McuService {
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_HB_FAILED, response);
         AccountsVo vo = JSON.parseObject(s, AccountsVo.class);
         return BaseResult.succeed("mcu查询所有账户成功",vo);
+    }
+
+    @Override
+    public BaseResult<McuRecStatusVO> recState(McuRecStatusDTO dto) {
+        log.info("获取录像状态接口入参:{}", dto);
+        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        McuBasicParam param = tool.getParam(entity);
+        log.info("mcu获取录像状态中间件入参:{}",JSON.toJSONString(dto));
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/recstate/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        log.info("mcu获取录像状态响应:{}", s);
+        String errorMsg = "mcu获取录像状态失败:{},{},{}";
+        MpResponse response = JSON.parseObject(s, MpResponse.class);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_REC_STATUS_FAILED, response);
+        McuRecStatusVO vo = JSON.parseObject(s, McuRecStatusVO.class);
+        return BaseResult.succeed("mcu获取录像状态成功",vo);
     }
 
 }

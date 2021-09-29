@@ -70,4 +70,6 @@ public interface McuService {
     BaseResult<ConfTemplateInfoVo> templateInfo(GetConfTemplateDTO dto);
 
     BaseResult<AccountsVo> accounts(AccountsDto dto);
+
+    BaseResult<McuRecStatusVO> recState(McuRecStatusDTO dto);
 }

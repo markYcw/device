@@ -60,8 +60,8 @@ public class AccountInfo implements Serializable {
     @ApiModelProperty(value = "办公地址")
     private String officeLocation;
 
-    @ApiModelProperty(value = "部门信息列表")
-    private List<DepartmentInfo> departments;
+   /* @ApiModelProperty(value = "部门信息列表")
+    private List<DepartmentInfo> departments;*/
 
     @ApiModelProperty(value = "账号编号/工号 1.字符限制：数字、字母")
     private String jobNum;

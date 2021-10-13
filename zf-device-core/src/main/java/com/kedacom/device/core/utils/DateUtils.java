@@ -54,6 +54,11 @@ public class DateUtils {
         return format.format(date);
     }
 
+    /**
+     * 普通时间转ISO8601格式的时间
+     * @param ISOdate
+     * @return
+     */
     public static String getDateStrFromISO8601Timestamp(String ISOdate){
         DateTimeFormatter dtf1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         DateTime dt= dtf1.parseDateTime(ISOdate);
@@ -61,6 +66,11 @@ public class DateUtils {
         return dt.toString(dtf2);
     }
 
+    /**
+     * ISO8601格式的时间转普通时间
+     * @param timestamp
+     * @return
+     */
     public static String getISO8601TimestampFromDateStr(String timestamp){
         java.time.format.DateTimeFormatter dtf1 = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime ldt = LocalDateTime.parse(timestamp,dtf1);

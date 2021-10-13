@@ -18,7 +18,7 @@ import java.util.List;
 public class Mix implements Serializable {
 
     @NotNull(message = "混音模式不能为空")
-    @ApiModelProperty(value = "混音模式:-智能混音；2-定制混音；",required = true)
+    @ApiModelProperty(value = "混音模式:1-智能混音；2-定制混音；",required = true)
     private Integer mode;
 
     @ApiModelProperty(value = "制定混音时的混音成员列表")

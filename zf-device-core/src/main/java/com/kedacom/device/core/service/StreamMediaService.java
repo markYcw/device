@@ -55,4 +55,11 @@ public interface StreamMediaService {
 
     Boolean recKeepAlive(RecKeepAliveDTO request);
 
+    GetAudioCapVO getAudioCap(GetAudioCapDTO getAudioCapDTO);
+
+    Boolean ctrlAudioAct(CtrlAudioActDTO ctrlAudioActDTO);
+
+    Boolean setAudioActInterval(SetAudioActIntervalDTO setAudioActIntervalDTO);
+
+    Boolean getBurnState(GetBurnStateDTO getBurnStateDTO);
 }

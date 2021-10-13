@@ -4,9 +4,13 @@ import com.kedacom.BaseResult;
 import com.kedacom.device.api.streammedia.fallback.StreamMediaApiFallbackFactory;
 import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.validation.Valid;
 
 /**
  * @Auther: hxj
@@ -20,7 +24,6 @@ public interface StreamMediaApi {
      * 开启录像
      *
      * @param startrecDTO
-     * @param br
      * @return
      */
     @PostMapping("/startRec")
@@ -30,7 +33,6 @@ public interface StreamMediaApi {
      * 停止录像
      *
      * @param stoprecDTO
-     * @param br
      * @return
      */
     @PostMapping("/stopRec")
@@ -40,7 +42,6 @@ public interface StreamMediaApi {
      * 查询录像记录
      *
      * @param queryrecDTO
-     * @param br
      * @return
      */
     @PostMapping("/queryRec")
@@ -59,7 +60,6 @@ public interface StreamMediaApi {
      * 开启音频混音:返回混音设备分组id、混音ID
      *
      * @param startAudioMixDTO
-     * @param br
      * @return
      */
     @PostMapping("/startAudioMix")
@@ -69,7 +69,6 @@ public interface StreamMediaApi {
      * 停止音频混音
      *
      * @param stopAudioMixDTO
-     * @param br
      * @return
      */
     @PostMapping("/stopAudioMix")
@@ -79,7 +78,6 @@ public interface StreamMediaApi {
      * 更新音频混音
      *
      * @param updateAudioMixDTO
-     * @param br
      * @return
      */
     @PostMapping("/updateAudioMix")
@@ -90,7 +88,6 @@ public interface StreamMediaApi {
      * 查询所有混音 返回混音ID集合
      *
      * @param queryAllAudioMixDTO
-     * @param br
      * @return
      */
     @PostMapping("/queryAllAudioMix")
@@ -100,7 +97,6 @@ public interface StreamMediaApi {
      * 查询混音信息
      *
      * @param queryAudioMixDTO
-     * @param br
      * @return
      */
     @PostMapping("/queryAudioMix")
@@ -110,7 +106,6 @@ public interface StreamMediaApi {
      * 开始画面合成: 返回画面合成设备分组id、画面合成ID
      *
      * @param startVideoMixDTO
-     * @param br
      * @return
      */
     @PostMapping("/startVideoMix")
@@ -120,7 +115,6 @@ public interface StreamMediaApi {
      * 停止画面合成
      *
      * @param stopVideoMixDTO
-     * @param br
      * @return
      */
     @PostMapping("/stopVideoMix")
@@ -130,7 +124,6 @@ public interface StreamMediaApi {
      * 更新画面合成
      *
      * @param updateVideoMixDTO
-     * @param br
      * @return
      */
     @PostMapping("/updateVideoMix")
@@ -140,7 +133,6 @@ public interface StreamMediaApi {
      * 查询所有画面合成:返回mixIDs 合成ID集合
      *
      * @param queryAllVideoMixDTO
-     * @param br
      * @return
      */
     @PostMapping("/queryAllVideoMix")
@@ -150,7 +142,6 @@ public interface StreamMediaApi {
      * 查询画面合成信息
      *
      * @param queryVideoMixDTO
-     * @param br
      * @return
      */
     @PostMapping("/queryVideoMix")
@@ -169,7 +160,6 @@ public interface StreamMediaApi {
      * 发送透明通道数据
      *
      * @param sendTransDataDTO
-     * @param br
      * @return
      */
     @PostMapping("/sendTransData")
@@ -237,4 +227,22 @@ public interface StreamMediaApi {
      */
     @PostMapping("/stopPullUrl")
     BaseResult<Boolean> stopPullUrl(@RequestBody StopPullUrlDTO stopPullUrlDTO);
+
+    @ApiOperation("获取音频能力集")
+    @PostMapping("/getAudioCap")
+    BaseResult<GetAudioCapVO> getAudioCap(@RequestBody GetAudioCapDTO getAudioCapDTO);
+
+    @ApiOperation("控制音频功率上报")
+    @PostMapping("/ctrlAudioAct")
+    BaseResult<Boolean> ctrlAudioAct(@RequestBody CtrlAudioActDTO ctrlAudioActDTO);
+
+    @ApiOperation("设置音频功率上报间隔")
+    @PostMapping("/setAudioActInterval")
+    BaseResult<Boolean> setAudioActInterval(@RequestBody SetAudioActIntervalDTO setAudioActIntervalDTO);
+
+    @ApiOperation("刻录状态请求")
+    @PostMapping("/getBurnState")
+    BaseResult<Boolean> getBurnState(@RequestBody GetBurnStateDTO getBurnStateDTO);
+
+
 }

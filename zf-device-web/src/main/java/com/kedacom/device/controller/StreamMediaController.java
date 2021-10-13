@@ -192,15 +192,6 @@ public class StreamMediaController {
         return BaseResult.succeed("查询成功", queryHistoryUrlVO);
     }
 
-    @ApiOperation("发送宏指令数据")
-    @PostMapping("/sendOrderData")
-    public BaseResult<Boolean> sendOrderData(@Valid @RequestBody SendOrderDataDTO sendOrderDataDTO, BindingResult br) {
-        ValidUtils.paramValid(br);
-
-        Boolean aBoolean = streamMediaService.sendOrderData(sendOrderDataDTO);
-        return BaseResult.succeed("发送成功", aBoolean);
-    }
-
     @ApiOperation("开始推送媒体流")
     @PostMapping("/startPushUrl")
     public BaseResult<StartPushUrlVO> startPushUrl(@Valid @RequestBody StartPushUrlDTO startPushUrlDTO, BindingResult br) {
@@ -236,4 +227,52 @@ public class StreamMediaController {
         Boolean aBoolean = streamMediaService.stopPullUrl(stopPullUrlDTO);
         return BaseResult.succeed("停止成功", aBoolean);
     }
+
+    @ApiOperation("发送宏指令数据")
+    @PostMapping("/sendOrderData")
+    public BaseResult<Boolean> sendOrderData(@Valid @RequestBody SendOrderDataDTO sendOrderDataDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean aBoolean = streamMediaService.sendOrderData(sendOrderDataDTO);
+        return BaseResult.succeed("发送成功", aBoolean);
+    }
+
+    @ApiOperation("获取音频能力集")
+    @PostMapping("/getAudioCap")
+    public BaseResult<GetAudioCapVO> getAudioCap(@Valid @RequestBody GetAudioCapDTO getAudioCapDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        GetAudioCapVO getAudioCapVO = streamMediaService.getAudioCap(getAudioCapDTO);
+        return BaseResult.succeed("获取音频能力集成功", getAudioCapVO);
+    }
+
+    @ApiOperation("控制音频功率上报")
+    @PostMapping("/ctrlAudioAct")
+    public BaseResult<Boolean> ctrlAudioAct(@Valid @RequestBody CtrlAudioActDTO ctrlAudioActDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean aBoolean = streamMediaService.ctrlAudioAct(ctrlAudioActDTO);
+        return BaseResult.succeed("获取音频能力集成功", aBoolean);
+    }
+
+    @ApiOperation("设置音频功率上报间隔")
+    @PostMapping("/setAudioActInterval")
+    public BaseResult<Boolean> setAudioActInterval(@Valid @RequestBody SetAudioActIntervalDTO setAudioActIntervalDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean aBoolean = streamMediaService.setAudioActInterval(setAudioActIntervalDTO);
+        return BaseResult.succeed("设置音频功率上报间隔成功", aBoolean);
+    }
+
+    @ApiOperation("刻录状态请求")
+    @PostMapping("/getBurnState")
+    public BaseResult<Boolean> getBurnState(@Valid @RequestBody GetBurnStateDTO getBurnStateDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean aBoolean = streamMediaService.getBurnState(getBurnStateDTO);
+        return BaseResult.succeed("刻录状态请求成功", aBoolean);
+    }
+
+
+
 }

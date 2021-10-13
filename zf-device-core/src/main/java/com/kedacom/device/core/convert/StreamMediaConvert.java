@@ -1,8 +1,12 @@
 package com.kedacom.device.core.convert;
 
 import com.kedacom.device.core.entity.TransDataEntity;
+import com.kedacom.device.core.event.AudioActEvent;
+import com.kedacom.device.core.event.BurnStateEvent;
 import com.kedacom.device.core.event.TransDataNotifyEvent;
 import com.kedacom.device.stream.request.*;
+import com.kedacom.deviceListener.notify.AudioActDTO;
+import com.kedacom.deviceListener.notify.BurnStateDTO;
 import com.kedacom.streamMedia.request.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -61,5 +65,17 @@ public interface StreamMediaConvert {
     VideoMixKeepAliveRequest keepVideoMixAlive(VideoMixKeepAliveDTO request);
 
     RecKeepAliveRequest recKeepAlive(RecKeepAliveDTO request);
+
+    GetAudioCapRequest convertGetAudioCapDTO(GetAudioCapDTO request);
+
+    CtrlAudioActRequest convertCtrlAudioActDTO(CtrlAudioActDTO request);
+
+    SetAudioActIntervalRequest convertSetAudioActIntervalDTO(SetAudioActIntervalDTO request);
+
+    GetBurnStateRequest convertGetBurnStateDTO(GetBurnStateDTO getBurnStateDTO);
+
+    AudioActDTO convertAudioActDTO(AudioActEvent event);
+
+    BurnStateDTO convertBurnStateDTO(BurnStateEvent event);
 
 }

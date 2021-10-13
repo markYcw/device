@@ -128,6 +128,26 @@ public class StreamMediaApiFallbackFactory implements FallbackFactory<StreamMedi
             public BaseResult<Boolean> stopPullUrl(StopPullUrlDTO stopPullUrlDTO) {
                 return BaseResult.failed("服务出错，请稍后重试");
             }
+
+            @Override
+            public BaseResult<GetAudioCapVO> getAudioCap(GetAudioCapDTO getAudioCapDTO) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<Boolean> ctrlAudioAct(CtrlAudioActDTO ctrlAudioActDTO) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<Boolean> setAudioActInterval(SetAudioActIntervalDTO setAudioActIntervalDTO) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<Boolean> getBurnState(GetBurnStateDTO getBurnStateDTO) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
         };
     }
 }

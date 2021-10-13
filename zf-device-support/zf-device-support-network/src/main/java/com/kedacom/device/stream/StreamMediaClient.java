@@ -18,7 +18,7 @@ public interface StreamMediaClient {
     /**
      * 开启录像
      *
-     * @param StartRecRequest
+     * @param startRecRequest
      * @return StartRecResponse
      */
     StartRecResponse startRec(StartRecRequest startRecRequest);
@@ -26,7 +26,7 @@ public interface StreamMediaClient {
     /**
      * 停止录像
      *
-     * @param StopRecRequest
+     * @param stoprecRequest
      * @return BaseResponse
      */
     BaseResponse stopRec(StopRecRequest stoprecRequest);
@@ -34,7 +34,7 @@ public interface StreamMediaClient {
     /**
      * 查询录像记录
      *
-     * @param QueryRecRequest
+     * @param queryrecRequest
      * @return QueryRecResponse
      */
     QueryRecResponse queryRec(QueryRecRequest queryrecRequest);
@@ -42,7 +42,7 @@ public interface StreamMediaClient {
     /**
      * 开启音频混音
      *
-     * @param StartAudioMixRequest
+     * @param startAudioMixRequest
      * @return StartAudioMixResponse
      */
     StartAudioMixResponse startAudioMix(StartAudioMixRequest startAudioMixRequest);
@@ -50,7 +50,7 @@ public interface StreamMediaClient {
     /**
      * 停止音频混音
      *
-     * @param StopAudioMixRequest
+     * @param stopAudioMixRequest
      * @return BaseResponse
      */
     BaseResponse stopAudioMix(StopAudioMixRequest stopAudioMixRequest);
@@ -58,7 +58,7 @@ public interface StreamMediaClient {
     /**
      * 更新音频混音
      *
-     * @param UpdateAudioMixRequest
+     * @param updateAudioMixRequest
      * @return BaseResponse
      */
     BaseResponse updateAudioMix(UpdateAudioMixRequest updateAudioMixRequest);
@@ -66,7 +66,7 @@ public interface StreamMediaClient {
     /**
      * 查询所有混音
      *
-     * @param QueryAllAudioMixRequest
+     * @param queryAllAudioMixRequest
      * @return QueryAllAudioMixResponse
      */
     QueryAllAudioMixResponse queryAllAudioMix(QueryAllAudioMixRequest queryAllAudioMixRequest);
@@ -74,7 +74,7 @@ public interface StreamMediaClient {
     /**
      * 查询混音信息
      *
-     * @param QueryAudioMixRequest
+     * @param queryAudioMixRequest
      * @return QueryAudioMixResponse
      */
     QueryAudioMixResponse queryAudioMix(QueryAudioMixRequest queryAudioMixRequest);
@@ -82,7 +82,7 @@ public interface StreamMediaClient {
     /**
      * 开始画面合成
      *
-     * @param StartVideoMixRequest
+     * @param startVideoMixRequest
      * @return StartVideoMixResponse
      */
     StartVideoMixResponse startVideoMix(StartVideoMixRequest startVideoMixRequest);
@@ -90,7 +90,7 @@ public interface StreamMediaClient {
     /**
      * 停止画面合成
      *
-     * @param StopVideoMixRequest
+     * @param stopVideoMixRequest
      * @return BaseResponse
      */
     BaseResponse stopVideoMix(StopVideoMixRequest stopVideoMixRequest);
@@ -98,7 +98,7 @@ public interface StreamMediaClient {
     /**
      * 更新画面合成
      *
-     * @param UpdateVideoMixRequest
+     * @param updateVideoMixRequest
      * @return BaseResponse
      */
     BaseResponse updateVideoMix(UpdateVideoMixRequest updateVideoMixRequest);
@@ -106,7 +106,7 @@ public interface StreamMediaClient {
     /**
      * 查询所有画面合成
      *
-     * @param QueryAllVideoMixRequest
+     * @param queryAllVideoMixRequest
      * @return QueryAllAudioMixResponse
      */
     QueryAllAudioMixResponse queryAllVideoMix(QueryAllVideoMixRequest queryAllVideoMixRequest);
@@ -114,7 +114,7 @@ public interface StreamMediaClient {
     /**
      * 查询画面信息
      *
-     * @param QueryVideoMixRequest
+     * @param queryVideoMixRequest
      * @return QueryVideoMixResponse
      */
     QueryVideoMixResponse queryVideoMix(QueryVideoMixRequest queryVideoMixRequest);
@@ -142,14 +142,6 @@ public interface StreamMediaClient {
      * @return
      */
     QueryHistoryUrlResponse queryHistoryUrl(QueryHistoryUrlRequest queryHistoryUrlRequest);
-
-    /**
-     * 发送宏指令数据
-     *
-     * @param sendOrderDataRequest
-     * @return
-     */
-    SendOrderDataResponse sendOrderData(SendOrderDataRequest sendOrderDataRequest);
 
     /**
      * 开始推送媒体流
@@ -196,5 +188,42 @@ public interface StreamMediaClient {
      * @return
      */
     BaseResponse recKeepAlive(RecKeepAliveRequest recKeepAliveRequest);
+
+    /**
+     * 发送宏指令数据
+     *
+     * @param sendOrderDataRequest
+     * @return
+     */
+    SendOrderDataResponse sendOrderData(SendOrderDataRequest sendOrderDataRequest);
+
+    /**
+     * 获取音频能力集
+     *
+     * @param getAudioCapRequest
+     * @return
+     */
+    GetAudioCapResponse getAudioCap(GetAudioCapRequest getAudioCapRequest);
+
+    /**
+     * 控制音频功率上报
+     * @param ctrlAudioActRequest
+     * @return
+     */
+    CtrlAudioActResponse ctrlAudioAct(CtrlAudioActRequest ctrlAudioActRequest);
+
+    /**
+     * 设置音频功率上报间隔
+     * @param setAudioActIntervalRequest
+     * @return
+     */
+    SetAudioActIntervalResponse setAudioActInterval(SetAudioActIntervalRequest setAudioActIntervalRequest);
+
+    /**
+     * 刻录状态请求
+     * @param getBurnStateRequest
+     * @return
+     */
+    GetBurnStateResponse getBurnState(GetBurnStateRequest getBurnStateRequest);
 
 }

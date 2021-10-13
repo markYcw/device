@@ -14,6 +14,7 @@ public enum DeviceErrorEnum {
     DEVICE_NOT_FOUND(1003,"设备未找到请检查"),
     DEVICE_NOT_LOGIN(1004,"请先登录设备"),
     DEVICE_HEART_BEAT_FAILED(1005,"发送心跳失败"),
+    IP_OR_NAME_REPEAT(1006,"IP或名称重复"),
 
     UMS_SERVICE_ERROR(2000, "统一设备服务失败"),
 
@@ -38,6 +39,10 @@ public enum DeviceErrorEnum {
     SEND_TRANS_DATA_FAILED(2024, "发送透明通道失败"),
     QUERY_REAL_URL_FAILED(2025, "查询实时资源URL失败"),
     QUERY_HISTORY_URL_FAILED(2025, "查询历史资源URL失败"),
+    GET_AUDIO_CAP_FAILED(2026, "获取音频能力集失败"),
+    CTRL_AUDIO_ACT_FAILED(2027, "控制音频功率上报失败"),
+    SET_AUDIO_ACT_INTERVAL_FAILED(2028, "设置音频功率上报间隔失败"),
+    GET_BURN_STATE_FAILED(2029, "刻录状态请求失败"),
 
 
     MSP_REMOTE_ERROR(3001, "调用拼控服务远程接口错误"),

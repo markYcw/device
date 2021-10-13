@@ -439,6 +439,98 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     }
 
     @Override
+    public GetAudioCapVO getAudioCap(GetAudioCapDTO request) {
+        String error = "获取音频能力集失败:{},{},{}";
+        log.info("获取音频能力集入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        GetAudioCapRequest getAudioCapRequest = streamMediaConvert.convertGetAudioCapDTO(request);
+        getAudioCapRequest.setSsid(ssid);
+        log.info("获取音频能力集交互参数:{}", getAudioCapRequest);
+        GetAudioCapResponse res = client.getAudioCap(getAudioCapRequest);
+        log.info("获取音频能力集应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.GET_AUDIO_CAP_FAILED, res);
+        GetAudioCapVO vo = new GetAudioCapVO();
+        vo.setAudCapNum(res.getAudCapNum());
+        vo.setAudMicInNum(res.getAudMicInNum());
+        vo.setAudLineInNum(res.getAudLineInNum());
+        vo.setAudJackPhoneInNum(res.getAudJackPhoneInNum());
+        vo.setAudDMicInNum(res.getAudDMicInNum());
+        vo.setAudDviInNum(res.getAudDviInNum());
+        vo.setAudAtboxNetChnNum(res.getAudAtboxNetChnNum());
+        vo.setAudNetChnNum(res.getAudNetChnNum());
+        vo.setAudLocalNetChnNum(res.getAudLocalNetChnNum());
+        vo.setAudRemNetChnNum(res.getAudRemNetChnNum());
+        vo.setAudIn(res.getAudIn());
+        return vo;
+    }
+
+    @Override
+    public  Boolean ctrlAudioAct(CtrlAudioActDTO request) {
+        String error = "控制音频功率上报失败:{},{},{}";
+        log.info("控制音频功率上报入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        CtrlAudioActRequest ctrlAudioActRequest = streamMediaConvert.convertCtrlAudioActDTO(request);
+        ctrlAudioActRequest.setSsid(ssid);
+        log.info("控制音频功率上报交互参数:{}", ctrlAudioActRequest);
+        CtrlAudioActResponse res = client.ctrlAudioAct(ctrlAudioActRequest);
+        log.info("控制音频功率上报应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.CTRL_AUDIO_ACT_FAILED, res);
+        return true;
+    }
+
+    @Override
+    public Boolean setAudioActInterval(SetAudioActIntervalDTO request) {
+        String error = "设置音频功率上报间隔失败:{},{},{}";
+        log.info("设置音频功率上报间隔入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        SetAudioActIntervalRequest setAudioActIntervalRequest = streamMediaConvert.convertSetAudioActIntervalDTO(request);
+        setAudioActIntervalRequest.setSsid(ssid);
+        log.info("设置音频功率上报间隔交互参数:{}", setAudioActIntervalRequest);
+        SetAudioActIntervalResponse res = client.setAudioActInterval(setAudioActIntervalRequest);
+        log.info("设置音频功率上报间隔应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.SET_AUDIO_ACT_INTERVAL_FAILED, res);
+        return true;
+    }
+
+    @Override
+    public Boolean getBurnState(GetBurnStateDTO request) {
+        String error = "刻录状态请求失败:{},{},{}";
+        log.info("刻录状态请求入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        GetBurnStateRequest getBurnStateRequest = streamMediaConvert.convertGetBurnStateDTO(request);
+        getBurnStateRequest.setSsid(ssid);
+        log.info("刻录状态请求交互参数:{}", getBurnStateRequest);
+        GetBurnStateResponse res = client.getBurnState(getBurnStateRequest);
+        log.info("刻录状态请求应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.GET_BURN_STATE_FAILED, res);
+        return true;
+    }
+
+    @Override
     public StartPushUrlVO startPushUrl(StartPushUrlDTO request) {
         String error = "开始推送媒体流失败:{},{},{}";
         log.info("开始推送媒体流入参信息:{}", request);

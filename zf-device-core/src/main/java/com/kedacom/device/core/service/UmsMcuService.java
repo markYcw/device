@@ -6,7 +6,6 @@ import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import com.kedacom.mp.mcu.pojo.McuPageQueryDTO;
-import com.kedacom.mp.mcu.response.McuVo;
 
 /**
  * 会议平台
@@ -17,14 +16,9 @@ import com.kedacom.mp.mcu.response.McuVo;
  */
 public interface UmsMcuService extends IService<UmsMcuEntity> {
 
-    BaseResult<BasePage<McuVo>> pageQuery(McuPageQueryDTO queryDTO);
+    BaseResult<BasePage<UmsMcuEntity>> pageQuery(McuPageQueryDTO queryDTO);
 
     void mcuNotify(String notify);
 
-    BaseResult<McuVo> info(Long id);
-
-    BaseResult<McuVo> saveMcu(McuVo mcuVo);
-
-    BaseResult updateByVo(McuVo vo);
 }
 

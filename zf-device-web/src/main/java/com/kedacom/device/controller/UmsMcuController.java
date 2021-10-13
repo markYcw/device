@@ -4,11 +4,9 @@ import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.UmsMcuService;
+import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import com.kedacom.mp.mcu.pojo.McuPageQueryDTO;
-import com.kedacom.mp.mcu.response.McuVo;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +38,8 @@ public class UmsMcuController {
      */
     @PostMapping("/pageQuery")
     @ApiOperation(value = "会议平台信息分页查询")
-    public BaseResult<BasePage<McuVo>> pageQuery(@RequestBody McuPageQueryDTO queryDTO) {
-        BaseResult<BasePage<McuVo>> basepPage = umsMcuService.pageQuery(queryDTO);
+    public BaseResult<BasePage<UmsMcuEntity>> pageQuery(@RequestBody McuPageQueryDTO queryDTO) {
+        BaseResult<BasePage<UmsMcuEntity>> basepPage = umsMcuService.pageQuery(queryDTO);
 
         return basepPage;
     }
@@ -49,22 +47,24 @@ public class UmsMcuController {
     /**
      * 信息
      */
-    @PostMapping("/info")
+    @PostMapping("/info/{id}")
     @ApiOperation(value = "根据id获取会议平台信息")
-    @ApiImplicitParams({@ApiImplicitParam(name = "id",value = "MCU数据库ID")})
-    public BaseResult<McuVo> info(@RequestParam Long id) {
+    public BaseResult<UmsMcuEntity> info(@PathVariable("id") Long id) {
+        UmsMcuEntity entity = umsMcuService.getById(id);
 
-         return umsMcuService.info(id);
+        return BaseResult.succeed(entity);
     }
 
     /**
      * 保存
      */
-    @PostMapping("/saveMcu")
+    @PostMapping("/save")
     @ApiOperation(value = "新增会议平台信息")
-    public BaseResult<McuVo> saveMcu(@Valid @RequestBody McuVo mcuVo, BindingResult br) {
+    public BaseResult<UmsMcuEntity> save(@Valid @RequestBody UmsMcuEntity entity, BindingResult br) {
         ValidUtils.paramValid(br);
-        return umsMcuService.saveMcu(mcuVo);
+        umsMcuService.save(entity);
+
+        return BaseResult.succeed(entity);
     }
 
     /**
@@ -72,10 +72,10 @@ public class UmsMcuController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "修改会议平台信息")
-    public BaseResult update(@RequestBody McuVo vo) {
+    public BaseResult update(@RequestBody UmsMcuEntity entity) {
+        umsMcuService.updateById(entity);
 
-
-        return umsMcuService.updateByVo(vo);
+        return BaseResult.succeed("修改成功");
     }
 
     /**

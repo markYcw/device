@@ -55,7 +55,7 @@ public class McuController {
         return mcuService.hb(dto);
     }
 
-    @ApiOperation("创建/删除账户")
+    @ApiOperation("创建/删除账户 注意！不允许删除号码组的账号，只能删除自己创建的账号")
     @PostMapping("/account")
     public BaseResult<AccountVo> account(@Valid @RequestBody McuAccountDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);

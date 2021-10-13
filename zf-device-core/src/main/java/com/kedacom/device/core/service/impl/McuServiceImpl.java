@@ -11,15 +11,13 @@ import com.kedacom.device.core.entity.McuBasicParam;
 import com.kedacom.device.core.exception.MpException;
 import com.kedacom.device.core.mapper.UmsMcuMapper;
 import com.kedacom.device.core.service.McuService;
-import com.kedacom.device.core.utils.HandleResponseUtil;
-import com.kedacom.device.core.utils.McuBasicTool;
-import com.kedacom.device.core.utils.McuUrlFactory;
-import com.kedacom.device.core.utils.RemoteRestTemplate;
+import com.kedacom.device.core.utils.*;
 import com.kedacom.device.mp.MpResponse;
 import com.kedacom.device.mp.mcu.request.*;
 import com.kedacom.device.mp.mcu.response.*;
 import com.kedacom.mp.mcu.McuRequestDTO;
 import com.kedacom.mp.mcu.entity.UmsMcuEntity;
+import com.kedacom.mp.mcu.pojo.AccountInfoMessage;
 import com.kedacom.mp.mcu.pojo.ConfTemplateInfoVo;
 import com.kedacom.mp.mcu.pojo.VideoFormat;
 import com.kedacom.mp.mcu.request.*;
@@ -640,6 +638,11 @@ public class McuServiceImpl implements McuService {
         MpResponse response = JSON.parseObject(s, MpResponse.class);
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_HB_FAILED, response);
         AccountsVo vo = JSON.parseObject(s, AccountsVo.class);
+        List<AccountInfoMessage> accountInfo = vo.getAccountInfo();
+        for (AccountInfoMessage accountInfoMessage : accountInfo) {
+            accountInfoMessage.setDateOfBirth(DateUtils.getDateStrFromISO8601Timestamp(accountInfoMessage.getDateOfBirth()));
+        }
+        vo.setAccountInfo(accountInfo);
         return BaseResult.succeed("mcu查询所有账户成功",vo);
     }
 

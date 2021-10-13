@@ -2,6 +2,13 @@ package com.kedacom.device.core.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+
 
 /**
  * @author ycw
@@ -46,6 +53,23 @@ public class DateUtils {
         SimpleDateFormat format = new SimpleDateFormat(defaultDate);
         return format.format(date);
     }
+
+    public static String getDateStrFromISO8601Timestamp(String ISOdate){
+        DateTimeFormatter dtf1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        DateTime dt= dtf1.parseDateTime(ISOdate);
+        DateTimeFormatter dtf2= DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        return dt.toString(dtf2);
+    }
+
+    public static String getISO8601TimestampFromDateStr(String timestamp){
+        java.time.format.DateTimeFormatter dtf1 = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime ldt = LocalDateTime.parse(timestamp,dtf1);
+        ZoneOffset offset = ZoneOffset.of("+08:00");
+        OffsetDateTime date = OffsetDateTime.of(ldt ,offset);
+        java.time.format.DateTimeFormatter dtf2 = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        return date.format(dtf2 );
+    }
+
 
 
 }

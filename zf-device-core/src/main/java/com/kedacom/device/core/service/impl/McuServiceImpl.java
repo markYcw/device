@@ -1,5 +1,6 @@
 package com.kedacom.device.core.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -20,6 +21,7 @@ import com.kedacom.device.mp.mcu.response.*;
 import com.kedacom.mp.mcu.McuRequestDTO;
 import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import com.kedacom.mp.mcu.pojo.ConfTemplateInfoVo;
+import com.kedacom.mp.mcu.pojo.VideoFormat;
 import com.kedacom.mp.mcu.request.*;
 import com.kedacom.mp.mcu.response.*;
 import com.kedacom.util.NumGen;
@@ -34,6 +36,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -208,6 +211,10 @@ public class McuServiceImpl implements McuService {
     @Override
     public BaseResult<McuConfVO> conf(McuConfDTO dto) {
         log.info("mcu创建/删除会议:{}", dto);
+        List<VideoFormat> videoFormats = dto.getConfInfo().getVideoFormats();
+        if(CollectionUtil.isEmpty(videoFormats)){
+            return BaseResult.failed("主视频格式列表 不能为空");
+        }
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
         responseUtil.handleMp(entity);

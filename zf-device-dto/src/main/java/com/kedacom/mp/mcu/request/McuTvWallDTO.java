@@ -28,9 +28,9 @@ public class McuTvWallDTO extends McuRequestDTO {
 
     @NotBlank(message = "电视墙id不能为空")
     @ApiModelProperty(value = "电视墙id", required = true)
-    private String tvWallId;
+    private String hduId;
 
-    @ApiModelProperty(value = "通道信息，开始时必填 ")
-    private Chns chns;
+    @ApiModelProperty(value = "电视墙信息，开始时必填 ")
+    private Chns hdu;
 
 }

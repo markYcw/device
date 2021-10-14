@@ -18,6 +18,6 @@ import java.util.List;
 public class McuTvWallsVO implements Serializable {
 
     @ApiModelProperty(value = "电视墙列表")
-    private List<TvWall> tvWalls;
+    private List<TvWall> hdus;
 
 }

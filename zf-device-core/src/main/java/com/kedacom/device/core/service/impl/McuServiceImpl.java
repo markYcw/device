@@ -17,9 +17,7 @@ import com.kedacom.device.mp.mcu.request.*;
 import com.kedacom.device.mp.mcu.response.*;
 import com.kedacom.mp.mcu.McuRequestDTO;
 import com.kedacom.mp.mcu.entity.UmsMcuEntity;
-import com.kedacom.mp.mcu.pojo.AccountInfoMessage;
-import com.kedacom.mp.mcu.pojo.ConfTemplateInfoVo;
-import com.kedacom.mp.mcu.pojo.VideoFormat;
+import com.kedacom.mp.mcu.pojo.*;
 import com.kedacom.mp.mcu.request.*;
 import com.kedacom.mp.mcu.response.*;
 import com.kedacom.util.NumGen;
@@ -129,6 +127,17 @@ public class McuServiceImpl implements McuService {
     @Override
     public BaseResult<AccountVo> account(McuAccountDTO dto) {
         log.info("mcu创建/删除账户:{}", dto);
+        AccountInfo accountInfo = dto.getAccountInfo();
+        if(!ObjectUtil.isNull(accountInfo)){
+            List<DepartmentInfo> departments = accountInfo.getDepartments();
+            if(!CollectionUtil.isEmpty(departments)){
+                for (DepartmentInfo department : departments) {
+                    if(department.getDepartmentMoId()==null||department.getDepartmentMoId().equals("")){
+                        return BaseResult.failed("部门序号不能为空！，请检查");
+                    }
+                }
+            }
+        }
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
         responseUtil.handleMp(entity);
@@ -209,7 +218,7 @@ public class McuServiceImpl implements McuService {
     @Override
     public BaseResult<McuConfVO> conf(McuConfDTO dto) {
         log.info("mcu创建/删除会议:{}", dto);
-        if(ObjectUtil.isNull(dto.getConfInfo())){
+        if(!ObjectUtil.isNull(dto.getConfInfo())){
             List<VideoFormat> videoFormats = dto.getConfInfo().getVideoFormats();
             if(CollectionUtil.isEmpty(videoFormats)){
                 return BaseResult.failed("主视频格式列表 不能为空");
@@ -514,7 +523,7 @@ public class McuServiceImpl implements McuService {
         responseUtil.handleMp(entity);
         McuBasicParam param = tool.getParam(entity);
 
-        String string = template.getForObject(param.getUrl() + "/tvwalls/{ssid}/{ssno}", String.class, param.getParamMap());
+        String string = template.getForObject(param.getUrl() + "/hdus/{ssid}/{ssno}", String.class, param.getParamMap());
         log.info("mcu获取电视墙列表中间件应答:{}", string);
 
         McuTvWallsResponse response = JSON.parseObject(string, McuTvWallsResponse.class);
@@ -534,7 +543,7 @@ public class McuServiceImpl implements McuService {
         McuBasicParam param = tool.getParam(entity);
 
         log.info("mcu开始/停止上电视墙中间件入参信息:{}", JSON.toJSONString(request));
-        String string = template.postForObject(param.getUrl() + "/tvwall/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        String string = template.postForObject(param.getUrl() + "/hdu/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
         log.info("mcu开始/停止上电视墙中间件响应:{}", string);
 
         MpResponse response = JSON.parseObject(string, MpResponse.class);

@@ -16,10 +16,10 @@ import java.io.Serializable;
 public class TvWall implements Serializable {
 
     @ApiModelProperty(value = "电视墙id")
-    private String tvWallId;
+    private String hduId;
 
     @ApiModelProperty(value = "电视墙别名")
-    private String tvWallName;
+    private String hduName;
 
     @ApiModelProperty(value = "是否被占用:0-否；1-是；")
     private Integer occupy;
@@ -27,7 +27,7 @@ public class TvWall implements Serializable {
     @ApiModelProperty(value = "是否在线:0-否；1-是；")
     private Integer online;
 
-    @ApiModelProperty(value = "通道信息，电视墙在会议中时有效")
-    private Chns chns;
+    @ApiModelProperty(value = "电视墙信息，电视墙在会议中时有效")
+    private Chns hdu;
 
 }

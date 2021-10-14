@@ -61,5 +61,5 @@ public interface StreamMediaService {
 
     Boolean setAudioActInterval(SetAudioActIntervalDTO setAudioActIntervalDTO);
 
-    Boolean getBurnState(GetBurnStateDTO getBurnStateDTO);
+    GetBurnStateVO getBurnState(GetBurnStateDTO getBurnStateDTO);
 }

@@ -242,7 +242,7 @@ public interface StreamMediaApi {
 
     @ApiOperation("刻录状态请求")
     @PostMapping("/getBurnState")
-    BaseResult<Boolean> getBurnState(@RequestBody GetBurnStateDTO getBurnStateDTO);
+    BaseResult<GetBurnStateVO> getBurnState(@RequestBody GetBurnStateDTO getBurnStateDTO);
 
 
 }

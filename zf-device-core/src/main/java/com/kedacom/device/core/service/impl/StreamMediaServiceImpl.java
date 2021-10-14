@@ -511,7 +511,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     }
 
     @Override
-    public Boolean getBurnState(GetBurnStateDTO request) {
+    public GetBurnStateVO getBurnState(GetBurnStateDTO request) {
         String error = "刻录状态请求失败:{},{},{}";
         log.info("刻录状态请求入参信息:{}", request);
 
@@ -527,7 +527,8 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         GetBurnStateResponse res = client.getBurnState(getBurnStateRequest);
         log.info("刻录状态请求应答信息:{}", res);
         responseUtil.handleSMSRes(error, DeviceErrorEnum.GET_BURN_STATE_FAILED, res);
-        return true;
+        GetBurnStateVO vo = res.acquireData(GetBurnStateVO.class);
+        return vo;
     }
 
     @Override

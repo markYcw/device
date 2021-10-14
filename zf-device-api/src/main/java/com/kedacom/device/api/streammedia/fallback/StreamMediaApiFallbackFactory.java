@@ -145,7 +145,7 @@ public class StreamMediaApiFallbackFactory implements FallbackFactory<StreamMedi
             }
 
             @Override
-            public BaseResult<Boolean> getBurnState(GetBurnStateDTO getBurnStateDTO) {
+            public BaseResult<GetBurnStateVO> getBurnState(GetBurnStateDTO getBurnStateDTO) {
                 return BaseResult.failed("服务出错，请稍后重试");
             }
         };

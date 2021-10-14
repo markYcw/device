@@ -266,11 +266,11 @@ public class StreamMediaController {
 
     @ApiOperation("刻录状态请求 目前只支持SVR2931型号")
     @PostMapping("/getBurnState")
-    public BaseResult<Boolean> getBurnState(@Valid @RequestBody GetBurnStateDTO getBurnStateDTO, BindingResult br) {
+    public BaseResult<GetBurnStateVO> getBurnState(@Valid @RequestBody GetBurnStateDTO getBurnStateDTO, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        Boolean aBoolean = streamMediaService.getBurnState(getBurnStateDTO);
-        return BaseResult.succeed("刻录状态请求成功", aBoolean);
+        GetBurnStateVO getBurnStateVO  =streamMediaService.getBurnState(getBurnStateDTO);
+        return BaseResult.succeed("刻录状态请求成功", getBurnStateVO);
     }
 
 

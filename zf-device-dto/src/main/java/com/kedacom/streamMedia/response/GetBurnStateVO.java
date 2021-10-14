@@ -1,23 +1,18 @@
-package com.kedacom.device.stream.response;
+package com.kedacom.streamMedia.response;
 
-import com.kedacom.core.pojo.BaseResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.ToString;
-
-import java.util.List;
 
 /**
  * @author ycw
  * @version v1.0
- * @date 2021/10/9 15:06
+ * @date 2021/10/14 13:27
  * @description
  */
+@ApiModel(description = "获取刻录状态响应")
 @Data
-@ApiModel(description = "刻录状态请求响应")
-@ToString(callSuper = true)
-public class GetBurnStateResponse extends BaseResponse {
+public class GetBurnStateVO {
 
     @ApiModelProperty("通道号，目前一般为0，合成通道")
     private Integer ChnId;
@@ -39,6 +34,5 @@ public class GetBurnStateResponse extends BaseResponse {
 
     @ApiModelProperty("DVD编号")
     private Integer DvdId;
-
 
 }

@@ -228,7 +228,7 @@ public class StreamMediaController {
         return BaseResult.succeed("停止成功", aBoolean);
     }
 
-    @ApiOperation("发送宏指令数据")
+    @ApiOperation("发送宏指令数据 目前只支持SVR2931型号")
     @PostMapping("/sendOrderData")
     public BaseResult<Boolean> sendOrderData(@Valid @RequestBody SendOrderDataDTO sendOrderDataDTO, BindingResult br) {
         ValidUtils.paramValid(br);
@@ -237,7 +237,7 @@ public class StreamMediaController {
         return BaseResult.succeed("发送成功", aBoolean);
     }
 
-    @ApiOperation("获取音频能力集")
+    @ApiOperation("获取音频能力集 目前只支持SVR2931型号")
     @PostMapping("/getAudioCap")
     public BaseResult<GetAudioCapVO> getAudioCap(@Valid @RequestBody GetAudioCapDTO getAudioCapDTO, BindingResult br) {
         ValidUtils.paramValid(br);
@@ -246,7 +246,7 @@ public class StreamMediaController {
         return BaseResult.succeed("获取音频能力集成功", getAudioCapVO);
     }
 
-    @ApiOperation("控制音频功率上报")
+    @ApiOperation("控制音频功率上报 目前只支持SVR2931型号")
     @PostMapping("/ctrlAudioAct")
     public BaseResult<Boolean> ctrlAudioAct(@Valid @RequestBody CtrlAudioActDTO ctrlAudioActDTO, BindingResult br) {
         ValidUtils.paramValid(br);
@@ -255,7 +255,7 @@ public class StreamMediaController {
         return BaseResult.succeed("获取音频能力集成功", aBoolean);
     }
 
-    @ApiOperation("设置音频功率上报间隔")
+    @ApiOperation("设置音频功率上报间隔 目前只支持SVR2931型号")
     @PostMapping("/setAudioActInterval")
     public BaseResult<Boolean> setAudioActInterval(@Valid @RequestBody SetAudioActIntervalDTO setAudioActIntervalDTO, BindingResult br) {
         ValidUtils.paramValid(br);
@@ -264,7 +264,7 @@ public class StreamMediaController {
         return BaseResult.succeed("设置音频功率上报间隔成功", aBoolean);
     }
 
-    @ApiOperation("刻录状态请求")
+    @ApiOperation("刻录状态请求 目前只支持SVR2931型号")
     @PostMapping("/getBurnState")
     public BaseResult<Boolean> getBurnState(@Valid @RequestBody GetBurnStateDTO getBurnStateDTO, BindingResult br) {
         ValidUtils.paramValid(br);

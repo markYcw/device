@@ -1,10 +1,14 @@
 package com.kedacom.device.core.utils;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -55,31 +59,54 @@ public class DateUtils {
     }
 
     /**
-     * 普通时间转ISO8601格式的时间
-     * @param ISOdate
+     * 将2021-04-05T13:08:22+08:00转成date
+     *
+     * @param oldDateStr
      * @return
      */
-    public static String getDateStrFromISO8601Timestamp(String ISOdate){
-        DateTimeFormatter dtf1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        DateTime dt= dtf1.parseDateTime(ISOdate);
-        DateTimeFormatter dtf2= DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-        return dt.toString(dtf2);
+    public static Date dealDateFormat(String oldDateStr) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+        try {
+            Date date = df.parse(oldDateStr);
+            return date;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
      * ISO8601格式的时间转普通时间
+     *
+     * @param ISOdate
+     * @return
+     */
+    public static String getDateStrFromISO8601Timestamp(String ISOdate) {
+        if (ISOdate.equals("")) {
+            return "";
+        }
+        Date date = dealDateFormat(ISOdate);
+        String defaultDate = getDefaultDate(date);
+        return defaultDate;
+    }
+
+    /**
+     * 普通时间转ISO8601格式的时间
+     *
      * @param timestamp
      * @return
      */
-    public static String getISO8601TimestampFromDateStr(String timestamp){
+    public static String getISO8601TimestampFromDateStr(String timestamp) {
+        if (timestamp.equals("")) {
+            return "";
+        }
         java.time.format.DateTimeFormatter dtf1 = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime ldt = LocalDateTime.parse(timestamp,dtf1);
+        LocalDateTime ldt = LocalDateTime.parse(timestamp, dtf1);
         ZoneOffset offset = ZoneOffset.of("+08:00");
-        OffsetDateTime date = OffsetDateTime.of(ldt ,offset);
+        OffsetDateTime date = OffsetDateTime.of(ldt, offset);
         java.time.format.DateTimeFormatter dtf2 = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        return date.format(dtf2 );
+        return date.format(dtf2);
     }
-
 
 
 }

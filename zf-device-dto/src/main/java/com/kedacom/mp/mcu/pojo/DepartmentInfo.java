@@ -18,7 +18,7 @@ public class DepartmentInfo implements Serializable {
 
     @NotBlank(message = "部门序号 不能为空")
     @ApiModelProperty(value = "部门序号（UUID格式）",required = true)
-    private String departmentMoid;
+    private String departmentMoId;
 
     @ApiModelProperty(value = "部门名称")
     private String departmentName;

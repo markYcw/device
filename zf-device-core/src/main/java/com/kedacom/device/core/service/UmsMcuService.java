@@ -20,5 +20,7 @@ public interface UmsMcuService extends IService<UmsMcuEntity> {
 
     void mcuNotify(String notify);
 
+    UmsMcuEntity getBySsid(Integer ssid);
+
 }
 

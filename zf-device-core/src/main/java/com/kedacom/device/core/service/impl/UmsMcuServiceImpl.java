@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
+import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.mapper.UmsMcuMapper;
 import com.kedacom.device.core.service.McuService;
@@ -77,6 +78,15 @@ public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> i
                 mcuService.login(dto);
             }
         }
+    }
+
+    @Override
+    public UmsMcuEntity getBySsid(Integer ssid) {
+        String s = String.valueOf(ssid);
+        LambdaQueryWrapper<UmsMcuEntity> wrapper = new LambdaQueryWrapper<UmsMcuEntity>();
+        wrapper.eq(UmsMcuEntity::getSsid, s);
+        List<UmsMcuEntity> mcuEntities = mapper.selectList(wrapper);
+        return mcuEntities.get(DevTypeConstant.getZero);
     }
 
 }

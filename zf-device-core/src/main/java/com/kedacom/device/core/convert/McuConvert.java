@@ -65,7 +65,7 @@ public interface McuConvert {
 
     McuRecVO recRes(McuRecResponse response);
 
-    McuTvWallsVO tvWallsRes(McuTvWallsResponse response);
+    McuTvWallsVO convertMcuTvWallsVO(McuTvWallsResponse response);
 
     McuTvWallRequest tvwall(McuTvWallDTO dto);
 

@@ -529,7 +529,7 @@ public class McuServiceImpl implements McuService {
         McuTvWallsResponse response = JSON.parseObject(string, McuTvWallsResponse.class);
         String errorMsg = "mcu获取电视墙列表失败:{},{},{}";
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_TV_WALLS_FAILED, response);
-        McuTvWallsVO vo = convert.tvWallsRes(response);
+        McuTvWallsVO vo = convert.convertMcuTvWallsVO(response);
         return BaseResult.succeed(vo);
     }
 

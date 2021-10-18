@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -33,6 +34,7 @@ public class McuRecDTO extends McuRequestDTO {
     private Integer recorderMode;
 
     @ApiModelProperty(value = "录像参数，开始时必填")
+    @Valid
     private RecParam recParam;
 
 

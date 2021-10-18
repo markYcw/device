@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -144,37 +145,48 @@ public class TemplateInfo implements Serializable {
     private String bindE164;
 
     @ApiModelProperty(value = "发言人")
+    @Valid
     private Speaker speaker;
 
     @ApiModelProperty(value = "主席")
+    @Valid
     private Chairman chairman;
 
     @ApiModelProperty(value = "混音信息")
+    @Valid
     private Mix mix;
 
     @NotEmpty(message = "主视频格式列表 不能为空")
     @ApiModelProperty(value = "主视频格式列表",required = true)
+    @Valid
     private List<VideoFormat> videoFormats;
 
     @ApiModelProperty(value = "参会成员 创建虚拟会议室时可填")
+    @Valid
     private List<InviteMember> inviteMembers;
 
     @ApiModelProperty("画面合成设置")
+    @Valid
     private Vmp vmp;
 
     @ApiModelProperty(value = "vip成员列表")
+    @Valid
     private List<Vips> vips;
 
     @ApiModelProperty("轮询设置设置")
+    @Valid
     private PollInfo poll;
 
     @ApiModelProperty(value = "录像设置")
+    @Valid
     private Recorder recorder;
 
     @ApiModelProperty(value = "追呼成员数组")
+    @Valid
     private KeepCallingMembers keepCallingMembers;
 
     @ApiModelProperty(value = "数据协作")
+    @Valid
     private Dcs dcs;
 
 }

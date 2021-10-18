@@ -504,6 +504,11 @@ public class McuServiceImpl implements McuService {
     @Override
     public BaseResult<McuRecVO> rec(McuRecDTO dto) {
         log.info("mcu开始/暂停/恢复/停止录像:{}", dto);
+        if(dto.getType()==0){
+            if(ObjectUtil.isNull(dto.getRecParam())){
+                return BaseResult.failed("开始录像时录像参数必填！！！");
+            }
+        }
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
         responseUtil.handleMp(entity);

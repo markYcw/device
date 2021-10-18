@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -120,12 +121,15 @@ public class CdConfInfo implements Serializable {
     private Integer oneReforming;
 
     @ApiModelProperty(value = "发言人")
+    @Valid
     private Speaker speaker;
 
     @ApiModelProperty(value = "主席")
+    @Valid
     private Chairman chairman;
 
     @ApiModelProperty(value = "混音信息")
+    @Valid
     private Mix mix;
 
     @NotEmpty(message = "主视频格式列表 不能为空")
@@ -133,9 +137,11 @@ public class CdConfInfo implements Serializable {
     private List<VideoFormat> videoFormats;
 
     @ApiModelProperty(value = "参会成员 创建虚拟会议室时可填")
+    @Valid
     private List<InviteMember> inviteMembers;
 
     @ApiModelProperty(value = "录像设置")
+    @Valid
     private Recorder recorder;
 
 }

@@ -17,7 +17,7 @@ import javax.validation.Valid;
  * @date 2021/9/7 14:56
  * @description
  */
-public class SVRApiFallbackFactory implements FallbackFactory<SvrApi> {
+public class SvrApiFallbackFactory implements FallbackFactory<SvrApi> {
     @Override
     public SvrApi create(Throwable throwable) {
         return new SvrApi() {

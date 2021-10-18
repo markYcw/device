@@ -2,7 +2,7 @@ package com.kedacom.device.api.svr;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.device.api.svr.fallback.SVRApiFallbackFactory;
+import com.kedacom.device.api.svr.fallback.SvrApiFallbackFactory;
 import com.kedacom.svr.entity.SvrEntity;
 import com.kedacom.svr.pojo.SvrPageQueryDTO;
 import com.kedacom.svr.dto.*;
@@ -22,7 +22,7 @@ import javax.validation.Valid;
  * @author ycw
  * @date 2021/09/07 14:55
  */
-@FeignClient(name = "device-server", contextId = "svrApi", path = "/api-device/ums/svr",fallbackFactory = SVRApiFallbackFactory.class)
+@FeignClient(name = "device-server", contextId = "svrApi", path = "/api-device/ums/svr",fallbackFactory = SvrApiFallbackFactory.class)
 public interface SvrApi {
 
     @PostMapping("/pageQuery")

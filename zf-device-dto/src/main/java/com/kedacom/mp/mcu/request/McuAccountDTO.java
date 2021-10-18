@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -26,5 +27,6 @@ public class McuAccountDTO extends McuRequestDTO {
     private String accountMoId;
 
     @ApiModelProperty(value = "账户信息，创建时必填")
+    @Valid
     private AccountInfo accountInfo;
 }

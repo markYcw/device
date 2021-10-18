@@ -212,6 +212,13 @@ public class McuServiceImpl implements McuService {
         String errorMsg = "mcu获取会议信息失败:{},{},{}";
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_CONF_INFO_FAILED, response);
         McuConfInfoVO vo = convert.confinfoRes(response);
+        ConfInfo confInfo = vo.getConfInfo();
+        String startTime = confInfo.getStartTime();
+        String endTime = confInfo.getEndTime();
+        String dateStrFromISO8601Timestamp = DateUtils.getDateStrFromISO8601Timestamp(startTime);
+        String dateStrFromISO8601Timestamp1 = DateUtils.getDateStrFromISO8601Timestamp(endTime);
+        confInfo.setStartTime(dateStrFromISO8601Timestamp);
+        confInfo.setEndTime(dateStrFromISO8601Timestamp1);
         return BaseResult.succeed(vo);
     }
 

@@ -26,9 +26,7 @@ public class McuAudioMixDTO extends McuRequestDTO {
     @ApiModelProperty(value = "会议号码", required = true)
     private String confId;
 
-    @ApiModelProperty(value = "混音模式\n" +
-            "1-智能混音；\n" +
-            "2-定制混音；")
+    @ApiModelProperty(value = "混音模式1-智能混音；2-定制混音；")
     private Integer mode;
 
     @ApiModelProperty(value = "混音成员，终端ID列表，开始时必填")

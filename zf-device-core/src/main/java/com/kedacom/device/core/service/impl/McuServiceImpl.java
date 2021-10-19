@@ -465,6 +465,11 @@ public class McuServiceImpl implements McuService {
     @Override
     public BaseResult audioMix(McuAudioMixDTO dto) {
         log.info("mcu开始/停止混音:{}", dto);
+        if(dto.getType()==0){
+            if(ObjectUtil.isNull(dto.getMtInfos())){
+                return BaseResult.failed("开始混音时终端ID为必填！");
+            }
+        }
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
         responseUtil.handleMp(entity);
@@ -508,6 +513,9 @@ public class McuServiceImpl implements McuService {
             if(ObjectUtil.isNull(dto.getRecParam())){
                 return BaseResult.failed("开始录像时录像参数必填！！！");
             }
+        }
+        if(dto.getType()!=0){
+            dto.setRecParam(null);
         }
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());

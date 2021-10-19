@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.List;
@@ -61,6 +62,7 @@ public class AccountInfo implements Serializable {
     private String officeLocation;
 
     @ApiModelProperty(value = "部门信息列表")
+    @Valid
     private List<DepartmentInfo> departments;
 
     @ApiModelProperty(value = "账号编号/工号 1.字符限制：数字、字母")

@@ -166,6 +166,16 @@ public class McuApiFallbackFactory implements FallbackFactory<McuApi> {
             }
 
             @Override
+            public BaseResult<DepartmentsVO> departments(@Valid McuRequestDTO dto, BindingResult br) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<DepartmentVO> department(@Valid DepartmentDTO dto, BindingResult br) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
             public BaseResult<ConfTemplateInfoVo> templateInfo(GetConfTemplateDTO dto) {
                 return BaseResult.failed(throwable.getMessage());
             }

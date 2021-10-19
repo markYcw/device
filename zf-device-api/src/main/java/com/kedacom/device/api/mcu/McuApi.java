@@ -142,4 +142,12 @@ public interface McuApi {
     @PostMapping("/confTemplates")
     BaseResult<ConfTemplateVo> confTemplates(@RequestBody ConfTemplateDTO dto);
 
+    @ApiOperation("查询所有部门")
+    @PostMapping("/departments")
+    BaseResult<DepartmentsVO> departments(@Valid @RequestBody McuRequestDTO dto, BindingResult br);
+
+    @ApiOperation("创建/删除部门")
+    @PostMapping("/department")
+    BaseResult<DepartmentVO> department(@Valid @RequestBody DepartmentDTO dto, BindingResult br);
+
 }

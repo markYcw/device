@@ -685,5 +685,39 @@ public class McuServiceImpl implements McuService {
         return BaseResult.succeed("mcu获取录像状态成功",vo);
     }
 
+    @Override
+    public BaseResult<DepartmentsVO> departments(McuRequestDTO dto) {
+        log.info("查询所有部门接口入参:{}", dto);
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        McuBasicParam param = tool.getParam(entity);
+
+        String string = template.getForObject(param.getUrl() + "/ departments/{ssid}/{ssno}", String.class, param.getParamMap());
+        log.info("mcu查询所有部门中间件应答:{}", string);
+
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
+        String errorMsg = "mcu查询所有部门失败:{},{},{}";
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_DEPARTMENTS_FAILED, response);
+        DepartmentsVO vo = JSON.parseObject(string, DepartmentsVO.class);
+        return BaseResult.succeed(vo);
+    }
+
+    @Override
+    public BaseResult<DepartmentVO> department(DepartmentDTO dto) {
+        log.info("创建/删除部门接口入参:{}", dto);
+        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        McuBasicParam param = tool.getParam(entity);
+        log.info("mcu创建/删除部门中间件入参:{}",JSON.toJSONString(dto));
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/department/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        log.info("mcu创建/删除部门响应:{}", s);
+        String errorMsg = "mcu创建/删除部门失败:{},{},{}";
+        MpResponse response = JSON.parseObject(s, MpResponse.class);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_REC_STATUS_FAILED, response);
+        DepartmentVO vo = JSON.parseObject(s, DepartmentVO.class);
+        return BaseResult.succeed("mcu创建/删除部门成功",vo);
+    }
+
 }
 

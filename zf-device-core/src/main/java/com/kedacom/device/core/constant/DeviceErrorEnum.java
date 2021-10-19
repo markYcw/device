@@ -110,6 +110,7 @@ public enum DeviceErrorEnum {
     MCU_HB_FAILED(4025, "发送心跳失败"),
     MCU_CONF_TEMPLATE_S_FAILED(4026, "mcu创建/删除会议模板失败"),
     MCU_REC_STATUS_FAILED(4027, "mcu获取录像状态失败"),
+    MCU_DEPARTMENTS_FAILED(4028, "mcu查询所有部门失败"),
 
     //SVR相关错误码 addBy ycw
     SVR_LOGIN_FAILED(5001, "SVR登录失败"),

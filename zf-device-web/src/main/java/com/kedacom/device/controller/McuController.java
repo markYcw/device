@@ -271,6 +271,22 @@ public class McuController {
         return mcuService.message(dto);
     }
 
+    @ApiOperation("查询所有部门")
+    @PostMapping("/departments")
+    public BaseResult<DepartmentsVO> departments(@Valid @RequestBody McuRequestDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return mcuService.departments(dto);
+    }
+
+    @ApiOperation("创建/删除部门")
+    @PostMapping("/department")
+    public BaseResult<DepartmentVO> department(@Valid @RequestBody DepartmentDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return mcuService.department(dto);
+    }
+
 
 
 }

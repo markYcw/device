@@ -37,7 +37,7 @@ public class RegisterListenerServiceImpl extends ServiceImpl<KmListenerMapper, K
         log.info("============设备消息订阅入参RegisterListenerVo：{}",vo);
         if(!isRepeat(vo)){
             RegisterListenerVo listenerVo = new RegisterListenerVo();
-            listenerVo.setError(DeviceErrorEnum.IP_OR_NAME_REPEAT.getCode());
+            listenerVo.setError(10010);
             return BaseResult.failed(1,"重复注册",listenerVo);
         }
         KmListenerEntity entity = convert.convertToEntity(vo);

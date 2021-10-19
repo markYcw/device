@@ -10,12 +10,12 @@ import javax.validation.constraints.NotNull;
 
 
 /**
- * @author hxj
+ * @author ycw
  * @date: 2021/8/17 11:21
- * @description 开始/停止混音入参
+ * @description 创建/删除部门
  */
 @Data
-@ApiModel(description =  "开始/停止混音入参")
+@ApiModel(description =  "创建/删除部门")
 @ToString(callSuper = true)
 public class DepartmentDTO extends McuRequestDTO{
 

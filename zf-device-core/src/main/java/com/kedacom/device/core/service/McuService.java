@@ -51,7 +51,7 @@ public interface McuService {
 
     BaseResult audioMix(McuAudioMixDTO dto);
 
-    BaseResult<McuAudioMixMemberVO> audioMixMember(McuAudioMixMemberDTO dto);
+    BaseResult<String> audioMixMember(McuAudioMixMemberDTO dto);
 
     BaseResult rec(McuRecDTO dto);
 

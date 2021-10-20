@@ -217,7 +217,7 @@ public class McuController {
 
     @ApiOperation("添加/删除混音成员")
     @PostMapping("/audioMixMember")
-    public BaseResult<McuAudioMixMemberVO> audioMixMember(@Valid @RequestBody McuAudioMixMemberDTO dto, BindingResult br) {
+    public BaseResult<String> audioMixMember(@Valid @RequestBody McuAudioMixMemberDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return mcuService.audioMixMember(dto);

@@ -121,7 +121,7 @@ public class McuApiFallbackFactory implements FallbackFactory<McuApi> {
             }
 
             @Override
-            public BaseResult<McuAudioMixMemberVO> audioMixMember(McuAudioMixMemberDTO dto) {
+            public BaseResult<String> audioMixMember(McuAudioMixMemberDTO dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 

@@ -487,7 +487,7 @@ public class McuServiceImpl implements McuService {
     }
 
     @Override
-    public BaseResult<McuAudioMixMemberVO> audioMixMember(McuAudioMixMemberDTO dto) {
+    public BaseResult<String> audioMixMember(McuAudioMixMemberDTO dto) {
         log.info("mcu添加/删除混音成员:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
@@ -496,14 +496,13 @@ public class McuServiceImpl implements McuService {
         McuBasicParam param = tool.getParam(entity);
 
         log.info("mcu添加/删除混音成员中间件入参信息:{}", JSON.toJSONString(request));
-        String string = template.postForObject(param.getUrl() + "/mtmembers/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
+        String string = template.postForObject(param.getUrl() + "/audiomixmember/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
         log.info("mcu添加/删除混音成员中间件应答:{}", string);
 
-        McuAudioMixMemberResponse response = JSON.parseObject(string, McuAudioMixMemberResponse.class);
+        MpResponse response = JSON.parseObject(string, MpResponse.class);
         String errorMsg = "mcu添加/删除混音成员失败:{},{},{}";
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_AUDIO_MIX_MEMBER_FAILED, response);
-        McuAudioMixMemberVO vo = convert.audioMixMemberRes(response);
-        return BaseResult.succeed(vo);
+        return BaseResult.succeed(string);
     }
 
     @Override

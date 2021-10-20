@@ -108,7 +108,7 @@ public interface McuApi {
 
     @ApiOperation("添加/删除混音成员")
     @PostMapping("/audioMixMember")
-    BaseResult<McuAudioMixMemberVO> audioMixMember(@RequestBody McuAudioMixMemberDTO dto);
+    BaseResult<String> audioMixMember(@RequestBody McuAudioMixMemberDTO dto);
 
     @ApiOperation("开始/暂停/恢复/停止录像")
     @PostMapping("/rec")

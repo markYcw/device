@@ -12,7 +12,7 @@ import org.springframework.validation.BindingResult;
 import javax.validation.Valid;
 
 /**
- * @Author hxj
+ * @Author hxj ycw
  * @Date: 2021/8/12 13:41
  * @Description 会议平台api熔断类
  */
@@ -166,12 +166,17 @@ public class McuApiFallbackFactory implements FallbackFactory<McuApi> {
             }
 
             @Override
-            public BaseResult<DepartmentsVO> departments(@Valid McuRequestDTO dto, BindingResult br) {
+            public BaseResult<DepartmentsVO> departments(@Valid McuRequestDTO dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<DepartmentVO> department(@Valid DepartmentDTO dto, BindingResult br) {
+            public BaseResult<DepartmentVO> department(@Valid DepartmentDTO dto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<RecsVO> recs(@Valid RecsDTO dto, BindingResult br) {
                 return BaseResult.failed(throwable.getMessage());
             }
 

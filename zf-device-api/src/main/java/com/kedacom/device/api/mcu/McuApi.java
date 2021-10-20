@@ -144,10 +144,14 @@ public interface McuApi {
 
     @ApiOperation("查询所有部门")
     @PostMapping("/departments")
-    BaseResult<DepartmentsVO> departments(@Valid @RequestBody McuRequestDTO dto, BindingResult br);
+    BaseResult<DepartmentsVO> departments(@Valid @RequestBody McuRequestDTO dto);
 
     @ApiOperation("创建/删除部门")
     @PostMapping("/department")
-    BaseResult<DepartmentVO> department(@Valid @RequestBody DepartmentDTO dto, BindingResult br);
+    BaseResult<DepartmentVO> department(@Valid @RequestBody DepartmentDTO dto);
+
+    @ApiOperation("获取录像列表")
+    @PostMapping("/recs")
+    BaseResult<RecsVO> recs(@Valid @RequestBody RecsDTO dto, BindingResult br);
 
 }

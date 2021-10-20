@@ -288,5 +288,14 @@ public class McuController {
     }
 
 
+    @ApiOperation("获取录像列表")
+    @PostMapping("/recs")
+    public BaseResult<RecsVO> recs(@Valid @RequestBody RecsDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return mcuService.recs(dto);
+    }
+
+
 
 }

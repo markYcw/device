@@ -76,4 +76,6 @@ public interface McuService {
     BaseResult<DepartmentsVO> departments(McuRequestDTO dto);
 
     BaseResult<DepartmentVO> department(DepartmentDTO dto);
+
+    BaseResult<RecsVO> recs(RecsDTO dto);
 }

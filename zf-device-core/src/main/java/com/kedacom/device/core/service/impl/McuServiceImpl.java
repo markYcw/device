@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author hxj
+ * @author hxj ycw
  * @date: 2021/8/13 13:50
  * @description 会议平台业务类
  */
@@ -724,6 +724,22 @@ public class McuServiceImpl implements McuService {
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_REC_STATUS_FAILED, response);
         DepartmentVO vo = JSON.parseObject(s, DepartmentVO.class);
         return BaseResult.succeed("mcu创建/删除部门成功",vo);
+    }
+
+    @Override
+    public BaseResult<RecsVO> recs(RecsDTO dto) {
+        log.info("获取录像列表接口入参:{}", dto);
+        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        McuBasicParam param = tool.getParam(entity);
+        log.info("mcu获取录像列表中间件入参:{}",JSON.toJSONString(dto));
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/recs/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        log.info("mcu获取录像列表响应:{}", s);
+        String errorMsg = "mcu获取录像列表失败:{},{},{}";
+        MpResponse response = JSON.parseObject(s, MpResponse.class);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_REC_STATUS_FAILED, response);
+        RecsVO vo = JSON.parseObject(s, RecsVO.class);
+        return BaseResult.succeed("mcu获取录像列表成功",vo);
     }
 
 }

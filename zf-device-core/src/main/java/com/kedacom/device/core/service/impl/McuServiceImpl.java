@@ -559,7 +559,7 @@ public class McuServiceImpl implements McuService {
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
         responseUtil.handleMp(entity);
-        McuTvWallRequest request = convert.tvwall(dto);
+        McuTvWallRequest request = convert.convertTvWall(dto);
         McuBasicParam param = tool.getParam(entity);
 
         log.info("mcu开始/停止上电视墙中间件入参信息:{}", JSON.toJSONString(request));

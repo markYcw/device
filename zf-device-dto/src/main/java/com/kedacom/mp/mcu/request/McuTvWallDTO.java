@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -31,6 +32,7 @@ public class McuTvWallDTO extends McuRequestDTO {
     private String hduId;
 
     @ApiModelProperty(value = "电视墙信息，开始时必填 ")
+    @Valid
     private Chns hdu;
 
 }

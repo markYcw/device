@@ -23,9 +23,9 @@ public class McuTvWallRequest implements Serializable {
     private String confId;
 
     @ApiModelProperty(value = "电视墙id", required = true)
-    private String tvWallId;
+    private String hduId;
 
     @ApiModelProperty(value = "通道信息，开始时必填 ")
-    private Chns chns;
+    private Chns hdu;
 
 }

@@ -4,7 +4,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
@@ -24,13 +26,13 @@ public class AddOrUpdateRequestDto implements Serializable {
     @ApiModelProperty(value = "名称")
     private String abName;
 
-    @NotEmpty(message = "设备IP不能为空")
+    @NotBlank(message = "设备IP不能为空")
     @Pattern(regexp = "^((\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.){3}(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5]|[*])$",
             message = "请正确填写设备IP")
     @ApiModelProperty(value = "ip")
     private String abIp;
 
-    @NotEmpty(message = "设备端口不能为空")
+    @NotNull(message = "设备端口不能为空")
     @ApiModelProperty(value = "端口")
     private Integer abPort;
 

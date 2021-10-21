@@ -76,7 +76,7 @@ public class StreamMediaEventListener {
         Integer ssid = event.getNty().getSsid();
         DeviceInfoEntity bySsid = streamMediaService.getBySsid(ssid);
         String id = bySsid.getId();
-        audioActDTO.setDbId(Integer.valueOf(id));
+        audioActDTO.setDbId(Long.valueOf(id));
         audioActDTO.setMsgType(MsgType.S_M_AUDIO_ACT_NTY.getType());
         List<KmListenerEntity> all = registerListenerService.getAll();
         if(!CollectionUtil.isEmpty(all)){
@@ -98,7 +98,7 @@ public class StreamMediaEventListener {
         Integer ssid = event.getNty().getSsid();
         DeviceInfoEntity bySsid = streamMediaService.getBySsid(ssid);
         String id = bySsid.getId();
-        burnStateDTO.setDbId(Integer.valueOf(id));
+        burnStateDTO.setDbId(Long.valueOf(id));
         burnStateDTO.setMsgType(MsgType.S_M_BURN_STATE_NTY.getType());
         List<KmListenerEntity> all = registerListenerService.getAll();
         if(!CollectionUtil.isEmpty(all)){
@@ -120,7 +120,7 @@ public class StreamMediaEventListener {
         Integer ssid = event.getNty().getSsid();
         DeviceInfoEntity bySsid = streamMediaService.getBySsid(ssid);
         String id = bySsid.getId();
-        alarmDTO.setDbId(Integer.valueOf(id));
+        alarmDTO.setDbId(Long.valueOf(id));
         alarmDTO.setMsgType(MsgType.S_M_ALARM_NTY.getType());
         List<KmListenerEntity> all = registerListenerService.getAll();
         if(!CollectionUtil.isEmpty(all)){

@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
@@ -22,7 +21,7 @@ public class AddOrUpdateRequestDto implements Serializable {
     @ApiModelProperty(value = "id")
     private String id;
 
-    @NotEmpty(message = "设备名称不能为空")
+    @NotBlank(message = "设备名称不能为空")
     @ApiModelProperty(value = "名称")
     private String abName;
 

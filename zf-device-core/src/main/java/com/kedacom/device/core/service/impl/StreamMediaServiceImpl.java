@@ -1,6 +1,8 @@
 package com.kedacom.device.core.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.core.pojo.BaseResponse;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.StreamMediaConvert;
@@ -15,10 +17,12 @@ import com.kedacom.device.stream.response.*;
 import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -529,6 +533,15 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         responseUtil.handleSMSRes(error, DeviceErrorEnum.GET_BURN_STATE_FAILED, res);
         GetBurnStateVO vo = res.acquireData(GetBurnStateVO.class);
         return vo;
+    }
+
+    @Override
+    public DeviceInfoEntity getBySsid(Integer ssid) {
+        log.info( "根据ssid查询流媒体实体接口入参:{}",ssid);
+        LambdaQueryWrapper<DeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(DeviceInfoEntity::getSessionId,ssid);
+        List<DeviceInfoEntity> list = deviceMapper.selectList(wrapper);
+        return list.get(DevTypeConstant.getZero);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.kedacom.deviceListener.notify.DeviceNotifyRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -26,7 +27,8 @@ public class DeviceNotifyUtils {
      * @return
      */
     public void audioActNty(String url,DeviceNotifyRequestDTO dto){
-        remoteRestTemplate.getRestTemplate().postForObject(url, JSON.toJSONString(dto), String.class);
+        HttpEntity<String> httpEntity = new HttpEntity<>(JSON.toJSONString(dto), remoteRestTemplate.getHttpHeaders());
+        remoteRestTemplate.getRestTemplate().postForObject(url, httpEntity, String.class);
     }
 
     /**
@@ -35,7 +37,8 @@ public class DeviceNotifyUtils {
      * @param dto
      */
     public void burnStateNty(String url,DeviceNotifyRequestDTO dto){
-        remoteRestTemplate.getRestTemplate().postForObject(url, JSON.toJSONString(dto), String.class);
+        HttpEntity<String> httpEntity = new HttpEntity<>(JSON.toJSONString(dto), remoteRestTemplate.getHttpHeaders());
+        remoteRestTemplate.getRestTemplate().postForObject(url, httpEntity, String.class);
     }
 
     /**
@@ -44,7 +47,8 @@ public class DeviceNotifyUtils {
      * @param dto
      */
     public void alarmNty(String url,DeviceNotifyRequestDTO dto){
-        remoteRestTemplate.getRestTemplate().postForObject(url, JSON.toJSONString(dto), String.class);
+        HttpEntity<String> httpEntity = new HttpEntity<>(JSON.toJSONString(dto), remoteRestTemplate.getHttpHeaders());
+        remoteRestTemplate.getRestTemplate().postForObject(url, httpEntity, String.class);
     }
 
 

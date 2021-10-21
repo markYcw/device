@@ -2,6 +2,7 @@ package com.kedacom.device.core.notify;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.kedacom.device.core.convert.StreamMediaConvert;
+import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.device.core.entity.KmListenerEntity;
 import com.kedacom.device.core.entity.TransDataEntity;
 import com.kedacom.device.core.event.AlarmEvent;
@@ -10,6 +11,7 @@ import com.kedacom.device.core.event.BurnStateEvent;
 import com.kedacom.device.core.event.TransDataNotifyEvent;
 import com.kedacom.device.core.kafka.UmsKafkaMessageProducer;
 import com.kedacom.device.core.service.RegisterListenerService;
+import com.kedacom.device.core.service.StreamMediaService;
 import com.kedacom.device.core.service.UmsMcuService;
 import com.kedacom.device.core.utils.DeviceNotifyUtils;
 import com.kedacom.deviceListener.msgType.MsgType;
@@ -49,7 +51,7 @@ public class StreamMediaEventListener {
     private RegisterListenerService registerListenerService;
 
     @Autowired
-    private UmsMcuService umsMcuService;
+    private StreamMediaService streamMediaService;
 
     private final static ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(5, 10, 60L, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>(10), new CustomizableThreadFactory("StreamMediaEventListener-"));
@@ -72,9 +74,9 @@ public class StreamMediaEventListener {
         log.info("接收音频功率通知:{}", event);
         AudioActDTO audioActDTO = streamMediaConvert.convertAudioActDTO(event);
         Integer ssid = event.getNty().getSsid();
-        UmsMcuEntity umsMcuEntity = umsMcuService.getBySsid(ssid);
-        Long id = umsMcuEntity.getId();
-        audioActDTO.setDbId(id.intValue());
+        DeviceInfoEntity bySsid = streamMediaService.getBySsid(ssid);
+        String sessionId = bySsid.getSessionId();
+        audioActDTO.setDbId(Integer.valueOf(sessionId));
         audioActDTO.setMsgType(MsgType.S_M_AUDIO_ACT_NTY.getType());
         List<KmListenerEntity> all = registerListenerService.getAll();
         if(!CollectionUtil.isEmpty(all)){
@@ -94,9 +96,9 @@ public class StreamMediaEventListener {
         log.info("刻录状态通知:{}", event);
         BurnStateDTO burnStateDTO = streamMediaConvert.convertBurnStateDTO(event);
         Integer ssid = event.getNty().getSsid();
-        UmsMcuEntity umsMcuEntity = umsMcuService.getBySsid(ssid);
-        Long id = umsMcuEntity.getId();
-        burnStateDTO.setDbId(id.intValue());
+        DeviceInfoEntity bySsid = streamMediaService.getBySsid(ssid);
+        String sessionId = bySsid.getSessionId();
+        burnStateDTO.setDbId(Integer.valueOf(sessionId));
         burnStateDTO.setMsgType(MsgType.S_M_BURN_STATE_NTY.getType());
         List<KmListenerEntity> all = registerListenerService.getAll();
         if(!CollectionUtil.isEmpty(all)){
@@ -116,9 +118,9 @@ public class StreamMediaEventListener {
         log.info("异常告警通知:{}", event);
         AlarmDTO alarmDTO = event.acquireData(AlarmDTO.class);
         Integer ssid = event.getNty().getSsid();
-        UmsMcuEntity umsMcuEntity = umsMcuService.getBySsid(ssid);
-        Long id = umsMcuEntity.getId();
-        alarmDTO.setDbId(id.intValue());
+        DeviceInfoEntity bySsid = streamMediaService.getBySsid(ssid);
+        String sessionId = bySsid.getSessionId();
+        alarmDTO.setDbId(Integer.valueOf(sessionId));
         alarmDTO.setMsgType(MsgType.S_M_ALARM_NTY.getType());
         List<KmListenerEntity> all = registerListenerService.getAll();
         if(!CollectionUtil.isEmpty(all)){

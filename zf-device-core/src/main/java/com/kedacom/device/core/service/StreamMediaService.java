@@ -1,5 +1,6 @@
 package com.kedacom.device.core.service;
 
+import com.kedacom.device.core.entity.DeviceInfoEntity;
 import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
 
@@ -62,4 +63,6 @@ public interface StreamMediaService {
     Boolean setAudioActInterval(SetAudioActIntervalDTO setAudioActIntervalDTO);
 
     GetBurnStateVO getBurnState(GetBurnStateDTO getBurnStateDTO);
+
+    DeviceInfoEntity getBySsid(Integer ssid);
 }

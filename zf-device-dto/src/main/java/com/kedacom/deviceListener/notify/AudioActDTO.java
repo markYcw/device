@@ -23,4 +23,7 @@ public class AudioActDTO extends DeviceNotifyRequestDTO{
     @ApiModelProperty(value = "功率")
     private Integer Power;
 
+    @ApiModelProperty(value = "设备ID")
+    private String DeviceID;
+
 }

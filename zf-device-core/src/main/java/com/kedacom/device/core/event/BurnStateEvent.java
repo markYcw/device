@@ -44,6 +44,9 @@ public class BurnStateEvent implements Notify {
     @ApiModelProperty(value = "DVD编号")
     private Integer DvdId;
 
+    @ApiModelProperty(value = "设备ID")
+    private String DeviceID;
+
     private JSONObject removeHead() {
 
         String json = JSON.toJSONString(this);

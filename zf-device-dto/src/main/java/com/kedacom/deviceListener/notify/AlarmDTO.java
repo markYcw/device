@@ -35,4 +35,7 @@ public class AlarmDTO extends DeviceNotifyRequestDTO{
     @ApiModelProperty(value = "告警别名")
     private String AlarmDesc;
 
+    @ApiModelProperty(value = "设备ID")
+    private String DeviceID;
+
 }

@@ -35,4 +35,7 @@ public class BurnStateDTO extends DeviceNotifyRequestDTO{
     @ApiModelProperty(value = "DVD编号")
     private Integer DvdId;
 
+    @ApiModelProperty(value = "设备ID")
+    private String DeviceID;
+
 }

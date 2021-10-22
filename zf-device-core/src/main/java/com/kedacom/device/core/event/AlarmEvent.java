@@ -43,6 +43,9 @@ public class AlarmEvent implements Notify {
     @ApiModelProperty(value = "告警别名")
     private String AlarmDesc;
 
+    @ApiModelProperty(value = "设备ID")
+    private String DeviceID;
+
     private JSONObject removeHead() {
 
         String json = JSON.toJSONString(this);

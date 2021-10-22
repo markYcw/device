@@ -32,6 +32,9 @@ public class AudioActEvent implements Notify {
     @ApiModelProperty(value = "功率")
     private Integer Power;
 
+    @ApiModelProperty(value = "设备ID")
+    private String DeviceID;
+
     private JSONObject removeHead() {
 
         String json = JSON.toJSONString(this);

@@ -74,8 +74,8 @@ public interface StreamMediaConvert {
 
     GetBurnStateRequest convertGetBurnStateDTO(GetBurnStateDTO getBurnStateDTO);
 
-    AudioActDTO convertAudioActDTO(AudioActEvent event);
+    AudioActDTO convertToAudioActDTO(AudioActEvent event);
 
-    BurnStateDTO convertBurnStateDTO(BurnStateEvent event);
+    BurnStateDTO convertToBurnStateDTO(BurnStateEvent event);
 
 }

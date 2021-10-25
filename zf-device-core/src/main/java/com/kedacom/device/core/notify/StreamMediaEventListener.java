@@ -72,7 +72,7 @@ public class StreamMediaEventListener {
     public void audioActNotify(AudioActEvent event){
 
         log.info("接收音频功率通知:{}", event);
-        AudioActDTO audioActDTO = streamMediaConvert.convertAudioActDTO(event);
+        AudioActDTO audioActDTO = streamMediaConvert.convertToAudioActDTO(event);
         Integer ssid = event.getNty().getSsid();
         DeviceInfoEntity bySsid = streamMediaService.getBySsid(ssid);
         String id = bySsid.getId();
@@ -94,7 +94,7 @@ public class StreamMediaEventListener {
     public void burnStateNotify(BurnStateEvent event){
 
         log.info("刻录状态通知:{}", event);
-        BurnStateDTO burnStateDTO = streamMediaConvert.convertBurnStateDTO(event);
+        BurnStateDTO burnStateDTO = streamMediaConvert.convertToBurnStateDTO(event);
         Integer ssid = event.getNty().getSsid();
         DeviceInfoEntity bySsid = streamMediaService.getBySsid(ssid);
         String id = bySsid.getId();

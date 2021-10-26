@@ -30,6 +30,9 @@ public class SelectPageResponseDto implements Serializable {
     @ApiModelProperty(value = "端口")
     private Integer abPort;
 
+    @ApiModelProperty("设备用户名")
+    private String abUsername;
+
     @ApiModelProperty(value = "设备名称拼音(拼音+首字母)")
     private String abPinyin;
 

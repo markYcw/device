@@ -33,7 +33,7 @@ public class KmListenerEntity {
      * 通知类型
      */
     @ApiModelProperty("通知类型：详情见msgType类")
-    private String msgType;
+    private Integer msgType;
 
 
 }

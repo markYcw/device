@@ -63,7 +63,7 @@ public class AiBoxController {
         }
         String addOrUpdateResult = aiBoxService.addOrUpdate(requestDto);
         if (StrUtil.isNotBlank(addOrUpdateResult)) {
-            return BaseResult.succeed(addOrUpdateResult + "成功");
+            return BaseResult.succeed(null, addOrUpdateResult + "成功");
         }
 
         return BaseResult.failed(addOrUpdateResult + "失败");
@@ -75,7 +75,7 @@ public class AiBoxController {
 
         ValidUtils.paramValid(br);
         if (aiBoxService.delete(requestDto)) {
-            return BaseResult.succeed("删除成功");
+            return BaseResult.succeed(null, "删除成功");
         }
 
         return BaseResult.failed("删除失败");
@@ -88,7 +88,7 @@ public class AiBoxController {
         ValidUtils.paramValid(br);
         String contrast = aiBoxService.contrast(requestDto);
         if (StrUtil.isNotBlank(contrast)) {
-            return BaseResult.succeed("图片对比成功", contrast);
+            return BaseResult.succeed(null, contrast);
         }
 
         return BaseResult.failed("图片对比失败");

@@ -96,25 +96,25 @@ public class AiBoxServiceImpl implements AiBoxService {
     public String checkRequestDto(AddOrUpdateRequestDto requestDto) {
 
         String result;
-        LambdaQueryWrapper<AiBoxEntity> queryWrapper = new LambdaQueryWrapper<>();
         String id = requestDto.getId();
-        if (StrUtil.isNotBlank(id)) {
-            queryWrapper.eq(AiBoxEntity::getId, id);
-        }
         // 校验设备IP的唯一性
-        result = checkIp(queryWrapper, requestDto.getAbIp());
+        result = checkIp(id, requestDto.getAbIp());
         if (StrUtil.isNotBlank(result)) {
             return result;
         }
         // 校验设备名称的唯一性
-        result = checkName(queryWrapper, requestDto.getAbName());
+        result = checkName(id, requestDto.getAbName());
 
         return result;
     }
 
-    public String checkIp(LambdaQueryWrapper<AiBoxEntity> queryIpWrapper, String ip) {
+    public String checkIp(String id, String ip) {
 
+        LambdaQueryWrapper<AiBoxEntity> queryIpWrapper = new LambdaQueryWrapper<>();
         queryIpWrapper.eq(AiBoxEntity::getAbIp, ip);
+        if (StrUtil.isNotBlank(id)) {
+            queryIpWrapper.ne(AiBoxEntity::getId, id);
+        }
         AiBoxEntity aiBoxEntity = aiBoxMapper.selectOne(queryIpWrapper);
         if (aiBoxEntity != null) {
             return "设备IP重复，请重新填写";
@@ -123,9 +123,13 @@ public class AiBoxServiceImpl implements AiBoxService {
         return null;
     }
 
-    public String checkName(LambdaQueryWrapper<AiBoxEntity> queryNameWrapper, String name) {
+    public String checkName(String id, String name) {
 
+        LambdaQueryWrapper<AiBoxEntity> queryNameWrapper = new LambdaQueryWrapper<>();
         queryNameWrapper.eq(AiBoxEntity::getAbName, name);
+        if (StrUtil.isNotBlank(id)) {
+            queryNameWrapper.ne(AiBoxEntity::getId, id);
+        }
         AiBoxEntity aiBoxEntity = aiBoxMapper.selectOne(queryNameWrapper);
         if (aiBoxEntity != null) {
             return "设备名称重复，请重新填写";
@@ -190,7 +194,7 @@ public class AiBoxServiceImpl implements AiBoxService {
         JSONArray similarityList = jsonObject.getJSONArray("SimilarityList");
         Map<String, Object> similarityMap = (Map<String, Object>) similarityList.get(0);
 
-        return String.valueOf(similarityMap.get("Similarity"));
+        return "相似度 : " + similarityMap.get("Similarity") + "%";
     }
 
     public Map<String, Object> convertRequestMap(ContrastRequestDto requestDto) {

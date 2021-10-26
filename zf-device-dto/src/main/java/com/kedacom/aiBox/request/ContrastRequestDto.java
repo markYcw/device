@@ -17,12 +17,10 @@ import java.io.Serializable;
 @ApiModel(description = "图片对比请求参数类")
 public class ContrastRequestDto implements Serializable {
 
-    @Max(64)
     @ApiModelProperty("ID")
     @NotEmpty(message = "ID不能为空")
     private String id;
 
-    @Max(32)
     @ApiModelProperty("姓名")
     @NotEmpty(message = "姓名不能为空")
     private String name;

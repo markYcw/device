@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
@@ -34,6 +35,14 @@ public class AddOrUpdateRequestDto implements Serializable {
     @NotNull(message = "设备端口不能为空")
     @ApiModelProperty(value = "端口")
     private Integer abPort;
+
+    @ApiModelProperty("设备用户名")
+    @NotEmpty(message = "设备用户名不能为空")
+    private String abUsername;
+
+    @ApiModelProperty("设备登录密码")
+    @NotEmpty(message = "设备登录密码不能为空")
+    private String abPassword;
 
     @ApiModelProperty(value = "描述")
     private String abDesc;

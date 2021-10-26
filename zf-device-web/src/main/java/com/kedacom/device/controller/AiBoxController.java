@@ -88,25 +88,10 @@ public class AiBoxController {
         ValidUtils.paramValid(br);
         String contrast = aiBoxService.contrast(requestDto);
         if (StrUtil.isNotBlank(contrast)) {
-            return BaseResult.succeed(contrast);
+            return BaseResult.succeed("图片对比成功", contrast);
         }
 
         return BaseResult.failed("图片对比失败");
-    }
-
-    @ApiOperation("将上传的文件转换为base64形式")
-    @PostMapping(value = "/upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public BaseResult<String> upload(@RequestPart MultipartFile file) {
-
-        String encode = "";
-        BASE64Encoder encoder = new BASE64Encoder();
-        try {
-            encode = encoder.encode(file.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return BaseResult.succeed(null, encode.replaceAll("[\\s*\t\n\r]", ""));
     }
 
 }

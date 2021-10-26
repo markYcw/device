@@ -2,12 +2,12 @@ package com.kedacom.device.core.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kedacom.BasePage;
 import com.kedacom.aiBox.request.*;
-import com.kedacom.aiBox.response.AiBoxContrastDto;
-import com.kedacom.aiBox.response.AiBoxContrastResponseDto;
 import com.kedacom.aiBox.response.QueryListResponseDto;
 import com.kedacom.aiBox.response.SelectPageResponseDto;
 import com.kedacom.common.utils.PinYinUtils;
@@ -16,13 +16,11 @@ import com.kedacom.device.core.entity.AiBoxEntity;
 import com.kedacom.device.core.exception.AiBoxException;
 import com.kedacom.device.core.mapper.AiBoxMapper;
 import com.kedacom.device.core.service.AiBoxService;
-import com.kedacom.device.core.utils.RemoteRestTemplate;
+import com.kedacom.device.core.utils.AiBoxHttpDigest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,9 +37,6 @@ public class AiBoxServiceImpl implements AiBoxService {
 
     @Resource
     AiBoxMapper aiBoxMapper;
-
-    @Resource
-    RemoteRestTemplate remoteRestTemplate;
 
     @Override
     public BasePage<SelectPageResponseDto> selectPage(SelectPageRequestDto requestDto) {
@@ -173,24 +168,29 @@ public class AiBoxServiceImpl implements AiBoxService {
     @Override
     public String contrast(ContrastRequestDto requestDto) {
 
-        RestTemplate template = remoteRestTemplate.getRestTemplate();
-        AiBoxEntity aiBoxEntity = aiBoxMapper.selectById(requestDto.getAbId());
-//        AiBoxContrastRequestDto dto = convertAiBoxContrastRequestDto(requestDto);
+        String abId = requestDto.getAbId();
+        AiBoxEntity aiBoxEntity = aiBoxMapper.selectById(abId);
+        String abIp = aiBoxEntity.getAbIp();
+        Integer abPort = aiBoxEntity.getAbPort();
+        String username = aiBoxEntity.getAbUsername();
+        String password = aiBoxEntity.getAbPassword();
+        String url = "http://" + abIp + ":" + abPort + "/NVR/CompareSimilarity";
         Map<String, Object> requestMap = convertRequestMap(requestDto);
 
-        String url = "http://" + aiBoxEntity.getAbIp() + ":" + aiBoxEntity.getAbPort() + "/NVR/CompareSimilarity";
-//        String resultStr = template.postForObject(url, JSON.toJSONString(dto), String.class);
-        String resultStr = template.postForObject(url, requestMap, String.class);
-        log.info("AIBox对比图片返回结果信息 : {}", resultStr);
-
-        AiBoxContrastResponseDto responseDto = JSON.parseObject(resultStr, AiBoxContrastResponseDto.class);
-        if (responseDto == null || responseDto.getStatusCode() != 0) {
-            String mes = responseDto == null ? "返回结果不存在" : responseDto.getStatusString();
-            throw new AiBoxException("获取AIBox对比图片返回结果失败 " + mes);
+        String responseStr = AiBoxHttpDigest.doPostDigest(url, username, password, JSON.toJSONString(requestMap));
+        log.info("responseStr : {}", responseStr);
+        if (StrUtil.isBlank(responseStr)) {
+            throw new AiBoxException("连接服务失败！");
         }
-        AiBoxContrastDto aiBoxContrastDto = responseDto.getSimilarityList().get(0);
+        JSONObject jsonObject = JSON.parseObject(responseStr);
+        Integer code  = (Integer) jsonObject.get("StatusCode");
+        if (0 != code) {
+            throw new AiBoxException("图片对比失败！");
+        }
+        JSONArray similarityList = jsonObject.getJSONArray("SimilarityList");
+        Map<String, Object> similarityMap = (Map<String, Object>) similarityList.get(0);
 
-        return String.valueOf(aiBoxContrastDto.getSimilarity());
+        return String.valueOf(similarityMap.get("Similarity"));
     }
 
     public Map<String, Object> convertRequestMap(ContrastRequestDto requestDto) {
@@ -204,22 +204,10 @@ public class AiBoxServiceImpl implements AiBoxService {
         map.put("FeatureLibImg", requestDto.getFeatureLibImg());
         mapList.add(map);
         requestMap.put("FeatureLibImgList", mapList);
+        requestMap.put("NVRUuid", "");
+        requestMap.put("SessionId", "");
+        requestMap.put("MsgId", "");
 
         return requestMap;
-    }
-
-    public AiBoxContrastRequestDto convertAiBoxContrastRequestDto(ContrastRequestDto requestDto) {
-
-        List<AiBoxFeatureLibDto> featureLibDtoList = new ArrayList<>();
-        AiBoxFeatureLibDto aiBoxFeatureLibDto = new AiBoxFeatureLibDto();
-        aiBoxFeatureLibDto.setID(requestDto.getId());
-        aiBoxFeatureLibDto.setName(requestDto.getName());
-        aiBoxFeatureLibDto.setFeatureLibImg(requestDto.getFeatureLibImg());
-        featureLibDtoList.add(aiBoxFeatureLibDto);
-        AiBoxContrastRequestDto aiBoxContrastRequestDto = new AiBoxContrastRequestDto();
-        aiBoxContrastRequestDto.setRealTimeImg(requestDto.getRealTimeImg());
-        aiBoxContrastRequestDto.setFeatureLibImgList(featureLibDtoList);
-
-        return aiBoxContrastRequestDto;
     }
 }

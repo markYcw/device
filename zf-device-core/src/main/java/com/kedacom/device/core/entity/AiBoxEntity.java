@@ -33,6 +33,14 @@ public class AiBoxEntity implements Serializable {
     @ApiModelProperty(value = "端口")
     private Integer abPort;
 
+    @ApiModelProperty("设备用户名")
+    @NotEmpty(message = "设备用户名不能为空")
+    private String abUsername;
+
+    @ApiModelProperty("设备登录密码")
+    @NotEmpty(message = "设备登录密码不能为空")
+    private String abPassword;
+
     @ApiModelProperty(value = "设备名称拼音(拼音+首字母)")
     private String abPinyin;
 

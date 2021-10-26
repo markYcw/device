@@ -61,7 +61,7 @@ public class AiBoxHttpDigest {
             HttpEntity responseEntity = httpResponse.getEntity();
             // 检验返回码
             int statusCode = httpResponse.getStatusLine().getStatusCode();
-            System.out.println("第一次发送摘要认证 Post请求 返回码:{}"+ statusCode);
+            log.info("第一次发送摘要认证 Post请求 返回码 : {}", statusCode);
             if (401 == statusCode) {
                 strResponse = EntityUtils.toString(responseEntity, "utf-8");
                 log.info("Post请求401返回结果 : {}", strResponse);
@@ -97,7 +97,7 @@ public class AiBoxHttpDigest {
                     response = DigestUtils.md5Hex((DigestUtils.md5Hex(a1.getBytes("UTF-8")) + ":" + nonce + ":" + nc
                             + ":" + "uniview" + ":" + qop + ":" + DigestUtils.md5Hex(a2.getBytes("UTF-8"))).getBytes("UTF-8"));
                 } catch (UnsupportedEncodingException e) {
-                    System.out.println("MD5异常:{}"+ e.getLocalizedMessage());
+                    log.error("MD5异常 : {}", e.getLocalizedMessage());
                 }
                 String authorization = "Digest realm=" + realm + ",username=" + username + ",nonce=" + nonce + ",uri=" + uri
                         + ",qop=" + qop + ",opaque=" + opaque + ",response=" + response + ",nc=" + nc + ",cnonce=" + cnonce;
@@ -106,7 +106,7 @@ public class AiBoxHttpDigest {
                 httpResponse = httpClient.execute(httpPost);
                 HttpEntity httpEntity = httpResponse.getEntity();
                 int statusCode1 = httpResponse.getStatusLine().getStatusCode();
-                System.out.println("第二次发送摘要认证 Post请求 返回码:{}"+statusCode1);
+                log.info("第二次发送摘要认证 Post请求 返回码 : {}", statusCode1);
                 if (HttpStatus.SC_OK == statusCode1) {
                     strResponse = EntityUtils.toString(httpEntity, StandardCharsets.UTF_8);
                     log.info("第二次发送strResponse : {}", strResponse);

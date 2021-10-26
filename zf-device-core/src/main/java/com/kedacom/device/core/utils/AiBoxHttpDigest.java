@@ -33,7 +33,7 @@ public class AiBoxHttpDigest {
      */
     public static String doPostDigest(String url, String username, String password, String paramJson) {
         CloseableHttpClient httpClient = null;
-        CloseableHttpResponse response = null;
+        CloseableHttpResponse httpResponse = null;
         HttpPost httpPost = null;
         String strResponse = null;
         try {
@@ -57,16 +57,16 @@ public class AiBoxHttpDigest {
             StringEntity stringEntity = new StringEntity(paramJson, "utf-8");
             httpPost.setEntity(stringEntity);
             // 执行请求
-            response = httpClient.execute(httpPost);
-            HttpEntity responseEntity = response.getEntity();
+            httpResponse = httpClient.execute(httpPost);
+            HttpEntity responseEntity = httpResponse.getEntity();
             // 检验返回码
-            int statusCode = response.getStatusLine().getStatusCode();
+            int statusCode = httpResponse.getStatusLine().getStatusCode();
             System.out.println("第一次发送摘要认证 Post请求 返回码:{}"+ statusCode);
             if (401 == statusCode) {
                 strResponse = EntityUtils.toString(responseEntity, "utf-8");
                 log.info("Post请求401返回结果 : {}", strResponse);
                 // 组织参数，发起第二次请求
-                Header[] headers = response.getHeaders("WWW-Authenticate");
+                Header[] headers = httpResponse.getHeaders("WWW-Authenticate");
                 HeaderElement[] elements = headers[0].getElements();
                 String realm = null;
                 String qop = null;
@@ -92,20 +92,20 @@ public class AiBoxHttpDigest {
                 // 后期变成可配置
                 String a1 = username + ":" + realm + ":" + password;
                 String a2 = method + ":" + uri;
-                String response1 = null;
+                String response = null;
                 try {
-                    response1 = DigestUtils.md5Hex((DigestUtils.md5Hex(a1.getBytes("UTF-8")) + ":" + nonce + ":" + nc
+                    response = DigestUtils.md5Hex((DigestUtils.md5Hex(a1.getBytes("UTF-8")) + ":" + nonce + ":" + nc
                             + ":" + "uniview" + ":" + qop + ":" + DigestUtils.md5Hex(a2.getBytes("UTF-8"))).getBytes("UTF-8"));
                 } catch (UnsupportedEncodingException e) {
                     System.out.println("MD5异常:{}"+ e.getLocalizedMessage());
                 }
                 String authorization = "Digest realm=" + realm + ",username=" + username + ",nonce=" + nonce + ",uri=" + uri
-                        + ",qop=" + qop + ",opaque=" + opaque + ",response=" + response1 + ",nc=" + nc + ",cnonce=" + cnonce;
+                        + ",qop=" + qop + ",opaque=" + opaque + ",response=" + response + ",nc=" + nc + ",cnonce=" + cnonce;
                 httpPost.addHeader("Authorization", authorization);
                 // 发送第二次请求
-                response = httpClient.execute(httpPost);
-                HttpEntity httpEntity = response.getEntity();
-                int statusCode1 = response.getStatusLine().getStatusCode();
+                httpResponse = httpClient.execute(httpPost);
+                HttpEntity httpEntity = httpResponse.getEntity();
+                int statusCode1 = httpResponse.getStatusLine().getStatusCode();
                 System.out.println("第二次发送摘要认证 Post请求 返回码:{}"+statusCode1);
                 if (HttpStatus.SC_OK == statusCode1) {
                     strResponse = EntityUtils.toString(httpEntity, StandardCharsets.UTF_8);
@@ -126,9 +126,9 @@ public class AiBoxHttpDigest {
             if (null != httpPost) {
                 httpPost.releaseConnection();
             }
-            if (null != response) {
+            if (null != httpResponse) {
                 try {
-                    response.close();
+                    httpResponse.close();
                 } catch (IOException e) {
                     log.error("httpResponse 流关闭异常 : ", e);
                 }

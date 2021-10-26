@@ -17,6 +17,4 @@ import java.util.List;
 @Mapper
 public interface KmListenerMapper extends BaseMapper<KmListenerEntity> {
 
-    @Select("select * from km_listener where id > 0")
-    List<KmListenerEntity> getAll();
 }

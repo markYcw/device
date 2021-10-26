@@ -78,7 +78,7 @@ public class StreamMediaEventListener {
         String id = bySsid.getId();
         audioActDTO.setDbId(Long.valueOf(id));
         audioActDTO.setMsgType(MsgType.S_M_AUDIO_ACT_NTY.getType());
-        List<KmListenerEntity> all = registerListenerService.getAll();
+        List<KmListenerEntity> all = registerListenerService.getAll(MsgType.S_M_AUDIO_ACT_NTY.getType());
         if(!CollectionUtil.isEmpty(all)){
             for (KmListenerEntity kmListenerEntity : all) {
                 try {
@@ -100,7 +100,7 @@ public class StreamMediaEventListener {
         String id = bySsid.getId();
         burnStateDTO.setDbId(Long.valueOf(id));
         burnStateDTO.setMsgType(MsgType.S_M_BURN_STATE_NTY.getType());
-        List<KmListenerEntity> all = registerListenerService.getAll();
+        List<KmListenerEntity> all = registerListenerService.getAll(MsgType.S_M_BURN_STATE_NTY.getType());
         if(!CollectionUtil.isEmpty(all)){
             for (KmListenerEntity kmListenerEntity : all) {
                 try {
@@ -122,7 +122,7 @@ public class StreamMediaEventListener {
         String id = bySsid.getId();
         alarmDTO.setDbId(Long.valueOf(id));
         alarmDTO.setMsgType(MsgType.S_M_ALARM_NTY.getType());
-        List<KmListenerEntity> all = registerListenerService.getAll();
+        List<KmListenerEntity> all = registerListenerService.getAll(MsgType.S_M_ALARM_NTY.getType());
         if(!CollectionUtil.isEmpty(all)){
             for (KmListenerEntity kmListenerEntity : all) {
                 try {

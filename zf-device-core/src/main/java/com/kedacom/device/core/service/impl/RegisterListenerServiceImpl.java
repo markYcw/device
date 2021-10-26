@@ -28,8 +28,11 @@ public class RegisterListenerServiceImpl extends ServiceImpl<KmListenerMapper, K
     private RegisterListenerConvert convert;
 
     @Override
-    public List<KmListenerEntity> getAll() {
-        return mapper.getAll();
+    public List<KmListenerEntity> getAll(Integer msgType) {
+        LambdaQueryWrapper<KmListenerEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(KmListenerEntity::getMsgType,msgType);
+        List<KmListenerEntity> list = mapper.selectList(wrapper);
+        return list;
     }
 
     @Override
@@ -40,7 +43,7 @@ public class RegisterListenerServiceImpl extends ServiceImpl<KmListenerMapper, K
             listenerVo.setError(10010);
             return BaseResult.failed(1,"重复注册",listenerVo);
         }
-        KmListenerEntity entity = convert.convertToEntity(vo);
+        KmListenerEntity entity = convert.convertToKmListenerEntity(vo);
         mapper.insert(entity);
         Integer id = entity.getId();
         vo.setId(id);

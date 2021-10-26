@@ -19,10 +19,10 @@ import java.util.List;
 public interface RegisterListenerService extends IService<KmListenerEntity> {
 
     /**
-     * 获取所有表记录
+     * 根据消息类型获取所有消息监听者表记录
      * @return
      */
-    List<KmListenerEntity> getAll();
+    List<KmListenerEntity> getAll(Integer msgType);
 
     /**
      * 注册设备消息订阅者信息

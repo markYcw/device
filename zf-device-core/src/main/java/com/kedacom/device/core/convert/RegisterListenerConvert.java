@@ -11,7 +11,7 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface RegisterListenerConvert {
 
-    KmListenerEntity convertToEntity(RegisterListenerVo vo);
+    KmListenerEntity convertToKmListenerEntity(RegisterListenerVo vo);
 
     RegisterListenerVo convertToVo(KmListenerEntity entity);
 }

@@ -9,10 +9,8 @@ CREATE TABLE `ums_new_ai_box`
     `ab_name`                     varchar(128) NOT NULL COMMENT '设备名称',
     `ab_ip`                       varchar(32)  NOT NULL COMMENT 'IP',
     `ab_port`                     int          NOT NULL COMMENT '端口',
-    `ab_username`                 varchar(128) NOT NULL COMMENT '设备名称',
-    `ab_password`                 varchar(128) NOT NULL COMMENT '设备名称',
     `ab_pinyin`                   varchar(255) DEFAULT NULL COMMENT '设备名称拼音(拼音+首字母)',
-    `ab_desc`                     varchar(225) DEFAULT NULL COMMENT '描述',
+    `ab_desc`                     varchar(125) DEFAULT NULL COMMENT '描述',
     `create_time`                 datetime(0)  DEFAULT NULL COMMENT '创建时间',
     `update_time`                 datetime(0)  DEFAULT NULL COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE

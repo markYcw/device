@@ -8,12 +8,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kedacom.BasePage;
 import com.kedacom.aiBox.request.*;
+import com.kedacom.aiBox.response.AiBoxContrastResponseDto;
 import com.kedacom.aiBox.response.QueryListResponseDto;
 import com.kedacom.aiBox.response.SelectPageResponseDto;
 import com.kedacom.common.utils.PinYinUtils;
 import com.kedacom.device.core.convert.AiBoxConvert;
 import com.kedacom.device.core.entity.AiBoxEntity;
-import com.kedacom.device.core.exception.AiBoxException;
 import com.kedacom.device.core.mapper.AiBoxMapper;
 import com.kedacom.device.core.service.AiBoxService;
 import com.kedacom.device.core.utils.AiBoxHttpDigest;
@@ -169,8 +169,9 @@ public class AiBoxServiceImpl implements AiBoxService {
     }
 
     @Override
-    public String contrast(ContrastRequestDto requestDto) {
+    public AiBoxContrastResponseDto contrast(ContrastRequestDto requestDto) {
 
+        Integer status = 0;
         Integer statusCode1 = 1000;
         Integer statusCode2 = 1006;
         String abId = requestDto.getAbId();
@@ -184,24 +185,31 @@ public class AiBoxServiceImpl implements AiBoxService {
 
         String responseStr = AiBoxHttpDigest.doPostDigest(url, username, password, JSON.toJSONString(aiBoxContrastRequestDto));
         log.info("responseStr : {}", responseStr);
+        AiBoxContrastResponseDto responseDto = new AiBoxContrastResponseDto();
         if (StrUtil.isBlank(responseStr)) {
-            throw new AiBoxException("连接服务失败！");
+            responseDto.setErrorMessage("连接服务失败！");
+            return responseDto;
         }
         JSONObject jsonObject = JSON.parseObject(responseStr);
         Integer code  = (Integer) jsonObject.get("StatusCode");
         if (statusCode1.equals(code)) {
-            throw new AiBoxException("上传图片有误");
+            responseDto.setErrorMessage("上传图片有误！");
+            return responseDto;
         }
         if (statusCode2.equals(code)) {
-            throw new AiBoxException("实时图片未检测到人脸");
+            responseDto.setErrorMessage("实时图片未检测到人脸！");
+            return responseDto;
         }
-        if (0 != code) {
-            throw new AiBoxException("图片对比失败！");
+        if (status.equals(code)) {
+            JSONArray similarityList = jsonObject.getJSONArray("SimilarityList");
+            Map<String, Object> similarityMap = (Map<String, Object>) similarityList.get(0);
+            responseDto.setFlag(true);
+            responseDto.setData(String.valueOf(similarityMap.get("Similarity")));
+            return responseDto;
         }
-        JSONArray similarityList = jsonObject.getJSONArray("SimilarityList");
-        Map<String, Object> similarityMap = (Map<String, Object>) similarityList.get(0);
+        responseDto.setErrorMessage("图片对比失败！");
 
-        return String.valueOf(similarityMap.get("Similarity"));
+        return responseDto;
     }
 
     private AiBoxContrastRequestDto convertRequestDto(ContrastRequestDto requestDto) {

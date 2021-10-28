@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.aiBox.request.*;
+import com.kedacom.aiBox.response.AiBoxContrastResponseDto;
 import com.kedacom.aiBox.response.QueryListResponseDto;
 import com.kedacom.aiBox.response.SelectPageResponseDto;
 import com.kedacom.common.utils.ValidUtils;
@@ -85,12 +86,12 @@ public class AiBoxController {
     public BaseResult<String> contrast(@Valid @RequestBody ContrastRequestDto requestDto, BindingResult br) {
 
         ValidUtils.paramValid(br);
-        String contrast = aiBoxService.contrast(requestDto);
-        if (StrUtil.isNotBlank(contrast)) {
-            return BaseResult.succeed(null, "相似度 : " + contrast + "%");
+        AiBoxContrastResponseDto result = aiBoxService.contrast(requestDto);
+        if (result.getFlag()) {
+            return BaseResult.succeed(null, "相似度 : " + result.getData() + "%");
         }
 
-        return BaseResult.failed("图片对比失败");
+        return BaseResult.failed(result.getErrorMessage());
     }
 
 }

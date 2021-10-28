@@ -2,6 +2,7 @@ package com.kedacom.device.core.service;
 
 import com.kedacom.BasePage;
 import com.kedacom.aiBox.request.*;
+import com.kedacom.aiBox.response.AiBoxContrastResponseDto;
 import com.kedacom.aiBox.response.QueryListResponseDto;
 import com.kedacom.aiBox.response.SelectPageResponseDto;
 
@@ -54,6 +55,6 @@ public interface AiBoxService {
      * @param requestDto
      * @return
      */
-    String contrast(ContrastRequestDto requestDto);
+    AiBoxContrastResponseDto contrast(ContrastRequestDto requestDto);
 
 }

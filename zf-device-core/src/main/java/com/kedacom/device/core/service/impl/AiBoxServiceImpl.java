@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -179,9 +178,9 @@ public class AiBoxServiceImpl implements AiBoxService {
         String username = aiBoxEntity.getAbUsername();
         String password = aiBoxEntity.getAbPassword();
         String url = "http://" + abIp + ":" + abPort + "/NVR/CompareSimilarity";
-        Map<String, Object> requestMap = convertRequestMap(requestDto);
+        AiBoxContrastRequestDto aiBoxContrastRequestDto = convertRequestDto(requestDto);
 
-        String responseStr = AiBoxHttpDigest.doPostDigest(url, username, password, JSON.toJSONString(requestMap));
+        String responseStr = AiBoxHttpDigest.doPostDigest(url, username, password, JSON.toJSONString(aiBoxContrastRequestDto));
         log.info("responseStr : {}", responseStr);
         if (StrUtil.isBlank(responseStr)) {
             throw new AiBoxException("连接服务失败！");
@@ -197,21 +196,21 @@ public class AiBoxServiceImpl implements AiBoxService {
         return "相似度 : " + similarityMap.get("Similarity") + "%";
     }
 
-    public Map<String, Object> convertRequestMap(ContrastRequestDto requestDto) {
+    private AiBoxContrastRequestDto convertRequestDto(ContrastRequestDto requestDto) {
 
-        Map<String, Object> requestMap = new HashMap<>(2);
-        requestMap.put("RealTimeImg", requestDto.getRealTimeImg());
-        List<Map<String, String>> mapList = new ArrayList<>(1);
-        Map<String, String> map = new HashMap<>(3);
-        map.put("Name", requestDto.getName());
-        map.put("ID num", requestDto.getId());
-        map.put("FeatureLibImg", requestDto.getFeatureLibImg());
-        mapList.add(map);
-        requestMap.put("FeatureLibImgList", mapList);
-        requestMap.put("NVRUuid", "");
-        requestMap.put("SessionId", "");
-        requestMap.put("MsgId", "");
+        AiBoxContrastDto aiBoxContrastDto = new AiBoxContrastDto();
+        aiBoxContrastDto.setID(requestDto.getId());
+        aiBoxContrastDto.setName(requestDto.getName());
+        aiBoxContrastDto.setFeatureLibImg(requestDto.getFeatureLibImg());
+        List<AiBoxContrastDto> aiBoxContrastDtoList = new ArrayList<>();
+        aiBoxContrastDtoList.add(aiBoxContrastDto);
+        AiBoxContrastRequestDto request = new AiBoxContrastRequestDto();
+        request.setRealTimeImg(requestDto.getRealTimeImg());
+        request.setFeatureLibImgList(aiBoxContrastDtoList);
+        request.setMsgId("");
+        request.setNVRUuid("");
+        request.setSessionId("");
 
-        return requestMap;
+        return request;
     }
 }

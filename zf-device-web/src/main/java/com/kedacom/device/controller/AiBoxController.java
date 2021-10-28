@@ -87,7 +87,7 @@ public class AiBoxController {
         ValidUtils.paramValid(br);
         String contrast = aiBoxService.contrast(requestDto);
         if (StrUtil.isNotBlank(contrast)) {
-            return BaseResult.succeed(null, contrast);
+            return BaseResult.succeed(null, "相似度 : " + contrast + "%");
         }
 
         return BaseResult.failed("图片对比失败");

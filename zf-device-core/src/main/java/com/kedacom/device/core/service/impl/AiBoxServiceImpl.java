@@ -171,6 +171,8 @@ public class AiBoxServiceImpl implements AiBoxService {
     @Override
     public String contrast(ContrastRequestDto requestDto) {
 
+        Integer statusCode1 = 1000;
+        Integer statusCode2 = 1006;
         String abId = requestDto.getAbId();
         AiBoxEntity aiBoxEntity = aiBoxMapper.selectById(abId);
         String abIp = aiBoxEntity.getAbIp();
@@ -187,13 +189,19 @@ public class AiBoxServiceImpl implements AiBoxService {
         }
         JSONObject jsonObject = JSON.parseObject(responseStr);
         Integer code  = (Integer) jsonObject.get("StatusCode");
+        if (statusCode1.equals(code)) {
+            throw new AiBoxException("上传图片有误");
+        }
+        if (statusCode2.equals(code)) {
+            throw new AiBoxException("实时图片未检测到人脸");
+        }
         if (0 != code) {
             throw new AiBoxException("图片对比失败！");
         }
         JSONArray similarityList = jsonObject.getJSONArray("SimilarityList");
         Map<String, Object> similarityMap = (Map<String, Object>) similarityList.get(0);
 
-        return "相似度 : " + similarityMap.get("Similarity") + "%";
+        return String.valueOf(similarityMap.get("Similarity"));
     }
 
     private AiBoxContrastRequestDto convertRequestDto(ContrastRequestDto requestDto) {

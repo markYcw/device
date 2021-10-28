@@ -41,6 +41,14 @@ public class AiBoxEntity implements Serializable {
     @NotEmpty(message = "设备登录密码不能为空")
     private String abPassword;
 
+    @ApiModelProperty("能识别的人脸最小像素值(默认为60)")
+    @NotEmpty(message = "最小像素值不能为空")
+    private String abMinFace;
+
+    @ApiModelProperty("能识别的人脸最大像素值(默认为400)")
+    @NotEmpty(message = "最大像素值不能为空")
+    private String abMaxFace;
+
     @ApiModelProperty(value = "设备名称拼音(拼音+首字母)")
     private String abPinyin;
 

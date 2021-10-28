@@ -476,7 +476,7 @@ public class McuServiceImpl implements McuService {
     @Override
     public BaseResult audioMix(McuAudioMixDTO dto) {
         log.info("mcu开始/停止混音:{}", dto);
-        if(dto.getType()==0){
+        if(dto.getType()==0||dto.getMode()==2){
             if(CollectionUtil.isEmpty(dto.getMtInfos())){
                 return BaseResult.failed("开始混音时终端ID为必填！");
             }

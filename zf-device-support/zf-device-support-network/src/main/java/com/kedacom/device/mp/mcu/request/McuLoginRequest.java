@@ -26,6 +26,13 @@ public class McuLoginRequest implements Serializable {
      */
     @ApiModelProperty(value = "会议平台端口")
     private Integer port;
+
+    /**
+     * 平台类型
+     */
+    @ApiModelProperty(value = "平台类型 0:4.7 1:5.0")
+    private Integer type;
+
     /**
      * 登录会议平台用户名
      */

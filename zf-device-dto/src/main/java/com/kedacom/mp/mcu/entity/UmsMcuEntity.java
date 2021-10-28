@@ -105,4 +105,9 @@ public class UmsMcuEntity implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date modifyTime;
 
+    //实体与表字段忽略映射
+    @TableField(exist = false)
+    @ApiModelProperty("在线状态 0：离线 1：在线")
+    private Integer status;
+
 }

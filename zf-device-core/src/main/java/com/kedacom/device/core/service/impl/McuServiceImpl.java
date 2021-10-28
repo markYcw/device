@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.kedacom.BaseResult;
+import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.McuConvert;
 import com.kedacom.device.core.entity.McuBasicParam;
@@ -34,6 +35,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author hxj ycw
@@ -69,6 +71,9 @@ public class McuServiceImpl implements McuService {
 
     private final static String NOTIFY_URL = "/api/api-device/ums/umsMcu/mcuNotify";
 
+    //mcu状态池 若成功登录则把数据库ID和登录状态放入此池中1为已登录，若登出则从此状态池中移除
+    public static ConcurrentHashMap<Long,Integer> mcuStatusPoll = new ConcurrentHashMap<>();
+
     @Override
     public BaseResult<McuLoginVO> login(McuRequestDTO dto) {
         log.info("mcu登录平台入参信息:{}", dto);
@@ -80,6 +85,8 @@ public class McuServiceImpl implements McuService {
         McuLoginRequest request = convert.login(entity);
         String ntyUrl = REQUEST_HEAD + mcuNtyUrl + NOTIFY_URL;
         request.setNtyUrl(ntyUrl);
+        //设置mcu类型目前只考虑5.0所以暂时 type为1
+        request.setType(DevTypeConstant.updateRecordKey);
         String url = factory.geturl(entity.getDevtype());
         Map<String, Long> paramMap = new HashMap<>();
         paramMap.put("ssno", (long) NumGen.getNum());
@@ -97,6 +104,8 @@ public class McuServiceImpl implements McuService {
 
         McuLoginVO loginVO = new McuLoginVO();
         loginVO.setSsid(response.getSsid());
+        //往mcu状态池放入当前mcu状态 1已登录
+        mcuStatusPoll.put(dto.getMcuId(),DevTypeConstant.updateRecordKey);
         return BaseResult.succeed(loginVO);
     }
 
@@ -121,6 +130,8 @@ public class McuServiceImpl implements McuService {
                 .set(UmsMcuEntity::getModifyTime, new Date())
                 .eq(UmsMcuEntity::getId, dto.getMcuId());
         mapper.update(null, wrapper);
+        //往mcu状态池移除当前mcu的id
+        mcuStatusPoll.remove(dto.getMcuId());
         return BaseResult.succeed("登出成功");
     }
 

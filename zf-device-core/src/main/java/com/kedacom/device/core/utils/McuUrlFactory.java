@@ -22,7 +22,7 @@ public class McuUrlFactory {
 
     private final static String MCU_REQUEST_HEAD = "http://";
 
-    private final static String MCU_FIVE = "/mid/v2/mcu5.0";
+    private final static String MCU_FIVE = "/mid/v2/mcu";
 
     private final static ConcurrentHashMap<Integer, String> map = new ConcurrentHashMap<>();
 

@@ -53,6 +53,16 @@ public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> i
         Page<UmsMcuEntity> platformEntityPage = mapper.selectPage(page, queryWrapper);
         List<UmsMcuEntity> records = platformEntityPage.getRecords();
 
+        for (UmsMcuEntity record : records) {
+            if(McuServiceImpl.mcuStatusPoll.get(record.getId())==null){
+                //如果未登录则直接设置MCU状态为离线
+                record.setStatus(DevTypeConstant.getZero);
+            }else {
+                //如果已登录则设置为在线
+                record.setStatus(DevTypeConstant.updateRecordKey);
+            }
+        }
+
         BasePage<UmsMcuEntity> basePage = new BasePage<>();
         basePage.setTotal(platformEntityPage.getTotal());
         basePage.setTotalPage(platformEntityPage.getPages());
@@ -74,6 +84,9 @@ public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> i
             List<UmsMcuEntity> mcuEntities = mapper.selectList(wrapper);
             for (Iterator<UmsMcuEntity> it = mcuEntities.iterator(); it.hasNext(); ) {
                 McuRequestDTO dto = new McuRequestDTO();
+                //收到离线通知先把MCU状态设置为离线
+                McuServiceImpl.mcuStatusPoll.remove(it.next().getId());
+                //尝试根据ID重新登录MCU
                 dto.setMcuId(it.next().getId());
                 mcuService.login(dto);
             }

@@ -14,11 +14,13 @@ import com.kedacom.aiBox.response.SelectPageResponseDto;
 import com.kedacom.common.utils.PinYinUtils;
 import com.kedacom.device.core.convert.AiBoxConvert;
 import com.kedacom.device.core.entity.AiBoxEntity;
+import com.kedacom.device.core.exception.AiBoxException;
 import com.kedacom.device.core.mapper.AiBoxMapper;
 import com.kedacom.device.core.service.AiBoxService;
 import com.kedacom.device.core.utils.AiBoxHttpDigest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -103,6 +105,11 @@ public class AiBoxServiceImpl implements AiBoxService {
         }
         // 校验设备名称的唯一性
         result = checkName(id, requestDto.getAbName());
+        if (StrUtil.isNotBlank(result)) {
+            return result;
+        }
+        // 校验人脸识别像素值是否异常
+        result = checkFaceValue(id, requestDto.getAbMinFace(), requestDto.getAbMaxFace());
 
         return result;
     }
@@ -137,7 +144,23 @@ public class AiBoxServiceImpl implements AiBoxService {
         return null;
     }
 
+    public String checkFaceValue(String id, Integer minFace, Integer maxFace) {
+
+        if (StrUtil.isBlank(id)) {
+            return null;
+        }
+        if (minFace == null || minFace == 0) {
+            return "最小像素值有误，请重新填写";
+        }
+        if (maxFace == null || maxFace == 0) {
+            return "最大像素值有误，请重新填写";
+        }
+
+        return null;
+    }
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String addOrUpdate(AddOrUpdateRequestDto requestDto) {
 
         String type;
@@ -148,15 +171,81 @@ public class AiBoxServiceImpl implements AiBoxService {
         aiBoxEntity.setAbPinyin(pinYinStr);
         if (StrUtil.isBlank(aiBoxEntity.getId())) {
             // 新增AI-Box设备信息
+            aiBoxEntity.setAbMinFace(0);
+            aiBoxEntity.setAbMaxFace(0);
             aiBoxMapper.insert(aiBoxEntity);
+            getThreshold(aiBoxEntity);
             type = "添加";
         } else {
             // 修改AI-Box设备信息
+            updateThreshold(aiBoxEntity);
             aiBoxMapper.updateById(aiBoxEntity);
             type = "修改";
         }
 
         return type;
+    }
+
+    public void updateThreshold(AiBoxEntity entityDto) {
+
+        Integer status = 0;
+        String abIpDto = entityDto.getAbIp();
+        Integer abMinFaceDto = entityDto.getAbMinFace();
+        Integer abMaxFaceDto = entityDto.getAbMaxFace();
+        AiBoxEntity aiBoxEntity = aiBoxMapper.selectById(entityDto.getId());
+        if (!aiBoxEntity.getAbIp().equals(abIpDto) || !aiBoxEntity.getAbMinFace().equals(abMinFaceDto)
+                || !aiBoxEntity.getAbMaxFace().equals(abMaxFaceDto)) {
+            Integer abPort = entityDto.getAbPort();
+            String username = entityDto.getAbUsername();
+            String password = entityDto.getAbPassword();
+            String url = "http://" + abIpDto + ":" + abPort + "/NVR/SetFaceCompareAlgCfg";
+            AiBoxUpdateThresholdRequestDto requestDto = new AiBoxUpdateThresholdRequestDto();
+            requestDto.setMinFace(entityDto.getAbMinFace());
+            requestDto.setMaxFace(entityDto.getAbMaxFace());
+
+            String responseStr = AiBoxHttpDigest.doPostDigest(url, username, password, JSON.toJSONString(requestDto));
+            log.info("responseStr : {}", responseStr);
+            if (StrUtil.isBlank(responseStr)) {
+                log.error("连接 " + abIpDto + " 服务失败！");
+                throw new AiBoxException("连接 " + abIpDto + " 服务失败！");
+            }
+            JSONObject jsonObject = JSON.parseObject(responseStr);
+            Integer code  = (Integer) jsonObject.get("StatusCode");
+            if (!status.equals(code)) {
+                log.error("设置人脸识别算法参数配置失败！");
+                throw new AiBoxException("设置人脸识别算法参数配置失败！");
+            }
+        }
+
+    }
+
+    public void getThreshold(AiBoxEntity aiBoxEntity) {
+
+        Integer status = 0;
+        String abIp = aiBoxEntity.getAbIp();
+        Integer abPort = aiBoxEntity.getAbPort();
+        String username = aiBoxEntity.getAbUsername();
+        String password = aiBoxEntity.getAbPassword();
+        String url = "http://" + abIp + ":" + abPort + "/NVR/GetFaceCompareAlgCfg";
+
+        String responseStr = AiBoxHttpDigest.doPostDigest(url, username, password, JSON.toJSONString(new AiBoxGetThresholdRequestDto()));
+        log.info("responseStr : {}", responseStr);
+        if (StrUtil.isBlank(responseStr)) {
+            log.error("连接 " + abIp + " 服务失败！");
+            throw new AiBoxException("连接 " + abIp + " 服务失败！");
+        }
+        JSONObject jsonObject = JSON.parseObject(responseStr);
+        Integer code  = (Integer) jsonObject.get("StatusCode");
+        if (!status.equals(code)) {
+            log.error("获取人脸识别算法参数配置失败！");
+            throw new AiBoxException("获取人脸识别算法参数配置失败！");
+        }
+        Integer minFace = (Integer) jsonObject.get("MinFace");
+        Integer maxFace = (Integer) jsonObject.get("MaxFace");
+        aiBoxEntity.setAbMinFace(minFace);
+        aiBoxEntity.setAbMaxFace(maxFace);
+
+        aiBoxMapper.updateById(aiBoxEntity);
     }
 
     @Override
@@ -171,6 +260,7 @@ public class AiBoxServiceImpl implements AiBoxService {
     @Override
     public AiBoxContrastResponseDto contrast(ContrastRequestDto requestDto) {
 
+        // AIBox接口暂时已知三种code，后续增加可创建类来做处理
         Integer status = 0;
         Integer statusCode1 = 1000;
         Integer statusCode2 = 1006;
@@ -187,7 +277,7 @@ public class AiBoxServiceImpl implements AiBoxService {
         log.info("responseStr : {}", responseStr);
         AiBoxContrastResponseDto responseDto = new AiBoxContrastResponseDto();
         if (StrUtil.isBlank(responseStr)) {
-            responseDto.setErrorMessage("连接服务失败！");
+            responseDto.setErrorMessage("连接 " + abIp + " 服务失败！");
             return responseDto;
         }
         JSONObject jsonObject = JSON.parseObject(responseStr);

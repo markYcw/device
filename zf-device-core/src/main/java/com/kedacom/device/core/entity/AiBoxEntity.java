@@ -43,11 +43,11 @@ public class AiBoxEntity implements Serializable {
 
     @ApiModelProperty("能识别的人脸最小像素值(默认为60)")
     @NotEmpty(message = "最小像素值不能为空")
-    private String abMinFace;
+    private Integer abMinFace;
 
     @ApiModelProperty("能识别的人脸最大像素值(默认为400)")
     @NotEmpty(message = "最大像素值不能为空")
-    private String abMaxFace;
+    private Integer abMaxFace;
 
     @ApiModelProperty(value = "设备名称拼音(拼音+首字母)")
     private String abPinyin;

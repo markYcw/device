@@ -44,6 +44,12 @@ public class AddOrUpdateRequestDto implements Serializable {
     @NotEmpty(message = "设备登录密码不能为空")
     private String abPassword;
 
+    @ApiModelProperty("能识别的人脸最小像素值(默认为60)")
+    private Integer abMinFace;
+
+    @ApiModelProperty("能识别的人脸最大像素值(默认为400)")
+    private Integer abMaxFace;
+
     @ApiModelProperty(value = "描述")
     private String abDesc;
 

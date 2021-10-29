@@ -1,0 +1,25 @@
+package com.kedacom.aiBox.request;
+
+import lombok.Data;
+
+import java.io.Serializable;
+
+/**
+ * @author wangxy
+ * @describe
+ * @date 2021/10/29
+ */
+@Data
+public class AiBoxUpdateThresholdRequestDto implements Serializable {
+
+    private String MsgId;
+
+    private String NVRUuid;
+
+    private String SessionId;
+
+    private Integer MinFace;
+
+    private Integer MaxFace;
+
+}

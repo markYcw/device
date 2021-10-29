@@ -621,7 +621,7 @@ public class McuServiceImpl implements McuService {
     }
 
     @Override
-    public BaseResult<String> hb(McuRequestDTO dto) {
+    public BaseResult<Integer> hb(McuRequestDTO dto) {
         log.info("mcu发送心跳:{}", dto);
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
         responseUtil.handleMp(entity);
@@ -631,7 +631,7 @@ public class McuServiceImpl implements McuService {
         String errorMsg = "mcu发送心跳失败:{},{},{}";
         MpResponse response = JSON.parseObject(exchange.getBody(), MpResponse.class);
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_HB_FAILED, response);
-        return BaseResult.succeed("操作成功");
+        return BaseResult.succeed(response.getCode());
     }
 
     @Override

@@ -58,8 +58,15 @@ public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> i
                 //如果未登录则直接设置MCU状态为离线
                 record.setStatus(DevTypeConstant.getZero);
             }else {
-                //如果已登录则设置为在线
-                record.setStatus(DevTypeConstant.updateRecordKey);
+                //如果已登录则给设备发送心跳，成功则设置为在线否则为离线
+                McuRequestDTO dto = new McuRequestDTO();
+                dto.setMcuId(record.getId());
+                BaseResult<Integer> result = mcuService.hb(dto);
+                if(result.getData()==0){
+                    record.setStatus(DevTypeConstant.updateRecordKey);
+                }else {
+                    record.setStatus(DevTypeConstant.getZero);
+                }
             }
         }
 

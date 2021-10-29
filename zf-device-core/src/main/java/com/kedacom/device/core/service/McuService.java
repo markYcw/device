@@ -63,7 +63,7 @@ public interface McuService {
 
     BaseResult message(McuMessageDTO dto);
 
-    BaseResult<String> hb(McuRequestDTO dto);
+    BaseResult<Integer> hb(McuRequestDTO dto);
 
     BaseResult<ConfTemplateVo> confTemplates(ConfTemplateDTO dto);
 

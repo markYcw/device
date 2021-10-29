@@ -156,7 +156,7 @@ public class McuApiFallbackFactory implements FallbackFactory<McuApi> {
             }
 
             @Override
-            public BaseResult<String> hb(McuRequestDTO dto) {
+            public BaseResult<Integer> hb(McuRequestDTO dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 

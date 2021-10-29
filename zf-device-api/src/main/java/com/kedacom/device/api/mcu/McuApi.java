@@ -136,7 +136,7 @@ public interface McuApi {
 
     @ApiOperation("发送心跳")
     @PostMapping("/hb")
-    BaseResult<String> hb(@RequestBody McuRequestDTO dto);
+    BaseResult<Integer> hb(@RequestBody McuRequestDTO dto);
 
     @ApiOperation("创建/删除会议模板")
     @PostMapping("/confTemplates")

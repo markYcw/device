@@ -47,9 +47,9 @@ public class McuController {
         return mcuService.logout(dto);
     }
 
-    @ApiOperation("发送心跳 登录会议平台以后必须每9分钟调用一次这个接口，否则有可能导致C++与MCU的token失效，然后你再去尝试调用MCU接口就会失败")
+    @ApiOperation("发送心跳 登录会议平台以后必须每9分钟调用一次这个接口，否则有可能导致C++与MCU的token失效，然后你再去尝试调用MCU接口就会失败 接口调用成功会返回0")
     @PostMapping("/hb")
-    public BaseResult<String> hb(@Valid @RequestBody McuRequestDTO dto, BindingResult br) {
+    public BaseResult<Integer> hb(@Valid @RequestBody McuRequestDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return mcuService.hb(dto);

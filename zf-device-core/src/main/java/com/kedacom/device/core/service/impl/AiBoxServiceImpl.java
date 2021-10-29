@@ -26,6 +26,8 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author wangxy
@@ -38,6 +40,8 @@ public class AiBoxServiceImpl implements AiBoxService {
 
     @Resource
     AiBoxMapper aiBoxMapper;
+
+    ExecutorService executorService = Executors.newCachedThreadPool();
 
     @Override
     public BasePage<SelectPageResponseDto> selectPage(SelectPageRequestDto requestDto) {
@@ -98,13 +102,15 @@ public class AiBoxServiceImpl implements AiBoxService {
 
         String result;
         String id = requestDto.getId();
+        LambdaQueryWrapper<AiBoxEntity> wrapper = new LambdaQueryWrapper<>();
         // 校验设备IP的唯一性
-        result = checkIp(id, requestDto.getAbIp());
+        result = checkIp(wrapper, id, requestDto.getAbIp());
         if (StrUtil.isNotBlank(result)) {
             return result;
         }
+        wrapper.clear();
         // 校验设备名称的唯一性
-        result = checkName(id, requestDto.getAbName());
+        result = checkName(wrapper, id, requestDto.getAbName());
         if (StrUtil.isNotBlank(result)) {
             return result;
         }
@@ -114,14 +120,13 @@ public class AiBoxServiceImpl implements AiBoxService {
         return result;
     }
 
-    public String checkIp(String id, String ip) {
+    public String checkIp(LambdaQueryWrapper<AiBoxEntity> checkIpWrapper, String id, String ip) {
 
-        LambdaQueryWrapper<AiBoxEntity> queryIpWrapper = new LambdaQueryWrapper<>();
-        queryIpWrapper.eq(AiBoxEntity::getAbIp, ip);
+        checkIpWrapper.eq(AiBoxEntity::getAbIp, ip);
         if (StrUtil.isNotBlank(id)) {
-            queryIpWrapper.ne(AiBoxEntity::getId, id);
+            checkIpWrapper.ne(AiBoxEntity::getId, id);
         }
-        AiBoxEntity aiBoxEntity = aiBoxMapper.selectOne(queryIpWrapper);
+        AiBoxEntity aiBoxEntity = aiBoxMapper.selectOne(checkIpWrapper);
         if (aiBoxEntity != null) {
             return "设备IP重复，请重新填写";
         }
@@ -129,14 +134,13 @@ public class AiBoxServiceImpl implements AiBoxService {
         return null;
     }
 
-    public String checkName(String id, String name) {
+    public String checkName(LambdaQueryWrapper<AiBoxEntity> checkNameWrapper, String id, String name) {
 
-        LambdaQueryWrapper<AiBoxEntity> queryNameWrapper = new LambdaQueryWrapper<>();
-        queryNameWrapper.eq(AiBoxEntity::getAbName, name);
+        checkNameWrapper.eq(AiBoxEntity::getAbName, name);
         if (StrUtil.isNotBlank(id)) {
-            queryNameWrapper.ne(AiBoxEntity::getId, id);
+            checkNameWrapper.ne(AiBoxEntity::getId, id);
         }
-        AiBoxEntity aiBoxEntity = aiBoxMapper.selectOne(queryNameWrapper);
+        AiBoxEntity aiBoxEntity = aiBoxMapper.selectOne(checkNameWrapper);
         if (aiBoxEntity != null) {
             return "设备名称重复，请重新填写";
         }
@@ -205,10 +209,6 @@ public class AiBoxServiceImpl implements AiBoxService {
 
             String responseStr = AiBoxHttpDigest.doPostDigest(url, username, password, JSON.toJSONString(requestDto));
             log.info("responseStr : {}", responseStr);
-            if (StrUtil.isBlank(responseStr)) {
-                log.error("连接 " + abIpDto + " 服务失败！");
-                throw new AiBoxException("连接 " + abIpDto + " 服务失败！");
-            }
             JSONObject jsonObject = JSON.parseObject(responseStr);
             Integer code  = (Integer) jsonObject.get("StatusCode");
             if (!status.equals(code)) {
@@ -230,10 +230,6 @@ public class AiBoxServiceImpl implements AiBoxService {
 
         String responseStr = AiBoxHttpDigest.doPostDigest(url, username, password, JSON.toJSONString(new AiBoxGetThresholdRequestDto()));
         log.info("responseStr : {}", responseStr);
-        if (StrUtil.isBlank(responseStr)) {
-            log.error("连接 " + abIp + " 服务失败！");
-            throw new AiBoxException("连接 " + abIp + " 服务失败！");
-        }
         JSONObject jsonObject = JSON.parseObject(responseStr);
         Integer code  = (Integer) jsonObject.get("StatusCode");
         if (!status.equals(code)) {
@@ -252,9 +248,38 @@ public class AiBoxServiceImpl implements AiBoxService {
     public boolean delete(DeleteRequestDto requestDto) {
 
         List<String> ids = requestDto.getIds();
+        // 重置设备的默认阈值
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                for (String id : ids) {
+                    resetThreshold(id);
+                }
+            }
+        });
         int deleteBatchIds = aiBoxMapper.deleteBatchIds(ids);
 
         return ids.size() == deleteBatchIds;
+    }
+
+    public void resetThreshold(String id) {
+
+        Integer status = 0;
+        AiBoxEntity aiBoxEntity = aiBoxMapper.selectById(id);
+        String url = "http://" + aiBoxEntity.getAbIp() + ":" + aiBoxEntity.getAbPort() + "/NVR/SetFaceCompareAlgCfg";
+        AiBoxUpdateThresholdRequestDto requestDto = new AiBoxUpdateThresholdRequestDto();
+        requestDto.setMinFace(60);
+        requestDto.setMaxFace(400);
+
+        String responseStr = AiBoxHttpDigest.doPostDigest(url, aiBoxEntity.getAbUsername(), aiBoxEntity.getAbPassword(), JSON.toJSONString(requestDto));
+        log.info("responseStr : {}", responseStr);
+        JSONObject jsonObject = JSON.parseObject(responseStr);
+        Integer code  = (Integer) jsonObject.get("StatusCode");
+        if (!status.equals(code)) {
+            log.error("恢复人脸识别算法默认参数配置失败！");
+            throw new AiBoxException("恢复人脸识别算法默认参数配置失败！");
+        }
+
     }
 
     @Override
@@ -275,12 +300,8 @@ public class AiBoxServiceImpl implements AiBoxService {
 
         String responseStr = AiBoxHttpDigest.doPostDigest(url, username, password, JSON.toJSONString(aiBoxContrastRequestDto));
         log.info("responseStr : {}", responseStr);
-        AiBoxContrastResponseDto responseDto = new AiBoxContrastResponseDto();
-        if (StrUtil.isBlank(responseStr)) {
-            responseDto.setErrorMessage("连接 " + abIp + " 服务失败！");
-            return responseDto;
-        }
         JSONObject jsonObject = JSON.parseObject(responseStr);
+        AiBoxContrastResponseDto responseDto = new AiBoxContrastResponseDto();
         Integer code  = (Integer) jsonObject.get("StatusCode");
         if (statusCode1.equals(code)) {
             responseDto.setErrorMessage("上传图片有误！");

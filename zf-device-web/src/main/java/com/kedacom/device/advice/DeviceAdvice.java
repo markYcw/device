@@ -137,6 +137,14 @@ public class DeviceAdvice {
         log.error("svr异常捕获:{}", e.getMessage());
         return BaseResult.failed(e.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler({AiBoxException.class})
+    public BaseResult handleException(AiBoxException e) {
+        log.error("请求AIBox异常捕获:{}", e.getMessage());
+        return BaseResult.failed(e.getMessage());
+    }
+
     /**
      * 统一设备异常捕获
      *

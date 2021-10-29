@@ -153,7 +153,7 @@ public class ConfInfo implements Serializable {
     private String meetingId;
 
     @ApiModelProperty(value = "主视频格式列表")
-    private List<VideoFormat> videoFormats;
+    private VideoFormat videoFormat;
 
     @ApiModelProperty(value = "会议发起者")
     private Creator creator;

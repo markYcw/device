@@ -237,8 +237,8 @@ public class McuServiceImpl implements McuService {
     public BaseResult<McuConfVO> conf(McuConfDTO dto) {
         log.info("mcu创建/删除会议:{}", dto);
         if(!ObjectUtil.isNull(dto.getConfInfo())){
-            List<VideoFormat> videoFormats = dto.getConfInfo().getVideoFormats();
-            if(CollectionUtil.isEmpty(videoFormats)){
+            VideoFormat videoFormats = dto.getConfInfo().getVideoFormat();
+            if(ObjectUtil.isNull(videoFormats)){
                 return BaseResult.failed("主视频格式列表 不能为空");
             }
         }

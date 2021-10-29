@@ -156,10 +156,9 @@ public class TemplateInfo implements Serializable {
     @Valid
     private Mix mix;
 
-    @NotEmpty(message = "主视频格式列表 不能为空")
-    @ApiModelProperty(value = "主视频格式列表",required = true)
+    @ApiModelProperty(value = "主视频格式",required = true)
     @Valid
-    private List<VideoFormat> videoFormats;
+    private VideoFormat videoFormat;
 
     @ApiModelProperty(value = "参会成员 创建虚拟会议室时可填")
     @Valid

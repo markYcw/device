@@ -62,9 +62,11 @@ public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> i
                 McuRequestDTO dto = new McuRequestDTO();
                 dto.setMcuId(record.getId());
                 BaseResult<Integer> result = mcuService.hb(dto);
-                if(result.getData()==0){
+                if(result.getData()==DevTypeConstant.getZero){
                     record.setStatus(DevTypeConstant.updateRecordKey);
                 }else {
+                    //如果离线就从状态池把改mcu的ID删掉并把状态设为离线
+                    McuServiceImpl.mcuStatusPoll.remove(record.getId());
                     record.setStatus(DevTypeConstant.getZero);
                 }
             }

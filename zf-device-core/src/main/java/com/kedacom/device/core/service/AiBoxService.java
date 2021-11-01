@@ -3,6 +3,7 @@ package com.kedacom.device.core.service;
 import com.kedacom.BasePage;
 import com.kedacom.aiBox.request.*;
 import com.kedacom.aiBox.response.AiBoxContrastResponseDto;
+import com.kedacom.aiBox.response.GetThresholdResponseDto;
 import com.kedacom.aiBox.response.QueryListResponseDto;
 import com.kedacom.aiBox.response.SelectPageResponseDto;
 
@@ -49,6 +50,13 @@ public interface AiBoxService {
      * @return
      */
     boolean delete(DeleteRequestDto requestDto);
+
+    /**
+     * 获取AIBox人脸对比阈值
+     * @param requestDto
+     * @return
+     */
+    GetThresholdResponseDto getThresholdOfInterface(GetThresholdRequestDto requestDto);
 
     /**
      * 图片对比

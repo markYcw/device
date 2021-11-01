@@ -5,6 +5,7 @@ import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.aiBox.request.*;
 import com.kedacom.aiBox.response.AiBoxContrastResponseDto;
+import com.kedacom.aiBox.response.GetThresholdResponseDto;
 import com.kedacom.aiBox.response.QueryListResponseDto;
 import com.kedacom.aiBox.response.SelectPageResponseDto;
 import com.kedacom.common.utils.ValidUtils;
@@ -79,6 +80,15 @@ public class AiBoxController {
         }
 
         return BaseResult.failed("删除失败");
+    }
+
+    @ApiOperation("获取AIBox人脸对比阈值")
+    @PostMapping("/getThreshold")
+    public BaseResult<GetThresholdResponseDto> getThreshold(@RequestBody GetThresholdRequestDto requestDto) {
+
+        GetThresholdResponseDto responseDto = aiBoxService.getThresholdOfInterface(requestDto);
+
+        return BaseResult.succeed(null, responseDto);
     }
 
     @ApiOperation("图片对比")

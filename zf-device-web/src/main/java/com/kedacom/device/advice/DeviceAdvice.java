@@ -146,6 +146,19 @@ public class DeviceAdvice {
     }
 
     /**
+     * cu异常捕获
+     *
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler({CuException.class})
+    public BaseResult handleException(CuException e) {
+        log.error("cu异常捕获:{}", e.getMessage());
+        return BaseResult.failed(e.getMessage());
+    }
+
+    /**
      * 统一设备异常捕获
      *
      * @param e

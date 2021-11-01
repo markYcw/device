@@ -52,7 +52,7 @@ public interface AiBoxService {
     boolean delete(DeleteRequestDto requestDto);
 
     /**
-     * 获取AIBox人脸对比阈值
+     * 获取远程AIBox人脸对比阈值
      * @param requestDto
      * @return
      */

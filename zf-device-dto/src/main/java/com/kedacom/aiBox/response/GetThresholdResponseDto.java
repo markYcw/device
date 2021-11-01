@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2021/11/1
  */
 @Data
-@ApiModel(description = "获取AIBox人脸对比阈值响应参数类")
+@ApiModel(description = "获取远程AIBox人脸对比阈值响应参数类")
 public class GetThresholdResponseDto implements Serializable {
 
     @ApiModelProperty("设备IP")

@@ -82,7 +82,7 @@ public class AiBoxController {
         return BaseResult.failed("删除失败");
     }
 
-    @ApiOperation("获取AIBox人脸对比阈值")
+    @ApiOperation("获取远程AIBox人脸对比阈值")
     @PostMapping("/getThreshold")
     public BaseResult<GetThresholdResponseDto> getThreshold(@RequestBody GetThresholdRequestDto requestDto) {
 

@@ -153,10 +153,14 @@ public class AiBoxServiceImpl implements AiBoxService {
         if (StrUtil.isBlank(id)) {
             return null;
         }
-        if (minFace == null || minFace == 0) {
+        if (minFace >= maxFace) {
+            return "最大像素必须大于最小像素，请重新填写";
+        }
+        // 针对设备修改的校验
+        if (minFace == 0) {
             return "最小像素值有误，请重新填写";
         }
-        if (maxFace == null || maxFace == 0) {
+        if (maxFace == 0) {
             return "最大像素值有误，请重新填写";
         }
 

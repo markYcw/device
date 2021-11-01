@@ -67,15 +67,13 @@ public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> i
                 BaseResult<Integer> result = null;
                 try {
                     result = mcuService.hb(dto);
+                    record.setStatus(DevTypeConstant.updateRecordKey);
                 } catch (Exception e) {
                   log.error("==============分页查询mcu，发送心跳时候发生错误{}",e);
-                }
-                if(result.getData()==DevTypeConstant.getZero){
-                    record.setStatus(DevTypeConstant.updateRecordKey);
-                }else {
                     //如果离线就从状态池把改mcu的ID删掉并把状态设为离线
                     McuServiceImpl.mcuStatusPoll.remove(record.getId());
                     record.setStatus(DevTypeConstant.getZero);
+                    continue;
                 }
             }
         }

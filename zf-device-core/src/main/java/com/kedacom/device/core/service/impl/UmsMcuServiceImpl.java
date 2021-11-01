@@ -15,6 +15,7 @@ import com.kedacom.device.core.service.UmsMcuService;
 import com.kedacom.mp.mcu.McuRequestDTO;
 import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import com.kedacom.mp.mcu.pojo.McuPageQueryDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ import java.util.Objects;
 /**
  * @author hexijian
  */
+@Slf4j
 @Service("umsMcuServiceImpl")
 public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> implements UmsMcuService {
 
@@ -38,6 +40,7 @@ public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> i
 
     @Override
     public BaseResult<BasePage<UmsMcuEntity>> pageQuery(McuPageQueryDTO queryDTO) {
+        log.info("MCU分页查询接口入参：McuPageQueryDTO{}",queryDTO);
         Page<UmsMcuEntity> page = new Page<>();
         page.setCurrent(queryDTO.getCurPage());
         page.setSize(queryDTO.getPageSize());
@@ -61,7 +64,12 @@ public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> i
                 //如果已登录则给设备发送心跳，成功则设置为在线否则为离线
                 McuRequestDTO dto = new McuRequestDTO();
                 dto.setMcuId(record.getId());
-                BaseResult<Integer> result = mcuService.hb(dto);
+                BaseResult<Integer> result = null;
+                try {
+                    result = mcuService.hb(dto);
+                } catch (Exception e) {
+                  log.error("==============分页查询mcu，发送心跳时候发生错误{}",e);
+                }
                 if(result.getData()==DevTypeConstant.getZero){
                     record.setStatus(DevTypeConstant.updateRecordKey);
                 }else {

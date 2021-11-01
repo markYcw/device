@@ -32,10 +32,10 @@ public class RecStatus {
     @ApiModelProperty(value = "录像模式 1-录像； 2-直播；3-录像+直播；")
     private Integer recorderMode;
 
-    @ApiModelProperty(value = "是否录主格式码流（视频+音频）0-是；1-否；")
+    @ApiModelProperty(value = "是否录主格式码流（视频+音频）0-否；1-是；")
     private Integer mainStream;
 
-    @ApiModelProperty(value = "是否录双流 0-是；1-否；")
+    @ApiModelProperty(value = "是否录双流 0-否；1-是；")
     private Integer dualStream;
 
     @ApiModelProperty(value = "发布类型，0-不发布；1-发布；")

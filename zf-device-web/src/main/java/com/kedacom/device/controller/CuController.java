@@ -41,7 +41,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("ums/cu")
-@Api(value = "cu控制相关", tags = "cu控制层")
+@Api(value = "监控平台控制相关", tags = "CU控制层")
 public class CuController {
 
     @Autowired

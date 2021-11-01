@@ -1,5 +1,7 @@
 package com.kedacom.device.core.utils;
 
+import com.kedacom.cu.entity.CuEntity;
+import com.kedacom.device.core.basicParam.CuBasicParam;
 import com.kedacom.device.core.basicParam.SvrBasicParam;
 import com.kedacom.svr.entity.SvrEntity;
 import com.kedacom.util.NumGen;
@@ -13,19 +15,19 @@ import java.util.Map;
 /**
  * @author ycw
  * @date: 2021/09/06 14:54
- * @description svr基本工具类
+ * @description cu基本工具类
  */
 @Component
 @Slf4j
-public class SvrBasicTool {
+public class CuBasicTool {
 
     @Autowired
-    private SvrUrlFactory factory;
+    private CuUrlFactory factory;
 
-    public SvrBasicParam getParam(SvrEntity entity) {
-        SvrBasicParam param = new SvrBasicParam();
+    public CuBasicParam getParam(CuEntity entity) {
+        CuBasicParam param = new CuBasicParam();
 
-        String url = factory.geturl(entity.getDevType());
+        String url = factory.geturl(entity.getType());
         Map<String, Long> paramMap = new HashMap<>();
         Long s = Long.valueOf(entity.getSsid());
         Long n = (long) NumGen.getNum();

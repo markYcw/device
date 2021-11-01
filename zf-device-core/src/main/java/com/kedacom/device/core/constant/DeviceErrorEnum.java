@@ -8,11 +8,11 @@ public enum DeviceErrorEnum {
 
     PARAM_ERROR(1001, ""),
 
-    URL_ERROR(1002, "调用会议平台的URL为空"),
+    URL_ERROR(1002, "根据devType获取的URL为空，请核对传入参数是否合理，异常信息来自DeviceErrorEnum"),
 
     //全局统一错误码 addBy ycw
     DEVICE_NOT_FOUND(1003,"设备未找到请检查"),
-    DEVICE_NOT_LOGIN(1004,"请先登录设备"),
+    DEVICE_NOT_LOGIN(1004,"设备未登录，请先登录设备"),
     DEVICE_HEART_BEAT_FAILED(1005,"发送心跳失败"),
     IP_OR_NAME_REPEAT(1006,"IP或名称重复"),
 
@@ -143,6 +143,17 @@ public enum DeviceErrorEnum {
     SVR_GET_OSD_FAILED(5028, "获取画面叠加失败"),
     SVR_OSD_FAILED(5029, "设置画面叠加失败"),
     SVR_AUDIO_FAILED(5030, "语音激励控制失败"),
+
+    //cu相关错误码
+    CU_LOGIN_FAILED(6001, "CU登录失败"),
+    CU_LOGOUT_FAILED(6002, "CU登出失败"),
+    CU_LOCAL_DOMAIN_FAILED(6003, "获取平台域信息失败"),
+    CU_DOMAINS_FAILED(6004, "获取域链表失败"),
+    CU_TIME_FAILED(6005, "获取平台时间失败"),
+    CU_VIEW_TREES_FAILED(6006, "获取多视图设备树失败"),
+    CU_SELECT_TREE_FAILED(6007, "选择当前操作的设备树失败"),
+    CU_DEV_GROUPS_FAILED(6008, "获取设备组信息失败"),
+
 
     SCHEDULE_ADD_DEVICE_FAILED(9001, "添加调度组成员设备失败"),
     SCHEDULE_DELETE_DEVICE_FAILED(9002, "删除调度组成员设备失败"),

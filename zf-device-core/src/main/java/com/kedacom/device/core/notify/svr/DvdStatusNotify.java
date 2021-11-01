@@ -1,7 +1,7 @@
-package com.kedacom.device.core.notify.svr.stragegy.notify;
+package com.kedacom.device.core.notify.svr;
 
 import com.alibaba.fastjson.JSON;
-import com.kedacom.device.core.notify.svr.stragegy.INotify;
+import com.kedacom.device.core.notify.stragegy.INotify;
 import com.kedacom.svr.stragegy.svr.pojo.DvdStatus;
 
 /**

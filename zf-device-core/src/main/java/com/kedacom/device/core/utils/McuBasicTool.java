@@ -1,6 +1,6 @@
 package com.kedacom.device.core.utils;
 
-import com.kedacom.device.core.entity.McuBasicParam;
+import com.kedacom.device.core.basicParam.McuBasicParam;
 import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;

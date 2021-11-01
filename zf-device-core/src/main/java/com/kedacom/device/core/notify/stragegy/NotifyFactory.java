@@ -1,8 +1,8 @@
-package com.kedacom.device.core.notify.svr.stragegy;
+package com.kedacom.device.core.notify.stragegy;
 
-import com.kedacom.device.core.notify.svr.stragegy.notify.SvrNotifyFactory;
+import com.kedacom.device.core.notify.cu.CuNotifyFactory;
+import com.kedacom.device.core.notify.svr.SvrNotifyFactory;
 import com.kedacom.device.core.utils.ContextUtils;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
@@ -38,7 +38,7 @@ public class NotifyFactory {
      */
    private static void init(){
        ContextUtils.getBean(SvrNotifyFactory.class).init();
-
+       ContextUtils.getBean(CuNotifyFactory.class).init();
    }
 
     static {

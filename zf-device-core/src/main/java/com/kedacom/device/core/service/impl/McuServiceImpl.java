@@ -8,7 +8,7 @@ import com.kedacom.BaseResult;
 import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.McuConvert;
-import com.kedacom.device.core.entity.McuBasicParam;
+import com.kedacom.device.core.basicParam.McuBasicParam;
 import com.kedacom.device.core.exception.MpException;
 import com.kedacom.device.core.mapper.UmsMcuMapper;
 import com.kedacom.device.core.service.McuService;

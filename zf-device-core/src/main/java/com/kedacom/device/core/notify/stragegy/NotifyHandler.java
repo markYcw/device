@@ -1,4 +1,4 @@
-package com.kedacom.device.core.notify.svr.stragegy;
+package com.kedacom.device.core.notify.stragegy;
 
 import com.kedacom.device.core.utils.ContextUtils;
 import lombok.Data;

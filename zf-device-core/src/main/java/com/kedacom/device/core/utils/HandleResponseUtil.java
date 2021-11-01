@@ -6,6 +6,7 @@ import com.kedacom.core.pojo.BaseResponse;
 import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.exception.*;
+import com.kedacom.device.cu.CuResponse;
 import com.kedacom.device.mp.MpResponse;
 import com.kedacom.device.svr.SvrResponse;
 import com.kedacom.mp.mcu.entity.UmsMcuEntity;
@@ -141,6 +142,20 @@ public class HandleResponseUtil {
         if (ObjectUtil.notEqual(res.getCode(), DeviceConstants.SUCCESS)) {
                 log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
                 throw new SvrException(res.getCode(), errorEnum.getMsg());
+        }
+    }
+
+    /**
+     * 处理cu异常
+     *
+     * @param str
+     * @param errorEnum
+     * @param res
+     */
+    public void handleCuRes(String str, DeviceErrorEnum errorEnum, CuResponse res) {
+        if (ObjectUtil.notEqual(res.getCode(), DeviceConstants.SUCCESS)) {
+            log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
+            throw new CuException(res.getCode(), errorEnum.getMsg());
         }
     }
 

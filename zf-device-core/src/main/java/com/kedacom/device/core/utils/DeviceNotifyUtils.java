@@ -51,5 +51,15 @@ public class DeviceNotifyUtils {
         remoteRestTemplate.getRestTemplate().postForObject(url, httpEntity, String.class);
     }
 
+    /**
+     * 发送设备掉线通知
+     * @param url  接收方URL
+     * @param dto
+     */
+    public void offLineNty(String url,DeviceNotifyRequestDTO dto){
+        HttpEntity<String> httpEntity = new HttpEntity<>(JSON.toJSONString(dto), remoteRestTemplate.getHttpHeaders());
+        remoteRestTemplate.getRestTemplate().postForObject(url, httpEntity, String.class);
+    }
+
 
 }

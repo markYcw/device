@@ -1,8 +1,8 @@
-package com.kedacom.device.core.notify.svr.stragegy.notify;
+package com.kedacom.device.core.notify.svr;
 
-import com.kedacom.device.core.notify.svr.stragegy.DeviceType;
+import com.kedacom.device.core.notify.stragegy.DeviceType;
 
-import com.kedacom.device.core.notify.svr.stragegy.NotifyFactory;
+import com.kedacom.device.core.notify.stragegy.NotifyFactory;
 import com.kedacom.device.core.utils.ContextUtils;
 import org.springframework.stereotype.Component;
 

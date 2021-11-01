@@ -1,4 +1,4 @@
-package com.kedacom.device.core.entity;
+package com.kedacom.device.core.basicParam;
 
 import lombok.Data;
 

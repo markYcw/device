@@ -318,6 +318,12 @@ public class AiBoxServiceImpl implements AiBoxService {
         if (status.equals(code)) {
             JSONArray similarityList = jsonObject.getJSONArray("SimilarityList");
             Map<String, Object> similarityMap = (Map<String, Object>) similarityList.get(0);
+            Integer similarity = (Integer) similarityMap.get("Similarity");
+            if (similarity == 0) {
+                log.error("图片对比相似度为0（查看阈值设置是否正确），图片对比失败！");
+                responseDto.setErrorMessage("图片对比失败！");
+                return responseDto;
+            }
             responseDto.setFlag(true);
             responseDto.setData(String.valueOf(similarityMap.get("Similarity")));
             return responseDto;

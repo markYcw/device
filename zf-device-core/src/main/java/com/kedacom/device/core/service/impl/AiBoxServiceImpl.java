@@ -219,7 +219,7 @@ public class AiBoxServiceImpl implements AiBoxService {
         String abId = requestDto.getAbId();
         AiBoxEntity aiBoxEntity = aiBoxMapper.selectById(abId);
         if (aiBoxEntity == null) {
-            throw new AiBoxException("该设备信息不存在");
+            return null;
         }
 
         return getThreshold(aiBoxEntity, true);

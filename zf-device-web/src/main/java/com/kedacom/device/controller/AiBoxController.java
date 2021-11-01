@@ -87,8 +87,11 @@ public class AiBoxController {
     public BaseResult<GetThresholdResponseDto> getThreshold(@RequestBody GetThresholdRequestDto requestDto) {
 
         GetThresholdResponseDto responseDto = aiBoxService.getThresholdOfInterface(requestDto);
+        if (responseDto != null) {
+            return BaseResult.succeed(null, responseDto);
+        }
 
-        return BaseResult.succeed(null, responseDto);
+        return BaseResult.failed("该设备不存在！");
     }
 
     @ApiOperation("图片对比")

@@ -59,7 +59,7 @@ public class AiBoxServiceImpl implements AiBoxService {
             queryWrapper.like(AiBoxEntity::getAbIp, ip);
         }
         if (StrUtil.isNotBlank(name)) {
-            queryWrapper.like(AiBoxEntity::getAbName, name);
+            queryWrapper.and(query -> query.like(AiBoxEntity::getAbName, name).or().like(AiBoxEntity::getAbPinyin, name));
         }
         queryWrapper.orderByAsc(AiBoxEntity::getCreateTime);
         Page<AiBoxEntity> entityPage = aiBoxMapper.selectPage(page, queryWrapper);
@@ -90,7 +90,7 @@ public class AiBoxServiceImpl implements AiBoxService {
         }
         String abName = requestDto.getAbName();
         if (StrUtil.isNotBlank(abName)) {
-            queryWrapper.like(AiBoxEntity::getAbName, abName);
+            queryWrapper.and(query -> query.like(AiBoxEntity::getAbName, abName).or().like(AiBoxEntity::getAbPinyin, abName));
         }
         List<AiBoxEntity> aiBoxEntityList = aiBoxMapper.selectList(queryWrapper);
 

@@ -7,7 +7,11 @@ package com.kedacom.device.core.notify.stragegy;
  * @description 通知信息处理超类
  */
 public abstract class INotify {
-
-    public abstract void consumeMessage(Integer ssid,String message);
+    /**
+     * 处理通知
+     * @param ssid
+     * @param message
+     */
+    protected abstract void consumeMessage(Integer ssid,String message);
 
 }

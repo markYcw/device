@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
- * @author hxj
+ * @author YCW
  * @date: 2021/8/17 13:31
  * @description 选看参数
  */
@@ -16,7 +16,7 @@ import java.io.Serializable;
 @ApiModel(description =  "选看参数")
 public class Specific implements Serializable {
 
-    @ApiModelProperty(value = "选看类型1-指定； 2-发言人跟随；3-主席跟随；4-会议轮询跟随；6-选看画面合成；7-批量轮询；10-选看双流；",required = true)
+    @ApiModelProperty(value = "选看类型1-指定； 2-发言人跟随；3-主席跟随；4-会议轮询跟随；6-选看画面合成；10-选看双流；",required = true)
     @NotBlank(message = "选看类型不能为空")
     private String memberType;
 

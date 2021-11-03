@@ -82,7 +82,7 @@ public class AiBoxController {
         return BaseResult.failed("删除失败");
     }
 
-    @ApiOperation("获取远程AIBox人脸对比阈值")
+    @ApiOperation("获取AIBox设备人脸对比阈值")
     @PostMapping("/getThreshold")
     public BaseResult<GetThresholdResponseDto> getThreshold(@RequestBody GetThresholdRequestDto requestDto) {
 
@@ -92,6 +92,18 @@ public class AiBoxController {
         }
 
         return BaseResult.failed("该设备不存在！");
+    }
+
+    @ApiOperation("设置AIBox设备人脸对比阈值")
+    @PostMapping("/setThreshold")
+    public BaseResult<String> setThreshold(@Valid @RequestBody SetThresholdRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+        if (aiBoxService.setThreshold(requestDto)) {
+            return BaseResult.succeed(null, "设置成功");
+        }
+
+        return BaseResult.failed("设置失败");
     }
 
     @ApiOperation("图片对比")

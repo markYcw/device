@@ -52,11 +52,18 @@ public interface AiBoxService {
     boolean delete(DeleteRequestDto requestDto);
 
     /**
-     * 获取远程AIBox人脸对比阈值
+     * 获取远端AIBox人脸对比阈值
      * @param requestDto
      * @return
      */
     GetThresholdResponseDto getThresholdOfInterface(GetThresholdRequestDto requestDto);
+
+    /**
+     * 设置远端AIBox人脸对比阈值
+     * @param requestDto
+     * @return
+     */
+    boolean setThreshold(SetThresholdRequestDto requestDto);
 
     /**
      * 图片对比

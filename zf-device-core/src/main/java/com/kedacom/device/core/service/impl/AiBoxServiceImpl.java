@@ -1,10 +1,12 @@
 package com.kedacom.device.core.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kedacom.BasePage;
 import com.kedacom.aiBox.request.*;
@@ -15,8 +17,10 @@ import com.kedacom.aiBox.response.SelectPageResponseDto;
 import com.kedacom.common.utils.PinYinUtils;
 import com.kedacom.device.core.convert.AiBoxConvert;
 import com.kedacom.device.core.entity.AiBoxEntity;
+import com.kedacom.device.core.entity.AiBoxThresholdEntity;
 import com.kedacom.device.core.exception.AiBoxException;
 import com.kedacom.device.core.mapper.AiBoxMapper;
+import com.kedacom.device.core.mapper.AiBoxThresholdMapper;
 import com.kedacom.device.core.service.AiBoxService;
 import com.kedacom.device.core.utils.AiBoxHttpDigest;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +28,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -41,6 +48,9 @@ public class AiBoxServiceImpl implements AiBoxService {
 
     @Resource
     AiBoxMapper aiBoxMapper;
+
+    @Resource
+    AiBoxThresholdMapper aiBoxThresholdMapper;
 
     ExecutorService executorService = Executors.newCachedThreadPool();
 
@@ -66,7 +76,7 @@ public class AiBoxServiceImpl implements AiBoxService {
         Page<AiBoxEntity> entityPage = aiBoxMapper.selectPage(page, queryWrapper);
         List<AiBoxEntity> records = entityPage.getRecords();
 
-        List<SelectPageResponseDto> selectPageResponseDtoList = AiBoxConvert.INSTANCE.convertSelectPageResponseDtoList(records);
+        List<SelectPageResponseDto> selectPageResponseDtoList = selectPageResponseDtoList(records);
         BasePage<SelectPageResponseDto> basePage = new BasePage<>();
         basePage.setTotal(entityPage.getTotal());
         basePage.setData(selectPageResponseDtoList);
@@ -77,9 +87,29 @@ public class AiBoxServiceImpl implements AiBoxService {
         return basePage;
     }
 
+    public List<SelectPageResponseDto> selectPageResponseDtoList(List<AiBoxEntity> aiBoxList) {
+
+        List<SelectPageResponseDto> selectPageResponseDtoList = AiBoxConvert.INSTANCE.convertSelectPageResponseDtoList(aiBoxList);
+        if (CollectionUtil.isNotEmpty(selectPageResponseDtoList)) {
+            List<AiBoxThresholdEntity> aiBoxThresholdEntityList = aiBoxThresholdMapper.selectList(null);
+            out : for (SelectPageResponseDto responseDto : selectPageResponseDtoList) {
+                for (AiBoxThresholdEntity aiBoxThresholdEntity : aiBoxThresholdEntityList) {
+                    if (responseDto.getId().equals(aiBoxThresholdEntity.getAbId())) {
+                        responseDto.setAbMinFace(aiBoxThresholdEntity.getAbMinFace());
+                        responseDto.setAbMaxFace(aiBoxThresholdEntity.getAbMaxFace());
+                        continue out;
+                    }
+                }
+            }
+        }
+
+        return selectPageResponseDtoList;
+    }
+
     @Override
     public List<QueryListResponseDto> queryList(QueryListRequestDto requestDto) {
 
+        log.info("查询AI-Box设备信息集合请求参数 : {}", requestDto);
         LambdaQueryWrapper<AiBoxEntity> queryWrapper = new LambdaQueryWrapper<>();
         String id = requestDto.getId();
         if (StrUtil.isNotBlank(id)) {
@@ -112,60 +142,8 @@ public class AiBoxServiceImpl implements AiBoxService {
         wrapper.clear();
         // 校验设备名称的唯一性
         result = checkName(wrapper, id, requestDto.getAbName());
-        if (StrUtil.isNotBlank(result)) {
-            return result;
-        }
-        // 校验人脸识别像素值是否异常
-        result = checkFaceValue(id, requestDto.getAbMinFace(), requestDto.getAbMaxFace());
 
         return result;
-    }
-
-    public String checkIp(LambdaQueryWrapper<AiBoxEntity> checkIpWrapper, String id, String ip) {
-
-        checkIpWrapper.eq(AiBoxEntity::getAbIp, ip);
-        if (StrUtil.isNotBlank(id)) {
-            checkIpWrapper.ne(AiBoxEntity::getId, id);
-        }
-        AiBoxEntity aiBoxEntity = aiBoxMapper.selectOne(checkIpWrapper);
-        if (aiBoxEntity != null) {
-            return "设备IP重复，请重新填写";
-        }
-
-        return null;
-    }
-
-    public String checkName(LambdaQueryWrapper<AiBoxEntity> checkNameWrapper, String id, String name) {
-
-        checkNameWrapper.eq(AiBoxEntity::getAbName, name);
-        if (StrUtil.isNotBlank(id)) {
-            checkNameWrapper.ne(AiBoxEntity::getId, id);
-        }
-        AiBoxEntity aiBoxEntity = aiBoxMapper.selectOne(checkNameWrapper);
-        if (aiBoxEntity != null) {
-            return "设备名称重复，请重新填写";
-        }
-
-        return null;
-    }
-
-    public String checkFaceValue(String id, Integer minFace, Integer maxFace) {
-
-        if (StrUtil.isBlank(id)) {
-            return null;
-        }
-        if (minFace >= maxFace) {
-            return "最大像素必须大于最小像素，请重新填写";
-        }
-        // 针对设备修改的校验
-        if (minFace == 0) {
-            return "最小像素值有误，请重新填写";
-        }
-        if (maxFace == 0) {
-            return "最大像素值有误，请重新填写";
-        }
-
-        return null;
     }
 
     @Override
@@ -180,14 +158,15 @@ public class AiBoxServiceImpl implements AiBoxService {
         aiBoxEntity.setAbPinyin(pinYinStr);
         if (StrUtil.isBlank(aiBoxEntity.getId())) {
             // 新增AI-Box设备信息
-            aiBoxEntity.setAbMinFace(0);
-            aiBoxEntity.setAbMaxFace(0);
             aiBoxMapper.insert(aiBoxEntity);
             getThreshold(aiBoxEntity, false);
             type = "添加";
         } else {
             // 修改AI-Box设备信息
-            updateThreshold(aiBoxEntity);
+            AiBoxEntity entityById = aiBoxMapper.selectById(aiBoxEntity.getId());
+            if (!aiBoxEntity.getAbIp().equals(entityById.getAbIp())) {
+                getThreshold(aiBoxEntity, false);
+            }
             aiBoxMapper.updateById(aiBoxEntity);
             type = "修改";
         }
@@ -199,6 +178,7 @@ public class AiBoxServiceImpl implements AiBoxService {
     public boolean delete(DeleteRequestDto requestDto) {
 
         List<String> ids = requestDto.getIds();
+        log.info("删除AI-Box设备信息请求参数 : [{}]", ids);
         // 重置设备的默认阈值
         executorService.execute(new Runnable() {
             @Override
@@ -208,9 +188,14 @@ public class AiBoxServiceImpl implements AiBoxService {
                 }
             }
         });
-        int deleteBatchIds = aiBoxMapper.deleteBatchIds(ids);
+        // 删除AIBox设备信息
+        int deleteAiBoxBatchIds = aiBoxMapper.deleteBatchIds(ids);
+        // 删除AIBox阈值信息
+        LambdaQueryWrapper<AiBoxThresholdEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(AiBoxThresholdEntity::getAbId, ids);
+        int deleteAiBoxThresholdBatchIds = aiBoxThresholdMapper.delete(queryWrapper);
 
-        return ids.size() == deleteBatchIds;
+        return ids.size() == deleteAiBoxBatchIds && deleteAiBoxBatchIds == deleteAiBoxThresholdBatchIds;
     }
 
     @Override
@@ -225,88 +210,29 @@ public class AiBoxServiceImpl implements AiBoxService {
         return getThreshold(aiBoxEntity, true);
     }
 
-    public GetThresholdResponseDto getThreshold(AiBoxEntity aiBoxEntity, boolean flag) {
+    @Override
+    public boolean setThreshold(SetThresholdRequestDto requestDto) {
 
-        Integer status = 0;
-        String abIp = aiBoxEntity.getAbIp();
-        Integer abPort = aiBoxEntity.getAbPort();
-        String username = aiBoxEntity.getAbUsername();
-        String password = aiBoxEntity.getAbPassword();
-        String url = "http://" + abIp + ":" + abPort + "/NVR/GetFaceCompareAlgCfg";
-
-        String responseStr = AiBoxHttpDigest.doPostDigest(url, username, password, JSON.toJSONString(new AiBoxGetThresholdRequestDto()));
-        log.info("responseStr : {}", responseStr);
-        JSONObject jsonObject = JSON.parseObject(responseStr);
-        Integer code  = (Integer) jsonObject.get("StatusCode");
-        if (!status.equals(code)) {
-            log.error("获取人脸识别算法参数配置失败！");
-            throw new AiBoxException("获取人脸识别算法参数配置失败！");
+        String abId = requestDto.getAbId();
+        Integer minFace = requestDto.getMinFace();
+        Integer maxFace = requestDto.getMaxFace();
+        log.info("设置AIBox设备人脸对比阈值请求参数 : {}", requestDto);
+        String value = checkFaceValue(minFace, maxFace);
+        if (StrUtil.isNotBlank(value)) {
+            log.error("设置AIBox设备人脸对比阈值失败 : {}", value);
+            throw new AiBoxException(value);
         }
-        Object minFace = jsonObject.get("MinFace");
-        Object maxFace = jsonObject.get("MaxFace");
-        if (!flag) {
-            aiBoxEntity.setAbMinFace((Integer) minFace);
-            aiBoxEntity.setAbMaxFace((Integer) maxFace);
+        // 更新远端设备的阈值
+        AiBoxEntity aiBoxEntity = aiBoxMapper.selectById(abId);
+        updateThreshold(aiBoxEntity, minFace, maxFace);
 
-            aiBoxMapper.updateById(aiBoxEntity);
-            return null;
-        }
-        GetThresholdResponseDto responseDto = new GetThresholdResponseDto();
-        responseDto.setAbIp(abIp);
-        responseDto.setMinFace((String) minFace);
-        responseDto.setMaxFace((String) maxFace);
-        responseDto.setAbName(aiBoxEntity.getAbName());
+        LambdaUpdateWrapper<AiBoxThresholdEntity> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(AiBoxThresholdEntity::getAbId, abId)
+                .set(AiBoxThresholdEntity::getAbMinFace, minFace)
+                .set(AiBoxThresholdEntity::getAbMaxFace, maxFace);
+        int update = aiBoxThresholdMapper.update(null, updateWrapper);
 
-        return responseDto;
-    }
-
-    public void updateThreshold(AiBoxEntity entityDto) {
-
-        Integer status = 0;
-        String abIpDto = entityDto.getAbIp();
-        Integer abMinFaceDto = entityDto.getAbMinFace();
-        Integer abMaxFaceDto = entityDto.getAbMaxFace();
-        AiBoxEntity aiBoxEntity = aiBoxMapper.selectById(entityDto.getId());
-        if (!aiBoxEntity.getAbIp().equals(abIpDto) || !aiBoxEntity.getAbMinFace().equals(abMinFaceDto)
-                || !aiBoxEntity.getAbMaxFace().equals(abMaxFaceDto)) {
-            Integer abPort = entityDto.getAbPort();
-            String username = entityDto.getAbUsername();
-            String password = entityDto.getAbPassword();
-            String url = "http://" + abIpDto + ":" + abPort + "/NVR/SetFaceCompareAlgCfg";
-            AiBoxUpdateThresholdRequestDto requestDto = new AiBoxUpdateThresholdRequestDto();
-            requestDto.setMinFace(entityDto.getAbMinFace());
-            requestDto.setMaxFace(entityDto.getAbMaxFace());
-
-            String responseStr = AiBoxHttpDigest.doPostDigest(url, username, password, JSON.toJSONString(requestDto));
-            log.info("responseStr : {}", responseStr);
-            JSONObject jsonObject = JSON.parseObject(responseStr);
-            Integer code  = (Integer) jsonObject.get("StatusCode");
-            if (!status.equals(code)) {
-                log.error("设置人脸识别算法参数配置失败！");
-                throw new AiBoxException("设置人脸识别算法参数配置失败！");
-            }
-        }
-
-    }
-
-    public void resetThreshold(String id) {
-
-        Integer status = 0;
-        AiBoxEntity aiBoxEntity = aiBoxMapper.selectById(id);
-        String url = "http://" + aiBoxEntity.getAbIp() + ":" + aiBoxEntity.getAbPort() + "/NVR/SetFaceCompareAlgCfg";
-        AiBoxUpdateThresholdRequestDto requestDto = new AiBoxUpdateThresholdRequestDto();
-        requestDto.setMinFace(60);
-        requestDto.setMaxFace(400);
-
-        String responseStr = AiBoxHttpDigest.doPostDigest(url, aiBoxEntity.getAbUsername(), aiBoxEntity.getAbPassword(), JSON.toJSONString(requestDto));
-        log.info("responseStr : {}", responseStr);
-        JSONObject jsonObject = JSON.parseObject(responseStr);
-        Integer code  = (Integer) jsonObject.get("StatusCode");
-        if (!status.equals(code)) {
-            log.error("恢复人脸识别算法默认参数配置失败！");
-            throw new AiBoxException("恢复人脸识别算法默认参数配置失败！");
-        }
-
+        return update > 0;
     }
 
     @Override
@@ -354,6 +280,131 @@ public class AiBoxServiceImpl implements AiBoxService {
         responseDto.setErrorMessage("图片对比失败！");
 
         return responseDto;
+    }
+
+    public String checkIp(LambdaQueryWrapper<AiBoxEntity> checkIpWrapper, String id, String ip) {
+
+        checkIpWrapper.eq(AiBoxEntity::getAbIp, ip);
+        if (StrUtil.isNotBlank(id)) {
+            checkIpWrapper.ne(AiBoxEntity::getId, id);
+        }
+        AiBoxEntity aiBoxEntity = aiBoxMapper.selectOne(checkIpWrapper);
+        if (aiBoxEntity != null) {
+            return "设备IP重复，请重新填写";
+        }
+
+        return null;
+    }
+
+    public String checkName(LambdaQueryWrapper<AiBoxEntity> checkNameWrapper, String id, String name) {
+
+        checkNameWrapper.eq(AiBoxEntity::getAbName, name);
+        if (StrUtil.isNotBlank(id)) {
+            checkNameWrapper.ne(AiBoxEntity::getId, id);
+        }
+        AiBoxEntity aiBoxEntity = aiBoxMapper.selectOne(checkNameWrapper);
+        if (aiBoxEntity != null) {
+            return "设备名称重复，请重新填写";
+        }
+
+        return null;
+    }
+
+    public String checkFaceValue(Integer minFace, Integer maxFace) {
+
+        if (minFace >= maxFace) {
+            return "最大像素必须大于最小像素，请重新填写";
+        }
+        if (minFace == 0) {
+            return "最小像素值有误，请重新填写";
+        }
+        if (maxFace == 0) {
+            return "最大像素值有误，请重新填写";
+        }
+
+        return null;
+    }
+
+    public GetThresholdResponseDto getThreshold(AiBoxEntity aiBoxEntity, boolean flag) {
+
+        Integer status = 0;
+        String abIp = aiBoxEntity.getAbIp();
+        Integer abPort = aiBoxEntity.getAbPort();
+        String username = aiBoxEntity.getAbUsername();
+        String password = aiBoxEntity.getAbPassword();
+        String url = "http://" + abIp + ":" + abPort + "/NVR/GetFaceCompareAlgCfg";
+        log.info("获取人脸识别算法参数配置请求url : {}", url);
+
+        String responseStr = AiBoxHttpDigest.doPostDigest(url, username, password, JSON.toJSONString(new AiBoxGetThresholdRequestDto()));
+        log.info("responseStr : {}", responseStr);
+        JSONObject jsonObject = JSON.parseObject(responseStr);
+        Integer code  = (Integer) jsonObject.get("StatusCode");
+        if (!status.equals(code)) {
+            log.error("获取人脸识别算法参数配置失败！");
+            throw new AiBoxException("获取人脸识别算法参数配置失败！");
+        }
+        Object minFace = jsonObject.get("MinFace");
+        Object maxFace = jsonObject.get("MaxFace");
+        if (!flag) {
+            AiBoxThresholdEntity aiBoxThresholdEntity = new AiBoxThresholdEntity();
+            aiBoxThresholdEntity.setAbId(aiBoxEntity.getId());
+            aiBoxThresholdEntity.setAbMinFace((Integer) minFace);
+            aiBoxThresholdEntity.setAbMaxFace((Integer) maxFace);
+
+            aiBoxThresholdMapper.insert(aiBoxThresholdEntity);
+            return null;
+        }
+        GetThresholdResponseDto responseDto = new GetThresholdResponseDto();
+        responseDto.setAbIp(abIp);
+        responseDto.setMinFace((String) minFace);
+        responseDto.setMaxFace((String) maxFace);
+        responseDto.setAbName(aiBoxEntity.getAbName());
+
+        return responseDto;
+    }
+
+    public void updateThreshold(AiBoxEntity aiBoxEntity, Integer abMinFace, Integer abMaxFace) {
+
+        Integer status = 0;
+        String abIpDto = aiBoxEntity.getAbIp();
+        Integer abPort = aiBoxEntity.getAbPort();
+        String username = aiBoxEntity.getAbUsername();
+        String password = aiBoxEntity.getAbPassword();
+        String url = "http://" + abIpDto + ":" + abPort + "/NVR/SetFaceCompareAlgCfg";
+        log.info("置人脸识别算法参数配置请求url : {}", url);
+        AiBoxUpdateThresholdRequestDto requestDto = new AiBoxUpdateThresholdRequestDto();
+        requestDto.setMinFace(abMinFace);
+        requestDto.setMaxFace(abMaxFace);
+
+        String responseStr = AiBoxHttpDigest.doPostDigest(url, username, password, JSON.toJSONString(requestDto));
+        log.info("responseStr : {}", responseStr);
+        JSONObject jsonObject = JSON.parseObject(responseStr);
+        Integer code  = (Integer) jsonObject.get("StatusCode");
+        if (!status.equals(code)) {
+            log.error("设置人脸识别算法参数配置失败！");
+            throw new AiBoxException("设置人脸识别算法参数配置失败！");
+        }
+
+    }
+
+    public void resetThreshold(String id) {
+
+        Integer status = 0;
+        AiBoxEntity aiBoxEntity = aiBoxMapper.selectById(id);
+        String url = "http://" + aiBoxEntity.getAbIp() + ":" + aiBoxEntity.getAbPort() + "/NVR/SetFaceCompareAlgCfg";
+        AiBoxUpdateThresholdRequestDto requestDto = new AiBoxUpdateThresholdRequestDto();
+        requestDto.setMinFace(60);
+        requestDto.setMaxFace(400);
+
+        String responseStr = AiBoxHttpDigest.doPostDigest(url, aiBoxEntity.getAbUsername(), aiBoxEntity.getAbPassword(), JSON.toJSONString(requestDto));
+        log.info("responseStr : {}", responseStr);
+        JSONObject jsonObject = JSON.parseObject(responseStr);
+        Integer code  = (Integer) jsonObject.get("StatusCode");
+        if (!status.equals(code)) {
+            log.error("恢复人脸识别算法默认参数配置失败！");
+            throw new AiBoxException("恢复人脸识别算法默认参数配置失败！");
+        }
+
     }
 
     private AiBoxContrastRequestDto convertRequestDto(ContrastRequestDto requestDto) {

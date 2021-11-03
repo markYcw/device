@@ -21,20 +21,20 @@ import java.util.Date;
 public class CuEntity {
 
 
-	@ApiModelProperty(value = "cu标识")
+	@ApiModelProperty(value = "监控平台数据库ID")
 	@TableId(value = "id" , type = IdType.AUTO)
 	private Integer id;
 
 
-	@ApiModelProperty(value = "ssid")
+	@ApiModelProperty(value = "登录成功后返回的ssid")
 	private Integer ssid;
 
 
-	@ApiModelProperty(value = "cu名称")
+	@ApiModelProperty(value = "监控平台名称")
 	private String name;
 
 
-	@ApiModelProperty(value = "cuIP")
+	@ApiModelProperty(value = "监控平台的IP")
 	@NotBlank(message = "IP不能为空")
 	private String ip;
 
@@ -43,7 +43,7 @@ public class CuEntity {
 	private Integer port;
 
 
-	@ApiModelProperty(value = "登录cu账号")
+	@ApiModelProperty(value = "登录监控平台账号")
 	@NotBlank(message = "用户名不能为空")
 	private String username;
 
@@ -66,6 +66,7 @@ public class CuEntity {
 	@ApiModelProperty(value = "创建时间")
 	@TableField(fill = FieldFill.INSERT)
 	private Date createTime;
+
 	/**
 	 * 修改时间
 	 */

@@ -245,10 +245,11 @@ public class AiBoxServiceImpl implements AiBoxService {
         Integer abPort = aiBoxEntity.getAbPort();
         String username = aiBoxEntity.getAbUsername();
         String password = aiBoxEntity.getAbPassword();
-        String url = "http://" + abIp + ":" + abPort + "/NVR/CompareSimilarity";
+        String uri = "/NVR/CompareSimilarity";
+        String url = "http://" + abIp + ":" + abPort + uri;
         AiBoxContrastRequestDto aiBoxContrastRequestDto = convertRequestDto(requestDto);
 
-        String responseStr = AiBoxHttpDigest.doPostDigest(url, username, password, JSON.toJSONString(aiBoxContrastRequestDto));
+        String responseStr = AiBoxHttpDigest.doPostDigest(url, uri, username, password, JSON.toJSONString(aiBoxContrastRequestDto));
         log.info("responseStr : {}", responseStr);
         JSONObject jsonObject = JSON.parseObject(responseStr);
         AiBoxContrastResponseDto responseDto = new AiBoxContrastResponseDto();
@@ -329,10 +330,11 @@ public class AiBoxServiceImpl implements AiBoxService {
         Integer abPort = aiBoxEntity.getAbPort();
         String username = aiBoxEntity.getAbUsername();
         String password = aiBoxEntity.getAbPassword();
-        String url = "http://" + abIp + ":" + abPort + "/NVR/GetFaceCompareAlgCfg";
+        String uri = "/NVR/GetFaceCompareAlgCfg";
+        String url = "http://" + abIp + ":" + abPort + uri;
         log.info("获取人脸识别算法参数配置请求url : {}", url);
 
-        String responseStr = AiBoxHttpDigest.doPostDigest(url, username, password, JSON.toJSONString(new AiBoxGetThresholdRequestDto()));
+        String responseStr = AiBoxHttpDigest.doPostDigest(url, uri, username, password, JSON.toJSONString(new AiBoxGetThresholdRequestDto()));
         log.info("responseStr : {}", responseStr);
         JSONObject jsonObject = JSON.parseObject(responseStr);
         Integer code  = (Integer) jsonObject.get("StatusCode");
@@ -367,13 +369,14 @@ public class AiBoxServiceImpl implements AiBoxService {
         Integer abPort = aiBoxEntity.getAbPort();
         String username = aiBoxEntity.getAbUsername();
         String password = aiBoxEntity.getAbPassword();
-        String url = "http://" + abIpDto + ":" + abPort + "/NVR/SetFaceCompareAlgCfg";
+        String uri = "/NVR/SetFaceCompareAlgCfg";
+        String url = "http://" + abIpDto + ":" + abPort + uri;
         log.info("置人脸识别算法参数配置请求url : {}", url);
         AiBoxUpdateThresholdRequestDto requestDto = new AiBoxUpdateThresholdRequestDto();
         requestDto.setMinFace(abMinFace);
         requestDto.setMaxFace(abMaxFace);
 
-        String responseStr = AiBoxHttpDigest.doPostDigest(url, username, password, JSON.toJSONString(requestDto));
+        String responseStr = AiBoxHttpDigest.doPostDigest(url, uri, username, password, JSON.toJSONString(requestDto));
         log.info("responseStr : {}", responseStr);
         JSONObject jsonObject = JSON.parseObject(responseStr);
         Integer code  = (Integer) jsonObject.get("StatusCode");
@@ -388,12 +391,13 @@ public class AiBoxServiceImpl implements AiBoxService {
 
         Integer status = 0;
         AiBoxEntity aiBoxEntity = aiBoxMapper.selectById(id);
-        String url = "http://" + aiBoxEntity.getAbIp() + ":" + aiBoxEntity.getAbPort() + "/NVR/SetFaceCompareAlgCfg";
+        String uri = "/NVR/SetFaceCompareAlgCfg";
+        String url = "http://" + aiBoxEntity.getAbIp() + ":" + aiBoxEntity.getAbPort() + uri;
         AiBoxUpdateThresholdRequestDto requestDto = new AiBoxUpdateThresholdRequestDto();
         requestDto.setMinFace(60);
         requestDto.setMaxFace(400);
 
-        String responseStr = AiBoxHttpDigest.doPostDigest(url, aiBoxEntity.getAbUsername(), aiBoxEntity.getAbPassword(), JSON.toJSONString(requestDto));
+        String responseStr = AiBoxHttpDigest.doPostDigest(url, uri, aiBoxEntity.getAbUsername(), aiBoxEntity.getAbPassword(), JSON.toJSONString(requestDto));
         log.info("responseStr : {}", responseStr);
         JSONObject jsonObject = JSON.parseObject(responseStr);
         Integer code  = (Integer) jsonObject.get("StatusCode");

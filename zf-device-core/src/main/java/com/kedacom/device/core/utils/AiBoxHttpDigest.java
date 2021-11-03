@@ -31,7 +31,7 @@ public class AiBoxHttpDigest {
      * @param url
      * @return 返回结果
      */
-    public static String doPostDigest(String url, String username, String password, String paramJson) {
+    public static String doPostDigest(String url, String uri, String username, String password, String paramJson) {
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse httpResponse = null;
         HttpPost httpPost = null;
@@ -73,7 +73,6 @@ public class AiBoxHttpDigest {
                 String nonce = null;
                 String opaque = null;
                 String method = "POST";
-                String uri = "/NVR/CompareSimilarity";
                 for (HeaderElement element : elements) {
                     if (element.getName().equals("Digest realm")) {
                         realm = element.getValue();

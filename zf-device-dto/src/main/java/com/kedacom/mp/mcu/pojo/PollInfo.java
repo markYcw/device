@@ -22,11 +22,11 @@ public class PollInfo {
     @ApiModelProperty(value = "轮询次数",required = true)
     private Integer num;
 
-    @NotNull(message = "轮询次数不能为空")
+    @NotNull(message = "轮询间隔")
     @ApiModelProperty(value = "轮询间隔（秒）",required = true)
     private Integer keepTime;
 
-    @NotNull(message = "轮询次数不能为空")
+    @NotNull(message = "轮询方式")
     @ApiModelProperty(value = "轮询方式 1-仅图像；3-音视频轮询；",required = true)
     private Integer mode;
 

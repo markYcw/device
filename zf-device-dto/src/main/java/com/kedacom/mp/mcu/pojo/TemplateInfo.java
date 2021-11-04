@@ -182,7 +182,7 @@ public class TemplateInfo implements Serializable {
 
     @ApiModelProperty(value = "追呼成员数组")
     @Valid
-    private KeepCallingMembers keepCallingMembers;
+    private List<KeepCallingMembers> keepCallingMembers;
 
     @ApiModelProperty(value = "数据协作")
     @Valid

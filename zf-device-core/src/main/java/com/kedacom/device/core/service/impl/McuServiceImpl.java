@@ -239,7 +239,7 @@ public class McuServiceImpl implements McuService {
         if(!ObjectUtil.isNull(dto.getConfInfo())){
             VideoFormat videoFormats = dto.getConfInfo().getVideoFormat();
             if(ObjectUtil.isNull(videoFormats)){
-                return BaseResult.failed("主视频格式列表 不能为空");
+                return BaseResult.failed("主视频格式不能为空");
             }
         }
         RestTemplate template = remoteRestTemplate.getRestTemplate();
@@ -637,6 +637,12 @@ public class McuServiceImpl implements McuService {
     @Override
     public BaseResult<ConfTemplateVo> confTemplates(ConfTemplateDTO dto) {
         log.info("mcu创建/删除会议模板:{}", dto);
+        if(!ObjectUtil.isNull(dto.getTemplateInfo())){
+            VideoFormat videoFormats = dto.getTemplateInfo().getVideoFormat();
+            if(ObjectUtil.isNull(videoFormats)){
+                return BaseResult.failed("主视频格式不能为空");
+            }
+        }
         UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
         responseUtil.handleMp(entity);
         McuBasicParam param = tool.getParam(entity);

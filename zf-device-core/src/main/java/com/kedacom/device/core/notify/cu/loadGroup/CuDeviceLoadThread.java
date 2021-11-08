@@ -1,8 +1,11 @@
 package com.kedacom.device.core.notify.cu.loadGroup;
 
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
+import com.kedacom.device.core.service.CuService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 
@@ -14,6 +17,9 @@ import java.util.*;
 @Slf4j
 @Component
 public class CuDeviceLoadThread {
+
+	@Autowired
+	private CuService cuService;
 	
 	/**
 	 * 会话标识
@@ -40,8 +46,25 @@ public class CuDeviceLoadThread {
 
 	private CuDeviceCache cuDeviceCache;
 
-	public CuDeviceLoadThread(CuClient client){
-		this.client = client;
+	/**
+	 * 设置全局唯一的监控平台客户端
+	 * @param client
+	 */
+	public void setCuClient(CuClient client){
+		if(ObjectUtils.isEmpty(client)){
+			this.client=client;
+		}
+	}
+
+	/**
+	 * 返回全局唯一的监控平台客户端
+	 */
+	public CuClient getCuClient(){
+		if(!ObjectUtils.isEmpty(client)){
+			return this.client;
+		}else {
+			return null;
+		}
 	}
 
 	/**
@@ -300,7 +323,7 @@ public class CuDeviceLoadThread {
 	 * 收到通知：分组
 	 * @param notify
 	 */
-	private void onDeviceGroupNotify(GetGroupNotify notify){
+	public void onDeviceGroupNotify(GetGroupNotify notify){
 		
 		int ssid = notify.getSsid();
 		Integer isEnd = notify.getIsEnd();
@@ -321,7 +344,7 @@ public class CuDeviceLoadThread {
 	 * 收到通知：设备
 	 * @param notify
 	 */
-	private void onDeviceNotify(GetDeviceNotify notify){
+	public void onDeviceNotify(GetDeviceNotify notify){
 		int ssid = notify.getSsid();
 		Integer isSend = notify.getIsEnd();
 		List<PDevice> devices = notify.getDeviceList();

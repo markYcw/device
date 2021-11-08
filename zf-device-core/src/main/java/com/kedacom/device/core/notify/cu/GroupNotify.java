@@ -1,6 +1,10 @@
 package com.kedacom.device.core.notify.cu;
 
+import com.alibaba.fastjson.JSON;
+import com.kedacom.device.core.notify.cu.loadGroup.CuDeviceLoadThread;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.GetGroupNotify;
 import com.kedacom.device.core.notify.stragegy.INotify;
+import com.kedacom.device.core.utils.ContextUtils;
 
 /**
  * @author ycw
@@ -9,8 +13,11 @@ import com.kedacom.device.core.notify.stragegy.INotify;
  * @description
  */
 public class GroupNotify extends INotify {
+
     @Override
     protected void consumeMessage(Integer ssid, String message) {
-
+        GetGroupNotify getGroupNotify = JSON.parseObject(message, GetGroupNotify.class);
+        CuDeviceLoadThread cuDeviceLoadThread = ContextUtils.getBean(CuDeviceLoadThread.class);
+        cuDeviceLoadThread.onDeviceGroupNotify(getGroupNotify);
     }
 }

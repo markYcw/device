@@ -23,6 +23,10 @@ import com.kedacom.device.core.convert.CuConvert;
 import com.kedacom.device.core.basicParam.SvrBasicParam;
 import com.kedacom.device.core.exception.CuException;
 import com.kedacom.device.core.mapper.CuMapper;
+import com.kedacom.device.core.notify.cu.loadGroup.CuClient;
+import com.kedacom.device.core.notify.cu.loadGroup.CuDeviceLoadThread;
+import com.kedacom.device.core.notify.cu.loadGroup.CuSession;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.CuSessionStatus;
 import com.kedacom.device.core.notify.stragegy.DeviceType;
 import com.kedacom.device.core.notify.stragegy.NotifyHandler;
 import com.kedacom.device.core.service.CuService;
@@ -83,6 +87,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Value("${zf.cuNtyUrl.server_addr:127.0.0.1:9000}")
     private String cuNtyUrl;
+
+    @Autowired
+    private CuDeviceLoadThread cuDeviceLoadThread;
 
     private final static String REQUEST_HEAD = "http://";
 
@@ -151,8 +158,24 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_LOGIN_FAILED, response);
         entity.setSsid(response.getSsid());
         entity.setModifyTime(new Date());
+        //登录成功以后加载分组信息
+        setCuClient(response.getSsid());
+
         cuMapper.updateById(entity);
         return BaseResult.succeed("登录监控平台成功");
+    }
+
+    /**
+     * 设置监控平台会话，用于保存cu底下的分组设备以及记录登录信息等
+     * @param ssid
+     */
+    private void setCuClient(Integer ssid){
+        CuClient cuClient = new CuClient();
+        CuSession cuSession = new CuSession();
+        cuSession.setSsid(ssid);
+        cuSession.setStatus(CuSessionStatus.CONNECTED);
+        cuClient.getSessionManager().putSession(cuSession);
+        cuDeviceLoadThread.setCuClient(cuClient);
     }
 
     @Override

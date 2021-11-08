@@ -17,6 +17,7 @@ public class CuNotifyFactory {
     public void init(){
         NotifyFactory factory = ContextUtils.getBean(NotifyFactory.class);
         factory.register(DeviceType.CU2.getValue(), 1,new OffLineNotify());
+        factory.register(DeviceType.CU2.getValue(), 500,new GroupNotify());
     }
 
 }

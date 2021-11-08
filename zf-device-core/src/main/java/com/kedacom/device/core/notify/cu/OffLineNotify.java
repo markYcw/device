@@ -6,6 +6,7 @@ import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.device.core.entity.KmListenerEntity;
 import com.kedacom.device.core.mapper.CuMapper;
+import com.kedacom.device.core.notify.cu.loadGroup.CuDeviceLoadThread;
 import com.kedacom.device.core.notify.stragegy.INotify;
 import com.kedacom.device.core.service.RegisterListenerService;
 import com.kedacom.device.core.utils.ContextUtils;
@@ -30,6 +31,7 @@ public class OffLineNotify extends INotify {
     @Override
     public void consumeMessage(Integer ssid, String message) {
         CuMapper cuMapper = ContextUtils.getBean(CuMapper.class);
+        CuDeviceLoadThread cuDeviceLoadThread = ContextUtils.getBean(CuDeviceLoadThread.class);
         RegisterListenerService listenerService = ContextUtils.getBean(RegisterListenerService.class);
         DeviceNotifyUtils notifyUtils = ContextUtils.getBean(DeviceNotifyUtils.class);
         LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
@@ -38,6 +40,8 @@ public class OffLineNotify extends INotify {
         //收到掉线通知后将ssid清除
         cuEntity.setSsid(null);
         cuMapper.updateById(cuEntity);
+        //去除会话信息
+        cuDeviceLoadThread.getCuClient().getSessionManager().removeSession(ssid);
         //将通知发给业务
         DeviceNotifyRequestDTO notifyRequestDTO = new DeviceNotifyRequestDTO();
         notifyRequestDTO.setDbId(cuEntity.getId().longValue());

@@ -244,5 +244,9 @@ public interface StreamMediaApi {
     @PostMapping("/getBurnState")
     BaseResult<GetBurnStateVO> getBurnState(@RequestBody GetBurnStateDTO getBurnStateDTO);
 
+    @ApiOperation("获取当前语音激励状态 目前只支持SVR2931型号")
+    @PostMapping("/getSvrAudioActState")
+    BaseResult<GetSvrAudioActStateVo> getSvrAudioActState(@RequestBody GetSvrAudioActStateDTO dto);
+
 
 }

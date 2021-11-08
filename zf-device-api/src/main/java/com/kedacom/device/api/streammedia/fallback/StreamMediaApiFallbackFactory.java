@@ -148,6 +148,11 @@ public class StreamMediaApiFallbackFactory implements FallbackFactory<StreamMedi
             public BaseResult<GetBurnStateVO> getBurnState(GetBurnStateDTO getBurnStateDTO) {
                 return BaseResult.failed("服务出错，请稍后重试");
             }
+
+            @Override
+            public BaseResult<GetSvrAudioActStateVo> getSvrAudioActState(GetSvrAudioActStateDTO dto) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
         };
     }
 }

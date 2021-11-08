@@ -65,4 +65,6 @@ public interface StreamMediaService {
     GetBurnStateVO getBurnState(GetBurnStateDTO getBurnStateDTO);
 
     DeviceInfoEntity getBySsid(Integer ssid);
+
+    GetSvrAudioActStateVo getSvrAudioActState(GetSvrAudioActStateDTO dto);
 }

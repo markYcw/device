@@ -115,7 +115,6 @@ public class CuSession {
 	/**
 	 * 
 	 * @deprecated 仅仅监控平台1.0支持此属性，而目前为止中间件暂时不支持监控平台1.0
-	 * @param cmuno
 	 */
 	public String getUserno() {
 		return userno;
@@ -123,7 +122,6 @@ public class CuSession {
 	/**
 	 * 
 	 * @deprecated 仅仅监控平台1.0支持此属性，而目前为止中间件暂时不支持监控平台1.0
-	 * @param cmuno
 	 */
 	public void setUserno(String userno) {
 		this.userno = userno;
@@ -131,7 +129,6 @@ public class CuSession {
 	/**
 	 * 
 	 * @deprecated 仅仅监控平台1.0支持此属性，而目前为止中间件暂时不支持监控平台1.0
-	 * @param cmuno
 	 */
 	public String getCmuno() {
 		return cmuno;
@@ -147,7 +144,6 @@ public class CuSession {
 	/**
 	 * 
 	 * @deprecated 仅仅监控平台1.0支持此属性，而目前为止中间件暂时不支持监控平台1.0
-	 * @param cmuno
 	 */
 	public String getNatIp() {
 		return natIp;
@@ -155,7 +151,6 @@ public class CuSession {
 	/**
 	 * 
 	 * @deprecated 仅仅监控平台1.0支持此属性，而目前为止中间件暂时不支持监控平台1.0
-	 * @param cmuno
 	 */
 	public void setNatIp(String natIp) {
 		this.natIp = natIp;
@@ -163,7 +158,6 @@ public class CuSession {
 	/**
 	 * 
 	 * @deprecated 仅仅监控平台1.0支持此属性，而目前为止中间件暂时不支持监控平台1.0
-	 * @param cmuno
 	 */
 	public int getNatPort() {
 		return natPort;
@@ -171,7 +165,6 @@ public class CuSession {
 	/**
 	 * 
 	 * @deprecated 仅仅监控平台1.0支持此属性，而目前为止中间件暂时不支持监控平台1.0
-	 * @param cmuno
 	 */
 	public void setNatPort(int natPort) {
 		this.natPort = natPort;

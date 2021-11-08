@@ -17,6 +17,6 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class GetSvrAudioActStateResponse extends BaseResponse {
 
-    @ApiModelProperty("通道号，目前一般为0，合成通道")
-    private Integer ChnId;
+    @ApiModelProperty("激励开关，0-关，1-开")
+    private Integer ActCfg;
 }

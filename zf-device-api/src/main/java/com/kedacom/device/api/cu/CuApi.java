@@ -55,31 +55,31 @@ public interface CuApi {
 
     @PostMapping("/loginById")
     @ApiOperation(value = "根据ID登录cu")
-    public BaseResult<String> loginById(@Valid @RequestBody CuRequestDto dto);
+    public BaseResult<String> loginById(@RequestBody CuRequestDto dto);
 
     @ApiOperation("登出cu")
     @PostMapping("/logoutById")
-    public BaseResult<String> logoutById(@Valid @RequestBody CuRequestDto dto);
+    public BaseResult<String> logoutById(@RequestBody CuRequestDto dto);
 
     @ApiOperation("获取平台域信息")
     @PostMapping("/localDomain")
-    public BaseResult<LocalDomainVo> localDomain(@Valid @RequestBody CuRequestDto dto);
+    public BaseResult<LocalDomainVo> localDomain(@RequestBody CuRequestDto dto);
 
     @ApiOperation("获取域链表")
     @PostMapping("/domains")
-    public BaseResult<DomainsVo> domains(@Valid @RequestBody CuRequestDto dto);
+    public BaseResult<DomainsVo> domains(@RequestBody CuRequestDto dto);
 
     @ApiOperation("获取平台时间")
     @PostMapping("/time")
-    public BaseResult<TimeVo> time(@Valid @RequestBody CuRequestDto dto);
+    public BaseResult<TimeVo> time(@RequestBody CuRequestDto dto);
 
     @ApiOperation("获取多视图设备树")
     @PostMapping("/viewTrees")
-    public BaseResult<ViewTreesVo> viewTrees(@Valid @RequestBody CuRequestDto dto);
+    public BaseResult<ViewTreesVo> viewTrees(@RequestBody CuRequestDto dto);
 
     @ApiOperation("选择当前操作的设备树")
     @PostMapping("/selectTree")
-    public BaseResult<String> selectTree(@Valid @RequestBody SelectTreeDto dto);
+    public BaseResult<String> selectTree(@RequestBody SelectTreeDto dto);
 
 
 

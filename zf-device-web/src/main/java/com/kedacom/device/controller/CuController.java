@@ -3,10 +3,7 @@ package com.kedacom.device.controller;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.common.constants.DevTypeConstant;
-import com.kedacom.cu.dto.CuPageQueryDTO;
-import com.kedacom.cu.dto.CuRequestDto;
-import com.kedacom.cu.dto.DevGroupsDto;
-import com.kedacom.cu.dto.SelectTreeDto;
+import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.pojo.Domains;
 import com.kedacom.cu.vo.DomainsVo;
@@ -109,7 +106,7 @@ public class CuController {
 
     @PostMapping("/loginById")
     @ApiOperation(value = "根据ID登录cu")
-    public BaseResult<String> loginById(@Valid @RequestBody CuRequestDto dto) {
+    public BaseResult<String> loginById(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
 
         return cuService.loginById(dto);
     }
@@ -124,51 +121,58 @@ public class CuController {
 
     @ApiOperation("登出cu")
     @PostMapping("/logoutById")
-    public BaseResult<String> logoutById(@Valid @RequestBody CuRequestDto dto) {
+    public BaseResult<String> logoutById(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
 
         return cuService.logoutById(dto);
     }
 
     @ApiOperation("获取平台域信息")
     @PostMapping("/localDomain")
-    public BaseResult<LocalDomainVo> localDomain(@Valid @RequestBody CuRequestDto dto) {
+    public BaseResult<LocalDomainVo> localDomain(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
 
         return cuService.localDomain(dto);
     }
 
     @ApiOperation("获取域链表")
     @PostMapping("/domains")
-    public BaseResult<DomainsVo> domains(@Valid @RequestBody CuRequestDto dto) {
+    public BaseResult<DomainsVo> domains(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
 
         return cuService.domains(dto);
     }
 
     @ApiOperation("获取平台时间")
     @PostMapping("/time")
-    public BaseResult<TimeVo> time(@Valid @RequestBody CuRequestDto dto) {
+    public BaseResult<TimeVo> time(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
 
         return cuService.time(dto);
     }
 
     @ApiOperation("获取多视图设备树")
     @PostMapping("/viewTrees")
-    public BaseResult<ViewTreesVo> viewTrees(@Valid @RequestBody CuRequestDto dto) {
+    public BaseResult<ViewTreesVo> viewTrees(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
 
         return cuService.viewTrees(dto);
     }
 
     @ApiOperation("选择当前操作的设备树")
     @PostMapping("/selectTree")
-    public BaseResult<String> selectTree(@Valid @RequestBody SelectTreeDto dto) {
+    public BaseResult<String> selectTree(@Valid @RequestBody SelectTreeDto dto, BindingResult br) {
 
         return cuService.selectTree(dto);
     }
 
     @ApiOperation("获取设备组信息")
     @PostMapping("/devGroups")
-    public BaseResult<String> devGroups(@Valid @RequestBody DevGroupsDto dto) {
+    public BaseResult<String> devGroups(@Valid @RequestBody DevGroupsDto dto, BindingResult br) {
 
         return cuService.devGroups(dto);
+    }
+
+    @ApiOperation("获取设备信息")
+    @PostMapping("/devices")
+    public BaseResult<String> devices(@Valid @RequestBody DevicesDto dto, BindingResult br) {
+
+        return cuService.devices(dto);
     }
 
 

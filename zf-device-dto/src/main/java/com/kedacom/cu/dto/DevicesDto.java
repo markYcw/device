@@ -1,9 +1,11 @@
 package com.kedacom.cu.dto;
 
+import com.kedacom.cu.pojo.Subscribe;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -14,9 +16,14 @@ import javax.validation.constraints.NotBlank;
  */
 @ToString(callSuper = true)
 @Data
-public class DevGroupsDto extends CuRequestDto {
+public class DevicesDto extends CuRequestDto {
 
     @ApiModelProperty("设备组id")
+    @NotBlank(message = "设备组id不能为空")
     private String groupId;
+
+    @ApiModelProperty("订阅信息，不需要立刻订阅可不填")
+    @Valid
+    private Subscribe subscribe;
 
 }

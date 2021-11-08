@@ -8,10 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.cu.dto.CuPageQueryDTO;
-import com.kedacom.cu.dto.CuRequestDto;
-import com.kedacom.cu.dto.DevGroupsDto;
-import com.kedacom.cu.dto.SelectTreeDto;
+import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.DomainsVo;
 import com.kedacom.cu.vo.LocalDomainVo;
@@ -159,7 +156,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         entity.setSsid(response.getSsid());
         entity.setModifyTime(new Date());
         //登录成功以后加载分组信息
-        setCuClient(response.getSsid());
+        getGroups(response.getSsid());
 
         cuMapper.updateById(entity);
         return BaseResult.succeed("登录监控平台成功");
@@ -169,13 +166,16 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      * 设置监控平台会话，用于保存cu底下的分组设备以及记录登录信息等
      * @param ssid
      */
-    private void setCuClient(Integer ssid){
+    private void getGroups(Integer ssid){
         CuClient cuClient = new CuClient();
         CuSession cuSession = new CuSession();
         cuSession.setSsid(ssid);
         cuSession.setStatus(CuSessionStatus.CONNECTED);
         cuClient.getSessionManager().putSession(cuSession);
         cuDeviceLoadThread.setCuClient(cuClient);
+        //开始加载分组
+        DevGroupsDto devGroupsDto = new DevGroupsDto();
+        this.devGroups(devGroupsDto);
     }
 
     @Override
@@ -287,6 +287,20 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         String errorMsg = "获取设备组信息失败:{},{},{}";
         responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_DEV_GROUPS_FAILED,response);
         return BaseResult.succeed("获取设备组信息成功");
+    }
+
+    @Override
+    public BaseResult<String> devices(DevicesDto dto) {
+        log.info("获取设备信息接口入参{}",dto.getDbId());
+        CuEntity entity = cuMapper.selectById(dto.getDbId());
+        check(entity);
+        CuBasicParam param = tool.getParam(entity);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/devices/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        log.info("获取设备信息中间件响应{}",s);
+        CuResponse response = JSONObject.parseObject(s, CuResponse.class);
+        String errorMsg = "获取设备信息失败:{},{},{}";
+        responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_DEVICES_FAILED,response);
+        return BaseResult.succeed("获取设备信息成功");
     }
 
     /**

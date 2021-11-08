@@ -3,10 +3,7 @@ package com.kedacom.device.core.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.cu.dto.CuPageQueryDTO;
-import com.kedacom.cu.dto.CuRequestDto;
-import com.kedacom.cu.dto.DevGroupsDto;
-import com.kedacom.cu.dto.SelectTreeDto;
+import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.DomainsVo;
 import com.kedacom.cu.vo.LocalDomainVo;
@@ -53,4 +50,6 @@ public interface CuService extends IService<CuEntity> {
     BaseResult<String> selectTree(SelectTreeDto dto);
 
     BaseResult<String> devGroups(DevGroupsDto dto);
+
+    BaseResult<String> devices(DevicesDto dto);
 }

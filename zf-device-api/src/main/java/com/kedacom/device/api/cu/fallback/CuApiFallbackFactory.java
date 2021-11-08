@@ -56,32 +56,32 @@ public class CuApiFallbackFactory implements FallbackFactory<CuApi> {
             }
 
             @Override
-            public BaseResult<String> logoutById(@Valid CuRequestDto dto) {
+            public BaseResult<String> logoutById(CuRequestDto dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<LocalDomainVo> localDomain(@Valid CuRequestDto dto) {
+            public BaseResult<LocalDomainVo> localDomain(CuRequestDto dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<DomainsVo> domains(@Valid CuRequestDto dto) {
+            public BaseResult<DomainsVo> domains(CuRequestDto dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<TimeVo> time(@Valid CuRequestDto dto) {
+            public BaseResult<TimeVo> time(CuRequestDto dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<ViewTreesVo> viewTrees(@Valid CuRequestDto dto) {
+            public BaseResult<ViewTreesVo> viewTrees(CuRequestDto dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<String> selectTree(@Valid SelectTreeDto dto) {
+            public BaseResult<String> selectTree(SelectTreeDto dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
         };

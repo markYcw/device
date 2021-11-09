@@ -9,6 +9,7 @@ import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.notify.cu.loadGroup.CuDeviceLoadThread;
 import com.kedacom.device.core.notify.stragegy.INotify;
 import com.kedacom.device.core.service.RegisterListenerService;
+import com.kedacom.device.core.service.impl.CuServiceImpl;
 import com.kedacom.device.core.utils.ContextUtils;
 import com.kedacom.device.core.utils.DeviceNotifyUtils;
 import com.kedacom.deviceListener.msgType.MsgType;
@@ -40,6 +41,8 @@ public class OffLineNotify extends INotify {
         //收到掉线通知后将ssid清除
         cuEntity.setSsid(null);
         cuMapper.updateById(cuEntity);
+        //除去cu状态池中已登录状态
+        CuServiceImpl.cuStatusPoll.remove(cuEntity.getId());
         //去除会话信息
         cuDeviceLoadThread.getCuClient().getSessionManager().removeSession(ssid);
         //将通知发给业务

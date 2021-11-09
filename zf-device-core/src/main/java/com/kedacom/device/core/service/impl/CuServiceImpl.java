@@ -1,5 +1,6 @@
 package com.kedacom.device.core.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -8,16 +9,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
+import com.kedacom.common.constants.DevTypeConstant;
+import com.kedacom.common.model.Result;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
-import com.kedacom.cu.vo.DomainsVo;
-import com.kedacom.cu.vo.LocalDomainVo;
-import com.kedacom.cu.vo.TimeVo;
-import com.kedacom.cu.vo.ViewTreesVo;
+import com.kedacom.cu.vo.*;
 import com.kedacom.device.core.basicParam.CuBasicParam;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.CuConvert;
-import com.kedacom.device.core.basicParam.SvrBasicParam;
 import com.kedacom.device.core.exception.CuException;
 import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.notify.cu.loadGroup.CuClient;
@@ -31,16 +30,12 @@ import com.kedacom.device.core.utils.*;
 import com.kedacom.device.cu.CuResponse;
 import com.kedacom.device.cu.request.CuLoginRequest;
 import com.kedacom.device.cu.response.CuLoginResponse;
-import com.kedacom.device.svr.SvrResponse;
-import com.kedacom.device.svr.response.*;
-import com.kedacom.svr.dto.*;
-import com.kedacom.svr.entity.SvrEntity;
-import com.kedacom.svr.vo.*;
+import com.kedacom.exception.KMException;
+import com.kedacom.mp.mcu.McuRequestDTO;
 import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -48,10 +43,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -91,13 +84,15 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     private final static String REQUEST_HEAD = "http://";
 
     private final static String NOTIFY_URL = "/api/api-device/ums/cu/cuNotify";
+    //cu状态池 若成功登录则把数据库ID和登录状态放入此池中1为已登录，若登出则从此状态池中移除
+    public static ConcurrentHashMap<Integer,Integer> cuStatusPoll = new ConcurrentHashMap<>();
 
     @Override
-    public BaseResult<BasePage<CuEntity>> pageQuery(CuPageQueryDTO queryDTO) {
+    public BaseResult<BasePage<DevEntityVo>> pageQuery(DevEntityQuery queryDTO) {
         Page<CuEntity> page = new Page<>();
         page.setCurrent(queryDTO.getCurPage());
         page.setSize(queryDTO.getPageSize());
-
+        //条件查询
         LambdaQueryWrapper<CuEntity> queryWrapper = new LambdaQueryWrapper<>();
         if(!StringUtils.isEmpty(queryDTO.getIp())){
             queryWrapper.like(CuEntity::getIp,queryDTO.getIp());
@@ -108,14 +103,117 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
         Page<CuEntity> platformEntityPage = cuMapper.selectPage(page, queryWrapper);
         List<CuEntity> records = platformEntityPage.getRecords();
-
-        BasePage<CuEntity> basePage = new BasePage<>();
+        //查询监控平台连接状态
+        List<CuEntity> cuEntities = queryCuStatus(records);
+        //转化为DevEntityVo
+        List<DevEntityVo> vos = cuEntities.stream().map(cuEntity -> convert.convertToDevEntityVo(cuEntity)).collect(Collectors.toList());
+        BasePage<DevEntityVo> basePage = new BasePage<>();
         basePage.setTotal(platformEntityPage.getTotal());
         basePage.setTotalPage(platformEntityPage.getPages());
         basePage.setCurPage(queryDTO.getCurPage());
         basePage.setPageSize(queryDTO.getPageSize());
-        basePage.setData(records);
+        basePage.setData(vos);
         return BaseResult.succeed(basePage);
+    }
+
+    @Override
+    public BaseResult<DevEntityVo> info(Integer kmId) {
+        CuEntity cuEntity = cuMapper.selectById(kmId);
+        DevEntityVo vo = convert.convertToDevEntityVo(cuEntity);
+        return BaseResult.succeed("查询成功",vo);
+    }
+
+    @Override
+    public BaseResult<DevEntityVo> saveDev(DevEntityVo devEntityVo) {
+        synchronized (this){
+            CuEntity cuEntity = convert.convertToCuEntity(devEntityVo);
+            if(!isRepeat(cuEntity)){
+                throw new CuException(DeviceErrorEnum.IP_OR_NAME_REPEAT);
+            }
+            cuEntity.setType(DevTypeConstant.updateRecordKey);
+            cuMapper.insert(cuEntity);
+            DevEntityVo vo = convert.convertToDevEntityVo(cuEntity);
+            return BaseResult.succeed("保存成功",vo);
+        }
+    }
+
+    @Override
+    public BaseResult<DevEntityVo> updateDev(DevEntityVo devEntityVo) {
+        synchronized (this){
+            CuEntity cuEntity = convert.convertToCuEntity(devEntityVo);
+            if(!isRepeat(cuEntity)){
+                throw new CuException(DeviceErrorEnum.IP_OR_NAME_REPEAT);
+            }
+            cuMapper.updateById(cuEntity);
+            DevEntityVo vo = convert.convertToDevEntityVo(cuEntity);
+            return BaseResult.succeed("修改成功",vo);
+        }
+    }
+
+    @Override
+    public BaseResult<String> deleteDev(List<Integer> ids) {
+        cuMapper.deleteBatchIds(ids);
+        return BaseResult.succeed("删除成功");
+    }
+
+    /**
+     * 对名称和IP做唯一校验
+     * @return
+     */
+    public boolean isRepeat(CuEntity devEntity) {
+        Integer id = devEntity.getId();
+        String ip = devEntity.getIp();
+        String name = devEntity.getName();
+        LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
+        if (id == null) {
+            wrapper.eq(CuEntity::getIp, ip).or().eq(CuEntity::getName,name);
+            List<CuEntity> devEntitiesInsert = cuMapper.selectList(wrapper);
+            if (CollectionUtil.isNotEmpty(devEntitiesInsert)) {
+                log.info("=============添加监控平台时IP或名称重复===============");
+                return false;
+            }
+        } else {
+            wrapper.eq(CuEntity::getIp, ip).ne(CuEntity::getId,id);
+            List<CuEntity> devEntitiesUpdate = cuMapper.selectList(wrapper);
+            LambdaQueryWrapper<CuEntity> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(CuEntity::getName,name).ne(CuEntity::getId,id);
+            List<CuEntity> devEntities = cuMapper.selectList(queryWrapper);
+            if (CollectionUtil.isNotEmpty(devEntitiesUpdate)||CollectionUtil.isNotEmpty(devEntities)) {
+                log.info("==================修改监控平台时IP或名称重复========================");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 查询监控平台连接状态
+     * @param records 监控平台列表
+     * @return
+     */
+    private List<CuEntity> queryCuStatus(List<CuEntity> records){
+        Iterator<CuEntity> iterator = records.iterator();
+        while (iterator.hasNext()){
+            CuEntity cuEntity = iterator.next();
+            if(cuStatusPoll.get(cuEntity.getId())==null){
+                //如果未登录则直接设置MCU状态为离线
+                cuEntity.setStatus(DevTypeConstant.getZero);
+            }else {
+                //如果已登录则给设备发送心跳，成功则设置为在线否则为离线
+                try {
+                    BaseResult<String> hb = this.hb(cuEntity.getId());
+                    cuEntity.setStatus(DevTypeConstant.updateRecordKey);
+                } catch (Exception e) {
+                    log.error("==============分页查询cu，发送心跳时候发生错误{}",e);
+                    //如果离线就从状态池把改cu的ID删掉并把状态设为离线
+                    McuServiceImpl.mcuStatusPoll.remove(cuEntity.getId());
+                    cuEntity.setStatus(DevTypeConstant.getZero);
+                    continue;
+                }
+            }
+        }
+        return records;
     }
 
     @Override
@@ -155,18 +253,21 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_LOGIN_FAILED, response);
         entity.setSsid(response.getSsid());
         entity.setModifyTime(new Date());
-        //登录成功以后加载分组信息
-        getGroups(response.getSsid());
-
         cuMapper.updateById(entity);
+
+        //登录成功以后加载分组信息
+        getGroups(dto.getDbId(),response.getSsid());
+        //往cu状态池放入当前mcu状态 1已登录
+        cuStatusPoll.put(dto.getDbId(), DevTypeConstant.updateRecordKey);
         return BaseResult.succeed("登录监控平台成功");
     }
 
     /**
      * 设置监控平台会话，用于保存cu底下的分组设备以及记录登录信息等
      * @param ssid
+     * @param dbId 数据库ID
      */
-    private void getGroups(Integer ssid){
+    private void getGroups(Integer dbId,Integer ssid){
         CuClient cuClient = new CuClient();
         CuSession cuSession = new CuSession();
         cuSession.setSsid(ssid);
@@ -175,6 +276,8 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         cuDeviceLoadThread.setCuClient(cuClient);
         //开始加载分组
         DevGroupsDto devGroupsDto = new DevGroupsDto();
+        devGroupsDto.setDbId(dbId);
+        devGroupsDto.setGroupId("");
         this.devGroups(devGroupsDto);
     }
 
@@ -193,6 +296,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 .set(CuEntity::getModifyTime,new Date())
                 .eq(CuEntity::getId,dto.getDbId());
         cuMapper.update(null,wrapper);
+
+        //往cu状态池移除当前mcu的id
+        cuStatusPoll.remove(dto.getDbId());
         return BaseResult.succeed("登出cu成功");
     }
 
@@ -243,7 +349,16 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Override
     public BaseResult<String> hb(Integer dbId) {
-        return null;
+        log.info("cu发送心跳接口入参{}",dbId);
+        CuEntity entity = cuMapper.selectById(dbId);
+        check(entity);
+        CuBasicParam param = tool.getParam(entity);
+        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/mplat/hb/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
+        log.info("发送心跳中间件响应{}",exchange.getBody());
+        CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);
+        String errorMsg = "发送心跳失败:{},{},{}";
+        responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_HEART_FAILED,response);
+        return BaseResult.succeed("发送心跳成功");
     }
 
     @Override
@@ -281,7 +396,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         CuEntity entity = cuMapper.selectById(dto.getDbId());
         check(entity);
         CuBasicParam param = tool.getParam(entity);
-        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/devgroups/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/devicegroups/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         log.info("获取设备组信息中间件响应{}",s);
         CuResponse response = JSONObject.parseObject(s, CuResponse.class);
         String errorMsg = "获取设备组信息失败:{},{},{}";

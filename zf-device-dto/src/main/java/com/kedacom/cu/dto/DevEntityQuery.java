@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel(description =  "cu信息分页查询")
-public class CuPageQueryDTO extends BasePage implements Serializable {
+public class DevEntityQuery extends BasePage implements Serializable {
 
     @ApiModelProperty("ip")
     private String ip;

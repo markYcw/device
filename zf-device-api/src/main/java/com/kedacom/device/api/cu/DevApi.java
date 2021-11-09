@@ -3,16 +3,12 @@ package com.kedacom.device.api.cu;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.cu.dto.CuPageQueryDTO;
+import com.kedacom.cu.dto.DevEntityQuery;
 import com.kedacom.cu.dto.CuRequestDto;
 import com.kedacom.cu.dto.SelectTreeDto;
 import com.kedacom.cu.entity.CuEntity;
-import com.kedacom.cu.vo.DomainsVo;
-import com.kedacom.cu.vo.LocalDomainVo;
-import com.kedacom.cu.vo.TimeVo;
-import com.kedacom.cu.vo.ViewTreesVo;
+import com.kedacom.cu.vo.*;
 import com.kedacom.device.api.cu.fallback.CuApiFallbackFactory;
-import com.kedacom.device.api.svr.fallback.SvrApiFallbackFactory;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -21,33 +17,33 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.validation.Valid;
-
 
 /**
  * svr相关操作
  * @author ycw
  * @date 2021/09/07 14:55
  */
-@FeignClient(name = "device-server", contextId = "svrApi", path = "/api-device/ums/cu",fallbackFactory = CuApiFallbackFactory.class)
-public interface CuApi {
+@FeignClient(name = "device-server", contextId = "cuApi", path = "/api-device/ums/cu",fallbackFactory = CuApiFallbackFactory.class)
+public interface DevApi {
 
-    @PostMapping("/pageQuery")
+
+    @PostMapping("/list")
     @ApiOperation(value = "cu分页查询")
-    public BaseResult<BasePage<CuEntity>> pageQuery(@RequestBody CuPageQueryDTO queryDTO);
+    public BaseResult<BasePage<DevEntityVo>> list(@RequestBody DevEntityQuery queryDTO);
 
     @PostMapping("/info")
-    @ApiOperation(value = "根据id获取cu信息")
-    @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
-    public BaseResult<CuEntity> info(@RequestParam Integer dbId);
+    @ApiOperation(value = "根据数据库id获取cu信息")
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
+    public BaseResult<DevEntityVo> info(@RequestParam("kmId") Integer kmId);
 
-    @PostMapping("/save")
+
+    @PostMapping("/saveDevFeign")
     @ApiOperation(value = "新增cu")
-    public BaseResult<CuEntity> save(@RequestBody CuEntity entity);
+    public BaseResult<DevEntityVo> saveDevFeign(@RequestBody DevEntityVo devEntityVo);
 
-    @PostMapping("/update")
-    @ApiOperation(value = "修改cu")
-    public BaseResult<CuEntity> update(@RequestBody CuEntity entity);
+    @ApiOperation("修改监控平台信息")
+    @PostMapping("/updateDev")
+    public BaseResult<DevEntityVo> updateDev(@RequestBody DevEntityVo devEntityVo);
 
     @PostMapping("/delete")
     @ApiOperation(value = "删除cu")

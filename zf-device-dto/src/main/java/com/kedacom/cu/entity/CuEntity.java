@@ -60,6 +60,11 @@ public class CuEntity {
 	@ApiModelProperty(value = "cu型号类型")
 	private String modelType;
 
+	//实体与表字段忽略映射
+	@TableField(exist = false)
+	@ApiModelProperty("在线状态 0：离线 1：在线")
+	private Integer status;
+
 	/**
 	 * 创建时间
 	 */

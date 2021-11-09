@@ -155,6 +155,7 @@ public enum DeviceErrorEnum {
     CU_SELECT_TREE_FAILED(6007, "选择当前操作的设备树失败"),
     CU_DEV_GROUPS_FAILED(6008, "获取设备组信息失败"),
     CU_DEVICES_FAILED(6009, "获取设备信息失败"),
+    CU_HEART_FAILED(6010, "cu发送心跳失败"),
 
 
     SCHEDULE_ADD_DEVICE_FAILED(9001, "添加调度组成员设备失败"),

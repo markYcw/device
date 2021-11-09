@@ -3,16 +3,10 @@ package com.kedacom.device.core.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
+import com.kedacom.common.model.Result;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
-import com.kedacom.cu.vo.DomainsVo;
-import com.kedacom.cu.vo.LocalDomainVo;
-import com.kedacom.cu.vo.TimeVo;
-import com.kedacom.cu.vo.ViewTreesVo;
-import com.kedacom.svr.dto.*;
-import com.kedacom.svr.entity.SvrEntity;
-import com.kedacom.svr.pojo.SvrPageQueryDTO;
-import com.kedacom.svr.vo.*;
+import com.kedacom.cu.vo.*;
 
 import java.util.List;
 
@@ -25,7 +19,7 @@ import java.util.List;
  */
 public interface CuService extends IService<CuEntity> {
 
-    BaseResult<BasePage<CuEntity>> pageQuery(CuPageQueryDTO queryDTO);
+    BaseResult<BasePage<DevEntityVo>> pageQuery(DevEntityQuery queryDTO);
 
     void cuNotify(String notify);
 
@@ -52,4 +46,12 @@ public interface CuService extends IService<CuEntity> {
     BaseResult<String> devGroups(DevGroupsDto dto);
 
     BaseResult<String> devices(DevicesDto dto);
+
+    BaseResult<DevEntityVo> info(Integer kmId);
+
+    BaseResult<DevEntityVo> saveDev(DevEntityVo devEntityVo);
+
+    BaseResult<DevEntityVo> updateDev(DevEntityVo devEntityVo);
+
+    BaseResult<String> deleteDev(List<Integer> ids);
 }

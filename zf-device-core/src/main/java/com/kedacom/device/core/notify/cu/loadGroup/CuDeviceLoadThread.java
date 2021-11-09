@@ -1,5 +1,6 @@
 package com.kedacom.device.core.notify.cu.loadGroup;
 
+import com.kedacom.cu.dto.DevicesDto;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 import com.kedacom.device.core.service.CuService;
 import lombok.extern.slf4j.Slf4j;
@@ -264,8 +265,9 @@ public class CuDeviceLoadThread {
 	 */
 	private void requestLoadDevice(int ssid, String groupId) throws Exception{
 
-		int cuId = client.getSessionManager().getCuIDBySSID(ssid);
-	//	client.getCuOperate().startLoadDevice(cuId, groupId);
+		DevicesDto devicesDto = new DevicesDto();
+		devicesDto.setGroupId(groupId);
+		cuService.devices(devicesDto);
 	}
 
 	//==========================以上是业务逻辑=============================================

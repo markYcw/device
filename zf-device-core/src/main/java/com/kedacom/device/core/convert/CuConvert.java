@@ -1,6 +1,7 @@
 package com.kedacom.device.core.convert;
 
 import com.kedacom.cu.entity.CuEntity;
+import com.kedacom.cu.vo.DevEntityVo;
 import com.kedacom.device.cu.request.CuLoginRequest;
 import com.kedacom.device.svr.pojo.DeChnList;
 import com.kedacom.device.svr.pojo.EnChnList;
@@ -19,6 +20,11 @@ import org.mapstruct.Mappings;
  */
 @Mapper(componentModel = "spring")
 public interface CuConvert {
+
     @Mappings({@Mapping(target = "user",source = "username")})
     CuLoginRequest convertToCuLoginRequest(CuEntity cuEntity);
+
+    DevEntityVo convertToDevEntityVo(CuEntity cuEntity);
+
+    CuEntity convertToCuEntity(DevEntityVo devEntityVo);
 }

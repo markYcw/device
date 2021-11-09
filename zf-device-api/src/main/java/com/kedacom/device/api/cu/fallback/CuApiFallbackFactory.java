@@ -2,18 +2,12 @@ package com.kedacom.device.api.cu.fallback;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.cu.dto.CuPageQueryDTO;
+import com.kedacom.cu.dto.DevEntityQuery;
 import com.kedacom.cu.dto.CuRequestDto;
 import com.kedacom.cu.dto.SelectTreeDto;
-import com.kedacom.cu.entity.CuEntity;
-import com.kedacom.cu.vo.DomainsVo;
-import com.kedacom.cu.vo.LocalDomainVo;
-import com.kedacom.cu.vo.TimeVo;
-import com.kedacom.cu.vo.ViewTreesVo;
-import com.kedacom.device.api.cu.CuApi;
+import com.kedacom.cu.vo.*;
+import com.kedacom.device.api.cu.DevApi;
 import feign.hystrix.FallbackFactory;
-
-import javax.validation.Valid;
 
 /**
  * @author ycw
@@ -21,27 +15,28 @@ import javax.validation.Valid;
  * @date 2021/11/1 9:39
  * @description
  */
-public class CuApiFallbackFactory implements FallbackFactory<CuApi> {
+public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
     @Override
-    public CuApi create(Throwable throwable) {
-        return new CuApi() {
+    public DevApi create(Throwable throwable) {
+        return new DevApi() {
+
             @Override
-            public BaseResult<BasePage<CuEntity>> pageQuery(CuPageQueryDTO queryDTO) {
+            public BaseResult<BasePage<DevEntityVo>> list(DevEntityQuery queryDTO) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<CuEntity> info(Integer dbId) {
+            public BaseResult<DevEntityVo> info(Integer kmId) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<CuEntity> save(CuEntity entity) {
+            public BaseResult<DevEntityVo> saveDevFeign(DevEntityVo devEntityVo) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<CuEntity> update(CuEntity entity) {
+            public BaseResult<DevEntityVo> updateDev(DevEntityVo devEntityVo) {
                 return BaseResult.failed(throwable.getMessage());
             }
 

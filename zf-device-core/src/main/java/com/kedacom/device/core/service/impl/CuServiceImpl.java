@@ -357,7 +357,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         log.info("发送心跳中间件响应{}",exchange.getBody());
         CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);
         String errorMsg = "发送心跳失败:{},{},{}";
-        responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_HEART_FAILED,response);
+        responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.DEVICE_HEART_BEAT_FAILED,response);
         return BaseResult.succeed("发送心跳成功");
     }
 

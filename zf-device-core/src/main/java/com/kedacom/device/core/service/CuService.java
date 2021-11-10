@@ -35,7 +35,7 @@ public interface CuService extends IService<CuEntity> {
     BaseResult<DomainsVo> domains(CuRequestDto dto);
 
 
-    BaseResult<TimeVo> time(CuRequestDto dto);
+    BaseResult<Long> time(Integer kmId);
 
     BaseResult<String> hb(Integer dbId);
 

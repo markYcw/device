@@ -66,7 +66,7 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
             }
 
             @Override
-            public BaseResult<TimeVo> time(CuRequestDto dto) {
+            public BaseResult<Long> getTime(Integer kmId) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
@@ -77,6 +77,11 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
 
             @Override
             public BaseResult<String> selectTree(SelectTreeDto dto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<String> hb(Integer kmId) {
                 return BaseResult.failed(throwable.getMessage());
             }
         };

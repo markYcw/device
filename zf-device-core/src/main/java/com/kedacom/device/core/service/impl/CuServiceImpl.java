@@ -333,9 +333,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     }
 
     @Override
-    public BaseResult<TimeVo> time(CuRequestDto dto) {
-        log.info("获取平台时间接口入参{}",dto.getDbId());
-        CuEntity entity = cuMapper.selectById(dto.getDbId());
+    public BaseResult<Long> time(Integer kmId) {
+        log.info("获取平台时间接口入参{}",kmId);
+        CuEntity entity = cuMapper.selectById(kmId);
         check(entity);
         CuBasicParam param = tool.getParam(entity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/time/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
@@ -344,7 +344,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         String errorMsg = "获取平台时间失败:{},{},{}";
         responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_TIME_FAILED,response);
         TimeVo vo = JSON.parseObject(exchange.getBody(), TimeVo.class);
-        return BaseResult.succeed("获取平台时间成功",vo);
+        Long cuTime = Long.valueOf(vo.getTime());
+
+        return BaseResult.succeed("获取平台时间成功",cuTime);
     }
 
     @Override

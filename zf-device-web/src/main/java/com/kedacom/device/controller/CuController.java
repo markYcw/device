@@ -2,6 +2,7 @@ package com.kedacom.device.controller;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
+import com.kedacom.common.model.Result;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.common.utils.ValidUtils;
@@ -108,10 +109,10 @@ public class CuController {
 
     @PostMapping("/hb")
     @ApiOperation(value = "发送心跳 登录CU以后必须每9分钟调用一次这个接口，否则有可能导致C++与CU的token失效，然后你再去尝试调用接口就会失败 接口调用成功会返回0")
-    @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
-    public BaseResult<String> hb(@RequestParam Integer dbId) {
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
+    public BaseResult<String> hb(@RequestParam Integer kmId) {
 
-        return cuService.hb(dbId);
+        return cuService.hb(kmId);
     }
 
     @ApiOperation("登出cu")
@@ -138,12 +139,18 @@ public class CuController {
         return cuService.domains(dto);
     }
 
+    /**
+     * 获取平台时间
+     * @param kmId 监控平台标识
+     * @return 时间
+     */
     @ApiOperation("获取平台时间")
     @PostMapping("/time")
-    public BaseResult<TimeVo> time(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
+    public BaseResult<Long> getTime(@RequestParam Integer kmId){
 
-        ValidUtils.paramValid(br);
-        return cuService.time(dto);
+        return cuService.time(kmId);
+
     }
 
     @ApiOperation("获取多视图设备树")

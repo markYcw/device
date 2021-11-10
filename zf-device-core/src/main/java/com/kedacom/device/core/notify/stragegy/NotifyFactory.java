@@ -25,10 +25,15 @@ public class NotifyFactory {
      * 注册通知
      * @param devType 设备类型
      */
-    public void register(Integer devType, HashMap<Integer, INotify> cuMap){
+    public void register(Integer devType,Integer notifyType,INotify iNotify){
         HashMap<Integer, INotify> detail = NotifyFactory.map.get(devType);
         if(detail == null){
-            map.put(devType,cuMap);
+            HashMap<Integer, INotify> notifyMap = new HashMap<>();
+            notifyMap.put(notifyType,iNotify);
+            map.put(devType,notifyMap);
+        }else {
+            detail.put(notifyType,iNotify);
+            map.put(devType,detail);
         }
 
     }

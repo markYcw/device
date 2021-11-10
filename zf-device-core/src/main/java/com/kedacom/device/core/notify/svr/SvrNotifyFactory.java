@@ -2,9 +2,12 @@ package com.kedacom.device.core.notify.svr;
 
 import com.kedacom.device.core.notify.stragegy.DeviceType;
 
+import com.kedacom.device.core.notify.stragegy.INotify;
 import com.kedacom.device.core.notify.stragegy.NotifyFactory;
 import com.kedacom.device.core.utils.ContextUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
 
 /**
  * @author ycw
@@ -15,12 +18,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class SvrNotifyFactory {
 
-    public void init(){
+    public static void  init(){
         NotifyFactory factory = ContextUtils.getBean(NotifyFactory.class);
-        factory.register(DeviceType.SVR.getValue(),300,new DeviceStatusNotify());
-        factory.register(DeviceType.SVR.getValue(),301,new BurnTaskStatusNotify());
-        factory.register(DeviceType.SVR.getValue(),302,new DeviceStatusNotify());
-        factory.register(DeviceType.SVR.getValue(),303,new AudioActNotify());
+        HashMap<Integer, INotify> svrMap = new HashMap<>();
+        svrMap.put(300,new DeviceStatusNotify());
+        svrMap.put(301,new BurnTaskStatusNotify());
+        svrMap.put(302,new DeviceStatusNotify());
+        svrMap.put(303,new AudioActNotify());
+        factory.register(DeviceType.SVR.getValue(),svrMap);
     }
 
 }

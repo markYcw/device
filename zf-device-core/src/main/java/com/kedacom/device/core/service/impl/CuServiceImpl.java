@@ -75,7 +75,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Autowired
     private CuBasicTool tool;
 
-    @Value("${zf.cuNtyUrl.server_addr:127.0.0.1:9000}")
+    @Value("${zf.cuNtyUrl.server_addr:172.16.128.105:9000}")
     private String cuNtyUrl;
 
     @Autowired
@@ -197,7 +197,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         while (iterator.hasNext()){
             CuEntity cuEntity = iterator.next();
             if(cuStatusPoll.get(cuEntity.getId())==null){
-                //如果未登录则直接设置MCU状态为离线
+                //如果未登录则直接设置CU状态为离线
                 cuEntity.setStatus(DevTypeConstant.getZero);
             }else {
                 //如果已登录则给设备发送心跳，成功则设置为在线否则为离线

@@ -1,9 +1,12 @@
 package com.kedacom.device.core.notify.cu;
 
 import com.kedacom.device.core.notify.stragegy.DeviceType;
+import com.kedacom.device.core.notify.stragegy.INotify;
 import com.kedacom.device.core.notify.stragegy.NotifyFactory;
 import com.kedacom.device.core.utils.ContextUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
 
 /**
  * @author ycw
@@ -14,10 +17,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class CuNotifyFactory {
 
-    public void init(){
+    public static void init(){
         NotifyFactory factory = ContextUtils.getBean(NotifyFactory.class);
-        factory.register(DeviceType.CU2.getValue(), 1,new OffLineNotify());
-        factory.register(DeviceType.CU2.getValue(), 500,new GroupNotify());
+        HashMap<Integer, INotify> cuMap = new HashMap<>();
+        cuMap.put(1,new OffLineNotify());
+        cuMap.put(500,new GroupNotify());
+        factory.register(DeviceType.CU2.getValue(), cuMap);
     }
 
 }

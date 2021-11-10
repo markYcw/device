@@ -10,7 +10,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.common.constants.DevTypeConstant;
-import com.kedacom.common.model.Result;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.*;
@@ -30,8 +29,6 @@ import com.kedacom.device.core.utils.*;
 import com.kedacom.device.cu.CuResponse;
 import com.kedacom.device.cu.request.CuLoginRequest;
 import com.kedacom.device.cu.response.CuLoginResponse;
-import com.kedacom.exception.KMException;
-import com.kedacom.mp.mcu.McuRequestDTO;
 import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -433,4 +430,115 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         }
     }
 
+    @Override
+    public BaseResult<String> controlPtz(ControlPtzRequestDto requestDto) {
+
+        log.info("监控平台id : {}, PTZ控制请求参数 : {}", requestDto.getDbId(), requestDto);
+        CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
+        check(cuEntity);
+        CuBasicParam param = tool.getParam(cuEntity);
+        ControlPtzDto controlPtzDto = convert.convertControlPtzRequestDto(requestDto);
+
+        String responseStr = remoteRestTemplate.getRestTemplate()
+                .postForObject(param.getUrl() + "/ptz/{ssid}/{ssno}", JSON.toJSONString(controlPtzDto), String.class, param.getParamMap());
+        log.info("PTZ控制响应参数 : {}", responseStr);
+        CuResponse response = JSONObject.parseObject(responseStr, CuResponse.class);
+        String errorMsg = "PTZ控制操作失败:{},{},{}";
+        assert response != null;
+        responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_CONTROL_PTZ_FAILED, response);
+
+        return BaseResult.succeed(null, "PTZ控制操作成功");
+    }
+
+    @Override
+    public BaseResult<StartRecResponseVo> startPlayRec(StartRecRequestDto requestDto) {
+
+        Integer code = 0;
+        log.info("监控平台id : {}, 开始录像播放请求参数 : {}", requestDto.getDbId(), requestDto);
+        CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
+        check(cuEntity);
+        CuBasicParam param = tool.getParam(cuEntity);
+        PlayRecDto playRecDto = convert.convertPlayRecDto(requestDto);
+        playRecDto.setType(0);
+
+        String responseStr = remoteRestTemplate.getRestTemplate()
+                .postForObject(param.getUrl() + "/playrec/{ssid}/{ssno}", JSON.toJSONString(playRecDto), String.class, param.getParamMap());
+        log.info("开始录像播放响应参数 : {}", responseStr);
+        PlayRecVo playRecVo = JSONObject.parseObject(responseStr, PlayRecVo.class);
+        if (playRecVo != null && code.equals(playRecVo.getCode())) {
+            StartRecResponseVo responseVo = convert.convertStartRecResponseVo(playRecVo);
+            return BaseResult.succeed( null, responseVo);
+        }
+
+        return BaseResult.failed("开始录像播放操作失败");
+    }
+
+    @Override
+    public BaseResult<StopRecResponseVo> stopPlayRec(StopRecRequestDto requestDto) {
+
+        Integer code = 0;
+        log.info("监控平台id : {}, 停止录像播放请求参数 : {}", requestDto.getDbId(), requestDto);
+        CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
+        check(cuEntity);
+        CuBasicParam param = tool.getParam(cuEntity);
+        PlayRecDto playRecDto = convert.convertPlayRecDto(requestDto);
+        playRecDto.setType(1);
+
+        String responseStr = remoteRestTemplate.getRestTemplate()
+                .postForObject(param.getUrl() + "/playrec/{ssid}/{ssno}", JSON.toJSONString(playRecDto), String.class, param.getParamMap());
+        log.info("停止录像播放响应参数 : {}", responseStr);
+        PlayRecVo playRecVo = JSONObject.parseObject(responseStr, PlayRecVo.class);
+        if (playRecVo != null && code.equals(playRecVo.getCode())) {
+            StopRecResponseVo responseVo = convert.convertStopRecResponseVo(playRecVo);
+            return BaseResult.succeed( null, responseVo);
+        }
+
+        return BaseResult.failed("停止录像播放操作失败");
+    }
+
+    @Override
+    public BaseResult<StartBrowseCodeStreamResponseVo> startBrowseCodeStream(StartBrowseCodeStreamRequestDto requestDto) {
+
+        Integer code = 0;
+        log.info("监控平台id : {}, 开始浏览码流请求参数 : {}", requestDto.getDbId(), requestDto);
+        CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
+        check(cuEntity);
+        CuBasicParam param = tool.getParam(cuEntity);
+        PlayBrowseCodeStreamDto playBrowseCodeStreamDto = convert.convertStartBrowseCodeStreamDto(requestDto);
+        playBrowseCodeStreamDto.setType(0);
+
+        String responseStr = remoteRestTemplate.getRestTemplate()
+                .postForObject(param.getUrl() + "/playvideo/{ssid}/{ssno}", JSON.toJSONString(playBrowseCodeStreamDto), String.class, param.getParamMap());
+        log.info("开始浏览码流响应参数 : {}", responseStr);
+        PlayBrowseCodeStreamVo playBrowseCodeStreamVo = JSONObject.parseObject(responseStr, PlayBrowseCodeStreamVo.class);
+        if (playBrowseCodeStreamVo != null && code.equals(playBrowseCodeStreamVo.getCode())) {
+            StartBrowseCodeStreamResponseVo responseVo = convert.convertStartBrowseCodeStreamResponseVo(playBrowseCodeStreamVo);
+            return BaseResult.succeed( null, responseVo);
+        }
+
+        return BaseResult.failed("开始浏览码流操作失败");
+    }
+
+    @Override
+    public BaseResult<StopBrowseCodeStreamResponseVo> stopBrowseCodeStream(StopBrowseCodeStreamRequestDto requestDto) {
+
+        Integer code = 0;
+        log.info("监控平台id : {}, 停止浏览码流请求参数 : {}", requestDto.getDbId(), requestDto);
+        CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
+        check(cuEntity);
+        CuBasicParam param = tool.getParam(cuEntity);
+        PlayBrowseCodeStreamDto playBrowseCodeStreamDto = convert.convertPlayBrowseCodeStreamDto(requestDto);
+        playBrowseCodeStreamDto.setType(1);
+
+        String responseStr = remoteRestTemplate.getRestTemplate()
+                .postForObject(param.getUrl() + "/playvideo/{ssid}/{ssno}", JSON.toJSONString(playBrowseCodeStreamDto), String.class, param.getParamMap());
+        log.info("停止浏览码流响应参数 : {}", responseStr);
+        PlayBrowseCodeStreamVo playBrowseCodeStreamVo = JSONObject.parseObject(responseStr, PlayBrowseCodeStreamVo.class);
+        if (playBrowseCodeStreamVo != null && code.equals(playBrowseCodeStreamVo.getCode())) {
+            StopBrowseCodeStreamResponseVo responseVo = convert.convertStopBrowseCodeStreamResponseVo(playBrowseCodeStreamVo);
+            return BaseResult.succeed( null, responseVo);
+        }
+
+        return BaseResult.failed("停止浏览码流操作失败");
+    }
 }

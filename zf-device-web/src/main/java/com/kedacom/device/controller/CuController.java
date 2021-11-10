@@ -2,7 +2,6 @@ package com.kedacom.device.controller;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.common.model.Result;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.common.utils.ValidUtils;
@@ -169,5 +168,49 @@ public class CuController {
         return cuService.selectTree(dto);
     }
 
+    @ApiOperation("PTZ控制")
+    @PostMapping("/controlPtz")
+    public BaseResult<String> controlPtz(@Valid @RequestBody ControlPtzRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.controlPtz(requestDto);
+    }
+
+    @ApiOperation("开始播放录像")
+    @PostMapping("/startPlayRec")
+    public BaseResult<StartRecResponseVo> startPlayRec(@Valid @RequestBody StartRecRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.startPlayRec(requestDto);
+    }
+
+    @ApiOperation("停止播放录像")
+    @PostMapping("/stopPlayRec")
+    public BaseResult<StopRecResponseVo> stopPlayRec(@Valid @RequestBody StopRecRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.stopPlayRec(requestDto);
+    }
+
+    @ApiOperation("开始浏览码流")
+    @PostMapping("/startBrowseCodeStream")
+    public BaseResult<StartBrowseCodeStreamResponseVo> startBrowseCodeStream(@Valid @RequestBody StartBrowseCodeStreamRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.startBrowseCodeStream(requestDto);
+    }
+
+    @ApiOperation("停止浏览码流")
+    @PostMapping("/stopBrowseCodeStream")
+    public BaseResult<StopBrowseCodeStreamResponseVo> stopBrowseCodeStream(@Valid @RequestBody StopBrowseCodeStreamRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.stopBrowseCodeStream(requestDto);
+    }
 
 }

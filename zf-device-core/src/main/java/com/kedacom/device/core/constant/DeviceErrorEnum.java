@@ -155,6 +155,8 @@ public enum DeviceErrorEnum {
     CU_SELECT_TREE_FAILED(6007, "选择当前操作的设备树失败"),
     CU_DEV_GROUPS_FAILED(6008, "获取设备组信息失败"),
     CU_DEVICES_FAILED(6009, "获取设备信息失败"),
+    CU_CONTROL_PTZ_FAILED(6010, "PTZ控制操作失败"),
+    CU_START_REC_FAILED(6011, "开始录像播放操作失败"),
 
 
     SCHEDULE_ADD_DEVICE_FAILED(9001, "添加调度组成员设备失败"),

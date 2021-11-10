@@ -3,7 +3,6 @@ package com.kedacom.device.core.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.common.model.Result;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.*;
@@ -54,4 +53,40 @@ public interface CuService extends IService<CuEntity> {
     BaseResult<DevEntityVo> updateDev(DevEntityVo devEntityVo);
 
     BaseResult<String> deleteDev(List<Integer> ids);
+
+    /**
+     * PTZ控制
+     * @param requestDto
+     * @return
+     */
+    BaseResult<String> controlPtz(ControlPtzRequestDto requestDto);
+
+    /**
+     * 开始录像播放
+     * @param requestDto
+     * @return
+     */
+    BaseResult<StartRecResponseVo> startPlayRec(StartRecRequestDto requestDto);
+
+    /**
+     * 停止录像播放
+     * @param requestDto
+     * @return
+     */
+    BaseResult<StopRecResponseVo> stopPlayRec(StopRecRequestDto requestDto);
+
+    /**
+     * 开始浏览码流
+     * @param requestDto
+     * @return
+     */
+    BaseResult<StartBrowseCodeStreamResponseVo> startBrowseCodeStream(StartBrowseCodeStreamRequestDto requestDto);
+
+    /**
+     * 停止浏览码流
+     * @param requestDto
+     * @return
+     */
+    BaseResult<StopBrowseCodeStreamResponseVo> stopBrowseCodeStream(StopBrowseCodeStreamRequestDto requestDto);
+
 }

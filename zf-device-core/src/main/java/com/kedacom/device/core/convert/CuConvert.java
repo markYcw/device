@@ -1,14 +1,9 @@
 package com.kedacom.device.core.convert;
 
+import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
-import com.kedacom.cu.vo.DevEntityVo;
+import com.kedacom.cu.vo.*;
 import com.kedacom.device.cu.request.CuLoginRequest;
-import com.kedacom.device.svr.pojo.DeChnList;
-import com.kedacom.device.svr.pojo.EnChnList;
-import com.kedacom.device.svr.request.SvrLoginRequest;
-import com.kedacom.device.svr.response.*;
-import com.kedacom.svr.entity.SvrEntity;
-import com.kedacom.svr.vo.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -27,4 +22,22 @@ public interface CuConvert {
     DevEntityVo convertToDevEntityVo(CuEntity cuEntity);
 
     CuEntity convertToCuEntity(DevEntityVo devEntityVo);
+
+    ControlPtzDto convertControlPtzRequestDto(ControlPtzRequestDto controlPtzDto);
+
+    PlayRecDto convertPlayRecDto(StartRecRequestDto startRecRequestDto);
+
+    StartRecResponseVo convertStartRecResponseVo(PlayRecVo playRecVo);
+
+    PlayRecDto convertPlayRecDto(StopRecRequestDto stopRecRequestDto);
+
+    StopRecResponseVo convertStopRecResponseVo(PlayRecVo playRecVo);
+
+    PlayBrowseCodeStreamDto convertStartBrowseCodeStreamDto(StartBrowseCodeStreamRequestDto startBrowseCodeStreamRequestDto);
+
+    StartBrowseCodeStreamResponseVo convertStartBrowseCodeStreamResponseVo(PlayBrowseCodeStreamVo playBrowseCodeStreamVo);
+
+    PlayBrowseCodeStreamDto convertPlayBrowseCodeStreamDto(StopBrowseCodeStreamRequestDto stopBrowseCodeStreamRequestDto);
+
+    StopBrowseCodeStreamResponseVo convertStopBrowseCodeStreamResponseVo(PlayBrowseCodeStreamVo playBrowseCodeStreamVo);
 }

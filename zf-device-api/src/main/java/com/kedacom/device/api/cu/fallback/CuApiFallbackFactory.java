@@ -2,9 +2,7 @@ package com.kedacom.device.api.cu.fallback;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.cu.dto.DevEntityQuery;
-import com.kedacom.cu.dto.CuRequestDto;
-import com.kedacom.cu.dto.SelectTreeDto;
+import com.kedacom.cu.dto.*;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.api.cu.DevApi;
 import feign.hystrix.FallbackFactory;
@@ -82,6 +80,31 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
 
             @Override
             public BaseResult<String> hb(Integer kmId) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<String> controlPtz(ControlPtzRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<StartRecResponseVo> startPlayRec(StartRecRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<StopRecResponseVo> stopPlayRec(StopRecRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<StartBrowseCodeStreamResponseVo> startBrowseCodeStream(StartBrowseCodeStreamRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<StopBrowseCodeStreamResponseVo> stopBrowseCodeStream(StopBrowseCodeStreamRequestDto requestDto) {
                 return BaseResult.failed(throwable.getMessage());
             }
         };

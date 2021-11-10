@@ -453,7 +453,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Override
     public BaseResult<StartRecResponseVo> startPlayRec(StartRecRequestDto requestDto) {
 
-        Integer code = 0;
         log.info("监控平台id : {}, 开始录像播放请求参数 : {}", requestDto.getDbId(), requestDto);
         CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
         check(cuEntity);
@@ -464,19 +463,18 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         String responseStr = remoteRestTemplate.getRestTemplate()
                 .postForObject(param.getUrl() + "/playrec/{ssid}/{ssno}", JSON.toJSONString(playRecDto), String.class, param.getParamMap());
         log.info("开始录像播放响应参数 : {}", responseStr);
-        PlayRecVo playRecVo = JSONObject.parseObject(responseStr, PlayRecVo.class);
-        if (playRecVo != null && code.equals(playRecVo.getCode())) {
-            StartRecResponseVo responseVo = convert.convertStartRecResponseVo(playRecVo);
-            return BaseResult.succeed( null, responseVo);
-        }
+        CuResponse response = JSONObject.parseObject(responseStr, CuResponse.class);
+        String errorMsg = "开始录像播放操作失败:{},{},{}";
+        assert response != null;
+        responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_START_REC_FAILED, response);
+        StartRecResponseVo responseVo = JSONObject.parseObject(responseStr, StartRecResponseVo.class);
 
-        return BaseResult.failed("开始录像播放操作失败");
+        return BaseResult.succeed( null, responseVo);
     }
 
     @Override
     public BaseResult<StopRecResponseVo> stopPlayRec(StopRecRequestDto requestDto) {
 
-        Integer code = 0;
         log.info("监控平台id : {}, 停止录像播放请求参数 : {}", requestDto.getDbId(), requestDto);
         CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
         check(cuEntity);
@@ -487,19 +485,18 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         String responseStr = remoteRestTemplate.getRestTemplate()
                 .postForObject(param.getUrl() + "/playrec/{ssid}/{ssno}", JSON.toJSONString(playRecDto), String.class, param.getParamMap());
         log.info("停止录像播放响应参数 : {}", responseStr);
-        PlayRecVo playRecVo = JSONObject.parseObject(responseStr, PlayRecVo.class);
-        if (playRecVo != null && code.equals(playRecVo.getCode())) {
-            StopRecResponseVo responseVo = convert.convertStopRecResponseVo(playRecVo);
-            return BaseResult.succeed( null, responseVo);
-        }
+        CuResponse response = JSONObject.parseObject(responseStr, CuResponse.class);
+        String errorMsg = "停止录像播放操作失败:{},{},{}";
+        assert response != null;
+        responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_STOP_REC_FAILED, response);
+        StopRecResponseVo responseVo = JSONObject.parseObject(responseStr, StopRecResponseVo.class);
 
-        return BaseResult.failed("停止录像播放操作失败");
+        return BaseResult.succeed( null, responseVo);
     }
 
     @Override
     public BaseResult<StartBrowseCodeStreamResponseVo> startBrowseCodeStream(StartBrowseCodeStreamRequestDto requestDto) {
 
-        Integer code = 0;
         log.info("监控平台id : {}, 开始浏览码流请求参数 : {}", requestDto.getDbId(), requestDto);
         CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
         check(cuEntity);
@@ -510,19 +507,18 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         String responseStr = remoteRestTemplate.getRestTemplate()
                 .postForObject(param.getUrl() + "/playvideo/{ssid}/{ssno}", JSON.toJSONString(playBrowseCodeStreamDto), String.class, param.getParamMap());
         log.info("开始浏览码流响应参数 : {}", responseStr);
-        PlayBrowseCodeStreamVo playBrowseCodeStreamVo = JSONObject.parseObject(responseStr, PlayBrowseCodeStreamVo.class);
-        if (playBrowseCodeStreamVo != null && code.equals(playBrowseCodeStreamVo.getCode())) {
-            StartBrowseCodeStreamResponseVo responseVo = convert.convertStartBrowseCodeStreamResponseVo(playBrowseCodeStreamVo);
-            return BaseResult.succeed( null, responseVo);
-        }
+        CuResponse response = JSONObject.parseObject(responseStr, CuResponse.class);
+        String errorMsg = "开始浏览码流操作失败:{},{},{}";
+        assert response != null;
+        responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_START_BROWSE_CODE_STREAM_FAILED, response);
+        StartBrowseCodeStreamResponseVo responseVo = JSONObject.parseObject(responseStr, StartBrowseCodeStreamResponseVo.class);
 
-        return BaseResult.failed("开始浏览码流操作失败");
+        return BaseResult.succeed( null, responseVo);
     }
 
     @Override
     public BaseResult<StopBrowseCodeStreamResponseVo> stopBrowseCodeStream(StopBrowseCodeStreamRequestDto requestDto) {
 
-        Integer code = 0;
         log.info("监控平台id : {}, 停止浏览码流请求参数 : {}", requestDto.getDbId(), requestDto);
         CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
         check(cuEntity);
@@ -533,12 +529,12 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         String responseStr = remoteRestTemplate.getRestTemplate()
                 .postForObject(param.getUrl() + "/playvideo/{ssid}/{ssno}", JSON.toJSONString(playBrowseCodeStreamDto), String.class, param.getParamMap());
         log.info("停止浏览码流响应参数 : {}", responseStr);
-        PlayBrowseCodeStreamVo playBrowseCodeStreamVo = JSONObject.parseObject(responseStr, PlayBrowseCodeStreamVo.class);
-        if (playBrowseCodeStreamVo != null && code.equals(playBrowseCodeStreamVo.getCode())) {
-            StopBrowseCodeStreamResponseVo responseVo = convert.convertStopBrowseCodeStreamResponseVo(playBrowseCodeStreamVo);
-            return BaseResult.succeed( null, responseVo);
-        }
+        CuResponse response = JSONObject.parseObject(responseStr, CuResponse.class);
+        String errorMsg = "停止浏览码流操作失败:{},{},{}";
+        assert response != null;
+        responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_STOP_BROWSE_CODE_STREAM_FAILED, response);
+        StopBrowseCodeStreamResponseVo responseVo = JSONObject.parseObject(responseStr, StopBrowseCodeStreamResponseVo.class);
 
-        return BaseResult.failed("停止浏览码流操作失败");
+        return BaseResult.succeed( null, responseVo);
     }
 }

@@ -27,17 +27,9 @@ public interface CuConvert {
 
     PlayRecDto convertPlayRecDto(StartRecRequestDto startRecRequestDto);
 
-    StartRecResponseVo convertStartRecResponseVo(PlayRecVo playRecVo);
-
     PlayRecDto convertPlayRecDto(StopRecRequestDto stopRecRequestDto);
-
-    StopRecResponseVo convertStopRecResponseVo(PlayRecVo playRecVo);
 
     PlayBrowseCodeStreamDto convertStartBrowseCodeStreamDto(StartBrowseCodeStreamRequestDto startBrowseCodeStreamRequestDto);
 
-    StartBrowseCodeStreamResponseVo convertStartBrowseCodeStreamResponseVo(PlayBrowseCodeStreamVo playBrowseCodeStreamVo);
-
     PlayBrowseCodeStreamDto convertPlayBrowseCodeStreamDto(StopBrowseCodeStreamRequestDto stopBrowseCodeStreamRequestDto);
-
-    StopBrowseCodeStreamResponseVo convertStopBrowseCodeStreamResponseVo(PlayBrowseCodeStreamVo playBrowseCodeStreamVo);
 }

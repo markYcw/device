@@ -1,12 +1,8 @@
 package com.kedacom.device.api.cu;
 
-
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.cu.dto.DevEntityQuery;
-import com.kedacom.cu.dto.CuRequestDto;
-import com.kedacom.cu.dto.SelectTreeDto;
-import com.kedacom.cu.entity.CuEntity;
+import com.kedacom.cu.dto.*;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.api.cu.fallback.CuApiFallbackFactory;
 import io.swagger.annotations.ApiImplicitParam;
@@ -17,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 /**
  * svr相关操作
  * @author ycw
@@ -26,63 +21,79 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "device-server", contextId = "cuApi", path = "/api-device/ums/cu",fallbackFactory = CuApiFallbackFactory.class)
 public interface DevApi {
 
-
     @PostMapping("/list")
     @ApiOperation(value = "cu分页查询")
-    public BaseResult<BasePage<DevEntityVo>> list(@RequestBody DevEntityQuery queryDTO);
+    BaseResult<BasePage<DevEntityVo>> list(@RequestBody DevEntityQuery queryDTO);
 
     @PostMapping("/info")
     @ApiOperation(value = "根据数据库id获取cu信息")
     @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
-    public BaseResult<DevEntityVo> info(@RequestParam("kmId") Integer kmId);
-
+    BaseResult<DevEntityVo> info(@RequestParam("kmId") Integer kmId);
 
     @PostMapping("/saveDevFeign")
     @ApiOperation(value = "新增cu")
-    public BaseResult<DevEntityVo> saveDevFeign(@RequestBody DevEntityVo devEntityVo);
+    BaseResult<DevEntityVo> saveDevFeign(@RequestBody DevEntityVo devEntityVo);
 
     @ApiOperation("修改监控平台信息")
     @PostMapping("/updateDev")
-    public BaseResult<DevEntityVo> updateDev(@RequestBody DevEntityVo devEntityVo);
+    BaseResult<DevEntityVo> updateDev(@RequestBody DevEntityVo devEntityVo);
 
     @PostMapping("/delete")
     @ApiOperation(value = "删除cu")
-    public BaseResult delete(@RequestBody Long[] ids);
+    BaseResult delete(@RequestBody Long[] ids);
 
     @PostMapping("/loginById")
     @ApiOperation(value = "根据ID登录cu")
-    public BaseResult<String> loginById(@RequestBody CuRequestDto dto);
+    BaseResult<String> loginById(@RequestBody CuRequestDto dto);
 
     @ApiOperation("登出cu")
     @PostMapping("/logoutById")
-    public BaseResult<String> logoutById(@RequestBody CuRequestDto dto);
+    BaseResult<String> logoutById(@RequestBody CuRequestDto dto);
 
     @ApiOperation("获取平台域信息")
     @PostMapping("/localDomain")
-    public BaseResult<LocalDomainVo> localDomain(@RequestBody CuRequestDto dto);
+    BaseResult<LocalDomainVo> localDomain(@RequestBody CuRequestDto dto);
 
     @ApiOperation("获取域链表")
     @PostMapping("/domains")
-    public BaseResult<DomainsVo> domains(@RequestBody CuRequestDto dto);
+    BaseResult<DomainsVo> domains(@RequestBody CuRequestDto dto);
 
     @ApiOperation("获取平台时间")
     @PostMapping("/time")
     @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
-    public BaseResult<Long> getTime(@RequestParam Integer kmId);
+    BaseResult<Long> getTime(@RequestParam Integer kmId);
 
     @ApiOperation("获取多视图设备树")
     @PostMapping("/viewTrees")
-    public BaseResult<ViewTreesVo> viewTrees(@RequestBody CuRequestDto dto);
+    BaseResult<ViewTreesVo> viewTrees(@RequestBody CuRequestDto dto);
 
     @ApiOperation("选择当前操作的设备树")
     @PostMapping("/selectTree")
-    public BaseResult<String> selectTree(@RequestBody SelectTreeDto dto);
+    BaseResult<String> selectTree(@RequestBody SelectTreeDto dto);
 
     @PostMapping("/hb")
     @ApiOperation(value = "发送心跳 登录CU以后必须每9分钟调用一次这个接口，否则有可能导致C++与CU的token失效，然后你再去尝试调用接口就会失败 接口调用成功会返回0")
     @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
-    public BaseResult<String> hb(@RequestParam Integer kmId);
+    BaseResult<String> hb(@RequestParam Integer kmId);
 
+    @ApiOperation("PTZ控制")
+    @PostMapping("/controlPtz")
+    BaseResult<String> controlPtz(@RequestBody ControlPtzRequestDto requestDto);
 
+    @ApiOperation("开始播放录像")
+    @PostMapping("/startPlayRec")
+    BaseResult<StartRecResponseVo> startPlayRec(@RequestBody StartRecRequestDto requestDto);
+
+    @ApiOperation("停止播放录像")
+    @PostMapping("/stopPlayRec")
+    BaseResult<StopRecResponseVo> stopPlayRec(@RequestBody StopRecRequestDto requestDto);
+
+    @ApiOperation("开始浏览码流")
+    @PostMapping("/startBrowseCodeStream")
+    BaseResult<StartBrowseCodeStreamResponseVo> startBrowseCodeStream(@RequestBody StartBrowseCodeStreamRequestDto requestDto);
+
+    @ApiOperation("停止浏览码流")
+    @PostMapping("/stopBrowseCodeStream")
+    BaseResult<StopBrowseCodeStreamResponseVo> stopBrowseCodeStream(@RequestBody StopBrowseCodeStreamRequestDto requestDto);
 
 }

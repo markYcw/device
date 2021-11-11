@@ -469,7 +469,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_START_REC_FAILED, response);
         StartRecResponseVo responseVo = JSONObject.parseObject(responseStr, StartRecResponseVo.class);
 
-        return BaseResult.succeed( null, responseVo);
+        return BaseResult.succeed(null, responseVo);
     }
 
     @Override
@@ -491,7 +491,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_STOP_REC_FAILED, response);
         StopRecResponseVo responseVo = JSONObject.parseObject(responseStr, StopRecResponseVo.class);
 
-        return BaseResult.succeed( null, responseVo);
+        return BaseResult.succeed(null, responseVo);
     }
 
     @Override
@@ -513,7 +513,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_START_BROWSE_CODE_STREAM_FAILED, response);
         StartBrowseCodeStreamResponseVo responseVo = JSONObject.parseObject(responseStr, StartBrowseCodeStreamResponseVo.class);
 
-        return BaseResult.succeed( null, responseVo);
+        return BaseResult.succeed(null, responseVo);
     }
 
     @Override
@@ -535,6 +535,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_STOP_BROWSE_CODE_STREAM_FAILED, response);
         StopBrowseCodeStreamResponseVo responseVo = JSONObject.parseObject(responseStr, StopBrowseCodeStreamResponseVo.class);
 
-        return BaseResult.succeed( null, responseVo);
+        return BaseResult.succeed(null, responseVo);
     }
 }

@@ -39,6 +39,7 @@ public class CuController {
     @PostMapping("/list")
     @ApiOperation(value = "cu分页查询")
     public BaseResult<BasePage<DevEntityVo>> list(@RequestBody DevEntityQuery queryDTO) {
+
         log.info("cu分页接口入参:{}", queryDTO);
 
         return cuService.pageQuery(queryDTO);
@@ -51,6 +52,7 @@ public class CuController {
     public BaseResult<DevEntityVo> info(@RequestParam("kmId") Integer kmId) {
 
         log.info("根据id获取cu信息:{}", kmId);
+
         return cuService.info(kmId);
     }
 
@@ -61,6 +63,7 @@ public class CuController {
 
         log.info("新增cu:{}", devEntityVo);
         ValidUtils.paramValid(br);
+
         return cuService.saveDev(devEntityVo);
     }
 
@@ -74,6 +77,7 @@ public class CuController {
 
         log.info("修改cu:{}", devEntityVo);
         ValidUtils.paramValid(br);
+
         return cuService.updateDev(devEntityVo);
     }
 
@@ -86,6 +90,7 @@ public class CuController {
     public BaseResult<String> deleteDev(@RequestBody List<Integer> ids){
 
         log.info("删除cu:{}", ids);
+
         return cuService.deleteDev(ids);
     }
 
@@ -103,6 +108,7 @@ public class CuController {
     public BaseResult<String> loginById(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
 
         ValidUtils.paramValid(br);
+
         return cuService.loginById(dto);
     }
 
@@ -119,6 +125,7 @@ public class CuController {
     public BaseResult<String> logoutById(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
 
         ValidUtils.paramValid(br);
+
         return cuService.logoutById(dto);
     }
 
@@ -127,6 +134,7 @@ public class CuController {
     public BaseResult<LocalDomainVo> localDomain(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
 
         ValidUtils.paramValid(br);
+
         return cuService.localDomain(dto);
     }
 
@@ -135,6 +143,7 @@ public class CuController {
     public BaseResult<DomainsVo> domains(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
 
         ValidUtils.paramValid(br);
+
         return cuService.domains(dto);
     }
 
@@ -149,7 +158,6 @@ public class CuController {
     public BaseResult<Long> getTime(@RequestParam Integer kmId){
 
         return cuService.time(kmId);
-
     }
 
     @ApiOperation("获取多视图设备树")

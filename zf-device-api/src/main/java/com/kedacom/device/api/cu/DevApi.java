@@ -80,20 +80,4 @@ public interface DevApi {
     @PostMapping("/controlPtz")
     BaseResult<String> controlPtz(@RequestBody ControlPtzRequestDto requestDto);
 
-    @ApiOperation("开始播放录像")
-    @PostMapping("/startPlayRec")
-    BaseResult<StartRecResponseVo> startPlayRec(@RequestBody StartRecRequestDto requestDto);
-
-    @ApiOperation("停止播放录像")
-    @PostMapping("/stopPlayRec")
-    BaseResult<StopRecResponseVo> stopPlayRec(@RequestBody StopRecRequestDto requestDto);
-
-    @ApiOperation("开始浏览码流")
-    @PostMapping("/startBrowseCodeStream")
-    BaseResult<StartBrowseCodeStreamResponseVo> startBrowseCodeStream(@RequestBody StartBrowseCodeStreamRequestDto requestDto);
-
-    @ApiOperation("停止浏览码流")
-    @PostMapping("/stopBrowseCodeStream")
-    BaseResult<StopBrowseCodeStreamResponseVo> stopBrowseCodeStream(@RequestBody StopBrowseCodeStreamRequestDto requestDto);
-
 }

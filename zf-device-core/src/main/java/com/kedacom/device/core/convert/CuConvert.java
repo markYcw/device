@@ -24,12 +24,4 @@ public interface CuConvert {
     CuEntity convertToCuEntity(DevEntityVo devEntityVo);
 
     ControlPtzDto convertControlPtzRequestDto(ControlPtzRequestDto controlPtzDto);
-
-    PlayRecDto convertPlayRecDto(StartRecRequestDto startRecRequestDto);
-
-    PlayRecDto convertPlayRecDto(StopRecRequestDto stopRecRequestDto);
-
-    PlayBrowseCodeStreamDto convertStartBrowseCodeStreamDto(StartBrowseCodeStreamRequestDto startBrowseCodeStreamRequestDto);
-
-    PlayBrowseCodeStreamDto convertPlayBrowseCodeStreamDto(StopBrowseCodeStreamRequestDto stopBrowseCodeStreamRequestDto);
 }

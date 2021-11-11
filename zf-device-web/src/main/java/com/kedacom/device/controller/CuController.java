@@ -35,7 +35,6 @@ public class CuController {
     @Autowired
     private CuService cuService;
 
-
     @PostMapping("/list")
     @ApiOperation(value = "cu分页查询")
     public BaseResult<BasePage<DevEntityVo>> list(@RequestBody DevEntityQuery queryDTO) {
@@ -44,7 +43,6 @@ public class CuController {
 
         return cuService.pageQuery(queryDTO);
     }
-
 
     @PostMapping("/info")
     @ApiOperation(value = "根据数据库id获取cu信息")
@@ -56,7 +54,6 @@ public class CuController {
         return cuService.info(kmId);
     }
 
-
     @PostMapping("/saveDevFeign")
     @ApiOperation(value = "新增cu")
     public BaseResult<DevEntityVo> saveDevFeign(@Valid @RequestBody DevEntityVo devEntityVo, BindingResult br) {
@@ -66,7 +63,6 @@ public class CuController {
 
         return cuService.saveDev(devEntityVo);
     }
-
 
     /**
      * 修改监控平台
@@ -81,7 +77,6 @@ public class CuController {
         return cuService.updateDev(devEntityVo);
     }
 
-
     /**
      * 删除
      */
@@ -94,14 +89,12 @@ public class CuController {
         return cuService.deleteDev(ids);
     }
 
-
     @PostMapping("/cuNotify")
     @ApiOperation(value = "cu通知")
     public void cuNotify(@RequestBody String notify) {
 
         cuService.cuNotify(notify);
     }
-
 
     @PostMapping("/loginById")
     @ApiOperation(value = "根据ID登录cu")
@@ -183,42 +176,6 @@ public class CuController {
         ValidUtils.paramValid(br);
 
         return cuService.controlPtz(requestDto);
-    }
-
-    @ApiOperation("开始播放录像")
-    @PostMapping("/startPlayRec")
-    public BaseResult<StartRecResponseVo> startPlayRec(@Valid @RequestBody StartRecRequestDto requestDto, BindingResult br) {
-
-        ValidUtils.paramValid(br);
-
-        return cuService.startPlayRec(requestDto);
-    }
-
-    @ApiOperation("停止播放录像")
-    @PostMapping("/stopPlayRec")
-    public BaseResult<StopRecResponseVo> stopPlayRec(@Valid @RequestBody StopRecRequestDto requestDto, BindingResult br) {
-
-        ValidUtils.paramValid(br);
-
-        return cuService.stopPlayRec(requestDto);
-    }
-
-    @ApiOperation("开始浏览码流")
-    @PostMapping("/startBrowseCodeStream")
-    public BaseResult<StartBrowseCodeStreamResponseVo> startBrowseCodeStream(@Valid @RequestBody StartBrowseCodeStreamRequestDto requestDto, BindingResult br) {
-
-        ValidUtils.paramValid(br);
-
-        return cuService.startBrowseCodeStream(requestDto);
-    }
-
-    @ApiOperation("停止浏览码流")
-    @PostMapping("/stopBrowseCodeStream")
-    public BaseResult<StopBrowseCodeStreamResponseVo> stopBrowseCodeStream(@Valid @RequestBody StopBrowseCodeStreamRequestDto requestDto, BindingResult br) {
-
-        ValidUtils.paramValid(br);
-
-        return cuService.stopBrowseCodeStream(requestDto);
     }
 
 }

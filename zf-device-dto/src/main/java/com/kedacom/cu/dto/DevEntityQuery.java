@@ -4,6 +4,8 @@ import com.kedacom.BasePage;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -14,6 +16,8 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel(description =  "cu信息分页查询")
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class DevEntityQuery extends BasePage implements Serializable {
 
     @ApiModelProperty("ip")

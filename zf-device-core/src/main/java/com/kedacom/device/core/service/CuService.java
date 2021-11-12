@@ -22,7 +22,7 @@ public interface CuService extends IService<CuEntity> {
 
     void cuNotify(String notify);
 
-    BaseResult<String> loginById(CuRequestDto dto);
+    BaseResult<DevEntityVo> loginById(CuRequestDto dto);
 
 
     BaseResult<String> logoutById(CuRequestDto dto);

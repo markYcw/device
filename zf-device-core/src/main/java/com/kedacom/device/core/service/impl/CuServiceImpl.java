@@ -227,7 +227,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     }
 
     @Override
-    public BaseResult<String> loginById(CuRequestDto dto) {
+    public BaseResult<DevEntityVo> loginById(CuRequestDto dto) {
         log.info("登录cu入参信息:{}", dto.getDbId());
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         CuEntity entity = cuMapper.selectById(dto.getDbId());
@@ -251,12 +251,28 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         entity.setSsid(response.getSsid());
         entity.setModifyTime(new Date());
         cuMapper.updateById(entity);
+        //设置域信息
+        String domain = getDomain(entity.getId());
+        DevEntityVo devEntityVo = convert.convertToDevEntityVo(entity);
+        devEntityVo.setDomainId(domain);
 
         //登录成功以后加载分组信息
         getGroups(dto.getDbId(),response.getSsid());
         //往cu状态池放入当前mcu状态 1已登录
         cuStatusPoll.put(dto.getDbId(), DevTypeConstant.updateRecordKey);
-        return BaseResult.succeed("登录监控平台成功");
+        return BaseResult.succeed("登录监控平台成功",devEntityVo);
+    }
+
+    /**
+     * 查询平台域信息
+     * @param id
+     * @return
+     */
+    public String getDomain(Integer id){
+        CuRequestDto cuRequestDto = new CuRequestDto();
+        cuRequestDto.setDbId(id);
+        BaseResult<LocalDomainVo> domain = this.localDomain(cuRequestDto);
+        return domain.getData().getDomainId();
     }
 
     /**
@@ -352,7 +368,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         CuEntity entity = cuMapper.selectById(dbId);
         check(entity);
         CuBasicParam param = tool.getParam(entity);
-        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/mplat/hb/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
+        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/hb/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
         log.info("发送心跳中间件响应{}",exchange.getBody());
         CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);
         String errorMsg = "发送心跳失败:{},{},{}";

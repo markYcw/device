@@ -16,6 +16,6 @@ import java.io.Serializable;
 public class LocalDomainVo implements Serializable {
 
     @ApiModelProperty("平台域id")
-    private Integer domainId;
+    private String domainId;
 
 }

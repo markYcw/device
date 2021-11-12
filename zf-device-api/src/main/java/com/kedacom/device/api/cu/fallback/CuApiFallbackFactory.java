@@ -44,7 +44,7 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
             }
 
             @Override
-            public BaseResult<String> loginById(CuRequestDto dto) {
+            public BaseResult<DevEntityVo> loginById(CuRequestDto dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 

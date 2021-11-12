@@ -98,7 +98,7 @@ public class CuController {
 
     @PostMapping("/loginById")
     @ApiOperation(value = "根据ID登录cu")
-    public BaseResult<String> loginById(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
+    public BaseResult<DevEntityVo> loginById(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
 
         ValidUtils.paramValid(br);
 
@@ -140,11 +140,7 @@ public class CuController {
         return cuService.domains(dto);
     }
 
-    /**
-     * 获取平台时间
-     * @param kmId 监控平台标识
-     * @return 时间
-     */
+
     @ApiOperation("获取平台时间")
     @PostMapping("/getTime")
     @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})

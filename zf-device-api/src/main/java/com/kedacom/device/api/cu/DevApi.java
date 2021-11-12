@@ -44,7 +44,7 @@ public interface DevApi {
 
     @PostMapping("/loginById")
     @ApiOperation(value = "根据ID登录cu")
-    BaseResult<String> loginById(@RequestBody CuRequestDto dto);
+    BaseResult<DevEntityVo> loginById(@RequestBody CuRequestDto dto);
 
     @ApiOperation("登出cu")
     @PostMapping("/logoutById")

@@ -64,4 +64,7 @@ public class DevEntityVo {
     @ApiModelProperty("在线状态 0：离线 1：在线")
     private Integer status;
 
+    @ApiModelProperty("平台域id")
+    private String domainId;
+
 }

@@ -87,6 +87,26 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
             public BaseResult<String> controlPtz(ControlPtzRequestDto requestDto) {
                 return BaseResult.failed(throwable.getMessage());
             }
+
+            @Override
+            public BaseResult<Boolean> startRec(PlatRecStartVo platRecStartVo) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<Boolean> stopRec(PlatRecStopVo platRecStopVo) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<Boolean> startPuRec(PuRecStartVo puRecStartVo) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<Boolean> stopPuRec(PuRecStopVo puRecStopVo) {
+                return BaseResult.failed(throwable.getMessage());
+            }
         };
     }
 }

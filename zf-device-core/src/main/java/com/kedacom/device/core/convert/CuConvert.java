@@ -24,4 +24,16 @@ public interface CuConvert {
     CuEntity convertToCuEntity(DevEntityVo devEntityVo);
 
     ControlPtzDto convertControlPtzRequestDto(ControlPtzRequestDto controlPtzDto);
+
+    @Mappings({@Mapping(target = "chn",source = "chnId")})
+    PlayRecDto convertPlayRecDto(PlatRecStartVo platRecStartVo);
+
+    @Mappings({@Mapping(target = "chn",source = "chnId")})
+    PlayRecDto convertPlayRecDto(PlatRecStopVo platRecStopVo);
+
+    @Mappings({@Mapping(target = "chn",source = "chnId")})
+    PlayRecDto convertPlayRecDto(PuRecStartVo puRecStartVo);
+
+    @Mappings({@Mapping(target = "chn",source = "chnId")})
+    PlayRecDto convertPlayRecDto(PuRecStopVo puRecStopVo);
 }

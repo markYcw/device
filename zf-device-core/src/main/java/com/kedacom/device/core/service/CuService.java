@@ -61,4 +61,32 @@ public interface CuService extends IService<CuEntity> {
      */
     BaseResult<String> controlPtz(ControlPtzRequestDto requestDto);
 
+    /**
+     * 开启平台录像
+     * @param platRecStartVo
+     * @return
+     */
+    BaseResult<Boolean> startRec(PlatRecStartVo platRecStartVo);
+
+    /**
+     * 关闭平台录像
+     * @param platRecStopVo
+     * @return
+     */
+    BaseResult<Boolean> stopRec(PlatRecStopVo platRecStopVo);
+
+    /**
+     * 开启前端录像
+     * @param puRecStartVo
+     * @return
+     */
+    BaseResult<Boolean> startPuRec(PuRecStartVo puRecStartVo);
+
+    /**
+     * 关闭前端录像
+     * @param puRecStopVo
+     * @return
+     */
+    BaseResult<Boolean> stopPuRec(PuRecStopVo puRecStopVo);
+
 }

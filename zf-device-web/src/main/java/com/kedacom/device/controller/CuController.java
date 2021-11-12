@@ -174,4 +174,40 @@ public class CuController {
         return cuService.controlPtz(requestDto);
     }
 
+    @ApiOperation("开启平台录像")
+    @PostMapping("/startRec")
+    public BaseResult<Boolean> startRec(@Valid @RequestBody PlatRecStartVo platRecStartVo, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.startRec(platRecStartVo);
+    }
+
+    @ApiOperation("关闭平台录像")
+    @PostMapping("/stopRec")
+    public BaseResult<Boolean> stopRec(@Valid @RequestBody PlatRecStopVo platRecStopVo, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.stopRec(platRecStopVo);
+    }
+
+    @ApiOperation("开启前端录像")
+    @PostMapping("/startPuRec")
+    public BaseResult<Boolean> startPuRec(@Valid @RequestBody PuRecStartVo puRecStartVo, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.startPuRec(puRecStartVo);
+    }
+
+    @ApiOperation("关闭前端录像")
+    @PostMapping("/stopPuRec")
+    public BaseResult<Boolean> stopPuRec(@Valid @RequestBody PuRecStopVo puRecStopVo, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.stopPuRec(puRecStopVo);
+    }
+
 }

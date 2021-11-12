@@ -156,10 +156,10 @@ public enum DeviceErrorEnum {
     CU_DEV_GROUPS_FAILED(6008, "获取设备组信息失败"),
     CU_DEVICES_FAILED(6009, "获取设备信息失败"),
     CU_CONTROL_PTZ_FAILED(6010, "PTZ控制操作失败"),
-    CU_START_REC_FAILED(6011, "开始录像播放操作失败"),
-    CU_STOP_REC_FAILED(6012, "停止录像播放操作失败"),
-    CU_START_BROWSE_CODE_STREAM_FAILED(6013, "开始浏览码流操作失败"),
-    CU_STOP_BROWSE_CODE_STREAM_FAILED(6014, "停止浏览码流操作失败"),
+    CU_START_REC_FAILED(6011, "开启平台录像操作失败"),
+    CU_STOP_REC_FAILED(6012, "关闭平台录像操作失败"),
+    CU_START_PU_REC_FAILED(6013, "开启前端录像操作失败"),
+    CU_STOP_PU_REC_FAILED(6014, "关闭前端录像操作失败"),
 
 
     SCHEDULE_ADD_DEVICE_FAILED(9001, "添加调度组成员设备失败"),

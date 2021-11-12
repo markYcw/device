@@ -2,7 +2,10 @@ package com.kedacom.device.api.cu;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.cu.dto.*;
+import com.kedacom.cu.dto.ControlPtzRequestDto;
+import com.kedacom.cu.dto.CuRequestDto;
+import com.kedacom.cu.dto.DevEntityQuery;
+import com.kedacom.cu.dto.SelectTreeDto;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.api.cu.fallback.CuApiFallbackFactory;
 import io.swagger.annotations.ApiImplicitParam;
@@ -79,5 +82,21 @@ public interface DevApi {
     @ApiOperation("PTZ控制")
     @PostMapping("/controlPtz")
     BaseResult<String> controlPtz(@RequestBody ControlPtzRequestDto requestDto);
+
+    @ApiOperation("开启平台录像")
+    @PostMapping("/startRec")
+    BaseResult<Boolean> startRec(@RequestBody PlatRecStartVo platRecStartVo);
+
+    @ApiOperation("关闭平台录像")
+    @PostMapping("/stopRec")
+    BaseResult<Boolean> stopRec(@RequestBody PlatRecStopVo platRecStopVo);
+
+    @ApiOperation("开启前端录像")
+    @PostMapping("/startPuRec")
+    BaseResult<Boolean> startPuRec(@RequestBody PuRecStartVo puRecStartVo);
+
+    @ApiOperation("关闭前端录像")
+    @PostMapping("/stopPuRec")
+    BaseResult<Boolean> stopPuRec(@RequestBody PuRecStopVo puRecStopVo);
 
 }

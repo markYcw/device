@@ -459,11 +459,95 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 .postForObject(param.getUrl() + "/ptz/{ssid}/{ssno}", JSON.toJSONString(controlPtzDto), String.class, param.getParamMap());
         log.info("PTZ控制响应参数 : {}", responseStr);
         CuResponse response = JSONObject.parseObject(responseStr, CuResponse.class);
-        String errorMsg = "PTZ控制操作失败:{},{},{}";
+        String errorMsg = "PTZ控制操作失败 : {}, {}, {}";
         assert response != null;
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_CONTROL_PTZ_FAILED, response);
 
         return BaseResult.succeed(null, "PTZ控制操作成功");
+    }
+
+    @Override
+    public BaseResult<Boolean> startRec(PlatRecStartVo platRecStartVo) {
+
+        CuEntity cuEntity = cuMapper.selectById(platRecStartVo.getDbId());
+        check(cuEntity);
+        CuBasicParam param = tool.getParam(cuEntity);
+        PlayRecDto playRecDto = convert.convertPlayRecDto(platRecStartVo);
+        playRecDto.setType(0);
+        log.info("开启平台录像请求参数信息 : {}", playRecDto);
+
+        String responseStr = remoteRestTemplate.getRestTemplate()
+                .postForObject(param.getUrl() + "/platrec/{ssid}/{ssno}", JSON.toJSONString(playRecDto), String.class, param.getParamMap());
+        log.info("开启平台录像响应参数 : {}", responseStr);
+        CuResponse response = JSONObject.parseObject(responseStr, CuResponse.class);
+        String errorMsg = "开启平台录像操作失败 : {}, {}, {}";
+        assert response != null;
+        responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_START_REC_FAILED, response);
+
+        return BaseResult.succeed(null, true);
+    }
+
+    @Override
+    public BaseResult<Boolean> stopRec(PlatRecStopVo platRecStopVo) {
+
+        CuEntity cuEntity = cuMapper.selectById(platRecStopVo.getDbId());
+        check(cuEntity);
+        CuBasicParam param = tool.getParam(cuEntity);
+        PlayRecDto playRecDto = convert.convertPlayRecDto(platRecStopVo);
+        playRecDto.setType(1);
+        log.info("关闭平台录像请求参数信息 : {}", playRecDto);
+
+        String responseStr = remoteRestTemplate.getRestTemplate()
+                .postForObject(param.getUrl() + "/platrec/{ssid}/{ssno}", JSON.toJSONString(playRecDto), String.class, param.getParamMap());
+        log.info("关闭平台录像响应参数 : {}", responseStr);
+        CuResponse response = JSONObject.parseObject(responseStr, CuResponse.class);
+        String errorMsg = "关闭平台录像操作失败 : {}, {}, {}";
+        assert response != null;
+        responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_STOP_REC_FAILED, response);
+
+        return BaseResult.succeed(null, true);
+    }
+
+    @Override
+    public BaseResult<Boolean> startPuRec(PuRecStartVo puRecStartVo) {
+
+        CuEntity cuEntity = cuMapper.selectById(puRecStartVo.getDbId());
+        check(cuEntity);
+        CuBasicParam param = tool.getParam(cuEntity);
+        PlayRecDto playRecDto = convert.convertPlayRecDto(puRecStartVo);
+        playRecDto.setType(0);
+        log.info("开启前端录像请求参数信息 : {}", playRecDto);
+
+        String responseStr = remoteRestTemplate.getRestTemplate()
+                .postForObject(param.getUrl() + "/purec/{ssid}/{ssno}", JSON.toJSONString(playRecDto), String.class, param.getParamMap());
+        log.info("开启前端录像响应参数 : {}", responseStr);
+        CuResponse response = JSONObject.parseObject(responseStr, CuResponse.class);
+        String errorMsg = "开启前端录像操作失败 : {}, {}, {}";
+        assert response != null;
+        responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_START_PU_REC_FAILED, response);
+
+        return BaseResult.succeed(null, true);
+    }
+
+    @Override
+    public BaseResult<Boolean> stopPuRec(PuRecStopVo puRecStopVo) {
+
+        CuEntity cuEntity = cuMapper.selectById(puRecStopVo.getDbId());
+        check(cuEntity);
+        CuBasicParam param = tool.getParam(cuEntity);
+        PlayRecDto playRecDto = convert.convertPlayRecDto(puRecStopVo);
+        playRecDto.setType(1);
+        log.info("关闭前端录像请求参数信息 : {}", playRecDto);
+
+        String responseStr = remoteRestTemplate.getRestTemplate()
+                .postForObject(param.getUrl() + "/purec/{ssid}/{ssno}", JSON.toJSONString(playRecDto), String.class, param.getParamMap());
+        log.info("关闭前端录像响应参数 : {}", responseStr);
+        CuResponse response = JSONObject.parseObject(responseStr, CuResponse.class);
+        String errorMsg = "关闭前端录像操作失败 : {}, {}, {}";
+        assert response != null;
+        responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_STOP_PU_REC_FAILED, response);
+
+        return BaseResult.succeed(null, true);
     }
 
 }

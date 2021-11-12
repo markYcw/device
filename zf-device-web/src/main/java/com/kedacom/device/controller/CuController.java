@@ -210,4 +210,31 @@ public class CuController {
         return cuService.stopPuRec(puRecStopVo);
     }
 
+    @ApiOperation("打开录像锁定")
+    @PostMapping("/openLockingRec")
+    public BaseResult<Boolean> openLockingRec(@Valid @RequestBody OpenLockingRecRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.openLockingRec(requestDto);
+    }
+
+    @ApiOperation("取消录像锁定")
+    @PostMapping("/cancelLockingRec")
+    public BaseResult<Boolean> cancelLockingRec(@Valid @RequestBody CancelLockingRecRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.cancelLockingRec(requestDto);
+    }
+
+    @ApiOperation("查询磁阵(磁盘)信息")
+    @GetMapping("/queryDisk")
+    public BaseResult<DiskInfoVo> queryDisk(@Valid @RequestBody QueryDiskRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.queryDisk(requestDto);
+    }
+
 }

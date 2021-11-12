@@ -36,4 +36,10 @@ public interface CuConvert {
 
     @Mappings({@Mapping(target = "chn",source = "chnId")})
     PlayRecDto convertPlayRecDto(PuRecStopVo puRecStopVo);
+
+    @Mappings({@Mapping(target = "chn",source = "chnId")})
+    OperateLockingRecDto convertOperateLockDto(OpenLockingRecRequestDto openLockingRequestDto);
+
+    @Mappings({@Mapping(target = "chn",source = "chnId")})
+    OperateLockingRecDto convertOperateLockDto(CancelLockingRecRequestDto cancelLockingRequestDto);
 }

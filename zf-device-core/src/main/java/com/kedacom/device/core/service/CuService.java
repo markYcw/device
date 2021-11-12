@@ -6,7 +6,10 @@ import com.kedacom.BaseResult;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.*;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -88,5 +91,26 @@ public interface CuService extends IService<CuEntity> {
      * @return
      */
     BaseResult<Boolean> stopPuRec(PuRecStopVo puRecStopVo);
+
+    /**
+     * 打开录像锁定
+     * @param requestDto
+     * @return
+     */
+    BaseResult<Boolean> openLockingRec(OpenLockingRecRequestDto requestDto);
+
+    /**
+     * 取消录像锁定
+     * @param requestDto
+     * @return
+     */
+    BaseResult<Boolean> cancelLockingRec(CancelLockingRecRequestDto requestDto);
+
+    /**
+     * 查询磁阵(磁盘)信息
+     * @param requestDto
+     * @return
+     */
+    BaseResult<DiskInfoVo> queryDisk(QueryDiskRequestDto requestDto);
 
 }

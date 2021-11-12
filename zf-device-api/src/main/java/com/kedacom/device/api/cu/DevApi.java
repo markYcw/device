@@ -2,19 +2,20 @@ package com.kedacom.device.api.cu;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.cu.dto.ControlPtzRequestDto;
-import com.kedacom.cu.dto.CuRequestDto;
-import com.kedacom.cu.dto.DevEntityQuery;
-import com.kedacom.cu.dto.SelectTreeDto;
+import com.kedacom.cu.dto.*;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.api.cu.fallback.CuApiFallbackFactory;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.validation.Valid;
 
 /**
  * svr相关操作
@@ -98,5 +99,17 @@ public interface DevApi {
     @ApiOperation("关闭前端录像")
     @PostMapping("/stopPuRec")
     BaseResult<Boolean> stopPuRec(@RequestBody PuRecStopVo puRecStopVo);
+
+    @ApiOperation("打开录像锁定")
+    @PostMapping("/openLockingRec")
+    BaseResult<Boolean> openLockingRec(@RequestBody OpenLockingRecRequestDto requestDto);
+
+    @ApiOperation("取消录像锁定")
+    @PostMapping("/cancelLockingRec")
+    BaseResult<Boolean> cancelLockingRec(@RequestBody CancelLockingRecRequestDto requestDto);
+
+    @ApiOperation("查询磁阵(磁盘)信息")
+    @GetMapping("/queryDisk")
+    BaseResult<DiskInfoVo> queryDisk(@RequestBody QueryDiskRequestDto requestDto);
 
 }

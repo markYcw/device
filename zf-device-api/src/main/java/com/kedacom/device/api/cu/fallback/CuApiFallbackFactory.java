@@ -107,6 +107,21 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
             public BaseResult<Boolean> stopPuRec(PuRecStopVo puRecStopVo) {
                 return BaseResult.failed(throwable.getMessage());
             }
+
+            @Override
+            public BaseResult<Boolean> openLockingRec(OpenLockingRecRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<Boolean> cancelLockingRec(CancelLockingRecRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<DiskInfoVo> queryDisk(QueryDiskRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
         };
     }
 }

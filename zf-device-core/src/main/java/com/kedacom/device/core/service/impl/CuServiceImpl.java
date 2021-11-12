@@ -550,4 +550,66 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         return BaseResult.succeed(null, true);
     }
 
+    @Override
+    public BaseResult<Boolean> openLockingRec(OpenLockingRecRequestDto requestDto) {
+
+        OperateLockingRecDto operateLockingRecDto = convert.convertOperateLockDto(requestDto);
+        operateLockingRecDto.setType(0);
+        log.info("打开录像锁定请求参数信息 : {}", operateLockingRecDto);
+        CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
+        check(cuEntity);
+        CuBasicParam param = tool.getParam(cuEntity);
+
+        String responseStr = remoteRestTemplate.getRestTemplate()
+                .postForObject(param.getUrl() + "/lockrec/{ssid}/{ssno}", JSON.toJSONString(operateLockingRecDto), String.class, param.getParamMap());
+        log.info("打开录像锁定响应参数 : {}", responseStr);
+        CuResponse response = JSONObject.parseObject(responseStr, CuResponse.class);
+        String errorMsg = "打开录像锁定操作失败 : {}, {}, {}";
+        assert response != null;
+        responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_OPEN_LOCKING_REC_FAILED, response);
+
+        return BaseResult.succeed(null, true);
+    }
+
+    @Override
+    public BaseResult<Boolean> cancelLockingRec(CancelLockingRecRequestDto requestDto) {
+
+        OperateLockingRecDto operateLockingRecDto = convert.convertOperateLockDto(requestDto);
+        operateLockingRecDto.setType(1);
+        log.info("取消录像锁定请求参数信息 : {}", operateLockingRecDto);
+        CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
+        check(cuEntity);
+        CuBasicParam param = tool.getParam(cuEntity);
+
+        String responseStr = remoteRestTemplate.getRestTemplate()
+                .postForObject(param.getUrl() + "/lockrec/{ssid}/{ssno}", JSON.toJSONString(operateLockingRecDto), String.class, param.getParamMap());
+        log.info("取消录像锁定响应参数 : {}", responseStr);
+        CuResponse response = JSONObject.parseObject(responseStr, CuResponse.class);
+        String errorMsg = "取消录像锁定操作失败 : {}, {}, {}";
+        assert response != null;
+        responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_CANCEL_LOCKING_REC_FAILED, response);
+
+        return BaseResult.succeed(null, true);
+    }
+
+    @Override
+    public BaseResult<DiskInfoVo> queryDisk(QueryDiskRequestDto requestDto) {
+
+        log.info("查询磁阵(磁盘)信息请求参数，平台id : {}", requestDto.getDbId());
+        CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
+        check(cuEntity);
+        CuBasicParam param = tool.getParam(cuEntity);
+
+        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
+                .exchange(param.getUrl() + "/disks/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
+        log.info("查询磁阵(磁盘)信息响应参数 : {}", exchange.getBody());
+        CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);
+        String errorMsg = "查询磁阵(磁盘)信息失败 : {}, {}, {}";
+        assert response != null;
+        responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_QUERY_DISK_FAILED, response);
+        DiskInfoVo diskInfoVo = JSON.parseObject(exchange.getBody(), DiskInfoVo.class);
+
+        return BaseResult.succeed(null, diskInfoVo);
+    }
+
 }

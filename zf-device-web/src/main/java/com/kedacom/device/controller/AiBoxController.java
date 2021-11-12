@@ -100,7 +100,7 @@ public class AiBoxController {
 
         ValidUtils.paramValid(br);
         if (aiBoxService.setThreshold(requestDto)) {
-            return BaseResult.succeed(null, "设置成功");
+            return BaseResult.succeed(null, "设置成功, 设备开始重启");
         }
 
         return BaseResult.failed("设置失败");

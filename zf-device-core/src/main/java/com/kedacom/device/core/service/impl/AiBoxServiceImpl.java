@@ -355,8 +355,8 @@ public class AiBoxServiceImpl implements AiBoxService {
         }
         GetThresholdResponseDto responseDto = new GetThresholdResponseDto();
         responseDto.setAbIp(abIp);
-        responseDto.setMinFace((String) minFace);
-        responseDto.setMaxFace((String) maxFace);
+        responseDto.setMinFace(String.valueOf(minFace));
+        responseDto.setMaxFace(String.valueOf(maxFace));
         responseDto.setAbName(aiBoxEntity.getAbName());
 
         return responseDto;

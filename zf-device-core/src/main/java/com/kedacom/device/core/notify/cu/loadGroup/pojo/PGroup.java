@@ -47,7 +47,8 @@ public class PGroup implements Cloneable{
 	/**
 	 * 改分组下面是否有设备，平台2.0有效，方便刷设备。
 	 */
-	private boolean ishasdev;
+	@ApiModelProperty("改分组下面是否有设备 0否 1是")
+	private Integer hasDev;
 
 	public String getName() {
 		return name;
@@ -79,14 +80,6 @@ public class PGroup implements Cloneable{
 
 	public void setSortChildGroups(List<PGroup> sortChildGroups) {
 		this.sortChildGroups = sortChildGroups;
-	}
-
-	public boolean isIshasdev() {
-		return ishasdev;
-	}
-
-	public void setIshasdev(boolean ishasdev) {
-		this.ishasdev = ishasdev;
 	}
 
 	public void addChildGroup(PGroup group){

@@ -421,7 +421,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Override
     public BaseResult<String> devices(DevicesDto dto) {
-        log.info("获取设备信息接口入参{}",dto.getDbId());
+        log.info("获取设备信息接口入参{}",dto);
         CuEntity entity = cuMapper.selectById(dto.getDbId());
         check(entity);
         CuBasicParam param = tool.getParam(entity);

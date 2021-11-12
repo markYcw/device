@@ -2,6 +2,7 @@ package com.kedacom.device.core.utils;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.kedacom.core.pojo.BaseResponse;
 import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
@@ -30,6 +31,9 @@ public class HandleResponseUtil {
 
     @Autowired
     private McuErrCode mcuErrCode;
+
+    @Autowired
+    private CuErrCode cuErrCode;
 
 
     /**
@@ -154,8 +158,13 @@ public class HandleResponseUtil {
      */
     public void handleCuRes(String str, DeviceErrorEnum errorEnum, CuResponse res) {
         if (ObjectUtil.notEqual(res.getCode(), DeviceConstants.SUCCESS)) {
-            log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
-            throw new CuException(res.getCode(), errorEnum.getMsg());
+            if(StringUtils.isNotBlank(cuErrCode.matchErrMsg(res.getCode()))){
+                log.error(str, res.getCode(), errorEnum.getCode(), cuErrCode.matchErrMsg(res.getCode()));
+                throw new CuException(errorEnum.getCode(), cuErrCode.matchErrMsg(res.getCode()));
+            }else {
+                log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
+                throw new CuException(res.getCode(), errorEnum.getMsg());
+            }
         }
     }
 

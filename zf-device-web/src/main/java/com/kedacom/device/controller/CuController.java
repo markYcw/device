@@ -146,7 +146,7 @@ public class CuController {
      * @return 时间
      */
     @ApiOperation("获取平台时间")
-    @PostMapping("/time")
+    @PostMapping("/getTime")
     @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
     public BaseResult<Long> getTime(@RequestParam Integer kmId){
 

@@ -19,9 +19,9 @@ public class CuNotifyFactory {
 
     public static void init(){
         NotifyFactory factory = ContextUtils.getBean(NotifyFactory.class);
-        HashMap<Integer, INotify> cuMap = new HashMap<>();
         factory.register(DeviceType.CU2.getValue(),1,new OffLineNotify());
         factory.register(DeviceType.CU2.getValue(),500,new GroupNotify());
+        factory.register(DeviceType.CU2.getValue(),501,new DevicesNotify());
     }
 
 }

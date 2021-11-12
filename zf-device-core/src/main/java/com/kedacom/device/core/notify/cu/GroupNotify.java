@@ -19,6 +19,7 @@ public class GroupNotify extends INotify {
     protected void consumeMessage(Integer ssid, String message) {
         GroupsNotify getGroupNotify = JSON.parseObject(message, GroupsNotify.class);
         GetGroupNotify content = getGroupNotify.getContent();
+        content.setSsid(getGroupNotify.getSsid());
         CuDeviceLoadThread cuDeviceLoadThread = ContextUtils.getBean(CuDeviceLoadThread.class);
         cuDeviceLoadThread.onDeviceGroupNotify(content);
     }

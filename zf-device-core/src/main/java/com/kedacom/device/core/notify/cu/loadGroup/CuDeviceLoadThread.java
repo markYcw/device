@@ -1,6 +1,10 @@
 package com.kedacom.device.core.notify.cu.loadGroup;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.cu.dto.DevicesDto;
+import com.kedacom.cu.entity.CuEntity;
+import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 import com.kedacom.device.core.service.CuService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +25,10 @@ public class CuDeviceLoadThread {
 
 	@Autowired
 	private CuService cuService;
+
+	@Autowired
+	private CuMapper cuMapper;
+
 	
 	/**
 	 * 会话标识
@@ -45,16 +53,9 @@ public class CuDeviceLoadThread {
 	private Thread loadThread;
 	private CuClient client;
 
-	private CuDeviceCache cuDeviceCache;
 
-	/**
-	 * 设置全局唯一的监控平台客户端
-	 * @param client
-	 */
-	public void setCuClient(CuClient client){
-		if(ObjectUtils.isEmpty(client)){
-			this.client=client;
-		}
+	public CuDeviceLoadThread(CuClient client){
+		this.client = client;
 	}
 
 	/**
@@ -223,7 +224,7 @@ public class CuDeviceLoadThread {
 	 * @param ssid
 	 */
 	private void loadNextDeviceGroup(int ssid){
-		
+
 		String groupId = null;
 		LinkedList<String> list = unKownDeviceGroup.get(ssid);
 		if(list != null){
@@ -264,8 +265,14 @@ public class CuDeviceLoadThread {
 	 * @throws Exception
 	 */
 	private void requestLoadDevice(int ssid, String groupId) throws Exception{
+		//获取cu数据库ID
+		LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(CuEntity::getSsid,ssid);
+		List<CuEntity> list = cuMapper.selectList(wrapper);
+		CuEntity cuEntity = list.get(DevTypeConstant.getZero);
 
 		DevicesDto devicesDto = new DevicesDto();
+		devicesDto.setDbId(cuEntity.getId());
 		devicesDto.setGroupId(groupId);
 		cuService.devices(devicesDto);
 	}

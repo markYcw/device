@@ -19,6 +19,7 @@ public class DevicesNotify extends INotify {
     protected void consumeMessage(Integer ssid, String message) {
         DeviceNotify deviceNotify = JSON.parseObject(message, DeviceNotify.class);
         GetDeviceNotify content = deviceNotify.getContent();
+        content.setSsid(deviceNotify.getSsid());
         CuDeviceLoadThread cuDeviceLoadThread = ContextUtils.getBean(CuDeviceLoadThread.class);
         cuDeviceLoadThread.onDeviceNotify(content);
     }

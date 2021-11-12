@@ -35,7 +35,8 @@ public class CuClient {
 
 
 	public CuClient(){
-
+		this.sessionManager = new CuSessionManager(this);
+		this.deviceLoadThread = new CuDeviceLoadThread(this);
 		this.sessionManager = new CuSessionManager(this);
 
 	}

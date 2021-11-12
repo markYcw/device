@@ -255,6 +255,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         String domain = getDomain(entity.getId());
         DevEntityVo devEntityVo = convert.convertToDevEntityVo(entity);
         devEntityVo.setDomainId(domain);
+        devEntityVo.setStatus(DevTypeConstant.updateRecordKey);
 
         //登录成功以后加载分组信息
         getGroups(dto.getDbId(),response.getSsid());
@@ -281,12 +282,11 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      * @param dbId 数据库ID
      */
     private void getGroups(Integer dbId,Integer ssid){
-        CuClient cuClient = new CuClient();
+        //把CuSession加载到设备容器cuDeviceLoadThread
         CuSession cuSession = new CuSession();
         cuSession.setSsid(ssid);
         cuSession.setStatus(CuSessionStatus.CONNECTED);
-        cuClient.getSessionManager().putSession(cuSession);
-        cuDeviceLoadThread.setCuClient(cuClient);
+        cuDeviceLoadThread.getCuClient().getSessionManager().putSession(cuSession);
         //开始加载分组
         DevGroupsDto devGroupsDto = new DevGroupsDto();
         devGroupsDto.setDbId(dbId);

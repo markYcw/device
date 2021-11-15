@@ -98,12 +98,8 @@ public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> i
             wrapper.eq(UmsMcuEntity::getSsid, ssid);
             List<UmsMcuEntity> mcuEntities = mapper.selectList(wrapper);
             for (Iterator<UmsMcuEntity> it = mcuEntities.iterator(); it.hasNext(); ) {
-                McuRequestDTO dto = new McuRequestDTO();
                 //收到离线通知先把MCU状态设置为离线
                 McuServiceImpl.mcuStatusPoll.remove(it.next().getId());
-                //尝试根据ID重新登录MCU
-                dto.setMcuId(it.next().getId());
-                mcuService.login(dto);
             }
         }
     }

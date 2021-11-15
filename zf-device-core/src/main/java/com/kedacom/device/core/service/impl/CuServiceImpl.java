@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.common.constants.DevTypeConstant;
+import com.kedacom.common.model.Result;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.*;
@@ -21,6 +22,9 @@ import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.notify.cu.loadGroup.CuDeviceLoadThread;
 import com.kedacom.device.core.notify.cu.loadGroup.CuSession;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.CuSessionStatus;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.PChannel;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.PDevice;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.PGroup;
 import com.kedacom.device.core.notify.stragegy.DeviceType;
 import com.kedacom.device.core.notify.stragegy.NotifyHandler;
 import com.kedacom.device.core.service.CuService;
@@ -31,6 +35,7 @@ import com.kedacom.device.core.utils.RemoteRestTemplate;
 import com.kedacom.device.cu.CuResponse;
 import com.kedacom.device.cu.request.CuLoginRequest;
 import com.kedacom.device.cu.response.CuLoginResponse;
+import com.kedacom.exception.KMException;
 import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -655,6 +660,861 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         DiskInfoVo diskInfoVo = JSON.parseObject(exchange.getBody(), DiskInfoVo.class);
 
         return BaseResult.succeed(null, diskInfoVo);
+    }
+
+    /**
+     * 根据条件返回监控平台树
+     * @param vo
+     * @return
+     */
+    @Override
+    public BaseResult<DevEntityVo> findByCondition(FindCuByConditionVo vo) {
+        log.info("=============根据条件返回监控平台树接口入参FindCuByConditionVo{}",vo);
+        Integer kmId = vo.getKmId();
+        CuEntity devEntity = cuMapper.selectById(kmId);
+        check(devEntity);
+        //设备名称
+        String name = vo.getName();
+        //设备在线状态
+        Integer pageStatus = vo.getStatus();
+        //设备类型
+        Integer deviceType = vo.getDeviceType();
+        if(ObjectUtils.isEmpty(devEntity)){
+            throw new CuException(DeviceErrorEnum.DEVICE_NOT_FOUND);
+        }
+        DevEntityVo devEntityVo = convert.convertToDevEntityVo(devEntity);
+            try {
+
+                    if (name == null && pageStatus == 1 && deviceType == null) {   //查询所有在线设备
+
+                        devEntityVo = this.getDevEntityVoFilter(devEntity.getId(), pageStatus);
+                    } else if (name == null && pageStatus == 2 && deviceType == null) {    //查询所有离线设备
+
+                        devEntityVo = this.getDevEntityVoFilter(devEntity.getId(), pageStatus);
+                    }else if((name == null|| name.equals("")) && pageStatus != null && deviceType != null){   //根据设备类型和在线状态查询
+
+                        devEntityVo = this.getDevEntityVoByDeviceTypeAndStatus(devEntity.getId(), deviceType, pageStatus);
+                        devEntityVo = this.removeEmptySortGroup(devEntityVo);
+                    } else if (name != null && pageStatus == 0 && deviceType == null) {   //根据设备名称查询
+
+                        devEntityVo = this.getDevEntityVoByName(devEntity.getId(), name);
+                        devEntityVo = this.removeEmptySortGroup(devEntityVo);
+                    } else if (name != null && (pageStatus == 1 || pageStatus == 2) && deviceType == null) {   //根据设备名称和设备在线状态查询
+
+                        devEntityVo = this.getDevEntityVoByNameAndStatus(devEntity.getId(), name, pageStatus);
+                        devEntityVo = this.removeEmptySortGroup(devEntityVo);
+                    } else if(name != null && pageStatus == 0 && deviceType != null ){   //根据设备名称和设备类型查询
+
+                        devEntityVo = this.getDevEntityVoByDeviceTypeAndName(devEntity.getId(), deviceType, name);
+                        devEntityVo = this.removeEmptySortGroup(devEntityVo);
+                    }else {
+
+                        devEntityVo = this.getDevEntityVo(devEntity.getId()); //查询所有设备
+                    }
+              devEntityVo.setStatus(DevTypeConstant.updateRecordKey);
+            } catch (Exception e) {
+                log.error("获取监控平台状态失败：{}", e.getMessage());
+                devEntityVo.setStatus(DevTypeConstant.updateRecordKey);
+            }
+
+        return BaseResult.succeed("查询成功",devEntityVo);
+    }
+
+    /**
+     * 用于过滤过滤条件后为空的子分组
+     *
+     * @param devEntityVo
+     * @return
+     */
+    private DevEntityVo removeEmptySortGroup(DevEntityVo devEntityVo) {
+        List<CuGroupVo> childList = devEntityVo.getChildList();
+        if(CollectionUtil.isEmpty(childList)){
+            return devEntityVo;
+        }
+        for (CuGroupVo cuGroupVo : childList) {
+            List<CuGroupVo> sortChildGroups = cuGroupVo.getSortChildGroups();
+            Iterator<CuGroupVo> iterator = sortChildGroups.iterator();
+            while (iterator.hasNext()) {
+                CuGroupVo next = iterator.next();
+                if (next.getChildList().size() <= 0) {
+                    iterator.remove();
+                }
+            }
+            cuGroupVo.setSortChildGroups(sortChildGroups);
+        }
+        devEntityVo.setChildList(childList);
+        return devEntityVo;
+    }
+
+    /**
+     * 获取监控平台信息
+     *
+     * @return
+     */
+    private DevEntityVo getDevEntityVo(Integer id) throws KMException {
+        CuEntity devEntity = cuMapper.selectById(id);
+        Integer ssid = devEntity.getSsid();
+        List<PGroup> groupList = this.getGroupList(ssid);
+        List<CuGroupVo> cuGroupVoList = new ArrayList<>();
+        groupList.stream().forEach(cuGroup -> cuGroupVoList.add(convert.covertToCuGroupVo(cuGroup)));
+        cuGroupVoList.stream().forEach(cuGroupVo -> cuGroupVo.setUuid(UUID.randomUUID().toString()));
+        DevEntityVo devEntityVo = convert.convertToDevEntityVo(devEntity);
+        //递归得到分组集合
+        List<CuGroupVo> groupVoList = getGroupVoList(cuGroupVoList, ssid);
+        devEntityVo.setChildList(groupVoList);
+        return devEntityVo;
+    }
+
+    /**
+     * 根据设备类型和名称得到树状图信息
+     *
+     * @param id 设备数据库ID
+     * @param deviceType 设备类型
+     * @param name 设备名称
+     */
+    private DevEntityVo getDevEntityVoByDeviceTypeAndName(Integer id, Integer deviceType, String name) throws KMException {
+        CuEntity devEntity = cuMapper.selectById(id);
+        Integer ssid = devEntity.getSsid();
+        List<PGroup> groupList = this.getGroupList(ssid);
+        List<CuGroupVo> cuGroupVoList = new ArrayList<>();
+        groupList.stream().forEach(cuGroup -> cuGroupVoList.add(convert.covertToCuGroupVo(cuGroup)));
+        cuGroupVoList.forEach(cuGroupVo -> cuGroupVo.setUuid(UUID.randomUUID().toString()));
+        DevEntityVo devEntityVo = convert.convertToDevEntityVo(devEntity);
+        //递归得到过滤分组集合
+        List<CuGroupVo> groupVoList = getGroupVoListByDeviceTypeAndName(deviceType, cuGroupVoList, ssid, name);
+        devEntityVo.setChildList(groupVoList);
+        return devEntityVo;
+    }
+
+    /**
+     * 根据名称和状态得到树状图信息
+     *
+     * @param id
+     * @param name
+     * @param status
+     */
+    private DevEntityVo getDevEntityVoByNameAndStatus(Integer id, String name, Integer status) throws KMException {
+        Boolean onLine;
+        if (status == 1) {
+            onLine = true;
+        } else {
+            onLine = false;
+        }
+        CuEntity devEntity = cuMapper.selectById(id);
+        if (devEntity == null) {
+            return null;
+        }
+        Integer ssid = devEntity.getSsid();
+        List<PGroup> groupList = this.getGroupList(ssid);
+        List<CuGroupVo> cuGroupVoList = new ArrayList<>();
+        groupList.stream().forEach(cuGroup -> cuGroupVoList.add(convert.covertToCuGroupVo(cuGroup)));
+        cuGroupVoList.forEach(cuGroupVo -> cuGroupVo.setUuid(UUID.randomUUID().toString()));
+        DevEntityVo devEntityVo = convert.convertToDevEntityVo(devEntity);
+        //递归得到过滤分组集合
+        List<CuGroupVo> groupVoList = getGroupVoListByNameAndStatus(name, cuGroupVoList, ssid, onLine);
+        devEntityVo.setChildList(groupVoList);
+        return devEntityVo;
+    }
+
+    /**
+     * 根据名称模糊查询得到树状信息
+     *
+     * @param id
+     * @param name
+     * @return
+     * @throws KMException
+     */
+    private DevEntityVo getDevEntityVoByName(Integer id, String name) throws KMException {
+        CuEntity devEntity = cuMapper.selectById(id);
+        if (devEntity == null) {
+            return null;
+        }
+        Integer ssid = devEntity.getSsid();
+        List<PGroup> groupList = this.getGroupList(ssid);
+        List<CuGroupVo> cuGroupVoList = new ArrayList<>();
+        groupList.stream().forEach(cuGroup -> cuGroupVoList.add(convert.covertToCuGroupVo(cuGroup)));
+        cuGroupVoList.forEach(cuGroupVo -> cuGroupVo.setUuid(UUID.randomUUID().toString()));
+        DevEntityVo devEntityVo = convert.convertToDevEntityVo(devEntity);
+        //递归得到过滤分组集合
+        List<CuGroupVo> groupVoList = getGroupVoListByName(name, cuGroupVoList, ssid);
+        devEntityVo.setChildList(groupVoList);
+        return devEntityVo;
+    }
+
+    /**
+     * 获取监控平台过滤信息Vo
+     *
+     * @return
+     */
+    private DevEntityVo getDevEntityVoFilter(Integer id, Integer status) throws KMException {
+        Boolean onLine;
+        if (status == 1) {
+            onLine = true;
+        } else {
+            onLine = false;
+        }
+        CuEntity devEntity = cuMapper.selectById(id);
+        Integer ssid = devEntity.getSsid();
+        List<PGroup> groupList = this.getGroupList(ssid);
+        List<CuGroupVo> cuGroupVoList = new ArrayList<>();
+        groupList.stream().forEach(cuGroup -> cuGroupVoList.add(convert.covertToCuGroupVo(cuGroup)));
+        cuGroupVoList.forEach(cuGroupVo -> cuGroupVo.setUuid(UUID.randomUUID().toString()));
+        DevEntityVo devEntityVo = convert.convertToDevEntityVo(devEntity);
+        //递归得到过滤分组集合
+        List<CuGroupVo> groupVoList = getGroupVoListFilter(onLine, cuGroupVoList, ssid);
+        devEntityVo.setChildList(groupVoList);
+        return devEntityVo;
+    }
+
+    /**
+     * 根据设备类型和状态得到树状图信息
+     *
+     * @param id 设备数据库ID
+     * @param deviceType 设备类型
+     * @param status 在线状态
+     */
+    private DevEntityVo getDevEntityVoByDeviceTypeAndStatus(Integer id, Integer deviceType, Integer status) throws KMException {
+        Boolean onLine;
+        if (status == 1) {
+            onLine = true;
+        } else {
+            onLine = false;
+        }
+        CuEntity devEntity = cuMapper.selectById(id);
+        Integer ssid = devEntity.getSsid();
+        List<PGroup> groupList = this.getGroupList(ssid);
+        List<CuGroupVo> cuGroupVoList = new ArrayList<>();
+        groupList.stream().forEach(cuGroup -> cuGroupVoList.add(convert.covertToCuGroupVo(cuGroup)));
+        cuGroupVoList.forEach(cuGroupVo -> cuGroupVo.setUuid(UUID.randomUUID().toString()));
+        DevEntityVo devEntityVo = convert.convertToDevEntityVo(devEntity);
+        //根据在线状态（在线，离线，全部）递归得到过滤分组集合
+        List<CuGroupVo> groupVoList = null;
+        if(status==0){
+            groupVoList =  getGroupVoListByDeviceType(deviceType,cuGroupVoList,ssid);
+        }else {
+            groupVoList = getGroupVoListByDeviceTypeAndStatus(deviceType, cuGroupVoList, status, onLine);
+        }
+
+        devEntityVo.setChildList(groupVoList);
+        return devEntityVo;
+    }
+
+    /**
+     * 递归查询该分组下是否还有子分组，并设置cuDevice列表
+     *
+     * @param cuGroupVoList
+     * @param ssid           查询设备列表所用
+     * @return
+     * @throws KMException
+     */
+    private List<CuGroupVo> getGroupVoList(List<CuGroupVo> cuGroupVoList, Integer ssid) {
+        if (CollectionUtil.isNotEmpty(cuGroupVoList)) {
+            for (CuGroupVo cuGroupVo : cuGroupVoList) {
+                setDevList(ssid, cuGroupVo);
+            }
+            for (CuGroupVo cuGroupVo : cuGroupVoList) {
+                List<CuGroupVo> sortChildGroups = cuGroupVo.getSortChildGroups();
+                if (CollectionUtil.isEmpty(sortChildGroups)) {
+                    continue;
+                }
+                this.removeEmptyGroup(sortChildGroups, ssid);
+                sortChildGroups.stream().forEach(cuGroupVo1 -> cuGroupVo1.setUuid(UUID.randomUUID().toString()));
+                getGroupVoList(sortChildGroups, ssid);
+            }
+        }
+        return cuGroupVoList;
+    }
+
+    /**
+     * 根据设备类型和设备名称模糊查询得到分组
+     *
+     * @param deviceType
+     * @param cuGroupVoList
+     * @param ssid
+     * @param name
+     * @return
+     */
+    private List<CuGroupVo> getGroupVoListByDeviceTypeAndName(Integer deviceType, List<CuGroupVo> cuGroupVoList, Integer ssid, String name) {
+        if (CollectionUtil.isNotEmpty(cuGroupVoList)) {
+            Iterator<CuGroupVo> iterator = cuGroupVoList.iterator();
+            while (iterator.hasNext()) {
+                CuGroupVo next = iterator.next();
+                setDeviceListByNameAndDeviceType(deviceType, ssid, next, name);
+                List<CuGroupVo> sortChildGroups = next.getSortChildGroups();
+                if (CollectionUtil.isEmpty(sortChildGroups)) {
+                    continue;
+                }
+                this.removeEmptyGroup(sortChildGroups, ssid);
+                sortChildGroups.stream().forEach(cuGroupVo1 -> cuGroupVo1.setUuid(UUID.randomUUID().toString()));
+                getGroupVoListByDeviceTypeAndName(deviceType, sortChildGroups, ssid, name);
+            }
+        }
+        return cuGroupVoList;
+    }
+
+    /**
+     * 根据名称和状态模糊查询得到分组
+     *
+     * @param name
+     * @param cuGroupVoList
+     * @param ssid
+     * @return
+     */
+    private List<CuGroupVo> getGroupVoListByNameAndStatus(String name, List<CuGroupVo> cuGroupVoList, Integer ssid, Boolean online) {
+        if (CollectionUtil.isNotEmpty(cuGroupVoList)) {
+            Iterator<CuGroupVo> iterator = cuGroupVoList.iterator();
+            while (iterator.hasNext()) {
+                CuGroupVo next = iterator.next();
+                setDeviceListByNameAndStatus(name, ssid, next, online);
+                List<CuGroupVo> sortChildGroups = next.getSortChildGroups();
+                if (CollectionUtil.isEmpty(sortChildGroups)) {
+                    continue;
+                }
+                this.removeEmptyGroup(sortChildGroups, ssid);
+                sortChildGroups.stream().forEach(cuGroupVo1 -> cuGroupVo1.setUuid(UUID.randomUUID().toString()));
+                getGroupVoListByNameAndStatus(name, sortChildGroups, ssid, online);
+            }
+        }
+        return cuGroupVoList;
+    }
+
+    /**
+     * 根据设备类型和状态模糊查询得到分组
+     *
+     * @param deviceType
+     * @param cuGroupVoList
+     * @param rid
+     * @return
+     */
+    private List<CuGroupVo> getGroupVoListByDeviceTypeAndStatus(Integer deviceType, List<CuGroupVo> cuGroupVoList, Integer rid, Boolean online) {
+        if (CollectionUtil.isNotEmpty(cuGroupVoList)) {
+            Iterator<CuGroupVo> iterator = cuGroupVoList.iterator();
+            while (iterator.hasNext()) {
+                CuGroupVo next = iterator.next();
+                setDeviceListByDeviceTypeAndStatus(deviceType, rid, next, online);
+                List<CuGroupVo> sortChildGroups = next.getSortChildGroups();
+                if (CollectionUtil.isEmpty(sortChildGroups)) {
+                    continue;
+                }
+                this.removeEmptyGroup(sortChildGroups, rid);
+                sortChildGroups.stream().forEach(cuGroupVo1 -> cuGroupVo1.setUuid(UUID.randomUUID().toString()));
+                getGroupVoListByDeviceTypeAndStatus(deviceType, sortChildGroups, rid, online);
+            }
+        }
+        return cuGroupVoList;
+    }
+
+    /**
+     * 根据名称模糊查询的到分组
+     *
+     * @param name
+     * @param cuGroupVoList
+     * @param ssid
+     * @return
+     */
+    private List<CuGroupVo> getGroupVoListByName(String name, List<CuGroupVo> cuGroupVoList, Integer ssid) {
+        if (CollectionUtil.isNotEmpty(cuGroupVoList)) {
+            Iterator<CuGroupVo> iterator = cuGroupVoList.iterator();
+            while (iterator.hasNext()) {
+                CuGroupVo next = iterator.next();
+                setDeviceListByName(name, ssid, next);
+                List<CuGroupVo> sortChildGroups = next.getSortChildGroups();
+                if (CollectionUtil.isEmpty(sortChildGroups)) {
+                    continue;
+                }
+                this.removeEmptyGroup(sortChildGroups, ssid);
+                sortChildGroups.stream().forEach(cuGroupVo1 -> cuGroupVo1.setUuid(UUID.randomUUID().toString()));
+                getGroupVoListByName(name, sortChildGroups, ssid);
+            }
+        }
+        return cuGroupVoList;
+    }
+
+    /**
+     * 设置CuGroupVO中的device列表
+     *
+     * @param ssid
+     * @param cuGroupVo
+     * @throws KMException
+     */
+    private void setDevList(Integer ssid, CuGroupVo cuGroupVo) {
+        int devOnlineCount = 0;
+        String groupId = cuGroupVo.getId();
+        List<PDevice> deviceList = this.getDeviceList(ssid, groupId);
+        List<CuDeviceVo> cuDeviceVos = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(deviceList)) {
+
+            int chanelOnlineCount = 0;
+            for (PDevice cuDevice : deviceList) {
+                if (cuDevice == null) {
+                    continue;
+                }
+                CuDeviceVo cuDeviceVo = convert.covertToCuDeviceVo(cuDevice);
+                cuDeviceVo.setUuid(UUID.randomUUID().toString());
+                if (cuDeviceVo.isOnline()) {
+                    devOnlineCount += 1;
+                }
+                List<PChannel> channels = cuDevice.getChannels();
+                List<CuChannelVo> cuChannelVos = new ArrayList<>();
+                if (CollectionUtil.isNotEmpty(channels)) {
+                    for (PChannel channel : channels) {
+                        if (channel.isOnline()) {
+                            chanelOnlineCount += 1;
+                        }
+                        if (channel != null) {
+                            CuChannelVo cuChannelVo = convert.convertToCuChannelVo(channel);
+                            cuChannelVo.setUuid(UUID.randomUUID().toString());
+                            cuChannelVos.add(cuChannelVo);
+                        }
+                    }
+                }
+                cuDeviceVo.setChildList(cuChannelVos);
+                cuDeviceVo.setOnLineCount(chanelOnlineCount);
+                cuDeviceVo.setCount(cuChannelVos.size());
+                cuDeviceVos.add(cuDeviceVo);
+            }
+        }
+        cuGroupVo.setCount(deviceList.size());
+        cuGroupVo.setOnLineCount(devOnlineCount);
+        cuGroupVo.setChildList(cuDeviceVos);
+    }
+
+    /**
+     * 根据设备名称和设备类型获取设备列表
+     *
+     * @param deviceType
+     * @param ssid
+     * @param cuGroupVo
+     * @param name
+     */
+    private void setDeviceListByNameAndDeviceType(Integer deviceType, Integer ssid, CuGroupVo cuGroupVo, String name) {
+        List<PDevice> deviceList = this.getDeviceList(ssid, cuGroupVo.getId());
+        ArrayList<CuDeviceVo> cuDeviceVos = new ArrayList<>();
+        deviceList.stream().forEach(cuDevice -> cuDeviceVos.add(convert.covertToCuDeviceVo(cuDevice)));
+        cuDeviceVos.stream().forEach(cuDeviceVo -> cuDeviceVo.setUuid(UUID.randomUUID().toString()));
+        Iterator<CuDeviceVo> iterator = cuDeviceVos.iterator();
+        Integer cuGroupOnLine = 0;
+        while (iterator.hasNext()) {
+            Integer cuDeviceOnLine = 0;
+            CuDeviceVo next = iterator.next();
+            //先判断设备是否符合筛选条件
+            if (!(next.getDeviceType() == deviceType)) {
+                iterator.remove();
+                continue;
+            } else {
+                if (next.isOnline()) {
+                    cuGroupOnLine = cuGroupOnLine + 1;
+                }
+            }
+            //再判断通道是否符合筛选条件
+            List<CuChannelVo> childList = next.getChildList();
+            childList.stream().forEach(cuChannelVo -> cuChannelVo.setUuid(UUID.randomUUID().toString()));
+            childList.stream().forEach(cuChannelVo -> cuChannelVo.setRid(ssid));
+            if (CollectionUtil.isNotEmpty(childList)) {
+                Iterator<CuChannelVo> iterator1 = childList.iterator();
+                while (iterator1.hasNext()) {
+                    CuChannelVo next1 = iterator1.next();
+                    if (!(next1.getName().toLowerCase().contains(name.toLowerCase()))) {
+                        iterator1.remove();
+                    } else {
+                        if (next1.isOnline()) {
+                            cuDeviceOnLine = cuDeviceOnLine + 1;
+                        }
+                    }
+                }
+            }
+            //如果筛选后的通道集合长度大于零给设备设置通道属性值
+            if (childList.size() > 0) {
+                next.setOnLineCount(cuDeviceOnLine);
+                next.setCount(childList.size());
+                next.setChildList(childList);
+                if (next.isOnline()) {
+                    cuGroupOnLine = cuGroupOnLine + 1;
+                }
+            }else {
+                //如果筛选后的通道集合长度小于零再对设备名称进行筛选,如果不符合条件则删除改设备
+                if(!(next.getName().toLowerCase().contains(name.toLowerCase()))){
+                    iterator.remove();
+                }
+            }
+        }
+        cuGroupVo.setOnLineCount(cuGroupOnLine);
+        cuGroupVo.setCount(cuDeviceVos.size());
+        cuGroupVo.setChildList(cuDeviceVos);
+    }
+
+    /**
+     * 根据状态和名称获取设备列表
+     *
+     * @param name
+     * @param ssid
+     * @param cuGroupVo
+     * @param online
+     */
+    private void setDeviceListByNameAndStatus(String name, Integer ssid, CuGroupVo cuGroupVo, Boolean online) {
+        List<PDevice> deviceList = this.getDeviceList(ssid, cuGroupVo.getId());
+        ArrayList<CuDeviceVo> cuDeviceVos = new ArrayList<>();
+        deviceList.stream().forEach(cuDevice -> cuDeviceVos.add(convert.covertToCuDeviceVo(cuDevice)));
+        cuDeviceVos.stream().forEach(cuDeviceVo -> cuDeviceVo.setUuid(UUID.randomUUID().toString()));
+        Iterator<CuDeviceVo> iterator = cuDeviceVos.iterator();
+        Integer cuGroupOnLine = 0;
+        while (iterator.hasNext()) {
+            Integer cuDeviceOnLine = 0;
+            CuDeviceVo next = iterator.next();
+            List<CuChannelVo> childList = next.getChildList();
+            childList.stream().forEach(cuChannelVo -> cuChannelVo.setUuid(UUID.randomUUID().toString()));
+            childList.stream().forEach(cuChannelVo -> cuChannelVo.setRid(ssid));
+            if (CollectionUtil.isNotEmpty(childList)) {
+                Iterator<CuChannelVo> iterator1 = childList.iterator();
+                while (iterator1.hasNext()) {
+                    CuChannelVo next1 = iterator1.next();
+                    if (!(next1.getName().toLowerCase().contains(name.toLowerCase()) && next1.isOnline() == online)) {
+                        iterator1.remove();
+                    } else {
+                        if (next1.isOnline()) {
+                            cuDeviceOnLine = cuDeviceOnLine + 1;
+                        }
+                    }
+                }
+            }
+            if (childList.size() > 0) {
+                next.setOnLineCount(cuDeviceOnLine);
+                next.setCount(childList.size());
+                next.setChildList(childList);
+                if (next.isOnline()) {
+                    cuGroupOnLine = cuGroupOnLine + 1;
+                }
+            } else {
+                if (!(next.getName().toLowerCase().contains(name.toLowerCase()) && next.isOnline() == online)) {
+                    iterator.remove();
+                } else {
+                    if (next.isOnline()) {
+                        cuGroupOnLine = cuGroupOnLine + 1;
+                    }
+                }
+            }
+        }
+        cuGroupVo.setOnLineCount(cuGroupOnLine);
+        cuGroupVo.setCount(cuDeviceVos.size());
+        cuGroupVo.setChildList(cuDeviceVos);
+    }
+
+    /**
+     * 根据名称模糊设置分组设备列表
+     *
+     * @param name
+     * @param ssid
+     * @param cuGroupVo
+     */
+    private void setDeviceListByName(String name, Integer ssid, CuGroupVo cuGroupVo) {
+        List<PDevice> deviceList = this.getDeviceList(ssid, cuGroupVo.getId());
+        ArrayList<CuDeviceVo> cuDeviceVos = new ArrayList<>();
+        deviceList.stream().forEach(cuDevice -> cuDeviceVos.add(convert.covertToCuDeviceVo(cuDevice)));
+        cuDeviceVos.stream().forEach(cuDeviceVo -> cuDeviceVo.setUuid(UUID.randomUUID().toString()));
+        Iterator<CuDeviceVo> iterator = cuDeviceVos.iterator();
+        Integer cuGroupOnLine = 0;
+        while (iterator.hasNext()) {
+            Integer cuDeviceOnLine = 0;
+            CuDeviceVo next = iterator.next();
+            List<CuChannelVo> childList = next.getChildList();
+            childList.stream().forEach(cuChannelVo -> cuChannelVo.setUuid(UUID.randomUUID().toString()));
+            childList.stream().forEach(cuChannelVo -> cuChannelVo.setRid(ssid));
+            if (CollectionUtil.isNotEmpty(childList)) {
+                Iterator<CuChannelVo> iterator1 = childList.iterator();
+                while (iterator1.hasNext()) {
+                    CuChannelVo next1 = iterator1.next();
+                    if (!next1.getName().toLowerCase().contains(name.toLowerCase())) {
+                        iterator1.remove();
+                    } else {
+                        if (next1.isOnline()) {
+                            cuDeviceOnLine = cuDeviceOnLine + 1;
+                        }
+                    }
+                }
+            }
+            if (childList.size() > 0) {
+                next.setOnLineCount(cuDeviceOnLine);
+                next.setCount(childList.size());
+                next.setChildList(childList);
+                if (next.isOnline()) {
+                    cuGroupOnLine = cuGroupOnLine + 1;
+                }
+            } else {
+                if (!next.getName().toLowerCase().contains(name.toLowerCase())) {
+                    iterator.remove();
+                } else {
+                    if (next.isOnline()) {
+                        cuGroupOnLine = cuGroupOnLine + 1;
+                    }
+                }
+            }
+        }
+        cuGroupVo.setOnLineCount(cuGroupOnLine);
+        cuGroupVo.setCount(cuDeviceVos.size());
+        cuGroupVo.setChildList(cuDeviceVos);
+    }
+
+    /**
+     * 根据状态和设备类型获取设备列表
+     *
+     * @param deviceType
+     * @param ssid
+     * @param cuGroupVo
+     * @param online
+     */
+    private void setDeviceListByDeviceTypeAndStatus(Integer deviceType, Integer ssid, CuGroupVo cuGroupVo, Boolean online) {
+        List<PDevice> deviceList = this.getDeviceList(ssid, cuGroupVo.getId());
+        ArrayList<CuDeviceVo> cuDeviceVos = new ArrayList<>();
+        deviceList.stream().forEach(cuDevice -> cuDeviceVos.add(convert.covertToCuDeviceVo(cuDevice)));
+        cuDeviceVos.stream().forEach(cuDeviceVo -> cuDeviceVo.setUuid(UUID.randomUUID().toString()));
+        Iterator<CuDeviceVo> iterator = cuDeviceVos.iterator();
+        Integer cuGroupOnLine = 0;
+        while (iterator.hasNext()) {
+            Integer cuDeviceOnLine = 0;
+            CuDeviceVo next = iterator.next();
+            //先判断设备是否符合筛选条件
+            if (!((next.getDeviceType() == deviceType) && next.isOnline() == online)) {
+                iterator.remove();
+                continue;
+            } else {
+                if (next.isOnline()) {
+                    cuGroupOnLine = cuGroupOnLine + 1;
+                }
+            }
+            //再判断通道是否符合筛选条件
+            List<CuChannelVo> childList = next.getChildList();
+            childList.stream().forEach(cuChannelVo -> cuChannelVo.setUuid(UUID.randomUUID().toString()));
+            childList.stream().forEach(cuChannelVo -> cuChannelVo.setRid(ssid));
+            if (CollectionUtil.isNotEmpty(childList)) {
+                Iterator<CuChannelVo> iterator1 = childList.iterator();
+                while (iterator1.hasNext()) {
+                    CuChannelVo next1 = iterator1.next();
+                    if (!(next1.isOnline() == online)) {
+                        iterator1.remove();
+                    } else {
+                        if (next1.isOnline()) {
+                            cuDeviceOnLine = cuDeviceOnLine + 1;
+                        }
+                    }
+                }
+            }
+            //如果筛选后的通道集合长度大于零给设备设置通道属性值
+            if (childList.size() > 0) {
+                next.setOnLineCount(cuDeviceOnLine);
+                next.setCount(childList.size());
+                next.setChildList(childList);
+            }
+        }
+        cuGroupVo.setOnLineCount(cuGroupOnLine);
+        cuGroupVo.setCount(cuDeviceVos.size());
+        cuGroupVo.setChildList(cuDeviceVos);
+    }
+
+
+
+    /**
+     * 递归查询该分组下是否还有子分组，并设置过滤条件cuDevice列表
+     *
+     * @param cuGroupVoList
+     * @param ssid 会话ID
+     * @return
+     * @throws KMException
+     */
+    private List<CuGroupVo> getGroupVoListFilter(Boolean online, List<CuGroupVo> cuGroupVoList, Integer ssid) {
+        if (CollectionUtil.isNotEmpty(cuGroupVoList)) {
+            for (CuGroupVo cuGroupVo : cuGroupVoList) {
+                setDeviceListFilter(online, ssid, cuGroupVo);
+            }
+            for (CuGroupVo cuGroupVo : cuGroupVoList) {
+                List<CuGroupVo> sortChildGroups = cuGroupVo.getSortChildGroups();
+                if (CollectionUtil.isEmpty(sortChildGroups)) {
+                    continue;
+                }
+                this.removeEmptyGroup(sortChildGroups, ssid);
+                sortChildGroups.stream().forEach(cuGroupVo1 -> cuGroupVo1.setUuid(UUID.randomUUID().toString()));
+                getGroupVoListFilter(online, sortChildGroups, ssid);
+            }
+        }
+        return cuGroupVoList;
+    }
+
+    /**
+     * 根据设备类型查询得到分组
+     *
+     * @param deviceType 设备类型
+     * @param cuGroupVoList 分组集合
+     * @param ssid 会话ID
+     * @return
+     */
+    private List<CuGroupVo> getGroupVoListByDeviceType(Integer deviceType, List<CuGroupVo> cuGroupVoList, Integer ssid) {
+        if (CollectionUtil.isNotEmpty(cuGroupVoList)) {
+            Iterator<CuGroupVo> iterator = cuGroupVoList.iterator();
+            while (iterator.hasNext()) {
+                CuGroupVo next = iterator.next();
+                setDeviceListByDeviceType(deviceType, ssid, next);
+                List<CuGroupVo> sortChildGroups = next.getSortChildGroups();
+                if (CollectionUtil.isEmpty(sortChildGroups)) {
+                    continue;
+                }
+                this.removeEmptyGroup(sortChildGroups, ssid);
+                sortChildGroups.stream().forEach(cuGroupVo1 -> cuGroupVo1.setUuid(UUID.randomUUID().toString()));
+                getGroupVoListByDeviceType(deviceType, sortChildGroups, ssid);
+            }
+        }
+        return cuGroupVoList;
+    }
+
+    /**
+     * 根据设备类型获取设备列表
+     *
+     * @param deviceType
+     * @param rid
+     * @param cuGroupVo
+     */
+    private void setDeviceListByDeviceType(Integer deviceType, Integer rid, CuGroupVo cuGroupVo) {
+        List<PDevice> deviceList = this.getDeviceList(rid, cuGroupVo.getId());
+        ArrayList<CuDeviceVo> cuDeviceVos = new ArrayList<>();
+        deviceList.stream().forEach(cuDevice -> cuDeviceVos.add(convert.covertToCuDeviceVo(cuDevice)));
+        cuDeviceVos.stream().forEach(cuDeviceVo -> cuDeviceVo.setUuid(UUID.randomUUID().toString()));
+        Iterator<CuDeviceVo> iterator = cuDeviceVos.iterator();
+        Integer cuGroupOnLine = 0;
+        while (iterator.hasNext()) {
+            Integer cuDeviceOnLine = 0;
+            CuDeviceVo next = iterator.next();
+            //先筛选设备
+            if (next.getDeviceType() != deviceType) {
+                iterator.remove();
+                continue;
+            } else {
+                if (next.isOnline()) {
+                    cuGroupOnLine = cuGroupOnLine + 1;
+                }
+            }
+            //判断通道是否符合筛选条件
+            List<CuChannelVo> childList = next.getChildList();
+            childList.stream().forEach(cuChannelVo -> cuChannelVo.setUuid(UUID.randomUUID().toString()));
+            childList.stream().forEach(cuChannelVo -> cuChannelVo.setRid(rid));
+            if (CollectionUtil.isNotEmpty(childList)) {
+                Iterator<CuChannelVo> iterator1 = childList.iterator();
+                while (iterator1.hasNext()) {
+                    CuChannelVo next1 = iterator1.next();
+                    if (next1.isOnline()) {
+                        cuDeviceOnLine = cuDeviceOnLine + 1;
+                    }
+                }
+            }
+            //如果筛选后的通道集合长度大于零给设备设置通道属性值
+            if (childList.size() > 0) {
+                next.setOnLineCount(cuDeviceOnLine);
+                next.setCount(childList.size());
+                next.setChildList(childList);
+            }
+        }
+        cuGroupVo.setOnLineCount(cuGroupOnLine);
+        cuGroupVo.setCount(cuDeviceVos.size());
+        cuGroupVo.setChildList(cuDeviceVos);
+    }
+
+    /**
+     * 过滤在线或者不在线的设备
+     *
+     * @param online
+     * @param //id
+     * @return
+     */
+    private void setDeviceListFilter(Boolean online, Integer ssid, CuGroupVo cuGroupVo) {
+        List<PDevice> deviceList = this.getDeviceList(ssid, cuGroupVo.getId());
+        ArrayList<CuDeviceVo> cuDeviceVos = new ArrayList<>();
+        deviceList.stream().forEach(cuDevice -> cuDeviceVos.add(convert.covertToCuDeviceVo(cuDevice)));
+        cuDeviceVos.stream().forEach(cuDeviceVo -> cuDeviceVo.setUuid(UUID.randomUUID().toString()));
+        Iterator<CuDeviceVo> iterator = cuDeviceVos.iterator();
+        Integer cuGroupOnLine = 0;
+        while (iterator.hasNext()) {
+            Integer cuDeviceOnLine = 0;
+            CuDeviceVo next = iterator.next();
+            if (next.isOnline() != online) {
+                iterator.remove();
+                continue;
+            } else {
+                cuGroupOnLine = cuGroupOnLine + 1;
+            }
+            List<CuChannelVo> childList = next.getChildList();
+            childList.stream().forEach(cuChannelVo -> cuChannelVo.setUuid(UUID.randomUUID().toString()));
+            childList.stream().forEach(cuChannelVo -> cuChannelVo.setRid(ssid));
+            if (CollectionUtil.isNotEmpty(childList)) {
+                Iterator<CuChannelVo> iterator1 = childList.iterator();
+                while (iterator1.hasNext()) {
+                    CuChannelVo next1 = iterator1.next();
+                    if (next1.isOnline() != online) {
+                        iterator1.remove();
+                    } else {
+                        cuDeviceOnLine = cuDeviceOnLine + 1;
+                    }
+                }
+            }
+            next.setOnLineCount(cuDeviceOnLine);
+            next.setCount(childList.size());
+            next.setChildList(childList);
+        }
+        cuGroupVo.setOnLineCount(cuGroupOnLine);
+        cuGroupVo.setCount(cuDeviceVos.size());
+        cuGroupVo.setChildList(cuDeviceVos);
+    }
+
+    /**
+     * 根据ssid获取分组
+     * @param ssid 登录监控平台返回的ID
+     * @return
+     * @throws KMException
+     */
+    public List<PGroup> getGroupList(Integer ssid) throws KMException {
+
+        CuSession cuSession = cuDeviceLoadThread.getCuClient().getSessionManager().getSessionBySSID(ssid);
+        return cuSession.getDeviceCache().getGroups();
+    }
+
+    /**
+     * 根据分组ID获取设备列表
+     * @param ssid 登录监控平台返回的ID
+     * @param groupId 分组ID
+     * @return
+     * @throws KMException
+     */
+    public List<PDevice> getDeviceList(Integer ssid, String groupId) throws KMException {
+
+        CuSession cuSession = cuDeviceLoadThread.getCuClient().getSessionManager().getSessionBySSID(ssid);
+        List<PDevice> pDeviceList;
+        if (StringUtils.isEmpty(groupId)) {
+            pDeviceList = cuSession.getDeviceCache().getDevices();
+
+        } else {
+            pDeviceList = cuSession.getDeviceCache().getDeivcesByGroupId(groupId);
+        }
+        return pDeviceList;
+    }
+
+
+
+    /**
+     * 剔除空分组（分组底下未挂载任何设备）
+     *
+     * @param cuGroupVos
+     * @param ssid
+     */
+    private void removeEmptyGroup(List<CuGroupVo> cuGroupVos, Integer ssid) {
+        Iterator<CuGroupVo> iterator = cuGroupVos.iterator();
+        while (iterator.hasNext()) {
+            CuGroupVo next = iterator.next();
+            String id = next.getId();
+            //得到子分组
+            List<CuGroupVo> groups = next.getSortChildGroups();
+            //得到设备列表
+            List<PDevice> deviceList = this.getDeviceList(ssid, id);
+            //如果分组底下不含设备列表和子分组则删除此分组
+            if (CollectionUtil.isEmpty(deviceList)&&CollectionUtil.isEmpty(groups)) {
+                iterator.remove();
+            }
+        }
     }
 
 }

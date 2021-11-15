@@ -132,6 +132,11 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
             public BaseResult<DiskInfoVo> queryDisk(QueryDiskRequestDto requestDto) {
                 return BaseResult.failed(throwable.getMessage());
             }
+
+            @Override
+            public BaseResult<DevEntityVo> findByCondition(FindCuByConditionVo findCuByConditionVo) {
+                return BaseResult.failed(throwable.getMessage());
+            }
         };
     }
 }

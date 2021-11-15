@@ -3,6 +3,7 @@ package com.kedacom.device.core.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
+import com.kedacom.common.model.Result;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.*;
@@ -126,5 +127,7 @@ public interface CuService extends IService<CuEntity> {
      * @return
      */
     BaseResult<DiskInfoVo> queryDisk(QueryDiskRequestDto requestDto);
+
+    BaseResult<DevEntityVo> findByCondition(FindCuByConditionVo vo);
 
 }

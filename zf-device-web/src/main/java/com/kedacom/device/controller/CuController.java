@@ -2,6 +2,7 @@ package com.kedacom.device.controller;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
+import com.kedacom.common.model.Result;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.common.utils.ValidUtils;
@@ -253,6 +254,13 @@ public class CuController {
         ValidUtils.paramValid(br);
 
         return cuService.queryDisk(requestDto);
+    }
+
+    @ApiOperation("根据条件返回监控平台树")
+    @PostMapping("/findByCondition")
+    public BaseResult<DevEntityVo> findByCondition(@RequestBody FindCuByConditionVo findCuByConditionVo){
+
+        return cuService.findByCondition(findCuByConditionVo);
     }
 
 }

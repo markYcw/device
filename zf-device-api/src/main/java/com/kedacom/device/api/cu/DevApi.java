@@ -117,4 +117,8 @@ public interface DevApi {
     @GetMapping("/queryDisk")
     BaseResult<DiskInfoVo> queryDisk(@RequestBody QueryDiskRequestDto requestDto);
 
+    @ApiOperation("根据条件返回监控平台树")
+    @PostMapping("/findByCondition")
+    BaseResult<DevEntityVo> findByCondition(@RequestBody FindCuByConditionVo findCuByConditionVo);
+
 }

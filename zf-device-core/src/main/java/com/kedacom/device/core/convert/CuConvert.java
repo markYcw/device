@@ -3,6 +3,9 @@ package com.kedacom.device.core.convert;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.*;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.PChannel;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.PDevice;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.PGroup;
 import com.kedacom.device.cu.request.CuLoginRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -48,4 +51,10 @@ public interface CuConvert {
 
     @Mappings({@Mapping(target = "chn",source = "chnId")})
     QueryVideoDto convertQueryVideoDto(QueryVideoRequestDto queryVideoRequestDto);
+
+    CuGroupVo covertToCuGroupVo(PGroup pGroup);
+
+    CuDeviceVo covertToCuDeviceVo(PDevice pDevice);
+
+    CuChannelVo convertToCuChannelVo(PChannel pChannel);
 }

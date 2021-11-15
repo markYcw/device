@@ -44,14 +44,14 @@ public class CuGroupVo {
      * 改分组下面是否有设备，平台2.0有效，方便刷设备。
      */
     @ApiModelProperty("改分组下面是否有设备，平台2.0有效，方便刷设备。")
-    private boolean ishasdev;
+    private Integer hasDev;
 
 
     /**
-     * 当前分组是否是监控平台内置的“未分组”
+     * “未分组”的ID
      */
-    @ApiModelProperty("当前分组是否是监控平台内置的“未分组”")
-    private boolean isUnnamedGroup;
+    @ApiModelProperty("“未分组”的ID")
+    public static String unNamgedGroupId = "IsUnnamedGroup";
 
     /**
      * 设备列表

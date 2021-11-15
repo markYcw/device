@@ -39,7 +39,7 @@ public class CuDeviceVo {
      * 设备号
      */
     @ApiModelProperty("设备号")
-    private String puid;
+    private String puId;
 
     /**
      * 设备名称
@@ -59,7 +59,7 @@ public class CuDeviceVo {
      * </pre>
      */
     @ApiModelProperty("1编码器 2解码器 4电视墙 5NVR 6SVR 7报警主机")
-    private int deviceType;
+    private int type;
 
     /**
      * 权限：（二进制位数） 1：云镜控制(1-10)级

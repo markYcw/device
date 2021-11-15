@@ -1098,7 +1098,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             Integer cuDeviceOnLine = 0;
             CuDeviceVo next = iterator.next();
             //先判断设备是否符合筛选条件
-            if (!(next.getDeviceType() == deviceType)) {
+            if (!(next.getType() == deviceType)) {
                 iterator.remove();
                 continue;
             } else {
@@ -1273,7 +1273,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             Integer cuDeviceOnLine = 0;
             CuDeviceVo next = iterator.next();
             //先判断设备是否符合筛选条件
-            if (!((next.getDeviceType() == deviceType) && next.isOnline() == online)) {
+            if (!((next.getType() == deviceType) && next.isOnline() == online)) {
                 iterator.remove();
                 continue;
             } else {
@@ -1382,7 +1382,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             Integer cuDeviceOnLine = 0;
             CuDeviceVo next = iterator.next();
             //先筛选设备
-            if (next.getDeviceType() != deviceType) {
+            if (next.getType() != deviceType) {
                 iterator.remove();
                 continue;
             } else {

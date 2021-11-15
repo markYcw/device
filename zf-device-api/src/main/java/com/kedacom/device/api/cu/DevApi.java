@@ -9,13 +9,10 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.validation.Valid;
 
 /**
  * svr相关操作
@@ -107,6 +104,10 @@ public interface DevApi {
     @ApiOperation("取消录像锁定")
     @PostMapping("/cancelLockingRec")
     BaseResult<Boolean> cancelLockingRec(@RequestBody CancelLockingRecRequestDto requestDto);
+
+    @ApiOperation("查询录像")
+    @PostMapping("/queryVideo")
+    BaseResult<QueryVideoResponseVo> queryVideo(@RequestBody QueryVideoRequestDto requestDto);
 
     @ApiOperation("查询录像日历（即当天是否有录像）")
     @PostMapping("/queryVideoCalendar")

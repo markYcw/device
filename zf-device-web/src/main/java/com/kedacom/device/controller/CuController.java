@@ -228,6 +228,15 @@ public class CuController {
         return cuService.cancelLockingRec(requestDto);
     }
 
+    @ApiOperation("查询录像")
+    @PostMapping("/queryVideo")
+    public BaseResult<QueryVideoResponseVo> queryVideo(@Valid @RequestBody QueryVideoRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.queryVideo(requestDto);
+    }
+
     @ApiOperation("查询录像日历（即当天是否有录像）")
     @PostMapping("/queryVideoCalendar")
     public BaseResult<QueryVideoCalendarResponseVo> queryVideoCalendar(@Valid @RequestBody QueryVideoCalendarRequestDto requestDto, BindingResult br) {

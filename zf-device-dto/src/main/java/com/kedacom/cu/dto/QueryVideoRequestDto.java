@@ -15,8 +15,8 @@ import java.io.Serializable;
  * @date 2021/11/15
  */
 @Data
-@ApiModel(description = "查询录像日历请求参数类")
-public class QueryVideoCalendarRequestDto extends RecBaseVo implements Serializable {
+@ApiModel(description = "查询录像请求参数类")
+public class QueryVideoRequestDto extends RecBaseVo implements Serializable {
 
     @NotBlank(message = "录像开始时间不能为空")
     @ApiModelProperty("录像开始时间, eg : 202111051200")

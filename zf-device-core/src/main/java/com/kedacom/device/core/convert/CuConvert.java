@@ -45,4 +45,7 @@ public interface CuConvert {
 
     @Mappings({@Mapping(target = "chn",source = "chnId")})
     QueryVideoCalendarDto convertQueryVideoCalendarDto(QueryVideoCalendarRequestDto queryVideoCalendarRequestDto);
+
+    @Mappings({@Mapping(target = "chn",source = "chnId")})
+    QueryVideoDto convertQueryVideoDto(QueryVideoRequestDto queryVideoRequestDto);
 }

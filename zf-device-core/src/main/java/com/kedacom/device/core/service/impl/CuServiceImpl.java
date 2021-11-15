@@ -557,7 +557,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
         OperateLockingRecDto operateLockingRecDto = convert.convertOperateLockDto(requestDto);
         operateLockingRecDto.setType(0);
-        log.info("打开录像锁定请求参数信息 : {}", operateLockingRecDto);
+        log.info("打开录像锁定请求参数信息 : {}", operateLockingRecDto.toString());
         CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
         check(cuEntity);
         CuBasicParam param = tool.getParam(cuEntity);
@@ -578,7 +578,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
         OperateLockingRecDto operateLockingRecDto = convert.convertOperateLockDto(requestDto);
         operateLockingRecDto.setType(1);
-        log.info("取消录像锁定请求参数信息 : {}", operateLockingRecDto);
+        log.info("取消录像锁定请求参数信息 : {}", operateLockingRecDto.toString());
         CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
         check(cuEntity);
         CuBasicParam param = tool.getParam(cuEntity);
@@ -595,10 +595,32 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     }
 
     @Override
+    public BaseResult<QueryVideoResponseVo> queryVideo(QueryVideoRequestDto requestDto) {
+
+        QueryVideoDto queryVideoDto = convert.convertQueryVideoDto(requestDto);
+        log.info("查询录像请求参数 ： {}, 平台id ： {}", queryVideoDto.toString(), requestDto.getDbId());
+
+        CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
+        check(cuEntity);
+        CuBasicParam param = tool.getParam(cuEntity);
+
+        String responseStr = remoteRestTemplate.getRestTemplate()
+                .postForObject(param.getUrl() + "/queryrec/{ssid}/{ssno}", JSON.toJSONString(queryVideoDto), String.class, param.getParamMap());
+        log.info("查询录像响应参数 : {}", responseStr);
+        CuResponse response = JSONObject.parseObject(responseStr, CuResponse.class);
+        String errorMsg = "查询录像操作失败 : {}, {}, {}";
+        assert response != null;
+        responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_QUERY_VIDEO_FAILED, response);
+        QueryVideoResponseVo responseVo = JSONObject.parseObject(responseStr, QueryVideoResponseVo.class);
+
+        return BaseResult.succeed(null, responseVo);
+    }
+
+    @Override
     public BaseResult<QueryVideoCalendarResponseVo> queryVideoCalendar(QueryVideoCalendarRequestDto requestDto) {
 
         QueryVideoCalendarDto queryVideoCalendarDto = convert.convertQueryVideoCalendarDto(requestDto);
-        log.info("查询录像日历请求参数类 ： {}, 平台id ： {}", queryVideoCalendarDto, requestDto.getDbId());
+        log.info("查询录像日历请求参数类 ： {}, 平台id ： {}", queryVideoCalendarDto.toString(), requestDto.getDbId());
         CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
         check(cuEntity);
         CuBasicParam param = tool.getParam(cuEntity);

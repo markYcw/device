@@ -107,6 +107,13 @@ public interface CuService extends IService<CuEntity> {
     BaseResult<Boolean> cancelLockingRec(CancelLockingRecRequestDto requestDto);
 
     /**
+     * 查询录像
+     * @param requestDto
+     * @return
+     */
+    BaseResult<QueryVideoResponseVo> queryVideo(QueryVideoRequestDto requestDto);
+
+    /**
      * 查询录像日历（即当天是否有录像）
      * @param requestDto
      * @return

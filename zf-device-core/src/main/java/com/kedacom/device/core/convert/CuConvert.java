@@ -42,4 +42,7 @@ public interface CuConvert {
 
     @Mappings({@Mapping(target = "chn",source = "chnId")})
     OperateLockingRecDto convertOperateLockDto(CancelLockingRecRequestDto cancelLockingRequestDto);
+
+    @Mappings({@Mapping(target = "chn",source = "chnId")})
+    QueryVideoCalendarDto convertQueryVideoCalendarDto(QueryVideoCalendarRequestDto queryVideoCalendarRequestDto);
 }

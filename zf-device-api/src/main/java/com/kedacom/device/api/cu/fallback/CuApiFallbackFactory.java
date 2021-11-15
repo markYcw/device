@@ -119,6 +119,11 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
             }
 
             @Override
+            public BaseResult<QueryVideoCalendarResponseVo> queryVideoCalendar(QueryVideoCalendarRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
             public BaseResult<DiskInfoVo> queryDisk(QueryDiskRequestDto requestDto) {
                 return BaseResult.failed(throwable.getMessage());
             }

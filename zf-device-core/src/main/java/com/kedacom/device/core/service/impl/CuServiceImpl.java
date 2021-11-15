@@ -18,14 +18,16 @@ import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.CuConvert;
 import com.kedacom.device.core.exception.CuException;
 import com.kedacom.device.core.mapper.CuMapper;
-import com.kedacom.device.core.notify.cu.loadGroup.CuClient;
 import com.kedacom.device.core.notify.cu.loadGroup.CuDeviceLoadThread;
 import com.kedacom.device.core.notify.cu.loadGroup.CuSession;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.CuSessionStatus;
 import com.kedacom.device.core.notify.stragegy.DeviceType;
 import com.kedacom.device.core.notify.stragegy.NotifyHandler;
 import com.kedacom.device.core.service.CuService;
-import com.kedacom.device.core.utils.*;
+import com.kedacom.device.core.utils.CuBasicTool;
+import com.kedacom.device.core.utils.CuUrlFactory;
+import com.kedacom.device.core.utils.HandleResponseUtil;
+import com.kedacom.device.core.utils.RemoteRestTemplate;
 import com.kedacom.device.cu.CuResponse;
 import com.kedacom.device.cu.request.CuLoginRequest;
 import com.kedacom.device.cu.response.CuLoginResponse;
@@ -590,6 +592,27 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_CANCEL_LOCKING_REC_FAILED, response);
 
         return BaseResult.succeed(null, true);
+    }
+
+    @Override
+    public BaseResult<QueryVideoCalendarResponseVo> queryVideoCalendar(QueryVideoCalendarRequestDto requestDto) {
+
+        QueryVideoCalendarDto queryVideoCalendarDto = convert.convertQueryVideoCalendarDto(requestDto);
+        log.info("查询录像日历请求参数类 ： {}, 平台id ： {}", queryVideoCalendarDto, requestDto.getDbId());
+        CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
+        check(cuEntity);
+        CuBasicParam param = tool.getParam(cuEntity);
+
+        String responseStr = remoteRestTemplate.getRestTemplate()
+                .postForObject(param.getUrl() + "/queryrecdays/{ssid}/{ssno}", JSON.toJSONString(queryVideoCalendarDto), String.class, param.getParamMap());
+        log.info("查询录像日历响应参数 : {}", responseStr);
+        CuResponse response = JSONObject.parseObject(responseStr, CuResponse.class);
+        String errorMsg = "查询录像日历失败 : {}, {}, {}";
+        assert response != null;
+        responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_QUERY_VIDEO_DAYS_FAILED, response);
+        QueryVideoCalendarResponseVo responseVo = JSON.parseObject(responseStr, QueryVideoCalendarResponseVo.class);
+
+        return BaseResult.succeed(null, responseVo);
     }
 
     @Override

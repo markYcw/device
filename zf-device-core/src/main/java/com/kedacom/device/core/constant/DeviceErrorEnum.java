@@ -163,6 +163,7 @@ public enum DeviceErrorEnum {
     CU_OPEN_LOCKING_REC_FAILED(6015, "打开录像锁定操作失败"),
     CU_CANCEL_LOCKING_REC_FAILED(6016, "取消录像锁定操作失败"),
     CU_QUERY_DISK_FAILED(6017, "查询磁阵(磁盘)信息失败"),
+    CU_QUERY_VIDEO_DAYS_FAILED(6018, "查询录像日历信息失败"),
 
 
     SCHEDULE_ADD_DEVICE_FAILED(9001, "添加调度组成员设备失败"),

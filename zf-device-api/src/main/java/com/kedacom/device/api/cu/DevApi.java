@@ -108,6 +108,10 @@ public interface DevApi {
     @PostMapping("/cancelLockingRec")
     BaseResult<Boolean> cancelLockingRec(@RequestBody CancelLockingRecRequestDto requestDto);
 
+    @ApiOperation("查询录像日历（即当天是否有录像）")
+    @PostMapping("/queryVideoCalendar")
+    BaseResult<QueryVideoCalendarResponseVo> queryVideoCalendar(@RequestBody QueryVideoCalendarRequestDto requestDto);
+
     @ApiOperation("查询磁阵(磁盘)信息")
     @GetMapping("/queryDisk")
     BaseResult<DiskInfoVo> queryDisk(@RequestBody QueryDiskRequestDto requestDto);

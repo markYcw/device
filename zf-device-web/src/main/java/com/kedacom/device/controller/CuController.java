@@ -228,6 +228,15 @@ public class CuController {
         return cuService.cancelLockingRec(requestDto);
     }
 
+    @ApiOperation("查询录像日历（即当天是否有录像）")
+    @PostMapping("/queryVideoCalendar")
+    public BaseResult<QueryVideoCalendarResponseVo> queryVideoCalendar(@Valid @RequestBody QueryVideoCalendarRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.queryVideoCalendar(requestDto);
+    }
+
     @ApiOperation("查询磁阵(磁盘)信息")
     @GetMapping("/queryDisk")
     public BaseResult<DiskInfoVo> queryDisk(@Valid @RequestBody QueryDiskRequestDto requestDto, BindingResult br) {

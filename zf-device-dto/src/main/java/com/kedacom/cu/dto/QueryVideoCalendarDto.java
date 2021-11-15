@@ -20,7 +20,7 @@ public class QueryVideoCalendarDto implements Serializable {
     private String puId;
 
     @ApiModelProperty("通道号")
-    private Integer chnId;
+    private Integer chn;
 
     @ApiModelProperty("录像开始时间, eg : 202111051200")
     private String startTime;

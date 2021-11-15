@@ -27,7 +27,7 @@ public class GroupNotify extends INotify {
         Iterator<PGroup> iterator = content.getGroupList().iterator();
         while (iterator.hasNext()){
             PGroup next = iterator.next();
-            if (next.getHasDev()== DevTypeConstant.getZero){
+            if (next.getHasDev().equals(DevTypeConstant.getZero)){
                 iterator.remove();
             }else {
                 continue;

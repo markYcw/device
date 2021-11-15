@@ -114,7 +114,7 @@ public class CuDeviceLoadThread {
 			//成功
 			unKownDeviceGroup.remove(ssid);
 			session.getDeviceCache().setLoadComplete(true);
-			this.onDeviceLoadCompate(session.getCu().getId());
+			this.onDeviceLoadCompate(ssid);
 		}else{
 			//失败。将ssid加进去，等待重新加载
 			synchronized (ssidCache){
@@ -462,28 +462,14 @@ public class CuDeviceLoadThread {
 	}
 	
 	//设备加载完成
-	private void onDeviceLoadCompate(int cuId){
-	/*	for (CuNotifyListener l : client.getAllListeners()) {
-			try{
-				l.onDeviceLoadComplate(cuId);
-			}catch(Exception e){
-				log.warn("onDeviceLoadCompate() error", e);
-			}
-		}*/
+	private void onDeviceLoadCompate(Integer ssid){
+		LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(CuEntity::getSsid,ssid);
+		List<CuEntity> cuEntities = cuMapper.selectList(wrapper);
+		CuEntity cuEntity = cuEntities.get(DevTypeConstant.getZero);
+		log.info("============================监控平台IP为{}登录完成",cuEntity.getIp());
 	}
-	
-	//rec（平台录像状态）
-//	private void onRec(int ssid,Map<String, PChannelStatus> status_map){
-//		log.info("更新设备录像状态"+JSON.toJSONString(status_map));//示例：{"3e4b436b78b3442093d329ac66084685@kedacom115":{"platRecord":false,"puRecord":false,"sn":0}}
-//		CuSession cuSession = client.getSessionManager().getSessionBySSID(ssid);
-//		CuDeviceCache deviceCache = cuSession.getDeviceCache();
-//		Map<String,PChannelStatus> map = deviceCache.getStatus_map();//存放各puid设备录像状态的缓存map
-//		for (Map.Entry<String, PChannelStatus> entry : status_map.entrySet()) {
-//			 log.info("更新key= " + entry.getKey() + " and PChannelStatus={sn=" + entry.getValue().getSn()+",plat="+entry.getValue().getPlatRecord()+",pu="+entry.getValue().getPuRecord()+"}");
-//			 map.put(entry.getKey(),entry.getValue());//更新map
-//	    }
-//		log.info("CuDeviceCache中缓存的各设备合成通道录像状态为："+JSON.toJSONString(map));
-//	}
+
 
 	private void onRec(int ssid, String deviceId, Map<Integer, PChannelStatus> pChannelStatusMap) {
 		log.info("设备通道状态变更通知:ssid=" + ssid + ",puId=" + deviceId + ",pChannelStatusMap=" + pChannelStatusMap);

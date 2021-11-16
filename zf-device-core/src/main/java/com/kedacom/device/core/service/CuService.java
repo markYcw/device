@@ -126,8 +126,13 @@ public interface CuService extends IService<CuEntity> {
      * @param requestDto
      * @return
      */
-    BaseResult<DiskInfoVo> queryDisk(QueryDiskRequestDto requestDto);
+    BaseResult<QueryDiskResponseVo> queryDisk(QueryDiskRequestDto requestDto);
 
+    /**
+     * 根据条件返回监控平台树
+     * @param vo
+     * @return
+     */
     BaseResult<DevEntityVo> findByCondition(FindCuByConditionVo vo);
 
 }

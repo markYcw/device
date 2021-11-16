@@ -248,7 +248,7 @@ public class CuController {
 
     @ApiOperation("查询磁阵(磁盘)信息")
     @PostMapping("/queryDisk")
-    public BaseResult<DiskInfoVo> queryDisk(@Valid @RequestBody QueryDiskRequestDto requestDto, BindingResult br) {
+    public BaseResult<QueryDiskResponseVo> queryDisk(@Valid @RequestBody QueryDiskRequestDto requestDto, BindingResult br) {
 
         ValidUtils.paramValid(br);
 

@@ -604,7 +604,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
         QueryVideoDto queryVideoDto = convert.convertQueryVideoDto(requestDto);
         log.info("查询录像请求参数 ： {}, 平台id ： {}", queryVideoDto.toString(), requestDto.getDbId());
-
         CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
         check(cuEntity);
         CuBasicParam param = tool.getParam(cuEntity);
@@ -643,7 +642,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     }
 
     @Override
-    public BaseResult<DiskInfoVo> queryDisk(QueryDiskRequestDto requestDto) {
+    public BaseResult<QueryDiskResponseVo> queryDisk(QueryDiskRequestDto requestDto) {
 
         log.info("查询磁阵(磁盘)信息请求参数，平台id : {}", requestDto.getDbId());
         CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
@@ -657,9 +656,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         String errorMsg = "查询磁阵(磁盘)信息失败 : {}, {}, {}";
         assert response != null;
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_QUERY_DISK_FAILED, response);
-        DiskInfoVo diskInfoVo = JSON.parseObject(exchange.getBody(), DiskInfoVo.class);
+        QueryDiskResponseVo responseVo = JSON.parseObject(exchange.getBody(), QueryDiskResponseVo.class);
 
-        return BaseResult.succeed(null, diskInfoVo);
+        return BaseResult.succeed(null, responseVo);
     }
 
     /**

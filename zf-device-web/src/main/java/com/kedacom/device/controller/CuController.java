@@ -2,7 +2,6 @@ package com.kedacom.device.controller;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.common.model.Result;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.common.utils.ValidUtils;
@@ -248,7 +247,7 @@ public class CuController {
     }
 
     @ApiOperation("查询磁阵(磁盘)信息")
-    @GetMapping("/queryDisk")
+    @PostMapping("/queryDisk")
     public BaseResult<DiskInfoVo> queryDisk(@Valid @RequestBody QueryDiskRequestDto requestDto, BindingResult br) {
 
         ValidUtils.paramValid(br);

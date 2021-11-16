@@ -246,7 +246,7 @@ public class StreamMediaController {
         return BaseResult.succeed("获取音频能力集成功", getAudioCapVO);
     }
 
-    @ApiOperation("控制音频功率上报 目前只支持SVR2931型号")
+    @ApiOperation("控制音频功率上报 此接口暂不支持")
     @PostMapping("/ctrlAudioAct")
     public BaseResult<Boolean> ctrlAudioAct(@Valid @RequestBody CtrlAudioActDTO ctrlAudioActDTO, BindingResult br) {
         ValidUtils.paramValid(br);
@@ -255,7 +255,7 @@ public class StreamMediaController {
         return BaseResult.succeed("获取音频能力集成功", aBoolean);
     }
 
-    @ApiOperation("设置音频功率上报间隔 目前只支持SVR2931型号")
+    @ApiOperation("设置音频功率上报间隔 此接口暂不支持")
     @PostMapping("/setAudioActInterval")
     public BaseResult<Boolean> setAudioActInterval(@Valid @RequestBody SetAudioActIntervalDTO setAudioActIntervalDTO, BindingResult br) {
         ValidUtils.paramValid(br);

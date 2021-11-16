@@ -92,7 +92,7 @@ public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> i
 
         JSONObject jsonObject = JSONObject.parseObject(notify);
         Integer type = (Integer) jsonObject.get("type");
-        String ssid = (String) jsonObject.get("ssid");
+        String ssid = String.valueOf(jsonObject.get("ssid"));
         if (Objects.equals(type, DeviceConstants.DEVICE_OFFLINE_NOTIFICATION) && StrUtil.isNotBlank(ssid)) {
             LambdaQueryWrapper<UmsMcuEntity> wrapper = new LambdaQueryWrapper<UmsMcuEntity>();
             wrapper.eq(UmsMcuEntity::getSsid, ssid);

@@ -129,7 +129,7 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
             }
 
             @Override
-            public BaseResult<DiskInfoVo> queryDisk(QueryDiskRequestDto requestDto) {
+            public BaseResult<QueryDiskResponseVo> queryDisk(QueryDiskRequestDto requestDto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 

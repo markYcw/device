@@ -115,7 +115,7 @@ public interface DevApi {
 
     @ApiOperation("查询磁阵(磁盘)信息")
     @GetMapping("/queryDisk")
-    BaseResult<DiskInfoVo> queryDisk(@RequestBody QueryDiskRequestDto requestDto);
+    BaseResult<QueryDiskResponseVo> queryDisk(@RequestBody QueryDiskRequestDto requestDto);
 
     @ApiOperation("根据条件返回监控平台树")
     @PostMapping("/findByCondition")

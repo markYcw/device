@@ -76,7 +76,7 @@ public class StreamMediaEventListener {
     public void audioActNotify(AudioActEvent event){
 
         log.info("接收音频功率通知:{}", event);
-        AudioActDTO audioActDTO = streamMediaConvert.convertToAudioActDTO(event);
+       /* AudioActDTO audioActDTO = streamMediaConvert.convertToAudioActDTO(event);
         Integer ssid = event.getNty().getSsid();
         DeviceInfoEntity bySsid = streamMediaService.getBySsid(ssid);
         String id = bySsid.getId();
@@ -85,6 +85,7 @@ public class StreamMediaEventListener {
         //发送webSocket给前端
         SystemWebSocketMessage message = new SystemWebSocketMessage();
         message.setOperationType(4);
+        message.setServerName("device");
         message.setData(audioActDTO);
         websocketFeign.sendInfo(JSON.toJSONString(message));
         List<KmListenerEntity> all = registerListenerService.getAll(MsgType.S_M_AUDIO_ACT_NTY.getType());
@@ -96,7 +97,7 @@ public class StreamMediaEventListener {
                     log.error("------------发送音频功率通知给业务方失败",e);
                 }
             }
-        }
+        }*/
     }
 
     @EventListener(BurnStateEvent.class)
@@ -112,7 +113,10 @@ public class StreamMediaEventListener {
         //发送webSocket给前端
         SystemWebSocketMessage message = new SystemWebSocketMessage();
         message.setOperationType(5);
+        message.setServerName("device");
         message.setData(burnStateDTO);
+        log.info("===============发送webSocket给前端{}",JSON.toJSONString(message));
+        websocketFeign.sendInfo(JSON.toJSONString(message));
         List<KmListenerEntity> all = registerListenerService.getAll(MsgType.S_M_BURN_STATE_NTY.getType());
         if(!CollectionUtil.isEmpty(all)){
             for (KmListenerEntity kmListenerEntity : all) {
@@ -138,7 +142,10 @@ public class StreamMediaEventListener {
         //发送webSocket给前端
         SystemWebSocketMessage message = new SystemWebSocketMessage();
         message.setOperationType(6);
+        message.setServerName("device");
         message.setData(alarmDTO);
+        log.info("===============发送webSocket给前端{}",JSON.toJSONString(message));
+        websocketFeign.sendInfo(JSON.toJSONString(message));
         List<KmListenerEntity> all = registerListenerService.getAll(MsgType.S_M_ALARM_NTY.getType());
         if(!CollectionUtil.isEmpty(all)){
             for (KmListenerEntity kmListenerEntity : all) {

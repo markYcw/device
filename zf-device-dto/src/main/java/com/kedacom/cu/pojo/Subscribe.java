@@ -3,6 +3,7 @@ package com.kedacom.cu.pojo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -25,8 +26,8 @@ public class Subscribe implements Serializable {
     private Integer alarm;
 
     @ApiModelProperty("通道状态0：不订阅1：订阅")
-    @NotNull
-    private String chn;
+    @NotBlank
+    private Integer chn;
 
     @ApiModelProperty("gps：不订阅1：订阅")
     @NotNull
@@ -42,6 +43,6 @@ public class Subscribe implements Serializable {
 
     @ApiModelProperty("透明通道状态： 0:不订阅1：订阅")
     @NotNull
-    private String transdata;
+    private Integer transdata;
 
 }

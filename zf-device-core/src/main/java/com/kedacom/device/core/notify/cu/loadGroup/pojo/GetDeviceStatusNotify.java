@@ -11,7 +11,7 @@ import java.util.List;
  * 
  */
 @Data
-public class DeviceStatusNotify {
+public class GetDeviceStatusNotify {
 
 	/**状态变更类型：设备上下线*/
 	public static final int TYPE_DEVICE_STATUS = 0;
@@ -36,18 +36,17 @@ public class DeviceStatusNotify {
 	/**状态变更类型：视频源别名改变*/
 	public static final int TYPE_UPDATE_CHANNEL_NAME = 19;
 
-
 	@ApiModelProperty("ssid")
 	private Integer ssid;
 
-	@ApiModelProperty("在线 0, 报警1, 视频源通道2,gps 3,录像状态4,收到透明数据5, 电视墙新增10,电视墙删除11,电视墙修改12,电视墙状态13,设备入网14,设备退网15,\t设备修改16,增加组17,删除组18,视频源别名改变19")
+	@ApiModelProperty("在线 0, 报警1, 视频源通道2,gps 3,录像状态4,收到透明数据5, 电视墙新增10,电视墙删除11,电视墙修改12,电视墙状态13,设备入网14,设备退网15,设备修改16,增加组17,删除组18,视频源别名改变19")
 	private int type;
 
 	@ApiModelProperty("设备ID")
 	private String puId;
 
-	@ApiModelProperty("设备是否在线 true 在线,false不在线, null状态未变化")
-	private Boolean online;
+	@ApiModelProperty("设备是否在线 0:离线，1:在线")
+	private Integer online;
 
 	@ApiModelProperty("视频源列表")
 	private List<SrcChns> srcChns;
@@ -60,11 +59,6 @@ public class DeviceStatusNotify {
 
 	@ApiModelProperty("Gps信息")
 	private Gps gps;
-	
-	/**
-	 * 设备入网
-	 *//*
-	private PDevice device;*/
 
 
 

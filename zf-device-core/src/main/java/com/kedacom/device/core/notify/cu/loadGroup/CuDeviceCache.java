@@ -177,7 +177,7 @@ public class CuDeviceCache {
 					pDbk.setGroupId(pDevice.getGroupId());
 					pDbk.setManufact(pDevice.getManufact());
 					pDbk.setName(pDevice.getName());
-					pDbk.setOnline(pDevice.isOnline());
+					pDbk.setOnline(pDevice.getOnline());
 					pDbk.setPrilevel(pDevice.getPrilevel());
 					pDbk.setPuId(pDevice.getPuId());
 					pDbk.addChannels(pDevice.getChannels());
@@ -258,18 +258,18 @@ public class CuDeviceCache {
 
 	}
 	
-	public void updateDeviceStatus(String puid, Boolean online){
+	public void updateDeviceStatus(String puid, Integer online){
 		for(ArrayList<PDevice> devices : devicesByGroup.values()){
 			for (PDevice pDevice : devices) {
 				if (puid.equals(pDevice.getPuId())) {
 					if(online != null){
 						pDevice.setOnline(online);
-						if(!online){
-							if(!online){
+						if(online==0){
+							if(online==0){
 								//设备下线，所有通道全部下线
 								List<PChannel> channels = pDevice.getChannels();
 								for(PChannel chl : channels){
-									chl.setOnline(false);
+									chl.setOnline(0);
 								}
 							}
 						}
@@ -317,10 +317,10 @@ public class CuDeviceCache {
 					chl.setEnable(enable.booleanValue());
 				}
 				
-				Boolean online = status.getOnline();
+				Integer online = status.getOnline();
 				if(online != null){
 					//上下线状态变更。online==null表示没有状态变更
-					chl.setOnline(online.booleanValue());
+					chl.setOnline(online);
 				}
 				
 				Boolean isPlatRec = status.getPlatRecord();
@@ -354,10 +354,10 @@ public class CuDeviceCache {
 					channel.setEnable(enable.booleanValue());
 				}
 				
-				Boolean online = status.getOnline();
+				Integer online = status.getOnline();
 				if(online != null){
 					//上下线状态变更。online==null表示没有状态变更
-					channel.setOnline(online.booleanValue());
+					channel.setOnline(online);
 				}
 				
 				Boolean isPlatRec = status.getPlatRecord();

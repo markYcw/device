@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.cu.dto.DevicesDto;
 import com.kedacom.cu.entity.CuEntity;
+import com.kedacom.cu.pojo.Subscribe;
 import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 import com.kedacom.device.core.service.CuService;
@@ -184,6 +185,15 @@ public class CuDeviceLoadThread {
 		CuEntity cuEntity = list.get(DevTypeConstant.getZero);
 
 		DevicesDto devicesDto = new DevicesDto();
+		Subscribe subscribe = new Subscribe();
+		subscribe.setOnline(1);
+		subscribe.setAlarm(0);
+		subscribe.setChn(1);
+		subscribe.setGps(0);
+		subscribe.setTvwall(0);
+		subscribe.setRec(1);
+		subscribe.setTransdata(0);
+		devicesDto.setSubscribe(subscribe);
 		devicesDto.setDbId(cuEntity.getId());
 		devicesDto.setGroupId(groupId);
 		cuService.devices(devicesDto);
@@ -216,10 +226,10 @@ public class CuDeviceLoadThread {
 			//获取设备
 			log.info("加载设备通知，本次加载"+((GetDeviceNotify) notify).getDeviceList().size()+"个设备");
 			this.onDeviceNotify((GetDeviceNotify)notify);
-		}else if (notify instanceof DeviceStatusNotify) {
+		}else if (notify instanceof GetDeviceStatusNotify) {
 			//设备状态
-			log.info("加载设备ID为"+((DeviceStatusNotify) notify).getPuId()+"的设备状态");
-			this.onDeviceStatus((DeviceStatusNotify)notify);
+			log.info("加载设备ID为"+((GetDeviceStatusNotify) notify).getPuId()+"的设备状态");
+			this.onDeviceStatus((GetDeviceStatusNotify)notify);
 		}
 	}
 
@@ -282,14 +292,14 @@ public class CuDeviceLoadThread {
 	 * 收到设备状态
 	 * @param notify
 	 */
-	private void onDeviceStatus(DeviceStatusNotify notify){
+	public void onDeviceStatus(GetDeviceStatusNotify notify){
 		int ssid = notify.getSsid();
 		String puid = notify.getPuId();
 		int type = notify.getType();
 		switch (type) {
-		case DeviceStatusNotify.TYPE_DEVICE_STATUS:
+		case GetDeviceStatusNotify.TYPE_DEVICE_STATUS:
 			//设备上下线
-			Boolean online = notify.getOnline();
+			Integer online = notify.getOnline();
 			if(online != null){
 				this.onDeviceStatus(ssid, puid, online);
 			}
@@ -301,15 +311,15 @@ public class CuDeviceLoadThread {
 			this.onChannelStatus(ssid, puid, status);
 			break;*/
 			
-		case DeviceStatusNotify.TYPE_ALARM:
+		case GetDeviceStatusNotify.TYPE_ALARM:
 			//报警（告警）
 			//TODO 以前从来没用过，暂时不支持
 			break;
-		case DeviceStatusNotify.TYPE_REC:
+		case GetDeviceStatusNotify.TYPE_REC:
 			//录像状态
 			break;
 
-		case DeviceStatusNotify.TYPE_GPS:
+		case GetDeviceStatusNotify.TYPE_GPS:
 			//GPS
 			Gps gps = notify.getGps();
 			ArrayList<Gps> gpsList = new ArrayList<>();
@@ -318,16 +328,16 @@ public class CuDeviceLoadThread {
 			}
 			break;
 
-		case DeviceStatusNotify.TYPE_DEVICE_IN:
+		case GetDeviceStatusNotify.TYPE_DEVICE_IN:
 			//设备入网
 			break;
 
-		case DeviceStatusNotify.TYPE_DEVICE_OUT:
+		case GetDeviceStatusNotify.TYPE_DEVICE_OUT:
 			//设备退网
 			this.onDeviceOut(ssid, puid);
 			break;
 
-		case DeviceStatusNotify.TYPE_DEVICE_UPDATE:
+		case GetDeviceStatusNotify.TYPE_DEVICE_UPDATE:
 			//设备更新
 			this.onDeviceUpdate(ssid, puid);
 			break;
@@ -339,7 +349,7 @@ public class CuDeviceLoadThread {
 
 
 	//设备状态
-	private void onDeviceStatus(int ssid, String puid, Boolean online){
+	private void onDeviceStatus(int ssid, String puid, Integer online){
 		if(online == null){
 			return;
 		}

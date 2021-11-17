@@ -48,8 +48,8 @@ public class PDevice {
 	@ApiModelProperty("视频源编号(2.0有效) 视频源名称(2.0有效)")
 	private HashMap<Integer, PChannel> channels = new HashMap<Integer, PChannel>();
 
-	@ApiModelProperty("设备是否在线")
-	private boolean online;
+	@ApiModelProperty("设备是否在线 0:离线，1:在线")
+	private Integer online;
 
 	/**
 	 * 获取全部通道
@@ -99,12 +99,6 @@ public class PDevice {
 	 */
 	public void clearChannel(){
 		this.channels.clear();
-	}
-	public boolean isOnline() {
-		return online;
-	}
-	public void setOnline(boolean online) {
-		this.online = online;
 	}
 	
 	

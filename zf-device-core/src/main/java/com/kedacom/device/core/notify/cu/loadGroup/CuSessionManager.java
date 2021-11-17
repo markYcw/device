@@ -1,7 +1,6 @@
 package com.kedacom.device.core.notify.cu.loadGroup;
 
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.Cu;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.DeviceStatusSubscribe;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.PDevice;
 
 import java.util.ArrayList;
@@ -20,9 +19,6 @@ public class CuSessionManager {
 	 * key : 会话标识; value ：会话
 	 */
 	private Hashtable<Integer, CuSession> sessions = new Hashtable<Integer, CuSession>();
-	
-	/**设备状态订阅。通过此类设置需要订阅哪些状态*/
-	private DeviceStatusSubscribe deviceStatusSubscribe = new DeviceStatusSubscribe();
 	
 	private CuClient client;
 	public CuSessionManager(CuClient client){
@@ -103,7 +99,7 @@ public class CuSessionManager {
 	/**
 	 * 获取会话标识
 	 * @param cuIp 监控平台IP地址
-	 * @return 如果监控平台已连接，返回ssid，否则返回 {@link CuSession.INVALID_SSID}
+	 * @return 如果监控平台已连接，返回ssid，否则返回 -1
 	 */
 	public int getSSIDByCuIP(String cuIp){
 		CuSession session = this.getSessionByCuIP(cuIp);
@@ -179,11 +175,4 @@ public class CuSessionManager {
 		}
 	}
 
-	public DeviceStatusSubscribe getDeviceStatusSubscribe() {
-		return deviceStatusSubscribe;
-	}
-
-	public void setDeviceStatusSubscribe(DeviceStatusSubscribe deviceStatusSubscribe) {
-		this.deviceStatusSubscribe = deviceStatusSubscribe;
-	}
 }

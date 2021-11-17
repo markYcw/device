@@ -1,11 +1,15 @@
 package com.kedacom.device.core.notify.cu.loadGroup.pojo;
 
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 /**
  * 视频源通道状态
  * 
  * @author dengjie
  * 
  */
+@Data
 public class PChannelStatus {
 	/**
 	 * 视频源通道号
@@ -24,7 +28,8 @@ public class PChannelStatus {
 	/**
 	 * 是否在线。true上线,false下线，null状态未变化
 	 */
-	private Boolean online;
+	@ApiModelProperty("在线状态 0：离线 1：在线")
+	private Integer online;
 
 	/**
 	 * 是否平台录像。true正在平台录像,false不在平台录像，null状态未变化
@@ -58,14 +63,6 @@ public class PChannelStatus {
 
 	public void setEnable(Boolean enable) {
 		this.enable = enable;
-	}
-
-	public Boolean getOnline() {
-		return online;
-	}
-
-	public void setOnline(Boolean online) {
-		this.online = online;
 	}
 
 	public Boolean getPlatRecord() {

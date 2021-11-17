@@ -793,11 +793,11 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      * @param status
      */
     private DevEntityVo getDevEntityVoByNameAndStatus(Integer id, String name, Integer status) throws KMException {
-        Boolean onLine;
+        Integer onLine;
         if (status == 1) {
-            onLine = true;
+            onLine = 1;
         } else {
-            onLine = false;
+            onLine = 0;
         }
         CuEntity devEntity = cuMapper.selectById(id);
         if (devEntity == null) {
@@ -846,11 +846,11 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      * @return
      */
     private DevEntityVo getDevEntityVoFilter(Integer id, Integer status) throws KMException {
-        Boolean onLine;
+        Integer onLine;
         if (status == 1) {
-            onLine = true;
+            onLine = 1;
         } else {
-            onLine = false;
+            onLine = 0;
         }
         CuEntity devEntity = cuMapper.selectById(id);
         Integer ssid = devEntity.getSsid();
@@ -873,11 +873,11 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      * @param status 在线状态
      */
     private DevEntityVo getDevEntityVoByDeviceTypeAndStatus(Integer id, Integer deviceType, Integer status) throws KMException {
-        Boolean onLine;
+        Integer onLine;
         if (status == 1) {
-            onLine = true;
+            onLine = 1;
         } else {
-            onLine = false;
+            onLine = 0;
         }
         CuEntity devEntity = cuMapper.selectById(id);
         Integer ssid = devEntity.getSsid();
@@ -959,7 +959,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      * @param ssid
      * @return
      */
-    private List<CuGroupVo> getGroupVoListByNameAndStatus(String name, List<CuGroupVo> cuGroupVoList, Integer ssid, Boolean online) {
+    private List<CuGroupVo> getGroupVoListByNameAndStatus(String name, List<CuGroupVo> cuGroupVoList, Integer ssid, Integer online) {
         if (CollectionUtil.isNotEmpty(cuGroupVoList)) {
             Iterator<CuGroupVo> iterator = cuGroupVoList.iterator();
             while (iterator.hasNext()) {
@@ -985,7 +985,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      * @param rid
      * @return
      */
-    private List<CuGroupVo> getGroupVoListByDeviceTypeAndStatus(Integer deviceType, List<CuGroupVo> cuGroupVoList, Integer rid, Boolean online) {
+    private List<CuGroupVo> getGroupVoListByDeviceTypeAndStatus(Integer deviceType, List<CuGroupVo> cuGroupVoList, Integer rid, Integer online) {
         if (CollectionUtil.isNotEmpty(cuGroupVoList)) {
             Iterator<CuGroupVo> iterator = cuGroupVoList.iterator();
             while (iterator.hasNext()) {
@@ -1050,14 +1050,14 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 }
                 CuDeviceVo cuDeviceVo = convert.covertToCuDeviceVo(cuDevice);
                 cuDeviceVo.setUuid(UUID.randomUUID().toString());
-                if (cuDeviceVo.isOnline()) {
+                if (cuDeviceVo.getOnline()==1) {
                     devOnlineCount += 1;
                 }
                 List<PChannel> channels = cuDevice.getChannels();
                 List<CuChannelVo> cuChannelVos = new ArrayList<>();
                 if (CollectionUtil.isNotEmpty(channels)) {
                     for (PChannel channel : channels) {
-                        if (channel.isOnline()) {
+                        if (channel.getOnline()==1) {
                             chanelOnlineCount += 1;
                         }
                         if (channel != null) {
@@ -1101,7 +1101,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 iterator.remove();
                 continue;
             } else {
-                if (next.isOnline()) {
+                if (next.getOnline()==1) {
                     cuGroupOnLine = cuGroupOnLine + 1;
                 }
             }
@@ -1116,7 +1116,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                     if (!(next1.getName().toLowerCase().contains(name.toLowerCase()))) {
                         iterator1.remove();
                     } else {
-                        if (next1.isOnline()) {
+                        if (next1.getOnline()==1) {
                             cuDeviceOnLine = cuDeviceOnLine + 1;
                         }
                     }
@@ -1127,7 +1127,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 next.setOnLineCount(cuDeviceOnLine);
                 next.setCount(childList.size());
                 next.setChildList(childList);
-                if (next.isOnline()) {
+                if (next.getOnline()==1) {
                     cuGroupOnLine = cuGroupOnLine + 1;
                 }
             }else {
@@ -1150,7 +1150,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      * @param cuGroupVo
      * @param online
      */
-    private void setDeviceListByNameAndStatus(String name, Integer ssid, CuGroupVo cuGroupVo, Boolean online) {
+    private void setDeviceListByNameAndStatus(String name, Integer ssid, CuGroupVo cuGroupVo, Integer online) {
         List<PDevice> deviceList = this.getDeviceList(ssid, cuGroupVo.getId());
         ArrayList<CuDeviceVo> cuDeviceVos = new ArrayList<>();
         deviceList.stream().forEach(cuDevice -> cuDeviceVos.add(convert.covertToCuDeviceVo(cuDevice)));
@@ -1167,10 +1167,10 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 Iterator<CuChannelVo> iterator1 = childList.iterator();
                 while (iterator1.hasNext()) {
                     CuChannelVo next1 = iterator1.next();
-                    if (!(next1.getName().toLowerCase().contains(name.toLowerCase()) && next1.isOnline() == online)) {
+                    if (!(next1.getName().toLowerCase().contains(name.toLowerCase()) && next1.getOnline() == online)) {
                         iterator1.remove();
                     } else {
-                        if (next1.isOnline()) {
+                        if (next1.getOnline()==1) {
                             cuDeviceOnLine = cuDeviceOnLine + 1;
                         }
                     }
@@ -1180,14 +1180,14 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 next.setOnLineCount(cuDeviceOnLine);
                 next.setCount(childList.size());
                 next.setChildList(childList);
-                if (next.isOnline()) {
+                if (next.getOnline()==1) {
                     cuGroupOnLine = cuGroupOnLine + 1;
                 }
             } else {
-                if (!(next.getName().toLowerCase().contains(name.toLowerCase()) && next.isOnline() == online)) {
+                if (!(next.getName().toLowerCase().contains(name.toLowerCase()) && next.getOnline() == online)) {
                     iterator.remove();
                 } else {
-                    if (next.isOnline()) {
+                    if (next.getOnline()==1) {
                         cuGroupOnLine = cuGroupOnLine + 1;
                     }
                 }
@@ -1225,7 +1225,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                     if (!next1.getName().toLowerCase().contains(name.toLowerCase())) {
                         iterator1.remove();
                     } else {
-                        if (next1.isOnline()) {
+                        if (next1.getOnline()==1) {
                             cuDeviceOnLine = cuDeviceOnLine + 1;
                         }
                     }
@@ -1235,14 +1235,14 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 next.setOnLineCount(cuDeviceOnLine);
                 next.setCount(childList.size());
                 next.setChildList(childList);
-                if (next.isOnline()) {
+                if (next.getOnline()==1) {
                     cuGroupOnLine = cuGroupOnLine + 1;
                 }
             } else {
                 if (!next.getName().toLowerCase().contains(name.toLowerCase())) {
                     iterator.remove();
                 } else {
-                    if (next.isOnline()) {
+                    if (next.getOnline()==1) {
                         cuGroupOnLine = cuGroupOnLine + 1;
                     }
                 }
@@ -1261,7 +1261,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      * @param cuGroupVo
      * @param online
      */
-    private void setDeviceListByDeviceTypeAndStatus(Integer deviceType, Integer ssid, CuGroupVo cuGroupVo, Boolean online) {
+    private void setDeviceListByDeviceTypeAndStatus(Integer deviceType, Integer ssid, CuGroupVo cuGroupVo, Integer online) {
         List<PDevice> deviceList = this.getDeviceList(ssid, cuGroupVo.getId());
         ArrayList<CuDeviceVo> cuDeviceVos = new ArrayList<>();
         deviceList.stream().forEach(cuDevice -> cuDeviceVos.add(convert.covertToCuDeviceVo(cuDevice)));
@@ -1272,11 +1272,11 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             Integer cuDeviceOnLine = 0;
             CuDeviceVo next = iterator.next();
             //先判断设备是否符合筛选条件
-            if (!((next.getType() == deviceType) && next.isOnline() == online)) {
+            if (!((next.getType() == deviceType) && next.getOnline() == online)) {
                 iterator.remove();
                 continue;
             } else {
-                if (next.isOnline()) {
+                if (next.getOnline()==1) {
                     cuGroupOnLine = cuGroupOnLine + 1;
                 }
             }
@@ -1288,10 +1288,10 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 Iterator<CuChannelVo> iterator1 = childList.iterator();
                 while (iterator1.hasNext()) {
                     CuChannelVo next1 = iterator1.next();
-                    if (!(next1.isOnline() == online)) {
+                    if (!(next1.getOnline() == online)) {
                         iterator1.remove();
                     } else {
-                        if (next1.isOnline()) {
+                        if (next1.getOnline()==1) {
                             cuDeviceOnLine = cuDeviceOnLine + 1;
                         }
                     }
@@ -1319,7 +1319,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      * @return
      * @throws KMException
      */
-    private List<CuGroupVo> getGroupVoListFilter(Boolean online, List<CuGroupVo> cuGroupVoList, Integer ssid) {
+    private List<CuGroupVo> getGroupVoListFilter(Integer online, List<CuGroupVo> cuGroupVoList, Integer ssid) {
         if (CollectionUtil.isNotEmpty(cuGroupVoList)) {
             for (CuGroupVo cuGroupVo : cuGroupVoList) {
                 setDeviceListFilter(online, ssid, cuGroupVo);
@@ -1385,7 +1385,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 iterator.remove();
                 continue;
             } else {
-                if (next.isOnline()) {
+                if (next.getOnline()==1) {
                     cuGroupOnLine = cuGroupOnLine + 1;
                 }
             }
@@ -1397,7 +1397,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 Iterator<CuChannelVo> iterator1 = childList.iterator();
                 while (iterator1.hasNext()) {
                     CuChannelVo next1 = iterator1.next();
-                    if (next1.isOnline()) {
+                    if (next1.getOnline()==1) {
                         cuDeviceOnLine = cuDeviceOnLine + 1;
                     }
                 }
@@ -1421,7 +1421,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      * @param //id
      * @return
      */
-    private void setDeviceListFilter(Boolean online, Integer ssid, CuGroupVo cuGroupVo) {
+    private void setDeviceListFilter(Integer online, Integer ssid, CuGroupVo cuGroupVo) {
         List<PDevice> deviceList = this.getDeviceList(ssid, cuGroupVo.getId());
         ArrayList<CuDeviceVo> cuDeviceVos = new ArrayList<>();
         deviceList.stream().forEach(cuDevice -> cuDeviceVos.add(convert.covertToCuDeviceVo(cuDevice)));
@@ -1431,7 +1431,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         while (iterator.hasNext()) {
             Integer cuDeviceOnLine = 0;
             CuDeviceVo next = iterator.next();
-            if (next.isOnline() != online) {
+            if (next.getOnline() != online) {
                 iterator.remove();
                 continue;
             } else {
@@ -1444,7 +1444,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 Iterator<CuChannelVo> iterator1 = childList.iterator();
                 while (iterator1.hasNext()) {
                     CuChannelVo next1 = iterator1.next();
-                    if (next1.isOnline() != online) {
+                    if (next1.getOnline() != online) {
                         iterator1.remove();
                     } else {
                         cuDeviceOnLine = cuDeviceOnLine + 1;

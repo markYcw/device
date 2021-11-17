@@ -48,10 +48,10 @@ public class Gps {
 	private String speed;
 	
 	/**
-	 * 设备的puid
+	 * 设备的puId
 	 */
-	@ApiModelProperty("视频源通道号")
-   private String puid;
+	@ApiModelProperty("设备的puId")
+   private String puId;
 
 
 }

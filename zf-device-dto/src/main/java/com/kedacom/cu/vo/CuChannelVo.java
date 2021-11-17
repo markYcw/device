@@ -38,8 +38,8 @@ public class CuChannelVo {
     /**
      * 是否在线
      */
-    @ApiModelProperty("是否在线")
-    private boolean online;
+    @ApiModelProperty("是否在线 0：离线 1：在线")
+    private Integer online;
 
     /**
      * 是否平台录像。true正在平台录像,false不在平台录像，

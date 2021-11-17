@@ -40,8 +40,8 @@ public class PChannel {
 	/**
 	 * 是否在线
 	 */
-	@ApiModelProperty("是否在线")
-	private boolean online;
+	@ApiModelProperty("设备是否在线 0:离线，1:在线")
+	private Integer online;
 
 
 	/**
@@ -86,14 +86,6 @@ public class PChannel {
 
 	public void setEnable(boolean enable) {
 		this.enable = enable;
-	}
-
-	public boolean isOnline() {
-		return online;
-	}
-
-	public void setOnline(boolean online) {
-		this.online = online;
 	}
 	
 	/**

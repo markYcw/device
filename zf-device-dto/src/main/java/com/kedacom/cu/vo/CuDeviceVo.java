@@ -84,8 +84,8 @@ public class CuDeviceVo {
     /**
      * 设备是否在线
      */
-    @ApiModelProperty("设备是否在线")
-    private boolean online;
+    @ApiModelProperty("设备是否在线 0：离线 1：在线")
+    private Integer online;
 
     /**
      * 是否正在录像

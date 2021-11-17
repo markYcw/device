@@ -14,11 +14,26 @@ import lombok.Data;
 @Data
 public class SrcChn {
 
+    @ApiModelProperty("设备编号")
+    private String puId;
+
     @ApiModelProperty("视频源编号")
     private String sn;
 
     @ApiModelProperty("视频源名称")
     private String name;
+
+    @ApiModelProperty("是否启用 0:不启用，1：启用")
+    private Integer enable;
+
+    @ApiModelProperty("0:离线，1:在线")
+    private Integer online;
+
+    @ApiModelProperty("是否平台录像。0: 位置 1：空闲 2：录像 3：尝试中 4：停止中")
+    private Integer platRecord;
+
+    @ApiModelProperty("是否前端录像。0: 位置 1：空闲 2：录像 3：尝试中 4：停止中")
+    private Integer puRecord;
 
 
 }

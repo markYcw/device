@@ -2,6 +2,7 @@ package com.kedacom.device.controller;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
+import com.kedacom.common.model.Result;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.common.utils.ValidUtils;
@@ -260,6 +261,35 @@ public class CuController {
     public BaseResult<DevEntityVo> findByCondition(@RequestBody FindCuByConditionVo findCuByConditionVo){
 
         return cuService.findByCondition(findCuByConditionVo);
+    }
+
+
+    @ApiOperation("根据数据库ID查询监控平台树")
+    @PostMapping("/queryMonitor")
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
+    public BaseResult<DevEntityVo> queryMonitor(@RequestParam("kmId") Integer kmId){
+
+        return cuService.queryMonitor(kmId);
+
+    }
+
+    @ApiOperation("获取设备详细信息")
+    @PostMapping("getCuDeviceInfo")
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId",  value = "数据库ID",required = true), @ApiImplicitParam(name = "puId", value = "设备号",required = true)})
+    public BaseResult<CuDeviceVo> getCuDeviceInfo(@RequestParam("kmId") Integer kmId,@RequestParam("puId") String puId){
+
+        return cuService.getCuDeviceInfo(kmId,puId);
+
+    }
+
+    @ApiOperation("获取设备具体通道信息")
+    @PostMapping("getCuChannelInfo")
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId",  value = "数据库ID",required = true), @ApiImplicitParam(name = "puId", value = "设备号",required = true),
+            @ApiImplicitParam(name = "sn", value = "通道号",required = true)})
+    public BaseResult<CuChannelVo> getCuChannelInfo(@RequestParam("kmId") Integer kmId, @RequestParam("puId") String puId, @RequestParam("sn") Integer sn){
+
+        return cuService.getCuChannelInfo(kmId,puId,sn);
+
     }
 
 }

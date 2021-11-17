@@ -1,6 +1,7 @@
 package com.kedacom.device.core.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -43,6 +44,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -717,6 +719,75 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             }
 
         return BaseResult.succeed("查询成功",devEntityVo);
+    }
+
+    @Override
+    public BaseResult<DevEntityVo> queryMonitor(Integer kmId) {
+        log.info("=============根据数据库ID返回监控平台树接口入参kmId{}",kmId);
+        DevEntityVo devEntityVo = null;
+        CuEntity devEntity = cuMapper.selectById(kmId);
+        check(devEntity);
+
+        try {
+            devEntityVo = getDevEntityVo(kmId);
+            log.info("===============queryMonitor查询监控平台树结果为：{}",devEntityVo);
+        } catch (KMException e) {
+            log.error("查询监控平台树状图信息失败请稍后重试{}", e.getMessage());
+            throw new CuException(DeviceErrorEnum.QUERY_MONITOR_ERROR);
+        }
+        return BaseResult.succeed( "查询监控平台树状信息成功",devEntityVo);
+    }
+
+    @Override
+    public BaseResult<CuDeviceVo> getCuDeviceInfo(Integer kmId, String puId) {
+        log.info("=============获取设备详细信息接口入参kmId{}",kmId);
+        CuEntity devEntity = cuMapper.selectById(kmId);
+        check(devEntity);
+        Integer ssid = devEntity.getSsid();
+        try {
+            CuSession cuSession = cuDeviceLoadThread.getCuClient().getSessionManager().getSessionBySSID(ssid);
+            PDevice device = cuSession.getDeviceCache().getDevice(puId);
+            if(ObjectUtils.isEmpty(device)){
+                log.error("根据puId查询不到设备，请检查参数是否正确");
+                throw new CuException(DeviceErrorEnum.GET_CU_DEVICE_INFO_ERROR);
+            }
+            CuDeviceVo cuDeviceVo = convert.covertToCuDeviceVo(device);
+            return BaseResult.succeed( "获取设备详细信息成功",cuDeviceVo);
+        } catch (Exception e) {
+            log.error("获取设备详细信息失败请稍后重试{}", e.getMessage());
+            throw new CuException(DeviceErrorEnum.GET_CU_DEVICE_INFO_ERROR);
+        }
+    }
+
+    @Override
+    public BaseResult<CuChannelVo> getCuChannelInfo(Integer kmId, String puId, Integer sn) {
+        log.info("=============获取设备具体通道信息接口入参kmId{}",kmId);
+        CuEntity devEntity = cuMapper.selectById(kmId);
+        check(devEntity);
+        Integer ssid = devEntity.getSsid();
+        try {
+            CuSession cuSession = cuDeviceLoadThread.getCuClient().getSessionManager().getSessionBySSID(ssid);
+            PDevice device = cuSession.getDeviceCache().getDevice(puId);
+            if(ObjectUtils.isEmpty(device)){
+                log.error("根据puId查询不到设备，请检查参数是否正确");
+                throw new CuException(DeviceErrorEnum.GET_CU_CHANNEL_INFO_ERROR);
+            }
+            List<PChannel> channels = device.getChannels();
+            if (CollectionUtils.isEmpty(channels)) {
+                return null;
+            }
+            Optional<PChannel> optionalCuChannel = channels.stream().filter(x -> sn == x.getSn()).findFirst();
+            CuChannelVo cuChannelVo = null;
+            if(optionalCuChannel.isPresent()){
+                PChannel pChannel = optionalCuChannel.get();
+                cuChannelVo = convert.convertToCuChannelVo(pChannel);
+            }
+
+            return BaseResult.succeed("获取设备具体通道信息成功",cuChannelVo);
+        } catch (Exception e) {
+            log.error("获取设备通道具体通道信息失败{}", e.getMessage());
+            throw new CuException(DeviceErrorEnum.GET_CU_CHANNEL_INFO_ERROR);
+        }
     }
 
     /**

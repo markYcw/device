@@ -137,6 +137,21 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
             public BaseResult<DevEntityVo> findByCondition(FindCuByConditionVo findCuByConditionVo) {
                 return BaseResult.failed(throwable.getMessage());
             }
+
+            @Override
+            public BaseResult<DevEntityVo> queryMonitor(Integer kmId) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<CuDeviceVo> getCuDeviceInfo(Integer kmId, String puId) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<CuChannelVo> getCuChannelInfo(Integer kmId, String puId, Integer sn) {
+                return BaseResult.failed(throwable.getMessage());
+            }
         };
     }
 }

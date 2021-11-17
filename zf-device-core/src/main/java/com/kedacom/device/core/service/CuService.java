@@ -135,4 +135,14 @@ public interface CuService extends IService<CuEntity> {
      */
     BaseResult<DevEntityVo> findByCondition(FindCuByConditionVo vo);
 
+    /**
+     * 根据数据库ID返回监控平台树
+     * @param kmId
+     * @return
+     */
+    BaseResult<DevEntityVo> queryMonitor(Integer kmId);
+
+    BaseResult<CuDeviceVo> getCuDeviceInfo(Integer kmId, String puId);
+
+    BaseResult<CuChannelVo> getCuChannelInfo(Integer kmId, String puId, Integer sn);
 }

@@ -121,4 +121,21 @@ public interface DevApi {
     @PostMapping("/findByCondition")
     BaseResult<DevEntityVo> findByCondition(@RequestBody FindCuByConditionVo findCuByConditionVo);
 
+    @ApiOperation("根据数据库ID查询监控平台树")
+    @PostMapping("/queryMonitor")
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
+    BaseResult<DevEntityVo> queryMonitor(@RequestParam("kmId") Integer kmId);
+
+    @ApiOperation("获取设备详细信息")
+    @PostMapping("getCuDeviceInfo")
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId",  value = "数据库ID",required = true), @ApiImplicitParam(name = "puId", value = "设备号",required = true)})
+    BaseResult<CuDeviceVo> getCuDeviceInfo(@RequestParam("kmId") Integer kmId,@RequestParam("puId") String puId);
+
+    @ApiOperation("获取设备具体通道信息")
+    @PostMapping("getCuChannelInfo")
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId",  value = "数据库ID",required = true), @ApiImplicitParam(name = "puId", value = "设备号",required = true),
+            @ApiImplicitParam(name = "sn", value = "通道号",required = true)})
+    BaseResult<CuChannelVo> getCuChannelInfo(@RequestParam("kmId") Integer kmId, @RequestParam("puId") String puId, @RequestParam("sn") Integer sn);
+
+
 }

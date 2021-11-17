@@ -165,6 +165,9 @@ public enum DeviceErrorEnum {
     CU_QUERY_DISK_FAILED(6017, "查询磁阵(磁盘)信息失败"),
     CU_QUERY_VIDEO_DAYS_FAILED(6018, "查询录像日历信息失败"),
     CU_QUERY_VIDEO_FAILED(6019, "查询录像失败"),
+    QUERY_MONITOR_ERROR(6020,"根据数据库ID查询监控平台树失败"),
+    GET_CU_DEVICE_INFO_ERROR(6021,"获取设备详细信息失败"),
+    GET_CU_CHANNEL_INFO_ERROR(6022,"获取设备具体通道信息失败"),
 
 
     SCHEDULE_ADD_DEVICE_FAILED(9001, "添加调度组成员设备失败"),

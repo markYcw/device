@@ -40,7 +40,7 @@ public class StreamingMediaController {
 
     @ApiOperation("根据id查询信息")
     @PostMapping("/querySm")
-    public BaseResult<StreamingMediaVo> querySm(@RequestParam("id") Long id) {
+    public BaseResult<StreamingMediaVo> querySm(@RequestParam("id") String id) {
 
         return BaseResult.succeed("todo msg", streamingMediaService.querySm(id));
     }

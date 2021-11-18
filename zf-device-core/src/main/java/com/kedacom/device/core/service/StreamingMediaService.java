@@ -27,7 +27,7 @@ public interface StreamingMediaService extends IService<StreamingMediaEntity> {
      * @param id
      * @return
      */
-    StreamingMediaVo querySm(Long id);
+    StreamingMediaVo querySm(String id);
 
     /**
      * 查询所有流媒体

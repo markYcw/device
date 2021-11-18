@@ -27,7 +27,7 @@ public interface StreamingMediaApi {
 
     @ApiOperation("根据id查询信息")
     @PostMapping("/querySm")
-    BaseResult<StreamingMediaVo> querySm(@RequestParam("id") Long id);
+    BaseResult<StreamingMediaVo> querySm(@RequestParam("id") String id);
 
     @ApiOperation("查询所有流媒体")
     @PostMapping("/smList")

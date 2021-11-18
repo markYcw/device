@@ -49,7 +49,7 @@ public class StreamingMediaServiceImpl extends ServiceImpl<StreamingMediaMapper,
     }
 
     @Override
-    public StreamingMediaVo querySm(Long id) {
+    public StreamingMediaVo querySm(String id) {
 
         StreamingMediaEntity streamingMediaEntity = streamingMediaMapper.selectById(id);
 

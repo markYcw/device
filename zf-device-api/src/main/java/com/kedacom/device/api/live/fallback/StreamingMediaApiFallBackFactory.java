@@ -25,7 +25,7 @@ public class StreamingMediaApiFallBackFactory implements FallbackFactory<Streami
             }
 
             @Override
-            public BaseResult<StreamingMediaVo> querySm(Long id) {
+            public BaseResult<StreamingMediaVo> querySm(String id) {
                 return BaseResult.failed(throwable.getMessage());
             }
 

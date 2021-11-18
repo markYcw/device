@@ -81,7 +81,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Autowired
     private CuBasicTool tool;
 
-    @Value("${zf.cuNtyUrl.server_addr:172.16.128.105:9000}")
+    @Value("${zf.cuNtyUrl.server_addr:127.0.0.1:9000}")
     private String cuNtyUrl;
 
     @Autowired

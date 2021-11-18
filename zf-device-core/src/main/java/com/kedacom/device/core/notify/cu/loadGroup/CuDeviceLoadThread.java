@@ -1,13 +1,21 @@
 package com.kedacom.device.core.notify.cu.loadGroup;
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.kedacom.api.WebsocketFeign;
 import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.cu.dto.DevicesDto;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.pojo.Subscribe;
+import com.kedacom.device.core.entity.KmListenerEntity;
 import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 import com.kedacom.device.core.service.CuService;
+import com.kedacom.device.core.service.RegisterListenerService;
+import com.kedacom.device.core.utils.DeviceNotifyUtils;
+import com.kedacom.deviceListener.msgType.MsgType;
+import com.kedacom.pojo.SystemWebSocketMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,6 +37,15 @@ public class CuDeviceLoadThread {
 
 	@Autowired
 	private CuMapper cuMapper;
+
+	@Autowired
+	private WebsocketFeign websocketFeign;
+
+	@Autowired
+	private RegisterListenerService registerListenerService;
+
+	@Autowired
+	private DeviceNotifyUtils notifyUtils;
 
 	
 	/**
@@ -187,7 +204,7 @@ public class CuDeviceLoadThread {
 		DevicesDto devicesDto = new DevicesDto();
 		Subscribe subscribe = new Subscribe();
 		subscribe.setOnline(1);
-		subscribe.setAlarm(0);
+		subscribe.setAlarm(1);
 		subscribe.setChn(1);
 		subscribe.setGps(0);
 		subscribe.setTvwall(0);
@@ -261,14 +278,17 @@ public class CuDeviceLoadThread {
 		List<PGroup> groups = notify.getGroupList();
 
 		CuSession session = client.getSessionManager().getSessionBySSID(ssid);
-		session.getDeviceCache().addDeviceGroups(groups);
-		
-		this.addDeviceGroups(ssid, groups);
-		
-		if(isEnd==1){
-			//分组完成，开始获取设备
-			this.loadNextDeviceGroup(ssid);
+		if(session!=null){
+			session.getDeviceCache().addDeviceGroups(groups);
+
+			this.addDeviceGroups(ssid, groups);
+
+			if(isEnd==1){
+				//分组完成，开始获取设备
+				this.loadNextDeviceGroup(ssid);
+			}
 		}
+
 	}
 	
 	/**
@@ -280,11 +300,13 @@ public class CuDeviceLoadThread {
 		Integer isSend = notify.getIsEnd();
 		List<PDevice> devices = notify.getDeviceList();
 		CuSession session = client.getSessionManager().getSessionBySSID(ssid);
-		session.getDeviceCache().addDevices(devices);
-		
-		if(isSend==1){
-			//一个分组下的设备获取完成，获取下一个分组的设备
-			loadNextDeviceGroup(ssid);
+		if(session!=null){
+			session.getDeviceCache().addDevices(devices);
+
+			if(isSend==1){
+				//一个分组下的设备获取完成，获取下一个分组的设备
+				loadNextDeviceGroup(ssid);
+			}
 		}
 	}
 
@@ -295,7 +317,7 @@ public class CuDeviceLoadThread {
 	public void onDeviceStatus(GetDeviceStatusNotify notify){
 		int ssid = notify.getSsid();
 		String puid = notify.getPuId();
-		int type = notify.getType();
+		int type = notify.getStateType();
 		switch (type) {
 		case GetDeviceStatusNotify.TYPE_DEVICE_STATUS:
 			//设备上下线
@@ -304,16 +326,28 @@ public class CuDeviceLoadThread {
 				this.onDeviceStatus(ssid, puid, online);
 			}
 			break;
-
-		/*case DeviceStatusNotify.TYPE_Channel:
-			//视频源（通道）上下线
-			List<PChannelStatus> status = notify.getChannelStatusList();
-			this.onChannelStatus(ssid, puid, status);
-			break;*/
 			
 		case GetDeviceStatusNotify.TYPE_ALARM:
-			//报警（告警）
-			//TODO 以前从来没用过，暂时不支持
+			//报警（告警）收到报警通知以后给前端以及业务发通知内容
+			Alarm alarm = notify.getAlarm();
+			alarm.setPuId(notify.getPuId());
+			//发送webSocket给前端
+			SystemWebSocketMessage message = new SystemWebSocketMessage();
+			message.setOperationType(4);
+			message.setServerName("device");
+			message.setData(alarm);
+			log.info("===============发送webSocket给前端{}", JSON.toJSONString(message));
+			websocketFeign.sendInfo(JSON.toJSONString(message));
+			List<KmListenerEntity> all = registerListenerService.getAll(MsgType.S_M_BURN_STATE_NTY.getType());
+			if(!CollectionUtil.isEmpty(all)){
+				for (KmListenerEntity kmListenerEntity : all) {
+					try {
+						notifyUtils.burnStateNty(kmListenerEntity.getUrl(),alarm);
+					} catch (Exception e) {
+						log.error("------------发送刻录状态通知给业务方失败",e);
+					}
+				}
+			}
 			break;
 		case GetDeviceStatusNotify.TYPE_REC:
 			//录像状态
@@ -353,17 +387,11 @@ public class CuDeviceLoadThread {
 		if(online == null){
 			return;
 		}
-		
-		CuDeviceCache deviceCache = client.getSessionManager().getSessionBySSID(ssid).getDeviceCache();
-		deviceCache.updateDeviceStatus(puid, online);
-		
-	/*	for (CuNotifyListener l : client.getAllListeners()) {
-			try{
-				l.onDeviceStatus(puid, online);
-			}catch(Exception e){
-				log.warn("onGps() error", e);
-			}
-		}*/
+		CuSession session =	client.getSessionManager().getSessionBySSID(ssid);
+		if(session!=null){
+			CuDeviceCache deviceCache = session.getDeviceCache();
+			deviceCache.updateDeviceStatus(puid, online);
+		}
 	}
 	
 	//设备通道状态
@@ -373,14 +401,6 @@ public class CuDeviceLoadThread {
 		}
 		CuDeviceCache deviceCache = client.getSessionManager().getSessionBySSID(ssid).getDeviceCache();
 		deviceCache.updateChannelStatus(puid, status);
-
-	/*	for (CuNotifyListener l : client.getAllListeners()) {
-			try{
-				l.onChannelStatus(puid, status);
-			}catch(Exception e){
-				log.warn("onGps() error", e);
-			}
-		}*/
 	}
 	
 	//GPS
@@ -388,14 +408,6 @@ public class CuDeviceLoadThread {
 		if(gpsList == null || gpsList.size() <= 0){
 			return;
 		}
-		
-	/*	for (CuNotifyListener l : client.getAllListeners()) {
-			try{
-				l.onGps(puid, gpsList);
-			}catch(Exception e){
-				log.warn("onGps() error", e);
-			}
-		}*/
 	}
 	
 	//设备入网
@@ -413,26 +425,11 @@ public class CuDeviceLoadThread {
 		// 先删除老的设备信息
 		if(oldDevice != null){
 			deviceCache.removeDevice(oldDevice.getPuId());
-			
-		/*	for (CuNotifyListener l : client.getAllListeners()) {
-				try{
-					l.onDeviceOut(oldDevice.getPuid());// 兼容老的业务系统
-					l.onDeviceOut(cuSession.getCu().getId(), oldDevice.getPuid());
-				}catch(Exception e){
-					log.warn("onDeviceOut() error", e);
-				}
-			}*/
+
 		}
 		
 		// 添加新入会设备信息
 		deviceCache.addDevice(device);
-/*		for (CuNotifyListener l : client.getAllListeners()) {
-			try{
-				l.onDeviceIn(cuSession.getCu().getId(),device);
-			}catch(Exception e){
-				log.warn("onDeviceIn() error", e);
-			}
-		}*/
 	}
 
 	//设备退网
@@ -449,26 +446,13 @@ public class CuDeviceLoadThread {
 		if(device != null){
 			deviceCache.removeDevice(puid);
 			
-		/*	for (CuNotifyListener l : client.getAllListeners()) {
-				try{
-					l.onDeviceOut(puid);// 兼容老的业务系统
-					l.onDeviceOut(cuSession.getCu().getId(), puid);
-				}catch(Exception e){
-					log.warn("onDeviceOut() error", e);
-				}
-			}*/
-			
 		}
 	}
 	
 	//设备更新
 	private void onDeviceUpdate(int ssid ,String puid){
 		//TODO 设备更新只能根据设备所在分组加载分组下全部设备，但现在无法确定设备所在分组，所以暂时无法处理。
-//		CuDeviceCache deviceCache = client.getSessionManager().getSessionBySsid(ssid).getDeviceCache();
-//		PDevice device = deviceCache.getDevice(puid);
-//		if(device != null){
-//			
-//		}
+
 	}
 	
 	//设备加载完成

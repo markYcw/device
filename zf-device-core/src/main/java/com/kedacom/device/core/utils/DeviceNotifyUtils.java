@@ -61,5 +61,15 @@ public class DeviceNotifyUtils {
         remoteRestTemplate.getRestTemplate().postForObject(url, httpEntity, String.class);
     }
 
+    /**
+     * 监控平台异常告警通知
+     * @param url  接收方URL
+     * @param dto
+     */
+    public void cuAlarmNty(String url,DeviceNotifyRequestDTO dto){
+        HttpEntity<String> httpEntity = new HttpEntity<>(JSON.toJSONString(dto), remoteRestTemplate.getHttpHeaders());
+        remoteRestTemplate.getRestTemplate().postForObject(url, httpEntity, String.class);
+    }
+
 
 }

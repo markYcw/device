@@ -18,11 +18,11 @@ import java.io.Serializable;
 public class CancelLockingRecRequestDto extends RecBaseVo implements Serializable {
 
     @NotBlank(message = "录像开始时间不能为空")
-    @ApiModelProperty(value = "录像开始时间, eg : 202111051200", required = true)
+    @ApiModelProperty("录像开始时间, eg : 202111051200")
     private String startTime;
 
     @NotBlank(message = "录像结束时间不能为空")
-    @ApiModelProperty(value = "录像结束时间, eg : 202111051200", required = true)
+    @ApiModelProperty("录像结束时间, eg : 202111051200")
     private String endTime;
 
 }

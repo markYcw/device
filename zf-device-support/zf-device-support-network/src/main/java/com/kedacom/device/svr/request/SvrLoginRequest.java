@@ -21,9 +21,9 @@ public class SvrLoginRequest implements Serializable {
     @ApiModelProperty(value = "svrIP")
     private String ip;
     /**
-     * svr端口
+     * 端口，一般是8765或者9765，2931是80
      */
-    @ApiModelProperty(value = "端口，一般是9765")
+    @ApiModelProperty(value = "端口，一般是8765或者9765，2931是80")
     private Integer port;
     /**
      * 登录svr用户名
@@ -34,7 +34,7 @@ public class SvrLoginRequest implements Serializable {
      * 登录svr密码
      */
     @ApiModelProperty(value = "登录svr密码")
-    private String password;
+    private String passWord;
 
     /**
      * 主动上报url，用于推送消息
@@ -43,9 +43,9 @@ public class SvrLoginRequest implements Serializable {
     private String ntyUrl;
 
     /**
-     * svr的websocket端口，一般是9766
+     * svr的websocket端口，一般是9766或者8780
      */
-    @ApiModelProperty(value = "svr的websocket端口，一般是9766")
+    @ApiModelProperty(value = "svr的websocket端口，一般是9766或者8780")
     private Integer webPort;
 
     /**

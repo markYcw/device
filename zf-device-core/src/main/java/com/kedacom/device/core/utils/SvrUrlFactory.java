@@ -23,7 +23,7 @@ public class SvrUrlFactory{
     private final static String SVR_REQUEST_HEAD = "http://";
 
     //svr2.0版本访问地址
-    private final static String SVR_WTO = "/mid/v2/svr2.0";
+    private final static String SVR_WTO = "/mid/v2/svr";
 
     private final static ConcurrentHashMap<Integer, String> map = new ConcurrentHashMap<>();
 

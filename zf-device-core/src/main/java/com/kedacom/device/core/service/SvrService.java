@@ -249,4 +249,11 @@ public interface SvrService extends IService<SvrEntity> {
      * @return
      */
     BaseResult<String> hb(Integer dbId);
+
+    /**
+     * 保存SVR
+     * @param entity
+     * @return
+     */
+    BaseResult<SvrEntity> saveInfo(SvrEntity entity);
 }

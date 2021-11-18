@@ -17,7 +17,7 @@ import org.mapstruct.Mappings;
  */
 @Mapper(componentModel = "spring")
 public interface SvrConvert {
-    @Mappings({@Mapping(target = "user",source = "username")})
+    @Mappings({@Mapping(target = "user",source = "username"),@Mapping(target ="passWord",source = "password")})
     SvrLoginRequest convertToSvrLoginRequest(SvrEntity svrEntity);
 
     SvrCapVo convertTOSvrCapVo(SvrCapResponse response);

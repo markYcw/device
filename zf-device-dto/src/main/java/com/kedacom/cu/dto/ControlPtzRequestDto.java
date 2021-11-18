@@ -17,28 +17,28 @@ import java.io.Serializable;
 @ApiModel(description = "PTZ控制请求参数类")
 public class ControlPtzRequestDto extends CuRequestDto implements Serializable {
 
-    @ApiModelProperty("设备id")
     @NotBlank(message = "设备id不能为空")
+    @ApiModelProperty(value = "设备id", required = true)
     private String puId;
 
-    @ApiModelProperty("通道号")
     @NotEmpty(message = "通道号不能为空")
+    @ApiModelProperty(value = "通道号", required = true)
     private Integer chn;
 
-    @ApiModelProperty("ptz命令id")
     @NotEmpty(message = "ptz命令id不能为空")
+    @ApiModelProperty(value = "ptz命令id", required = true)
     private Integer ptzCmd;
 
-    @ApiModelProperty("步长1-15")
     @NotEmpty(message = "步长1-15不能为空")
+    @ApiModelProperty(value = "步长1-15", required = true)
     private Integer range;
 
-    @ApiModelProperty("级别")
     @NotEmpty(message = "级别不能为空")
+    @ApiModelProperty(value = "级别", required = true)
     private Integer level;
 
-    @ApiModelProperty("占用时间0-30秒")
     @NotEmpty(message = "占用时间0-30秒不能为空")
+    @ApiModelProperty(value = "占用时间0-30秒", required = true)
     private Integer holdTime;
 
 }

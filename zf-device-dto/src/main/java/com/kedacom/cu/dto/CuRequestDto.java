@@ -15,8 +15,8 @@ import java.io.Serializable;
 @Data
 public class CuRequestDto implements Serializable {
 
-    @ApiModelProperty("数据库ID")
     @NotNull
+    @ApiModelProperty(value = "数据库ID", required = true)
     private Integer dbId;
 
 }

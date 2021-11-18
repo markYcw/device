@@ -16,20 +16,20 @@ import java.io.Serializable;
 @Data
 public class RecBaseVo implements Serializable {
 
-    @ApiModelProperty("平台ID")
     @NotEmpty(message = "平台ID不能为空")
+    @ApiModelProperty(value = "平台ID", required = true)
     private Integer dbId;
 
-    @ApiModelProperty("设备域")
     @NotBlank(message = "设备域不能为空")
+    @ApiModelProperty(value = "设备域", required = true)
     private String domain;
 
-    @ApiModelProperty("设备id")
     @NotBlank(message = "设备id不能为空")
+    @ApiModelProperty(value = "设备id", required = true)
     private String puId;
 
-    @ApiModelProperty("通道号")
     @NotEmpty(message = "通道号不能为空")
+    @ApiModelProperty(value = "通道号", required = true)
     private Integer chnId;
 
 }

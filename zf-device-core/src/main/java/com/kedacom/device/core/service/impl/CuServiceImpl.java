@@ -114,13 +114,13 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         //转化为DevEntityVo
         List<DevEntityVo> vos = cuEntities.stream().map(cuEntity -> convert.convertToDevEntityVo(cuEntity)).collect(Collectors.toList());
         //设置域信息
-        vos.stream().forEach(devEntityVo -> devEntityVo.setDomainId(this.getDomain(devEntityVo.getId())));
+        List<DevEntityVo> voAfter = getDomain(vos);
         BasePage<DevEntityVo> basePage = new BasePage<>();
         basePage.setTotal(platformEntityPage.getTotal());
         basePage.setTotalPage(platformEntityPage.getPages());
         basePage.setCurPage(queryDTO.getCurPage());
         basePage.setPageSize(queryDTO.getPageSize());
-        basePage.setData(vos);
+        basePage.setData(voAfter);
         return BaseResult.succeed(basePage);
     }
 
@@ -262,10 +262,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         entity.setSsid(response.getSsid());
         entity.setModifyTime(new Date());
         cuMapper.updateById(entity);
-        //设置域信息
-        String domain = getDomain(entity.getId());
         DevEntityVo devEntityVo = convert.convertToDevEntityVo(entity);
-        devEntityVo.setDomainId(domain);
         devEntityVo.setStatus(DevTypeConstant.updateRecordKey);
 
         //登录成功以后加载分组信息
@@ -277,14 +274,21 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     /**
      * 查询平台域信息
-     * @param id
+     * @param vos
      * @return
      */
-    public String getDomain(Integer id){
-        CuRequestDto cuRequestDto = new CuRequestDto();
-        cuRequestDto.setDbId(id);
-        BaseResult<LocalDomainVo> domain = this.localDomain(cuRequestDto);
-        return domain.getData().getDomainId();
+    public List<DevEntityVo> getDomain(List<DevEntityVo> vos){
+        Iterator<DevEntityVo> iterator = vos.iterator();
+        while (iterator.hasNext()){
+            DevEntityVo vo = iterator.next();
+            if(vo.getStatus()==1){
+                CuRequestDto cuRequestDto = new CuRequestDto();
+                cuRequestDto.setDbId(vo.getId());
+                BaseResult<LocalDomainVo> domain = this.localDomain(cuRequestDto);
+                vo.setDomainId(domain.getData().getDomainId());
+            }
+        }
+        return vos;
     }
 
     /**

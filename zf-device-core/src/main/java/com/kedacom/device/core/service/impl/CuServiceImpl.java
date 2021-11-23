@@ -81,7 +81,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Autowired
     private CuBasicTool tool;
 
-    @Value("${zf.cuNtyUrl.server_addr:127.0.0.1:9000}")
+    @Value("${zf.cuNtyUrl.server_addr:172.16.128.105:9000}")
     private String cuNtyUrl;
 
     @Autowired
@@ -128,6 +128,13 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     public BaseResult<DevEntityVo> info(Integer kmId) {
         CuEntity cuEntity = cuMapper.selectById(kmId);
         DevEntityVo vo = convert.convertToDevEntityVo(cuEntity);
+        if(cuStatusPoll.get(vo.getId())==1){
+            vo.setStatus(1);
+        }else {
+            vo.setStatus(0);
+        }
+        String domainId = this.getDomainSingle(vo.getId());
+        vo.setDomainId(domainId);
         return BaseResult.succeed("查询成功",vo);
     }
 
@@ -290,6 +297,18 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         }
         return vos;
     }
+
+    /**
+     * 设置单个监控平台域信息
+     * @param id
+     * @return
+     */
+    public String getDomainSingle(Integer id){
+        CuRequestDto cuRequestDto = new CuRequestDto();
+        cuRequestDto.setDbId(id);
+        BaseResult<LocalDomainVo> domain = this.localDomain(cuRequestDto);
+        return domain.getData().getDomainId();
+        }
 
     /**
      * 设置监控平台会话，用于保存cu底下的分组设备以及记录登录信息等

@@ -219,37 +219,6 @@ public class CuDeviceLoadThread {
 	//==========================以上是业务逻辑=============================================
 	//==========================以下是数据处理=============================================
 
-	public void onNotify(INotify notify) {
-		int ssid = notify.getSsid();
-		CuSession session = client.getSessionManager().getSessionBySSID(ssid);
-		int id = 0;
-		if(session != null){
-			id = session.getCu().getId();
-		}else{
-			log.warn("无效的会话,ssid=" + ssid);
-			return;
-		}
-		
-		if(id <= 0){
-			log.warn("会话中无有效的监控平台信息,ssid=" + ssid);
-			return;
-		}
-		
-		if (notify instanceof GetGroupNotify) {
-			//获取分组
-			log.info("加载分组信息通知");
-			this.onDeviceGroupNotify((GetGroupNotify)notify);
-		} else if (notify instanceof GetDeviceNotify) {
-			//获取设备
-			log.info("加载设备通知，本次加载"+((GetDeviceNotify) notify).getDeviceList().size()+"个设备");
-			this.onDeviceNotify((GetDeviceNotify)notify);
-		}else if (notify instanceof GetDeviceStatusNotify) {
-			//设备状态
-			log.info("加载设备ID为"+((GetDeviceStatusNotify) notify).getPuId()+"的设备状态");
-			this.onDeviceStatus((GetDeviceStatusNotify)notify);
-		}
-	}
-
 	private LinkedList<String> touchGroupList(int ssid){
 		LinkedList<String> list = this.unKownDeviceGroup.get(ssid);
 		if(list == null){
@@ -300,7 +269,8 @@ public class CuDeviceLoadThread {
 		Integer isSend = notify.getIsEnd();
 		List<PDevice> devices = notify.getDeviceList();
 		CuSession session = client.getSessionManager().getSessionBySSID(ssid);
-		if(session!=null){
+		//有可能当前分组底下未挂载设备但是子分组底下挂载设备所以对设备列表进行判空
+		if(session!=null&&(CollectionUtil.isNotEmpty(devices))){
 			session.getDeviceCache().addDevices(devices);
 
 			if(isSend==1){

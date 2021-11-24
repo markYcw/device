@@ -32,8 +32,8 @@ public class CuChannelVo {
     /**
      * 是否启用
      */
-    @ApiModelProperty("是否启用")
-    private boolean enable = true;
+    @ApiModelProperty("是否启用 0:不启用，1：启用")
+    private Integer enable;
 
     /**
      * 是否在线
@@ -44,14 +44,14 @@ public class CuChannelVo {
     /**
      * 是否平台录像。true正在平台录像,false不在平台录像，
      */
-    @ApiModelProperty("是否平台录像。true正在平台录像,false不在平台录像，")
-    private boolean platRecord;
+    @ApiModelProperty("是否平台录像。0: 位置 1：空闲 2：录像 3：尝试中 4：停止中")
+    private Integer platRecord;
 
     /**
      * 是否前端录像。true正在前端录像,false不在前端录像，
      */
     @ApiModelProperty("是否前端录像。true正在前端录像,false不在前端录像，")
-    private boolean puRecord;
+    private Integer puRecord;
 
     /**
      * uuid

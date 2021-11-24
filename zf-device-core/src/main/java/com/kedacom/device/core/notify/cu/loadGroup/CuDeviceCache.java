@@ -1,9 +1,6 @@
 package com.kedacom.device.core.notify.cu.loadGroup;
 
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.PChannel;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.PChannelStatus;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.PDevice;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.PGroup;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 
 import java.text.Collator;
 import java.util.*;
@@ -180,7 +177,7 @@ public class CuDeviceCache {
 					pDbk.setOnline(pDevice.getOnline());
 					pDbk.setPrilevel(pDevice.getPrilevel());
 					pDbk.setPuId(pDevice.getPuId());
-					pDbk.addChannels(pDevice.getChannels());
+					pDbk.addChannels(pDevice.getSrcChns());
 					pDbk.addChannels(device.getChannels());
 					this.devices.put(puid, pDbk);
 				} else {
@@ -228,7 +225,7 @@ public class CuDeviceCache {
 		return this.devices.get(puid);
 	}
 	
-	public PChannel getChannel(String puid, int sn){
+	public SrcChn getChannel(String puid, int sn){
 		PDevice device = this.getDevice(puid);
 		if(device != null){
 			return device.getChannel(sn);
@@ -267,8 +264,8 @@ public class CuDeviceCache {
 						if(online==0){
 							if(online==0){
 								//设备下线，所有通道全部下线
-								List<PChannel> channels = pDevice.getChannels();
-								for(PChannel chl : channels){
+								List<SrcChn> channels = pDevice.getChannels();
+								for(SrcChn chl : channels){
 									chl.setOnline(0);
 								}
 							}
@@ -309,12 +306,12 @@ public class CuDeviceCache {
 		}
 		for(PChannelStatus status : channelStatus){
 			int sn = status.getSn();
-			PChannel chl = device.getChannel(sn);
+			SrcChn chl = device.getChannel(sn);
 			if(chl != null){
-				Boolean enable = status.getEnable();
+				Integer enable = status.getEnable();
 				if(enable != null){
 					//可用性变更。enable==null表示没有状态变更
-					chl.setEnable(enable.booleanValue());
+					chl.setEnable(enable);
 				}
 				
 				Integer online = status.getOnline();
@@ -323,12 +320,12 @@ public class CuDeviceCache {
 					chl.setOnline(online);
 				}
 				
-				Boolean isPlatRec = status.getPlatRecord();
+				Integer isPlatRec = status.getPlatRecord();
 				if(isPlatRec != null){
 					chl.setPlatRecord(isPlatRec);
 				}
 				
-				Boolean isPuRec = status.getPuRecord();
+				Integer isPuRec = status.getPuRecord();
 				if(isPuRec != null){
 					chl.setPuRecord(isPuRec);
 				}
@@ -338,20 +335,20 @@ public class CuDeviceCache {
 					chl.setName(name);
 				}
 			}else{
-				Boolean enable = status.getEnable();
+				Integer enable = status.getEnable();
 				//2019-03-12 对接平台1.0时出现设备不在线，获取设备时，上报的通道列表为空，后续设备通道状态又上报上来 LinChaoYu ADD
-				PChannel channel = new PChannel();
+				SrcChn channel = new SrcChn();
 				
 				if(status.getName() != null && status.getName().length() > 0)
 					channel.setName(status.getName());
 				else
 					channel.setName(device.getName());
 				
-				channel.setPuid(puid);
+				channel.setPuId(puid);
 				channel.setSn(status.getSn());
 				if(enable != null){
 					//可用性变更。enable==null表示没有状态变更
-					channel.setEnable(enable.booleanValue());
+					channel.setEnable(enable);
 				}
 				
 				Integer online = status.getOnline();
@@ -360,12 +357,12 @@ public class CuDeviceCache {
 					channel.setOnline(online);
 				}
 				
-				Boolean isPlatRec = status.getPlatRecord();
+				Integer isPlatRec = status.getPlatRecord();
 				if(isPlatRec != null){
 					channel.setPlatRecord(isPlatRec);
 				}
 				
-				Boolean isPuRec = status.getPuRecord();
+				Integer isPuRec = status.getPuRecord();
 				if(isPuRec != null){
 					channel.setPuRecord(isPuRec);
 				}

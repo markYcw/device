@@ -18,7 +18,7 @@ public class SrcChn {
     private String puId;
 
     @ApiModelProperty("视频源编号")
-    private String sn;
+    private Integer sn;
 
     @ApiModelProperty("视频源名称")
     private String name;

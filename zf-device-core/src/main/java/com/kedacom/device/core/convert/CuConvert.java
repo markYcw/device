@@ -6,6 +6,7 @@ import com.kedacom.cu.vo.*;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.PChannel;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.PDevice;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.PGroup;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.SrcChn;
 import com.kedacom.device.cu.request.CuLoginRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -56,5 +57,5 @@ public interface CuConvert {
 
     CuDeviceVo covertToCuDeviceVo(PDevice pDevice);
 
-    CuChannelVo convertToCuChannelVo(PChannel pChannel);
+    CuChannelVo convertToCuChannelVo(SrcChn pChannel);
 }

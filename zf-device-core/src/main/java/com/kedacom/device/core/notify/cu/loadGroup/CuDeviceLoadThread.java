@@ -270,7 +270,7 @@ public class CuDeviceLoadThread {
 		List<PDevice> devices = notify.getDeviceList();
 		CuSession session = client.getSessionManager().getSessionBySSID(ssid);
 		//有可能当前分组底下未挂载设备但是子分组底下挂载设备所以对设备列表进行判空
-		if(session!=null&&(CollectionUtil.isNotEmpty(devices))){
+		if(session!=null){
 			session.getDeviceCache().addDevices(devices);
 
 			if(isSend==1){
@@ -446,7 +446,7 @@ public class CuDeviceLoadThread {
 		for (Map.Entry<Integer, PChannelStatus> entry : pChannelStatusMap.entrySet()) {
 			Integer snno = entry.getKey();
 			PChannelStatus channelStatus = entry.getValue();
-			PChannel channel = device.getChannel(snno);
+			SrcChn channel = device.getChannel(snno);
 			if (channel == null || channelStatus == null) {
 				continue;
 			}

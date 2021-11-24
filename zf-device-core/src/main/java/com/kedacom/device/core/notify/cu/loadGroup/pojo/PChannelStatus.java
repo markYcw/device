@@ -24,7 +24,7 @@ public class PChannelStatus {
 	/**
 	 * 是否启用。true启用，false信用，null状态未变化
 	 */
-	private Boolean enable;
+	private Integer enable;
 	/**
 	 * 是否在线。true上线,false下线，null状态未变化
 	 */
@@ -34,51 +34,12 @@ public class PChannelStatus {
 	/**
 	 * 是否平台录像。true正在平台录像,false不在平台录像，null状态未变化
 	 */
-	private Boolean platRecord;
+	private Integer platRecord;
 	
 	/**
 	 * 是否前端录像。true正在前端录像,false不在前端录像，null状态未变化
 	 */
-	private Boolean puRecord;
-	
-	public int getSn() {
-		return sn;
-	}
+	private Integer puRecord;
 
-	public void setSn(int sn) {
-		this.sn = sn;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Boolean getEnable() {
-		return enable;
-	}
-
-	public void setEnable(Boolean enable) {
-		this.enable = enable;
-	}
-
-	public Boolean getPlatRecord() {
-		return platRecord;
-	}
-
-	public void setPlatRecord(Boolean platRecord) {
-		this.platRecord = platRecord;
-	}
-
-	public Boolean getPuRecord() {
-		return puRecord;
-	}
-
-	public void setPuRecord(Boolean puRecord) {
-		this.puRecord = puRecord;
-	}
 
 }

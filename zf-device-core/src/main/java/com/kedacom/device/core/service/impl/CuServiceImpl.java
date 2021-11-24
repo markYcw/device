@@ -22,10 +22,7 @@ import com.kedacom.device.core.exception.CuException;
 import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.notify.cu.loadGroup.CuDeviceLoadThread;
 import com.kedacom.device.core.notify.cu.loadGroup.CuSession;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.CuSessionStatus;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.PChannel;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.PDevice;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.PGroup;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 import com.kedacom.device.core.notify.stragegy.DeviceType;
 import com.kedacom.device.core.notify.stragegy.NotifyHandler;
 import com.kedacom.device.core.service.CuService;
@@ -797,14 +794,14 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 log.error("根据puId查询不到设备，请检查参数是否正确");
                 throw new CuException(DeviceErrorEnum.GET_CU_CHANNEL_INFO_ERROR);
             }
-            List<PChannel> channels = device.getChannels();
+            List<SrcChn> channels = device.getChannels();
             if (CollectionUtils.isEmpty(channels)) {
                 return null;
             }
-            Optional<PChannel> optionalCuChannel = channels.stream().filter(x -> sn == x.getSn()).findFirst();
+            Optional<SrcChn> optionalCuChannel = channels.stream().filter(x -> sn == x.getSn()).findFirst();
             CuChannelVo cuChannelVo = null;
             if(optionalCuChannel.isPresent()){
-                PChannel pChannel = optionalCuChannel.get();
+                SrcChn pChannel = optionalCuChannel.get();
                 cuChannelVo = convert.convertToCuChannelVo(pChannel);
             }
 
@@ -1149,10 +1146,10 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 if (cuDeviceVo.getOnline()==1) {
                     devOnlineCount += 1;
                 }
-                List<PChannel> channels = cuDevice.getChannels();
+                List<SrcChn> channels = cuDevice.getChannels();
                 List<CuChannelVo> cuChannelVos = new ArrayList<>();
                 if (CollectionUtil.isNotEmpty(channels)) {
-                    for (PChannel channel : channels) {
+                    for (SrcChn channel : channels) {
                         if (channel.getOnline()==1) {
                             chanelOnlineCount += 1;
                         }

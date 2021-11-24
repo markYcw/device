@@ -46,7 +46,7 @@ public class PDevice {
 	private List<SrcChn> srcChns;
 
 	@ApiModelProperty("视频源编号(2.0有效) 视频源名称(2.0有效)")
-	private HashMap<Integer, PChannel> channels = new HashMap<Integer, PChannel>();
+	private HashMap<Integer, SrcChn> channels = new HashMap<Integer, SrcChn>();
 
 	@ApiModelProperty("设备是否在线 0:离线，1:在线")
 	private Integer online;
@@ -55,8 +55,8 @@ public class PDevice {
 	 * 获取全部通道
 	 * @return
 	 */
-	public List<PChannel> getChannels() {
-		List<PChannel>  list = new ArrayList<PChannel> (this.channels.size());
+	public List<SrcChn> getChannels() {
+		List<SrcChn>  list = new ArrayList<SrcChn> (this.channels.size());
 		list.addAll(this.channels.values());
 		return list;
 	}
@@ -66,22 +66,22 @@ public class PDevice {
 	 * @param sn
 	 * @return
 	 */
-	public PChannel getChannel(int sn){
+	public SrcChn getChannel(Integer sn){
 		return this.channels.get(sn);
 	}
 	/**
 	 * 增加通道
 	 * @param channel
 	 */
-	public void addChannel(PChannel channel){
-		channel.setPuid(this.puId);
+	public void addChannel(SrcChn channel){
+		channel.setPuId(this.puId);
 		if(ToolsUtil.isEmpty(channel.getName()))
 			channel.setName(this.getName());
 		
 		this.channels.put(channel.getSn(), channel);
 	}
-	public void addChannels(Collection<PChannel> channels) {
-		for(PChannel chl : channels){
+	public void addChannels(Collection<SrcChn> channels) {
+		for(SrcChn chl : channels){
 			this.addChannel(chl);
 		}
 	}

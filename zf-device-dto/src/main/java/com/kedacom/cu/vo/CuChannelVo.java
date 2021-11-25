@@ -33,13 +33,13 @@ public class CuChannelVo {
      * 是否启用
      */
     @ApiModelProperty("是否启用 0:不启用，1：启用")
-    private Integer enable;
+    private Integer enable = 0;
 
     /**
      * 是否在线
      */
     @ApiModelProperty("是否在线 0：离线 1：在线")
-    private Integer online;
+    private Integer online = 0;
 
     /**
      * 是否平台录像。true正在平台录像,false不在平台录像，

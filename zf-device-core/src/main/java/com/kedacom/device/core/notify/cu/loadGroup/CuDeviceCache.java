@@ -7,8 +7,8 @@ import java.util.*;
 
 /**
  * 设备缓存。一个监控平台一个缓存。
- * @author TaoPeng
- *
+ * @author ycw
+ * @date 2021/11/24
  */
 public class CuDeviceCache {
 	
@@ -177,8 +177,7 @@ public class CuDeviceCache {
 					pDbk.setOnline(pDevice.getOnline());
 					pDbk.setPrilevel(pDevice.getPrilevel());
 					pDbk.setPuId(pDevice.getPuId());
-					pDbk.addChannels(pDevice.getSrcChns());
-					pDbk.addChannels(device.getChannels());
+					pDbk.setSrcChns(pDevice.getSrcChns());
 					this.devices.put(puid, pDbk);
 				} else {
 					this.devices.put(puid, device);
@@ -225,15 +224,6 @@ public class CuDeviceCache {
 		return this.devices.get(puid);
 	}
 	
-	public SrcChn getChannel(String puid, int sn){
-		PDevice device = this.getDevice(puid);
-		if(device != null){
-			return device.getChannel(sn);
-		}else{
-			return null;
-		}
-	}
-	
 	/**
 	 * 删除设备
 	 * @param puid
@@ -254,7 +244,13 @@ public class CuDeviceCache {
 		}
 
 	}
-	
+
+	/**
+	 * 更新设备在线状态
+	 * @param puid 设备ID
+	 * @param online 在线状态
+	 *
+	 */
 	public void updateDeviceStatus(String puid, Integer online){
 		for(ArrayList<PDevice> devices : devicesByGroup.values()){
 			for (PDevice pDevice : devices) {
@@ -274,100 +270,37 @@ public class CuDeviceCache {
 				}
 			}
 		}
-//		PDevice device = this.devices.get(puid);
-//		if(device != null){
-//			if(online != null){
-//				//设备上下线状态变更。deviceStatus.getOnline()==null表示没有状态变更
-//				device.setOnline(online);
-//				
-//				if(!online){
-//					//设备下线，所有通道全部下线
-//					List<PChannel> channels = device.getChannels();
-//					for(PChannel chl : channels){
-//						chl.setOnline(false);
-//					}
-//				}
-//			}
-//		}
 	}
-	
+
 	/**
-	 * 更新通道（视频源）状态
-	 * @param puid
-	 * @param channelStatus
+	 * 更新设备通道在线状态
+	 * @param puid 设备ID
+	 * @param srcChns 设备通道列表
 	 */
-	public void updateChannelStatus(String puid, List<PChannelStatus> channelStatus){
-		if(channelStatus == null){
-			return;
+	public void updateDeviceChnStatus(String puid, List<SrcChns> srcChns){
+		if (puid.equals("813d3b6bf2a64f10b1aed37811a12a26@xinyangzhidui")){
+			System.out.println("================================");
 		}
-		PDevice device = this.devices.get(puid);
-		if(device == null){
-			return;
+		for(ArrayList<PDevice> devices : devicesByGroup.values()){
+			for (PDevice pDevice : devices) {
+				if (puid.equals(pDevice.getPuId())) {
+				pDevice.updateChn(srcChns);
+				}
+			}
 		}
-		for(PChannelStatus status : channelStatus){
-			int sn = status.getSn();
-			SrcChn chl = device.getChannel(sn);
-			if(chl != null){
-				Integer enable = status.getEnable();
-				if(enable != null){
-					//可用性变更。enable==null表示没有状态变更
-					chl.setEnable(enable);
+	}
+
+	/**
+	 * 更新设备通道在线状态
+	 * @param puid 设备ID
+	 * @param recs 录像状态列表
+	 */
+	public void updateDeviceChnRecStatus(String puid, List<Rec> recs){
+		for(ArrayList<PDevice> devices : devicesByGroup.values()){
+			for (PDevice pDevice : devices) {
+				if (puid.equals(pDevice.getPuId())) {
+					recs.stream().forEach(rec -> pDevice.updateChnRec(rec));
 				}
-				
-				Integer online = status.getOnline();
-				if(online != null){
-					//上下线状态变更。online==null表示没有状态变更
-					chl.setOnline(online);
-				}
-				
-				Integer isPlatRec = status.getPlatRecord();
-				if(isPlatRec != null){
-					chl.setPlatRecord(isPlatRec);
-				}
-				
-				Integer isPuRec = status.getPuRecord();
-				if(isPuRec != null){
-					chl.setPuRecord(isPuRec);
-				}
-				
-				String name = status.getName();
-				if(name != null && name.length() > 0){
-					chl.setName(name);
-				}
-			}else{
-				Integer enable = status.getEnable();
-				//2019-03-12 对接平台1.0时出现设备不在线，获取设备时，上报的通道列表为空，后续设备通道状态又上报上来 LinChaoYu ADD
-				SrcChn channel = new SrcChn();
-				
-				if(status.getName() != null && status.getName().length() > 0)
-					channel.setName(status.getName());
-				else
-					channel.setName(device.getName());
-				
-				channel.setPuId(puid);
-				channel.setSn(status.getSn());
-				if(enable != null){
-					//可用性变更。enable==null表示没有状态变更
-					channel.setEnable(enable);
-				}
-				
-				Integer online = status.getOnline();
-				if(online != null){
-					//上下线状态变更。online==null表示没有状态变更
-					channel.setOnline(online);
-				}
-				
-				Integer isPlatRec = status.getPlatRecord();
-				if(isPlatRec != null){
-					channel.setPlatRecord(isPlatRec);
-				}
-				
-				Integer isPuRec = status.getPuRecord();
-				if(isPuRec != null){
-					channel.setPuRecord(isPuRec);
-				}
-				
-				// device.addChannel(channel);
 			}
 		}
 	}

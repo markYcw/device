@@ -15,7 +15,7 @@ import lombok.Data;
 public class SrcChns {
 
     @ApiModelProperty("视频源编号")
-    private String sn;
+    private Integer sn;
 
     @ApiModelProperty("0:不启用，1：启用")
     private Integer enable;

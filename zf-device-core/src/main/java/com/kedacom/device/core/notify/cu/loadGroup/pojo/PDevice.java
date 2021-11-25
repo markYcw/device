@@ -1,13 +1,11 @@
 package com.kedacom.device.core.notify.cu.loadGroup.pojo;
 
 
-import com.kedacom.device.core.notify.cu.loadGroup.ToolsUtil;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -45,9 +43,6 @@ public class PDevice {
 	@ApiModelProperty("视频源列表")
 	private List<SrcChn> srcChns;
 
-	@ApiModelProperty("视频源编号(2.0有效) 视频源名称(2.0有效)")
-	private HashMap<Integer, SrcChn> channels = new HashMap<Integer, SrcChn>();
-
 	@ApiModelProperty("设备是否在线 0:离线，1:在线")
 	private Integer online;
 
@@ -56,50 +51,41 @@ public class PDevice {
 	 * @return
 	 */
 	public List<SrcChn> getChannels() {
-		List<SrcChn>  list = new ArrayList<SrcChn> (this.channels.size());
-		list.addAll(this.channels.values());
+		List<SrcChn>  list = new ArrayList<SrcChn> (this.srcChns.size());
+		list.addAll(this.srcChns);
 		return list;
 	}
 
 	/**
-	 * 获取指定通道
-	 * @param sn
-	 * @return
+	 * 更新通道在线状态
+	 * @param updateSrcChs
 	 */
-	public SrcChn getChannel(Integer sn){
-		return this.channels.get(sn);
-	}
-	/**
-	 * 增加通道
-	 * @param channel
-	 */
-	public void addChannel(SrcChn channel){
-		channel.setPuId(this.puId);
-		if(ToolsUtil.isEmpty(channel.getName()))
-			channel.setName(this.getName());
-		
-		this.channels.put(channel.getSn(), channel);
-	}
-	public void addChannels(Collection<SrcChn> channels) {
-		for(SrcChn chl : channels){
-			this.addChannel(chl);
+	public void updateChn(List<SrcChns> updateSrcChs){
+		for (SrcChns updateSrcCh : updateSrcChs) {
+			for (SrcChn srcChn : srcChns) {
+				if (srcChn.getSn().equals(updateSrcCh.getSn())){
+					srcChn.setOnline(updateSrcCh.getOnline());
+					srcChn.setEnable(updateSrcCh.getEnable());
+				}
+			}
 		}
 	}
-	
+
 	/**
-	 * 移除通道
-	 * @param sn
+	 * 更新通道录像状态
+	 * @param rec
 	 */
-	public void removeChannel(int sn){
-		this.channels.remove(sn);
+	public void updateChnRec(Rec rec){
+		Iterator<SrcChn> iterator = this.srcChns.iterator();
+		while (iterator.hasNext()){
+			SrcChn next = iterator.next();
+			if(next.getSn().equals(rec.getSn())){
+				next.setPlatRecord(rec.getPlat());
+				next.setPuRecord(rec.getPu());
+			}
+		}
 	}
-	
-	/**
-	 * 清空通道
-	 */
-	public void clearChannel(){
-		this.channels.clear();
-	}
+
 	
 	
 }

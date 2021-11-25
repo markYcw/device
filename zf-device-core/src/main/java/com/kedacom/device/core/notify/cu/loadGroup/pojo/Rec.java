@@ -15,7 +15,7 @@ import lombok.Data;
 public class Rec {
 
     @ApiModelProperty("视频源通道号")
-    private String sn;
+    private Integer sn;
 
     @ApiModelProperty("平台录像状态 0: 位置 1：空闲 2：录像 3：尝试中 4：停止中")
     private Integer plat;

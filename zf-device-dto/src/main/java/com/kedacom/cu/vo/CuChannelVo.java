@@ -15,7 +15,7 @@ public class CuChannelVo {
      * 设备编号
      */
     @ApiModelProperty("设备编号")
-    private String puid;
+    private String puId;
 
     /**
      * 平台2.0叫“视频源编号”，平台1.0叫“设备通道号”

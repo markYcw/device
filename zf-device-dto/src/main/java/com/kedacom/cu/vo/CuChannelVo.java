@@ -44,13 +44,13 @@ public class CuChannelVo {
     /**
      * 是否平台录像。true正在平台录像,false不在平台录像，
      */
-    @ApiModelProperty("是否平台录像。0: 位置 1：空闲 2：录像 3：尝试中 4：停止中")
+    @ApiModelProperty("是否平台录像。0: 未知 1：空闲 2：录像 3：尝试中 4：停止中")
     private Integer platRecord = 1;
 
     /**
      * 是否前端录像。true正在前端录像,false不在前端录像，
      */
-    @ApiModelProperty("是否平台录像。0: 位置 1：空闲 2：录像 3：尝试中 4：停止中")
+    @ApiModelProperty("是否平台录像。0: 未知 1：空闲 2：录像 3：尝试中 4：停止中")
     private Integer puRecord = 1;
 
     /**

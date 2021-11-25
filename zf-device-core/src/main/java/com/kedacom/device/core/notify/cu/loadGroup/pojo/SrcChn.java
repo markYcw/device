@@ -24,10 +24,10 @@ public class SrcChn {
     private String name;
 
     @ApiModelProperty("是否启用 0:不启用，1：启用")
-    private Integer enable;
+    private Integer enable = 0;
 
     @ApiModelProperty("0:离线，1:在线")
-    private Integer online;
+    private Integer online = 0;
 
     @ApiModelProperty("是否平台录像。0: 位置 1：空闲 2：录像 3：尝试中 4：停止中")
     private Integer platRecord;

@@ -30,10 +30,10 @@ public class SrcChn {
     private Integer online = 0;
 
     @ApiModelProperty("是否平台录像。0: 位置 1：空闲 2：录像 3：尝试中 4：停止中")
-    private Integer platRecord;
+    private Integer platRecord = 1;
 
     @ApiModelProperty("是否前端录像。0: 位置 1：空闲 2：录像 3：尝试中 4：停止中")
-    private Integer puRecord;
+    private Integer puRecord = 1;
 
 
 }

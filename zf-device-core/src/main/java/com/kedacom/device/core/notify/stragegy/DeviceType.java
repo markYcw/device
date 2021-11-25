@@ -37,7 +37,7 @@ public enum DeviceType {
 	/**
 	 * 监控平台2.0
 	 */
-	CU2(7),
+	CU2(1),
 	
 	/**
 	 * 存储柜

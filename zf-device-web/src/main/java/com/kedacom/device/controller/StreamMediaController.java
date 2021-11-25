@@ -273,6 +273,15 @@ public class StreamMediaController {
         return BaseResult.succeed("刻录状态请求成功", getBurnStateVO);
     }
 
+    @ApiOperation("获取当前语音激励状态 目前只支持SVR2931型号")
+    @PostMapping("/getSvrAudioActState")
+    public BaseResult<GetSvrAudioActStateVo> getSvrAudioActState(@Valid @RequestBody GetSvrAudioActStateDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        GetSvrAudioActStateVo vo  =streamMediaService.getSvrAudioActState(dto);
+        return BaseResult.succeed("获取当前语音激励状态成功", vo);
+    }
+
 
 
 }

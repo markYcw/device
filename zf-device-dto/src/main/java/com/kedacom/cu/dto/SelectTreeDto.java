@@ -2,6 +2,7 @@ package com.kedacom.cu.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
@@ -15,6 +16,7 @@ import java.io.Serializable;
  * @description 选择当前操作的设备树
  */
 @ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SelectTreeDto extends CuRequestDto {
 

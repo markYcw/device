@@ -3,6 +3,8 @@ package com.kedacom.device.core.notify.stragegy;
 import com.kedacom.device.core.notify.cu.CuNotifyFactory;
 import com.kedacom.device.core.notify.svr.SvrNotifyFactory;
 import com.kedacom.device.core.utils.ContextUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
@@ -12,8 +14,8 @@ import java.util.HashMap;
  * @date 2021/9/15 11:04
  * @description 通知工厂 用于返回具体的通知信息处理类
  */
+@Component
 public class NotifyFactory {
-
 
     //用于存放不同类型的设备通知
     private static HashMap<Integer, HashMap<Integer, INotify>> map = new HashMap<>();
@@ -22,28 +24,27 @@ public class NotifyFactory {
     /**
      * 注册通知
      * @param devType 设备类型
-     * @param notifyType 通知类型
-     * @param iNotify 具体的消费通知类 注：iNotify为消费通知类的超类，这里需要注意的是，在这需要注册的是具体的消费通知类也就是其子类
      */
-    public void register(Integer devType, Integer notifyType, INotify iNotify){
-        HashMap<Integer, INotify> map = NotifyFactory.map.get(devType);
-        if(map == null){
-            HashMap<Integer, INotify> m = new HashMap<>();
-            m.put(notifyType,iNotify);
+    public void register(Integer devType,Integer notifyType,INotify iNotify){
+        HashMap<Integer, INotify> detail = NotifyFactory.map.get(devType);
+        if(detail == null){
+            HashMap<Integer, INotify> notifyMap = new HashMap<>();
+            notifyMap.put(notifyType,iNotify);
+            map.put(devType,notifyMap);
+        }else {
+            detail.put(notifyType,iNotify);
+            map.put(devType,detail);
         }
+
     }
 
     /**
      * 初始化各种设备通知
      */
-   private static void init(){
-       ContextUtils.getBean(SvrNotifyFactory.class).init();
-       ContextUtils.getBean(CuNotifyFactory.class).init();
+   public static void init(){
+       SvrNotifyFactory.init();
+       CuNotifyFactory.init();
    }
-
-    static {
-       init();
-    }
 
     /**
      * 根据设备类型和通知类型获取具体的消费通知类

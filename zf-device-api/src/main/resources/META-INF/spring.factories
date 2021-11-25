@@ -11,4 +11,6 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.kedacom.device.api.mcu.fallback.UmsMcuApiFallbackFactory,\
   com.kedacom.device.api.svr.fallback.SvrApiFallbackFactory,\
   com.kedacom.device.api.deviceListener.fallback.KmNotifyDefaultFallbackFactory,\
-  com.kedacom.device.api.deviceListener.fallback.CuApiFallbackFactory
+  com.kedacom.device.api.cu.fallback.CuApiFallbackFactory,\
+  com.kedacom.device.api.live.fallback.LiveApiFallBackFactory,\
+  com.kedacom.device.api.live.fallback.StreamingMediaApiFallBackFactory

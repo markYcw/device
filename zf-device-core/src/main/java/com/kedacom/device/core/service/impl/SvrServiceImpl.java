@@ -11,6 +11,7 @@ import com.kedacom.BaseResult;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.SvrConvert;
 import com.kedacom.device.core.basicParam.SvrBasicParam;
+import com.kedacom.device.core.enums.DeviceModelType;
 import com.kedacom.device.core.exception.SvrException;
 import com.kedacom.device.core.mapper.SvrMapper;
 import com.kedacom.device.core.notify.stragegy.DeviceType;
@@ -565,6 +566,14 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         String errorMsg = "发送心跳失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.DEVICE_HEART_BEAT_FAILED,response);
         return BaseResult.succeed("发送心跳成功");
+    }
+
+    @Override
+    public BaseResult<SvrEntity> saveInfo(SvrEntity entity) {
+        String modelType = entity.getModelType();
+        entity.setDevType(DeviceModelType.getEnum(modelType));
+        svrMapper.insert(entity);
+        return BaseResult.succeed("保存SVR成功",entity);
     }
 
     /**

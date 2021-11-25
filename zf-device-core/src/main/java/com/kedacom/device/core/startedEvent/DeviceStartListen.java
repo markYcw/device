@@ -2,6 +2,7 @@ package com.kedacom.device.core.startedEvent;
 
 import com.kedacom.core.ConnectorListener;
 import com.kedacom.core.ConnectorListenerManager;
+import com.kedacom.device.core.notify.stragegy.NotifyFactory;
 import com.kedacom.device.core.utils.CuUrlFactory;
 import com.kedacom.device.core.utils.McuUrlFactory;
 import com.kedacom.device.core.utils.SvrUrlFactory;
@@ -42,6 +43,9 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
 
+
+        //初始化通知工厂
+        NotifyFactory.init();
         //mcu访问地址初始化
         factory.setMap();
         //svr访问地址初始化

@@ -226,4 +226,11 @@ public interface StreamMediaClient {
      */
     GetBurnStateResponse getBurnState(GetBurnStateRequest getBurnStateRequest);
 
+    /**
+     * 获取当前语音激励状态
+     * @param request
+     * @return
+     */
+    GetSvrAudioActStateResponse getSvrAudioActState(GetSvrAudioActStateRequest request);
+
 }

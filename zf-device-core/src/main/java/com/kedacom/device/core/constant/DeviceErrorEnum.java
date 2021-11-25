@@ -43,6 +43,7 @@ public enum DeviceErrorEnum {
     CTRL_AUDIO_ACT_FAILED(2027, "控制音频功率上报失败"),
     SET_AUDIO_ACT_INTERVAL_FAILED(2028, "设置音频功率上报间隔失败"),
     GET_BURN_STATE_FAILED(2029, "刻录状态请求失败"),
+    GET_SVR_AUDIO_ACT_STATE_FAILED(2030, "获取当前语音激励状态失败"),
 
 
     MSP_REMOTE_ERROR(3001, "调用拼控服务远程接口错误"),
@@ -153,6 +154,20 @@ public enum DeviceErrorEnum {
     CU_VIEW_TREES_FAILED(6006, "获取多视图设备树失败"),
     CU_SELECT_TREE_FAILED(6007, "选择当前操作的设备树失败"),
     CU_DEV_GROUPS_FAILED(6008, "获取设备组信息失败"),
+    CU_DEVICES_FAILED(6009, "获取设备信息失败"),
+    CU_CONTROL_PTZ_FAILED(6010, "PTZ控制操作失败"),
+    CU_START_REC_FAILED(6011, "开启平台录像操作失败"),
+    CU_STOP_REC_FAILED(6012, "关闭平台录像操作失败"),
+    CU_START_PU_REC_FAILED(6013, "开启前端录像操作失败"),
+    CU_STOP_PU_REC_FAILED(6014, "关闭前端录像操作失败"),
+    CU_OPEN_LOCKING_REC_FAILED(6015, "打开录像锁定操作失败"),
+    CU_CANCEL_LOCKING_REC_FAILED(6016, "取消录像锁定操作失败"),
+    CU_QUERY_DISK_FAILED(6017, "查询磁阵(磁盘)信息失败"),
+    CU_QUERY_VIDEO_DAYS_FAILED(6018, "查询录像日历信息失败"),
+    CU_QUERY_VIDEO_FAILED(6019, "查询录像失败"),
+    QUERY_MONITOR_ERROR(6020,"根据数据库ID查询监控平台树失败"),
+    GET_CU_DEVICE_INFO_ERROR(6021,"获取设备详细信息失败"),
+    GET_CU_CHANNEL_INFO_ERROR(6022,"获取设备具体通道信息失败"),
 
 
     SCHEDULE_ADD_DEVICE_FAILED(9001, "添加调度组成员设备失败"),

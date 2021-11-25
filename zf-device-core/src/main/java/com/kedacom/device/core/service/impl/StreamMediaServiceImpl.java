@@ -18,6 +18,7 @@ import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.mapper.Mapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -542,6 +543,27 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         wrapper.eq(DeviceInfoEntity::getSessionId,ssid);
         List<DeviceInfoEntity> list = deviceMapper.selectList(wrapper);
         return list.get(DevTypeConstant.getZero);
+    }
+
+    @Override
+    public GetSvrAudioActStateVo getSvrAudioActState(GetSvrAudioActStateDTO dto) {
+        String error = "获取当前语音激励状态失败:{},{},{}";
+        log.info("获取当前语音激励状态入参信息:{}", dto);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(dto.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+        GetSvrAudioActStateRequest request = new GetSvrAudioActStateRequest();
+        BeanUtils.copyProperties(dto,request);
+        request.setSsid(ssid);
+        log.info("获取当前语音激励状态交互参数:{}", request);
+        GetSvrAudioActStateResponse res = client.getSvrAudioActState(request);
+        log.info("获取当前语音激励状态应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.GET_SVR_AUDIO_ACT_STATE_FAILED, res);
+        GetSvrAudioActStateVo vo = res.acquireData(GetSvrAudioActStateVo.class);
+        return vo;
     }
 
     @Override

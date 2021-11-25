@@ -17,7 +17,6 @@ import javax.validation.constraints.NotBlank;
 public class DevGroupsDto extends CuRequestDto {
 
     @ApiModelProperty("设备组id")
-    @NotBlank
     private String groupId;
 
 }

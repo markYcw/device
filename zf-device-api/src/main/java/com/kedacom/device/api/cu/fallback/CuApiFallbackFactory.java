@@ -2,18 +2,10 @@ package com.kedacom.device.api.cu.fallback;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.cu.dto.CuPageQueryDTO;
-import com.kedacom.cu.dto.CuRequestDto;
-import com.kedacom.cu.dto.SelectTreeDto;
-import com.kedacom.cu.entity.CuEntity;
-import com.kedacom.cu.vo.DomainsVo;
-import com.kedacom.cu.vo.LocalDomainVo;
-import com.kedacom.cu.vo.TimeVo;
-import com.kedacom.cu.vo.ViewTreesVo;
-import com.kedacom.device.api.cu.CuApi;
+import com.kedacom.cu.dto.*;
+import com.kedacom.cu.vo.*;
+import com.kedacom.device.api.cu.DevApi;
 import feign.hystrix.FallbackFactory;
-
-import javax.validation.Valid;
 
 /**
  * @author ycw
@@ -21,27 +13,28 @@ import javax.validation.Valid;
  * @date 2021/11/1 9:39
  * @description
  */
-public class CuApiFallbackFactory implements FallbackFactory<CuApi> {
+public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
     @Override
-    public CuApi create(Throwable throwable) {
-        return new CuApi() {
+    public DevApi create(Throwable throwable) {
+        return new DevApi() {
+
             @Override
-            public BaseResult<BasePage<CuEntity>> pageQuery(CuPageQueryDTO queryDTO) {
+            public BaseResult<BasePage<DevEntityVo>> list(DevEntityQuery queryDTO) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<CuEntity> info(Integer dbId) {
+            public BaseResult<DevEntityVo> info(Integer kmId) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<CuEntity> save(CuEntity entity) {
+            public BaseResult<DevEntityVo> saveDevFeign(DevEntityVo devEntityVo) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<CuEntity> update(CuEntity entity) {
+            public BaseResult<DevEntityVo> updateDev(DevEntityVo devEntityVo) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
@@ -51,37 +44,112 @@ public class CuApiFallbackFactory implements FallbackFactory<CuApi> {
             }
 
             @Override
-            public BaseResult<String> loginById(CuRequestDto dto) {
+            public BaseResult<DevEntityVo> loginById(CuRequestDto dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<String> logoutById(@Valid CuRequestDto dto) {
+            public BaseResult<String> logoutById(CuRequestDto dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<LocalDomainVo> localDomain(@Valid CuRequestDto dto) {
+            public BaseResult<LocalDomainVo> localDomain(CuRequestDto dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<DomainsVo> domains(@Valid CuRequestDto dto) {
+            public BaseResult<DomainsVo> domains(CuRequestDto dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<TimeVo> time(@Valid CuRequestDto dto) {
+            public BaseResult<Long> getTime(Integer kmId) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<ViewTreesVo> viewTrees(@Valid CuRequestDto dto) {
+            public BaseResult<ViewTreesVo> viewTrees(CuRequestDto dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<String> selectTree(@Valid SelectTreeDto dto) {
+            public BaseResult<String> selectTree(SelectTreeDto dto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<String> hb(Integer kmId) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<String> controlPtz(ControlPtzRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<Boolean> startRec(PlatRecStartVo platRecStartVo) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<Boolean> stopRec(PlatRecStopVo platRecStopVo) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<Boolean> startPuRec(PuRecStartVo puRecStartVo) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<Boolean> stopPuRec(PuRecStopVo puRecStopVo) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<Boolean> openLockingRec(OpenLockingRecRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<Boolean> cancelLockingRec(CancelLockingRecRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<QueryVideoResponseVo> queryVideo(QueryVideoRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<QueryVideoCalendarResponseVo> queryVideoCalendar(QueryVideoCalendarRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<QueryDiskResponseVo> queryDisk(QueryDiskRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<DevEntityVo> findByCondition(FindCuByConditionVo findCuByConditionVo) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<DevEntityVo> queryMonitor(Integer kmId) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<CuDeviceVo> getCuDeviceInfo(Integer kmId, String puId) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<CuChannelVo> getCuChannelInfo(Integer kmId, String puId, Integer sn) {
                 return BaseResult.failed(throwable.getMessage());
             }
         };

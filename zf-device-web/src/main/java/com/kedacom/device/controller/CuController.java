@@ -2,21 +2,11 @@ package com.kedacom.device.controller;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.common.constants.DevTypeConstant;
-import com.kedacom.cu.dto.CuPageQueryDTO;
-import com.kedacom.cu.dto.CuRequestDto;
-import com.kedacom.cu.dto.DevGroupsDto;
-import com.kedacom.cu.dto.SelectTreeDto;
-import com.kedacom.cu.entity.CuEntity;
-import com.kedacom.cu.pojo.Domains;
-import com.kedacom.cu.vo.DomainsVo;
-import com.kedacom.cu.vo.LocalDomainVo;
-import com.kedacom.cu.vo.TimeVo;
-import com.kedacom.cu.vo.ViewTreesVo;
+import com.kedacom.common.model.Result;
+import com.kedacom.cu.dto.*;
+import com.kedacom.cu.vo.*;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.CuService;
-import com.kedacom.svr.dto.*;
-import com.kedacom.svr.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -27,7 +17,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -47,57 +36,59 @@ public class CuController {
     @Autowired
     private CuService cuService;
 
-
-    @PostMapping("/pageQuery")
+    @PostMapping("/list")
     @ApiOperation(value = "cu分页查询")
-    public BaseResult<BasePage<CuEntity>> pageQuery(@RequestBody CuPageQueryDTO queryDTO) {
+    public BaseResult<BasePage<DevEntityVo>> list(@RequestBody DevEntityQuery queryDTO) {
+
         log.info("cu分页接口入参:{}", queryDTO);
 
         return cuService.pageQuery(queryDTO);
     }
 
-
     @PostMapping("/info")
-    @ApiOperation(value = "根据id获取cu信息")
-    @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
-    public BaseResult<CuEntity> info(@RequestParam Integer dbId) {
-        log.info("根据id获取cu信息:{}", dbId);
+    @ApiOperation(value = "根据数据库id获取cu信息")
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
+    public BaseResult<DevEntityVo> info(@RequestParam("kmId") Integer kmId) {
 
-        return BaseResult.succeed(cuService.getById(dbId));
+        log.info("根据id获取cu信息:{}", kmId);
+
+        return cuService.info(kmId);
     }
 
-
-    @PostMapping("/save")
+    @PostMapping("/saveDevFeign")
     @ApiOperation(value = "新增cu")
-    public BaseResult<CuEntity> save(@Valid @RequestBody CuEntity entity, BindingResult br) {
-        log.info("新增cu:{}", entity);
+    public BaseResult<DevEntityVo> saveDevFeign(@Valid @RequestBody DevEntityVo devEntityVo, BindingResult br) {
+
+        log.info("新增cu:{}", devEntityVo);
         ValidUtils.paramValid(br);
-        entity.setType(DevTypeConstant.updateRecordKey);
-        cuService.save(entity);
 
-        return BaseResult.succeed(entity);
+        return cuService.saveDev(devEntityVo);
     }
 
+    /**
+     * 修改监控平台
+     */
+    @ApiOperation("修改监控平台信息")
+    @PostMapping("/updateDev")
+    public BaseResult<DevEntityVo> updateDev(@Valid @RequestBody DevEntityVo devEntityVo, BindingResult br){
 
-    @PostMapping("/update")
-    @ApiOperation(value = "修改cu")
-    public BaseResult<CuEntity> update(@RequestBody CuEntity entity) {
-        log.info("修改cu:{}", entity);
-        cuService.updateById(entity);
+        log.info("修改cu:{}", devEntityVo);
+        ValidUtils.paramValid(br);
 
-        return BaseResult.succeed(entity);
+        return cuService.updateDev(devEntityVo);
     }
 
+    /**
+     * 删除
+     */
+    @ApiOperation("删除监控平台信息")
+    @PostMapping("/deleteDev")
+    public BaseResult<String> deleteDev(@RequestBody List<Integer> ids){
 
-    @PostMapping("/delete")
-    @ApiOperation(value = "删除cu")
-    public BaseResult delete(@RequestBody Long[] ids) {
         log.info("删除cu:{}", ids);
-        cuService.removeByIds(Arrays.asList(ids));
 
-        return BaseResult.succeed("删除成功");
+        return cuService.deleteDev(ids);
     }
-
 
     @PostMapping("/cuNotify")
     @ApiOperation(value = "cu通知")
@@ -106,70 +97,199 @@ public class CuController {
         cuService.cuNotify(notify);
     }
 
-
     @PostMapping("/loginById")
     @ApiOperation(value = "根据ID登录cu")
-    public BaseResult<String> loginById(@Valid @RequestBody CuRequestDto dto) {
+    public BaseResult<DevEntityVo> loginById(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
 
         return cuService.loginById(dto);
     }
 
     @PostMapping("/hb")
-    @ApiOperation(value = "发送心跳")
-    @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
-    public BaseResult<String> hb(@RequestParam Integer dbId) {
+    @ApiOperation(value = "发送心跳 登录CU以后必须每9分钟调用一次这个接口，否则有可能导致C++与CU的token失效，然后你再去尝试调用接口就会失败 接口调用成功会返回0")
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
+    public BaseResult<String> hb(@RequestParam Integer kmId) {
 
-        return cuService.hb(dbId);
+        return cuService.hb(kmId);
     }
 
     @ApiOperation("登出cu")
     @PostMapping("/logoutById")
-    public BaseResult<String> logoutById(@Valid @RequestBody CuRequestDto dto) {
+    public BaseResult<String> logoutById(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
 
         return cuService.logoutById(dto);
     }
 
     @ApiOperation("获取平台域信息")
     @PostMapping("/localDomain")
-    public BaseResult<LocalDomainVo> localDomain(@Valid @RequestBody CuRequestDto dto) {
+    public BaseResult<LocalDomainVo> localDomain(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
 
         return cuService.localDomain(dto);
     }
 
     @ApiOperation("获取域链表")
     @PostMapping("/domains")
-    public BaseResult<DomainsVo> domains(@Valid @RequestBody CuRequestDto dto) {
+    public BaseResult<DomainsVo> domains(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
 
         return cuService.domains(dto);
     }
 
-    @ApiOperation("获取平台时间")
-    @PostMapping("/time")
-    public BaseResult<TimeVo> time(@Valid @RequestBody CuRequestDto dto) {
 
-        return cuService.time(dto);
+    @ApiOperation("获取平台时间")
+    @PostMapping("/getTime")
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
+    public BaseResult<Long> getTime(@RequestParam Integer kmId){
+
+        return cuService.time(kmId);
     }
 
     @ApiOperation("获取多视图设备树")
     @PostMapping("/viewTrees")
-    public BaseResult<ViewTreesVo> viewTrees(@Valid @RequestBody CuRequestDto dto) {
+    public BaseResult<ViewTreesVo> viewTrees(@Valid @RequestBody CuRequestDto dto, BindingResult br) {
 
+        ValidUtils.paramValid(br);
         return cuService.viewTrees(dto);
     }
 
     @ApiOperation("选择当前操作的设备树")
     @PostMapping("/selectTree")
-    public BaseResult<String> selectTree(@Valid @RequestBody SelectTreeDto dto) {
+    public BaseResult<String> selectTree(@Valid @RequestBody SelectTreeDto dto, BindingResult br) {
 
+        ValidUtils.paramValid(br);
         return cuService.selectTree(dto);
     }
 
-    @ApiOperation("获取设备组信息")
-    @PostMapping("/devGroups")
-    public BaseResult<String> devGroups(@Valid @RequestBody DevGroupsDto dto) {
+    @ApiOperation("PTZ控制")
+    @PostMapping("/controlPtz")
+    public BaseResult<String> controlPtz(@Valid @RequestBody ControlPtzRequestDto requestDto, BindingResult br) {
 
-        return cuService.devGroups(dto);
+        ValidUtils.paramValid(br);
+
+        return cuService.controlPtz(requestDto);
     }
 
+    @ApiOperation("开启平台录像")
+    @PostMapping("/startRec")
+    public BaseResult<Boolean> startRec(@Valid @RequestBody PlatRecStartVo platRecStartVo, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.startRec(platRecStartVo);
+    }
+
+    @ApiOperation("关闭平台录像")
+    @PostMapping("/stopRec")
+    public BaseResult<Boolean> stopRec(@Valid @RequestBody PlatRecStopVo platRecStopVo, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.stopRec(platRecStopVo);
+    }
+
+    @ApiOperation("开启前端录像")
+    @PostMapping("/startPuRec")
+    public BaseResult<Boolean> startPuRec(@Valid @RequestBody PuRecStartVo puRecStartVo, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.startPuRec(puRecStartVo);
+    }
+
+    @ApiOperation("关闭前端录像")
+    @PostMapping("/stopPuRec")
+    public BaseResult<Boolean> stopPuRec(@Valid @RequestBody PuRecStopVo puRecStopVo, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.stopPuRec(puRecStopVo);
+    }
+
+    @ApiOperation("打开录像锁定")
+    @PostMapping("/openLockingRec")
+    public BaseResult<Boolean> openLockingRec(@Valid @RequestBody OpenLockingRecRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.openLockingRec(requestDto);
+    }
+
+    @ApiOperation("取消录像锁定")
+    @PostMapping("/cancelLockingRec")
+    public BaseResult<Boolean> cancelLockingRec(@Valid @RequestBody CancelLockingRecRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.cancelLockingRec(requestDto);
+    }
+
+    @ApiOperation("查询录像")
+    @PostMapping("/queryVideo")
+    public BaseResult<QueryVideoResponseVo> queryVideo(@Valid @RequestBody QueryVideoRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.queryVideo(requestDto);
+    }
+
+    @ApiOperation("查询录像日历（即当天是否有录像）")
+    @PostMapping("/queryVideoCalendar")
+    public BaseResult<QueryVideoCalendarResponseVo> queryVideoCalendar(@Valid @RequestBody QueryVideoCalendarRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.queryVideoCalendar(requestDto);
+    }
+
+    @ApiOperation("查询磁阵(磁盘)信息")
+    @PostMapping("/queryDisk")
+    public BaseResult<QueryDiskResponseVo> queryDisk(@Valid @RequestBody QueryDiskRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.queryDisk(requestDto);
+    }
+
+    @ApiOperation("根据条件返回监控平台树")
+    @PostMapping("/findByCondition")
+    public BaseResult<DevEntityVo> findByCondition(@RequestBody FindCuByConditionVo findCuByConditionVo){
+
+        return cuService.findByCondition(findCuByConditionVo);
+    }
+
+
+    @ApiOperation("根据数据库ID查询监控平台树")
+    @PostMapping("/queryMonitor")
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
+    public BaseResult<DevEntityVo> queryMonitor(@RequestParam("kmId") Integer kmId){
+
+        return cuService.queryMonitor(kmId);
+
+    }
+
+    @ApiOperation("获取设备详细信息")
+    @PostMapping("getCuDeviceInfo")
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId",  value = "数据库ID",required = true), @ApiImplicitParam(name = "puId", value = "设备号",required = true)})
+    public BaseResult<CuDeviceVo> getCuDeviceInfo(@RequestParam("kmId") Integer kmId,@RequestParam("puId") String puId){
+
+        return cuService.getCuDeviceInfo(kmId,puId);
+
+    }
+
+    @ApiOperation("获取设备具体通道信息")
+    @PostMapping("getCuChannelInfo")
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId",  value = "数据库ID",required = true), @ApiImplicitParam(name = "puId", value = "设备号",required = true),
+            @ApiImplicitParam(name = "sn", value = "通道号",required = true)})
+    public BaseResult<CuChannelVo> getCuChannelInfo(@RequestParam("kmId") Integer kmId, @RequestParam("puId") String puId, @RequestParam("sn") Integer sn){
+
+        return cuService.getCuChannelInfo(kmId,puId,sn);
+
+    }
 
 }

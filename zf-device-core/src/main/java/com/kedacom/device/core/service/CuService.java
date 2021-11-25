@@ -3,20 +3,14 @@ package com.kedacom.device.core.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.cu.dto.CuPageQueryDTO;
-import com.kedacom.cu.dto.CuRequestDto;
-import com.kedacom.cu.dto.DevGroupsDto;
-import com.kedacom.cu.dto.SelectTreeDto;
+import com.kedacom.common.model.Result;
+import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
-import com.kedacom.cu.vo.DomainsVo;
-import com.kedacom.cu.vo.LocalDomainVo;
-import com.kedacom.cu.vo.TimeVo;
-import com.kedacom.cu.vo.ViewTreesVo;
-import com.kedacom.svr.dto.*;
-import com.kedacom.svr.entity.SvrEntity;
-import com.kedacom.svr.pojo.SvrPageQueryDTO;
-import com.kedacom.svr.vo.*;
+import com.kedacom.cu.vo.*;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -28,11 +22,11 @@ import java.util.List;
  */
 public interface CuService extends IService<CuEntity> {
 
-    BaseResult<BasePage<CuEntity>> pageQuery(CuPageQueryDTO queryDTO);
+    BaseResult<BasePage<DevEntityVo>> pageQuery(DevEntityQuery queryDTO);
 
     void cuNotify(String notify);
 
-    BaseResult<String> loginById(CuRequestDto dto);
+    BaseResult<DevEntityVo> loginById(CuRequestDto dto);
 
 
     BaseResult<String> logoutById(CuRequestDto dto);
@@ -44,7 +38,7 @@ public interface CuService extends IService<CuEntity> {
     BaseResult<DomainsVo> domains(CuRequestDto dto);
 
 
-    BaseResult<TimeVo> time(CuRequestDto dto);
+    BaseResult<Long> time(Integer kmId);
 
     BaseResult<String> hb(Integer dbId);
 
@@ -53,4 +47,102 @@ public interface CuService extends IService<CuEntity> {
     BaseResult<String> selectTree(SelectTreeDto dto);
 
     BaseResult<String> devGroups(DevGroupsDto dto);
+
+    BaseResult<String> devices(DevicesDto dto);
+
+    BaseResult<DevEntityVo> info(Integer kmId);
+
+    BaseResult<DevEntityVo> saveDev(DevEntityVo devEntityVo);
+
+    BaseResult<DevEntityVo> updateDev(DevEntityVo devEntityVo);
+
+    BaseResult<String> deleteDev(List<Integer> ids);
+
+    /**
+     * PTZ控制
+     * @param requestDto
+     * @return
+     */
+    BaseResult<String> controlPtz(ControlPtzRequestDto requestDto);
+
+    /**
+     * 开启平台录像
+     * @param platRecStartVo
+     * @return
+     */
+    BaseResult<Boolean> startRec(PlatRecStartVo platRecStartVo);
+
+    /**
+     * 关闭平台录像
+     * @param platRecStopVo
+     * @return
+     */
+    BaseResult<Boolean> stopRec(PlatRecStopVo platRecStopVo);
+
+    /**
+     * 开启前端录像
+     * @param puRecStartVo
+     * @return
+     */
+    BaseResult<Boolean> startPuRec(PuRecStartVo puRecStartVo);
+
+    /**
+     * 关闭前端录像
+     * @param puRecStopVo
+     * @return
+     */
+    BaseResult<Boolean> stopPuRec(PuRecStopVo puRecStopVo);
+
+    /**
+     * 打开录像锁定
+     * @param requestDto
+     * @return
+     */
+    BaseResult<Boolean> openLockingRec(OpenLockingRecRequestDto requestDto);
+
+    /**
+     * 取消录像锁定
+     * @param requestDto
+     * @return
+     */
+    BaseResult<Boolean> cancelLockingRec(CancelLockingRecRequestDto requestDto);
+
+    /**
+     * 查询录像
+     * @param requestDto
+     * @return
+     */
+    BaseResult<QueryVideoResponseVo> queryVideo(QueryVideoRequestDto requestDto);
+
+    /**
+     * 查询录像日历（即当天是否有录像）
+     * @param requestDto
+     * @return
+     */
+    BaseResult<QueryVideoCalendarResponseVo> queryVideoCalendar(QueryVideoCalendarRequestDto requestDto);
+
+    /**
+     * 查询磁阵(磁盘)信息
+     * @param requestDto
+     * @return
+     */
+    BaseResult<QueryDiskResponseVo> queryDisk(QueryDiskRequestDto requestDto);
+
+    /**
+     * 根据条件返回监控平台树
+     * @param vo
+     * @return
+     */
+    BaseResult<DevEntityVo> findByCondition(FindCuByConditionVo vo);
+
+    /**
+     * 根据数据库ID返回监控平台树
+     * @param kmId
+     * @return
+     */
+    BaseResult<DevEntityVo> queryMonitor(Integer kmId);
+
+    BaseResult<CuDeviceVo> getCuDeviceInfo(Integer kmId, String puId);
+
+    BaseResult<CuChannelVo> getCuChannelInfo(Integer kmId, String puId, Integer sn);
 }

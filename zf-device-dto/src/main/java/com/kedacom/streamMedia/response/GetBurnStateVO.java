@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @author ycw
  * @version v1.0
@@ -12,7 +14,7 @@ import lombok.Data;
  */
 @ApiModel(description = "获取刻录状态响应")
 @Data
-public class GetBurnStateVO {
+public class GetBurnStateVO implements Serializable {
 
     @ApiModelProperty("通道号，目前一般为0，合成通道")
     private Integer ChnId;

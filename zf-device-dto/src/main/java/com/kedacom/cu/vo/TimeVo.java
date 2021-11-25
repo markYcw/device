@@ -14,6 +14,6 @@ import lombok.Data;
 public class TimeVo {
 
     @ApiModelProperty("时间")
-    private String time;
+    private Integer time;
 
 }

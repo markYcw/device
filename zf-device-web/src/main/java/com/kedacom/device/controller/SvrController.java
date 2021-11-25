@@ -3,6 +3,7 @@ package com.kedacom.device.controller;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
+import com.kedacom.device.core.notify.stragegy.DeviceType;
 import com.kedacom.device.core.service.SvrService;
 import com.kedacom.svr.entity.SvrEntity;
 import com.kedacom.svr.pojo.SvrPageQueryDTO;
@@ -59,9 +60,8 @@ public class SvrController {
     public BaseResult<SvrEntity> save(@Valid @RequestBody SvrEntity entity, BindingResult br) {
         log.info("新增svr:{}", entity);
         ValidUtils.paramValid(br);
-        svrService.save(entity);
 
-        return BaseResult.succeed(entity);
+        return svrService.saveInfo(entity);
     }
 
 

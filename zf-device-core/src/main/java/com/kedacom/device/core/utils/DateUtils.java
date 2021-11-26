@@ -42,6 +42,11 @@ public class DateUtils {
         return Integer.valueOf(timestamp);
     }
 
+    /**
+     * (常用) 得到 202111051200 这种格式的数据 把Date转为String
+     * @param date
+     * @return
+     */
     public static String getDateString(Date date) {
         if (null == date) {
             return "";

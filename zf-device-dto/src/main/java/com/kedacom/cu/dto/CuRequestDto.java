@@ -17,6 +17,6 @@ public class CuRequestDto implements Serializable {
 
     @NotNull
     @ApiModelProperty(value = "数据库ID", required = true)
-    private Integer dbId;
+    private Integer kmId;
 
 }

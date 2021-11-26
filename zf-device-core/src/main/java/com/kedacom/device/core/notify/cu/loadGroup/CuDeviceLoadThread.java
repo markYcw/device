@@ -13,6 +13,7 @@ import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 import com.kedacom.device.core.service.CuService;
 import com.kedacom.device.core.service.RegisterListenerService;
+import com.kedacom.device.core.service.impl.CuServiceImpl;
 import com.kedacom.device.core.utils.DeviceNotifyUtils;
 import com.kedacom.deviceListener.msgType.MsgType;
 import com.kedacom.pojo.SystemWebSocketMessage;
@@ -49,11 +50,6 @@ public class CuDeviceLoadThread {
 
 
     /**
-     * 会话标识
-     */
-    private LinkedList<Integer> ssidCache = new LinkedList<Integer>();
-
-    /**
      * 当前正在加载的ssid
      */
     private int currSsid = CuSession.INVALID_SSID; //
@@ -65,10 +61,9 @@ public class CuDeviceLoadThread {
      */
     private Hashtable<Integer, LinkedList<String>> unKownDeviceGroup = new Hashtable<Integer, LinkedList<String>>();
 
-    private static int serial = 0;
-    private boolean work = true;
-    private Object lock = new Object();
-    private Thread loadThread;
+    /**
+     * 监控平台客户端
+     */
     private CuClient client;
 
 
@@ -87,38 +82,6 @@ public class CuDeviceLoadThread {
         }
     }
 
-
-    /**
-     * 加载下一个监控平台的设备
-     */
-    private void loadNextCu() {
-        log.debug("curr ssid=" + currSsid);
-        if (currSsid != CuSession.INVALID_SSID) {
-            //当前正有加载currSsid的分组
-            log.debug("loadNextCu() currSsid != CuSession.INVALID_SSID return");
-            return;
-        }
-
-        //加载下一个监控平台的分组
-        int nextSsid = CuSession.INVALID_SSID;
-        synchronized (ssidCache) {
-            if (ssidCache.size() > 0) {
-                nextSsid = ssidCache.pollFirst();
-            }
-        }
-        log.debug("next ssid=" + nextSsid);
-        if (nextSsid >= 0) {
-            this.currSsid = nextSsid;
-            try {
-                this.requestLoadDeviceGroup(nextSsid);
-            } catch (Exception e) {
-                log.error("加载指定平台的设备分组失败, ssid=" + nextSsid, e);
-                this.loadNextCu(); //忽略失败的，继续加载下一个
-            }
-        }
-
-    }
-
     /**
      * 指定监控平台设备加载完成
      *
@@ -134,20 +97,7 @@ public class CuDeviceLoadThread {
             unKownDeviceGroup.remove(ssid);
             session.getDeviceCache().setLoadComplete(true);
             this.onDeviceLoadCompate(ssid);
-        } else {
-            //失败。将ssid加进去，等待重新加载
-            synchronized (ssidCache) {
-                ssidCache.addLast(ssid);
-            }
-            session.getDeviceCache().setLoadComplete(false);
         }
-
-        if (this.currSsid == ssid) {
-            this.currSsid = CuSession.INVALID_SSID;
-        }
-
-        //继续加载下一个平台的设备
-        this.loadNextCu();
     }
 
     /**
@@ -178,17 +128,6 @@ public class CuDeviceLoadThread {
             //已加载完成
             this.onLoadComplete(ssid, true);
         }
-    }
-
-    /**
-     * 加载分组。分组以“通知（Notify）”的方式上报。
-     *
-     * @throws Exception
-     */
-    private void requestLoadDeviceGroup(int ssid) throws Exception {
-
-        int cuId = client.getSessionManager().getCuIDBySSID(ssid);
-        //	client.getCuOperate().startLoadDeviceGroup(cuId);
     }
 
     /**
@@ -472,6 +411,7 @@ public class CuDeviceLoadThread {
         List<CuEntity> cuEntities = cuMapper.selectList(wrapper);
         CuEntity cuEntity = cuEntities.get(DevTypeConstant.getZero);
         log.info("============================监控平台IP为{}登录完成", cuEntity.getIp());
+        CuServiceImpl.cuDeviceStatusPoll.put(cuEntity.getId(),DevTypeConstant.updateRecordKey);
     }
 
 

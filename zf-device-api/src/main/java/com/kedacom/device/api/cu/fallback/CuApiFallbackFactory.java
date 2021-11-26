@@ -7,6 +7,8 @@ import com.kedacom.cu.vo.*;
 import com.kedacom.device.api.cu.DevApi;
 import feign.hystrix.FallbackFactory;
 
+import java.util.List;
+
 /**
  * @author ycw
  * @version v1.0
@@ -134,22 +136,22 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
             }
 
             @Override
-            public BaseResult<DevEntityVo> findByCondition(FindCuByConditionVo findCuByConditionVo) {
-                return BaseResult.failed(throwable.getMessage());
-            }
-
-            @Override
-            public BaseResult<DevEntityVo> queryMonitor(Integer kmId) {
-                return BaseResult.failed(throwable.getMessage());
-            }
-
-            @Override
             public BaseResult<CuDeviceVo> getCuDeviceInfo(Integer kmId, String puId) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
             public BaseResult<CuChannelVo> getCuChannelInfo(Integer kmId, String puId, Integer sn) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<List<CuGroupVo>> cuGroup(CuRequestDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<List<CuDeviceVo>> cuDevice(CuDevicesDto requestDto) {
                 return BaseResult.failed(throwable.getMessage());
             }
         };

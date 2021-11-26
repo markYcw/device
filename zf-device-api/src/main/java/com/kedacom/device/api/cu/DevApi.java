@@ -9,10 +9,14 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * svr相关操作
@@ -117,15 +121,6 @@ public interface DevApi {
     @GetMapping("/queryDisk")
     BaseResult<QueryDiskResponseVo> queryDisk(@RequestBody QueryDiskRequestDto requestDto);
 
-    @ApiOperation("根据条件返回监控平台树")
-    @PostMapping("/findByCondition")
-    BaseResult<DevEntityVo> findByCondition(@RequestBody FindCuByConditionVo findCuByConditionVo);
-
-    @ApiOperation("根据数据库ID查询监控平台树")
-    @PostMapping("/queryMonitor")
-    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
-    BaseResult<DevEntityVo> queryMonitor(@RequestParam("kmId") Integer kmId);
-
     @ApiOperation("获取设备详细信息")
     @PostMapping("getCuDeviceInfo")
     @ApiImplicitParams({@ApiImplicitParam(name = "kmId",  value = "数据库ID",required = true), @ApiImplicitParam(name = "puId", value = "设备号",required = true)})
@@ -136,6 +131,14 @@ public interface DevApi {
     @ApiImplicitParams({@ApiImplicitParam(name = "kmId",  value = "数据库ID",required = true), @ApiImplicitParam(name = "puId", value = "设备号",required = true),
             @ApiImplicitParam(name = "sn", value = "通道号",required = true)})
     BaseResult<CuChannelVo> getCuChannelInfo(@RequestParam("kmId") Integer kmId, @RequestParam("puId") String puId, @RequestParam("sn") Integer sn);
+
+    @ApiOperation("获取监控平台分组信息")
+    @PostMapping("/cuGroup")
+    BaseResult<List<CuGroupVo>> cuGroup(@RequestBody CuRequestDto requestDto);
+
+    @ApiOperation("获取监控平台设备信息")
+    @PostMapping("/cuDevice")
+    BaseResult<List<CuDeviceVo>> cuDevice(@RequestBody CuDevicesDto requestDto);
 
 
 }

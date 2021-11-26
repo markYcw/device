@@ -85,8 +85,12 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     private final static String REQUEST_HEAD = "http://";
 
     private final static String NOTIFY_URL = "/api/api-device/ums/cu/cuNotify";
+
     //cu状态池 若成功登录则把数据库ID和登录状态放入此池中1为已登录，若登出则从此状态池中移除
     public static ConcurrentHashMap<Integer,Integer> cuStatusPoll = new ConcurrentHashMap<>();
+
+    //cu设备状态池 若设备加载完则把数据库ID和状态放入此池中1为已加载完所以设备，若登出则从此状态池中移除
+    public static ConcurrentHashMap<Integer,Integer> cuDeviceStatusPoll = new ConcurrentHashMap<>();
 
     @Override
     public BaseResult<BasePage<DevEntityVo>> pageQuery(DevEntityQuery queryDTO) {
@@ -217,7 +221,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 } catch (Exception e) {
                     log.error("==============分页查询cu，发送心跳时候发生错误{}",e);
                     //如果离线就从状态池把改cu的ID删掉并把状态设为离线
-                    McuServiceImpl.mcuStatusPoll.remove(cuEntity.getId());
+                    cuStatusPoll.remove(cuEntity.getId());
+                    //如果离线就从设备状态池把改cu的ID删掉
+                    cuDeviceStatusPoll.remove(cuEntity.getId());
                     cuEntity.setStatus(DevTypeConstant.getZero);
                     continue;
                 }
@@ -241,9 +247,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Override
     public BaseResult<DevEntityVo> loginById(CuRequestDto dto) {
-        log.info("登录cu入参信息:{}", dto.getDbId());
+        log.info("登录cu入参信息:{}", dto.getKmId());
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        CuEntity entity = cuMapper.selectById(dto.getDbId());
+        CuEntity entity = cuMapper.selectById(dto.getKmId());
         if(entity == null){
             throw new CuException(DeviceErrorEnum.DEVICE_NOT_FOUND);
         }
@@ -268,9 +274,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         devEntityVo.setStatus(DevTypeConstant.updateRecordKey);
 
         //登录成功以后加载分组信息
-        getGroups(dto.getDbId(),response.getSsid());
+        getGroups(dto.getKmId(),response.getSsid());
         //往cu状态池放入当前mcu状态 1已登录
-        cuStatusPoll.put(dto.getDbId(), DevTypeConstant.updateRecordKey);
+        cuStatusPoll.put(dto.getKmId(), DevTypeConstant.updateRecordKey);
         return BaseResult.succeed("登录监控平台成功",devEntityVo);
     }
 
@@ -285,7 +291,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             DevEntityVo vo = iterator.next();
             if(vo.getStatus()==1){
                 CuRequestDto cuRequestDto = new CuRequestDto();
-                cuRequestDto.setDbId(vo.getId());
+                cuRequestDto.setKmId(vo.getId());
                 BaseResult<LocalDomainVo> domain = this.localDomain(cuRequestDto);
                 vo.setDomainId(domain.getData().getDomainId());
             }
@@ -300,7 +306,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      */
     public String getDomainSingle(Integer id){
         CuRequestDto cuRequestDto = new CuRequestDto();
-        cuRequestDto.setDbId(id);
+        cuRequestDto.setKmId(id);
         BaseResult<LocalDomainVo> domain = this.localDomain(cuRequestDto);
         return domain.getData().getDomainId();
         }
@@ -318,15 +324,15 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         cuDeviceLoadThread.getCuClient().getSessionManager().putSession(cuSession);
         //开始加载分组
         DevGroupsDto devGroupsDto = new DevGroupsDto();
-        devGroupsDto.setDbId(dbId);
+        devGroupsDto.setKmId(dbId);
         devGroupsDto.setGroupId("");
         this.devGroups(devGroupsDto);
     }
 
     @Override
     public BaseResult logoutById(CuRequestDto dto) {
-        log.info("根据ID登出cu接口入参{}",dto.getDbId());
-        CuEntity entity = cuMapper.selectById(dto.getDbId());
+        log.info("根据ID登出cu接口入参{}",dto.getKmId());
+        CuEntity entity = cuMapper.selectById(dto.getKmId());
         check(entity);
         CuBasicParam param = tool.getParam(entity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, param.getParamMap());
@@ -336,18 +342,20 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         LambdaUpdateWrapper<CuEntity> wrapper = new LambdaUpdateWrapper();
         wrapper.set(CuEntity::getSsid,null)
                 .set(CuEntity::getModifyTime,new Date())
-                .eq(CuEntity::getId,dto.getDbId());
+                .eq(CuEntity::getId,dto.getKmId());
         cuMapper.update(null,wrapper);
 
-        //往cu状态池移除当前mcu的id
-        cuStatusPoll.remove(dto.getDbId());
+        //往cu状态池移除当前cu的id
+        cuStatusPoll.remove(dto.getKmId());
+        //从cu设备状态池中去除当前cu的ID
+        cuDeviceStatusPoll.remove(dto.getKmId());
         return BaseResult.succeed("登出cu成功");
     }
 
     @Override
     public BaseResult<LocalDomainVo> localDomain(CuRequestDto dto) {
         log.info("获取平台域信息接口入参{}",dto);
-        CuEntity entity = cuMapper.selectById(dto.getDbId());
+        CuEntity entity = cuMapper.selectById(dto.getKmId());
         check(entity);
         CuBasicParam param = tool.getParam(entity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/localdomain/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
@@ -361,8 +369,8 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Override
     public BaseResult<DomainsVo> domains(CuRequestDto dto) {
-        log.info("获取域链表接口入参{}",dto.getDbId());
-        CuEntity entity = cuMapper.selectById(dto.getDbId());
+        log.info("获取域链表接口入参{}",dto.getKmId());
+        CuEntity entity = cuMapper.selectById(dto.getKmId());
         check(entity);
         CuBasicParam param = tool.getParam(entity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/domains/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
@@ -407,8 +415,8 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Override
     public BaseResult<ViewTreesVo> viewTrees(CuRequestDto dto) {
-        log.info("获取多视图设备树接口入参{}",dto.getDbId());
-        CuEntity entity = cuMapper.selectById(dto.getDbId());
+        log.info("获取多视图设备树接口入参{}",dto.getKmId());
+        CuEntity entity = cuMapper.selectById(dto.getKmId());
         check(entity);
         CuBasicParam param = tool.getParam(entity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/viewtrees/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
@@ -422,8 +430,8 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Override
     public BaseResult<String> selectTree(SelectTreeDto dto) {
-        log.info("选择当前操作的设备树接口入参{}",dto.getDbId());
-        CuEntity entity = cuMapper.selectById(dto.getDbId());
+        log.info("选择当前操作的设备树接口入参{}",dto.getKmId());
+        CuEntity entity = cuMapper.selectById(dto.getKmId());
         check(entity);
         CuBasicParam param = tool.getParam(entity);
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/selecttree/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
@@ -436,8 +444,8 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Override
     public BaseResult<String> devGroups(DevGroupsDto dto) {
-        log.info("获取设备组信息接口入参{}",dto.getDbId());
-        CuEntity entity = cuMapper.selectById(dto.getDbId());
+        log.info("获取设备组信息接口入参{}",dto.getKmId());
+        CuEntity entity = cuMapper.selectById(dto.getKmId());
         check(entity);
         CuBasicParam param = tool.getParam(entity);
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/devicegroups/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
@@ -451,7 +459,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Override
     public BaseResult<String> devices(DevicesDto dto) {
         log.info("获取设备信息接口入参{}",dto);
-        CuEntity entity = cuMapper.selectById(dto.getDbId());
+        CuEntity entity = cuMapper.selectById(dto.getKmId());
         check(entity);
         CuBasicParam param = tool.getParam(entity);
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/devices/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
@@ -478,8 +486,8 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Override
     public BaseResult<String> controlPtz(ControlPtzRequestDto requestDto) {
 
-        log.info("监控平台id : {}, PTZ控制请求参数 : {}", requestDto.getDbId(), requestDto);
-        CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
+        log.info("监控平台id : {}, PTZ控制请求参数 : {}", requestDto.getKmId(), requestDto);
+        CuEntity cuEntity = cuMapper.selectById(requestDto.getKmId());
         check(cuEntity);
         CuBasicParam param = tool.getParam(cuEntity);
         ControlPtzDto controlPtzDto = convert.convertControlPtzRequestDto(requestDto);
@@ -686,8 +694,8 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Override
     public BaseResult<QueryDiskResponseVo> queryDisk(QueryDiskRequestDto requestDto) {
 
-        log.info("查询磁阵(磁盘)信息请求参数，平台id : {}", requestDto.getDbId());
-        CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
+        log.info("查询磁阵(磁盘)信息请求参数，平台id : {}", requestDto.getKmId());
+        CuEntity cuEntity = cuMapper.selectById(requestDto.getKmId());
         check(cuEntity);
         CuBasicParam param = tool.getParam(cuEntity);
 
@@ -828,6 +836,35 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             log.error("获取设备通道具体通道信息失败{}", e.getMessage());
             throw new CuException(DeviceErrorEnum.GET_CU_CHANNEL_INFO_ERROR);
         }
+    }
+
+    @Override
+    public BaseResult<List<CuGroupVo>> cuGroup(CuRequestDto requestDto) {
+        log.info("==============获取cu分组集合入参CuRequestDto{}",requestDto);
+        if(!cuDeviceStatusPoll.get(requestDto.getKmId()).equals(1)){
+            log.error("获取cu分组集合失败,设备未加载完成{}");
+            throw new CuException(DeviceErrorEnum.GET_CU_GROUP_ERROR);
+        }
+        CuEntity devEntity = cuMapper.selectById(requestDto.getKmId());
+        Integer ssid = devEntity.getSsid();
+        List<PGroup> groupList = this.getGroupList(ssid);
+        List<CuGroupVo> collect = groupList.stream().map(pGroup -> convert.covertToCuGroupVo(pGroup)).collect(Collectors.toList());
+        return BaseResult.succeed("获取分组信息成功",collect);
+    }
+
+    @Override
+    public BaseResult<List<CuDeviceVo>> cuDevice(CuDevicesDto requestDto) {
+        log.info("==============获取cu设备集合入参CuDevicesDto{}",requestDto);
+        if(!cuDeviceStatusPoll.get(requestDto.getKmId()).equals(1)){
+            log.error("获取cu设备信息失败,设备未加载完成{}");
+            throw new CuException(DeviceErrorEnum.GET_CU_GROUP_ERROR);
+        }
+        CuEntity devEntity = cuMapper.selectById(requestDto.getKmId());
+        Integer ssid = devEntity.getSsid();
+        String groupId = requestDto.getGroupId();
+        List<PDevice> deviceList = this.getDeviceList(ssid, groupId);
+        List<CuDeviceVo> collect = deviceList.stream().map(pDevice -> convert.covertToCuDeviceVo(pDevice)).collect(Collectors.toList());
+        return BaseResult.succeed("获取设备信息成功",collect);
     }
 
     /**

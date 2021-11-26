@@ -256,7 +256,6 @@ public class CuController {
         return cuService.queryDisk(requestDto);
     }
 
-    @ApiOperation("根据条件返回监控平台树")
     @PostMapping("/findByCondition")
     public BaseResult<DevEntityVo> findByCondition(@RequestBody FindCuByConditionVo findCuByConditionVo){
 
@@ -264,7 +263,6 @@ public class CuController {
     }
 
 
-    @ApiOperation("根据数据库ID查询监控平台树")
     @PostMapping("/queryMonitor")
     @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
     public BaseResult<DevEntityVo> queryMonitor(@RequestParam("kmId") Integer kmId){
@@ -290,6 +288,24 @@ public class CuController {
 
         return cuService.getCuChannelInfo(kmId,puId,sn);
 
+    }
+
+    @ApiOperation("获取监控平台分组信息")
+    @PostMapping("/cuGroup")
+    public BaseResult<List<CuGroupVo>> cuGroup(@Valid @RequestBody CuRequestDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.cuGroup(requestDto);
+    }
+
+    @ApiOperation("获取监控平台设备信息")
+    @PostMapping("/cuDevice")
+    public BaseResult<List<CuDeviceVo>> cuDevice(@Valid @RequestBody CuDevicesDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.cuDevice(requestDto);
     }
 
 }

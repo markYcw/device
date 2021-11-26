@@ -43,6 +43,8 @@ public class OffLineNotify extends INotify {
         cuMapper.updateById(cuEntity);
         //除去cu状态池中已登录状态
         CuServiceImpl.cuStatusPoll.remove(cuEntity.getId());
+        //除去cu设备状态池中的状态
+        CuServiceImpl.cuDeviceStatusPoll.remove(cuEntity.getId());
         //去除会话信息
         cuDeviceLoadThread.getCuClient().getSessionManager().removeSession(ssid);
         //将通知发给业务

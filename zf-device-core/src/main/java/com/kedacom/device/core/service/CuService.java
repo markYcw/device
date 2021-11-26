@@ -145,4 +145,8 @@ public interface CuService extends IService<CuEntity> {
     BaseResult<CuDeviceVo> getCuDeviceInfo(Integer kmId, String puId);
 
     BaseResult<CuChannelVo> getCuChannelInfo(Integer kmId, String puId, Integer sn);
+
+    BaseResult<List<CuGroupVo>> cuGroup(CuRequestDto requestDto);
+
+    BaseResult<List<CuDeviceVo>> cuDevice(CuDevicesDto requestDto);
 }

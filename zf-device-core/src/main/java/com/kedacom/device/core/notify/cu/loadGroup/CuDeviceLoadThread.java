@@ -154,7 +154,7 @@ public class CuDeviceLoadThread {
         subscribe.setRec(1);
         subscribe.setTransdata(0);
         devicesDto.setSubscribe(subscribe);
-        devicesDto.setDbId(cuEntity.getId());
+        devicesDto.setKmId(cuEntity.getId());
         devicesDto.setGroupId(groupId);
         cuService.devices(devicesDto);
     }

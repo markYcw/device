@@ -26,10 +26,7 @@ import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 import com.kedacom.device.core.notify.stragegy.DeviceType;
 import com.kedacom.device.core.notify.stragegy.NotifyHandler;
 import com.kedacom.device.core.service.CuService;
-import com.kedacom.device.core.utils.CuBasicTool;
-import com.kedacom.device.core.utils.CuUrlFactory;
-import com.kedacom.device.core.utils.HandleResponseUtil;
-import com.kedacom.device.core.utils.RemoteRestTemplate;
+import com.kedacom.device.core.utils.*;
 import com.kedacom.device.cu.CuResponse;
 import com.kedacom.device.cu.request.CuLoginRequest;
 import com.kedacom.device.cu.response.CuLoginResponse;
@@ -46,6 +43,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import javax.validation.constraints.NotBlank;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -584,8 +582,13 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Override
     public BaseResult<Boolean> openLockingRec(OpenLockingRecRequestDto requestDto) {
 
+        Date endTime = requestDto.getEndTime();
+        Date startTime = requestDto.getStartTime();
+
         OperateLockingRecDto operateLockingRecDto = convert.convertOperateLockDto(requestDto);
         operateLockingRecDto.setType(0);
+        operateLockingRecDto.setEndTime(DateUtils.getDateString(endTime));
+        operateLockingRecDto.setStartTime((DateUtils.getDateString(startTime)));
         log.info("打开录像锁定请求参数信息 : {}", operateLockingRecDto.toString());
         CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
         check(cuEntity);
@@ -605,8 +608,13 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Override
     public BaseResult<Boolean> cancelLockingRec(CancelLockingRecRequestDto requestDto) {
 
+        Date endTime = requestDto.getEndTime();
+        Date startTime = requestDto.getStartTime();
+
         OperateLockingRecDto operateLockingRecDto = convert.convertOperateLockDto(requestDto);
         operateLockingRecDto.setType(1);
+        operateLockingRecDto.setEndTime(DateUtils.getDateString(endTime));
+        operateLockingRecDto.setStartTime((DateUtils.getDateString(startTime)));
         log.info("取消录像锁定请求参数信息 : {}", operateLockingRecDto.toString());
         CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
         check(cuEntity);
@@ -626,7 +634,12 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Override
     public BaseResult<QueryVideoResponseVo> queryVideo(QueryVideoRequestDto requestDto) {
 
+        Date endTime = requestDto.getEndTime();
+        Date startTime = requestDto.getStartTime();
+
         QueryVideoDto queryVideoDto = convert.convertQueryVideoDto(requestDto);
+        queryVideoDto.setEndTime(DateUtils.getDateString(endTime));
+        queryVideoDto.setStartTime(DateUtils.getDateString(startTime));
         log.info("查询录像请求参数 ： {}, 平台id ： {}", queryVideoDto.toString(), requestDto.getDbId());
         CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
         check(cuEntity);
@@ -647,7 +660,12 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Override
     public BaseResult<QueryVideoCalendarResponseVo> queryVideoCalendar(QueryVideoCalendarRequestDto requestDto) {
 
+        Date endTime = requestDto.getEndTime();
+        Date startTime = requestDto.getStartTime();
+
         QueryVideoCalendarDto queryVideoCalendarDto = convert.convertQueryVideoCalendarDto(requestDto);
+        queryVideoCalendarDto.setEndTime(DateUtils.getDateString(endTime));
+        queryVideoCalendarDto.setStartTime(DateUtils.getDateString(startTime));
         log.info("查询录像日历请求参数类 ： {}, 平台id ： {}", queryVideoCalendarDto.toString(), requestDto.getDbId());
         CuEntity cuEntity = cuMapper.selectById(requestDto.getDbId());
         check(cuEntity);

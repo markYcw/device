@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author wangxy
@@ -18,11 +19,11 @@ import java.io.Serializable;
 public class CancelLockingRecRequestDto extends RecBaseVo implements Serializable {
 
     @NotBlank(message = "录像开始时间不能为空")
-    @ApiModelProperty("录像开始时间, eg : 202111051200")
-    private String startTime;
+    @ApiModelProperty("录像开始时间")
+    private Date startTime;
 
     @NotBlank(message = "录像结束时间不能为空")
-    @ApiModelProperty("录像结束时间, eg : 202111051200")
-    private String endTime;
+    @ApiModelProperty("录像结束时间")
+    private Date endTime;
 
 }

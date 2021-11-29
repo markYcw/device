@@ -211,6 +211,19 @@ public class CuDeviceLoadThread {
 
     }
 
+    /**+
+     * 根据分组ID获取分组
+     * @param ssid
+     * @return
+     */
+    public PGroup getPGroupById(Integer ssid,String groupId){
+        CuSession session = client.getSessionManager().getSessionBySSID(ssid);
+        if (session != null) {
+           return session.getDeviceCache().getPGroupById(groupId);
+        }
+        return null;
+    }
+
     /**
      * 收到通知：设备
      *

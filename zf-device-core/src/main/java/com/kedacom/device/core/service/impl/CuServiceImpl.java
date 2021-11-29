@@ -76,7 +76,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Autowired
     private CuBasicTool tool;
 
-    @Value("${zf.cuNtyUrl.server_addr:127.0.0.1:9000}")
+    @Value("${zf.cuNtyUrl.server_addr:172.16.128.105:9000}")
     private String cuNtyUrl;
 
     @Autowired
@@ -839,6 +839,28 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     }
 
     @Override
+    public BaseResult<List<CuChannelVo>> getCuChannelList(CuChnListDto requestDto) {
+        log.info("=============获取设备通道集合接口入参CuChnListDto{}",requestDto);
+        CuEntity devEntity = cuMapper.selectById(requestDto.getKmId());
+        check(devEntity);
+        Integer ssid = devEntity.getSsid();
+        try {
+            CuSession cuSession = cuDeviceLoadThread.getCuClient().getSessionManager().getSessionBySSID(ssid);
+            PDevice device = cuSession.getDeviceCache().getDevice(requestDto.getPuId());
+            if(ObjectUtils.isEmpty(device)){
+                log.error("根据puId查询不到设备，请检查参数是否正确");
+                throw new CuException(DeviceErrorEnum.GET_CU_CHANNEL_INFO_ERROR);
+            }
+            List<SrcChn> channels = device.getChannels();
+            List<CuChannelVo> collect = channels.stream().map(a -> convert.convertToCuChannelVo(a)).collect(Collectors.toList());
+            return BaseResult.succeed("获取设备通道集合成功",collect);
+        } catch (Exception e) {
+            log.error("获取获取设备通道集合失败{}", e.getMessage());
+            throw new CuException(DeviceErrorEnum.GET_CU_CHANNEL_LIST_ERROR);
+        }
+    }
+
+    @Override
     public BaseResult<DevEntityVo> cuGroup(CuRequestDto requestDto) {
         log.info("==============获取cu分组集合入参CuRequestDto{}",requestDto);
         if(cuDeviceStatusPoll.get(requestDto.getKmId())==null){
@@ -874,6 +896,17 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             collect.add(cuDeviceVo);
         }
         return BaseResult.succeed("获取设备信息成功",collect);
+    }
+
+    @Override
+    public BaseResult<List<CuGroupVo>> cuGroupById(CuGroupDto requestDto) {
+       log.info("==========查询子分组接口入参CuGroupDto:",requestDto);
+        CuEntity cuEntity = cuMapper.selectById(requestDto.getKmId());
+        check(cuEntity);
+        PGroup pGroup = cuDeviceLoadThread.getPGroupById(cuEntity.getSsid(), requestDto.getGroupId());
+        List<PGroup> sortChildGroups = pGroup.getSortChildGroups();
+        List<CuGroupVo> collect = sortChildGroups.stream().map(a -> convert.covertToCuGroupVo(a)).collect(Collectors.toList());
+        return BaseResult.succeed("获取子分组成功", collect);
     }
 
     /**

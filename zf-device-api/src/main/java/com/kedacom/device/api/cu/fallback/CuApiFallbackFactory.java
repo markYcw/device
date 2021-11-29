@@ -6,7 +6,9 @@ import com.kedacom.cu.dto.*;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.api.cu.DevApi;
 import feign.hystrix.FallbackFactory;
+import org.springframework.validation.BindingResult;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -152,6 +154,16 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
 
             @Override
             public BaseResult<List<CuDeviceVo>> cuDevice(CuDevicesDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<List<CuGroupVo>> cuGroupById(@Valid CuGroupDto requestDto, BindingResult br) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<List<CuChannelVo>> getCuChannelList(CuChnListDto requestDto, BindingResult br) {
                 return BaseResult.failed(throwable.getMessage());
             }
         };

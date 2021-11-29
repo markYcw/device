@@ -140,5 +140,13 @@ public interface DevApi {
     @PostMapping("/cuDevice")
     BaseResult<List<CuDeviceVo>> cuDevice(@RequestBody CuDevicesDto requestDto);
 
+    @ApiOperation("获取监控平台子分组信息")
+    @PostMapping("/cuGroupById")
+    BaseResult<List<CuGroupVo>> cuGroupById(@Valid @RequestBody CuGroupDto requestDto, BindingResult br);
+
+    @ApiOperation("获取设备通道集合")
+    @PostMapping("getCuChannelList")
+    BaseResult<List<CuChannelVo>> getCuChannelList(@RequestBody CuChnListDto requestDto, BindingResult br);
+
 
 }

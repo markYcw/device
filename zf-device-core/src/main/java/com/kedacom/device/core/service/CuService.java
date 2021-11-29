@@ -149,4 +149,8 @@ public interface CuService extends IService<CuEntity> {
     BaseResult<DevEntityVo> cuGroup(CuRequestDto requestDto);
 
     BaseResult<List<CuDeviceVo>> cuDevice(CuDevicesDto requestDto);
+
+    BaseResult<List<CuGroupVo>> cuGroupById(CuGroupDto requestDto);
+
+    BaseResult<List<CuChannelVo>> getCuChannelList(CuChnListDto requestDto);
 }

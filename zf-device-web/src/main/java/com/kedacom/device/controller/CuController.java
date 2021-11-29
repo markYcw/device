@@ -290,13 +290,31 @@ public class CuController {
 
     }
 
-    @ApiOperation("获取监控平台分组信息")
+    @ApiOperation("获取设备通道集合")
+    @PostMapping("getCuChannelList")
+    public BaseResult<List<CuChannelVo>> getCuChannelList(@RequestBody CuChnListDto requestDto, BindingResult br){
+        ValidUtils.paramValid(br);
+
+        return cuService.getCuChannelList(requestDto);
+
+    }
+
+    @ApiOperation("获取监控平台根分组信息")
     @PostMapping("/cuGroup")
     public BaseResult<DevEntityVo> cuGroup(@Valid @RequestBody CuRequestDto requestDto, BindingResult br) {
 
         ValidUtils.paramValid(br);
 
         return cuService.cuGroup(requestDto);
+    }
+
+    @ApiOperation("获取监控平台子分组信息")
+    @PostMapping("/cuGroupById")
+    public BaseResult<List<CuGroupVo>> cuGroupById(@Valid @RequestBody CuGroupDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.cuGroupById(requestDto);
     }
 
     @ApiOperation("获取监控平台设备信息")

@@ -76,7 +76,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Autowired
     private CuBasicTool tool;
 
-    @Value("${zf.cuNtyUrl.server_addr:172.16.128.105:9000}")
+    @Value("${zf.cuNtyUrl.server_addr:127.0.0.1:9000}")
     private String cuNtyUrl;
 
     @Autowired
@@ -248,6 +248,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Override
     public BaseResult<DevEntityVo> loginById(CuRequestDto dto) {
         log.info("登录cu入参信息:{}", dto.getKmId());
+        if(cuStatusPoll.get(dto.getKmId())!=null){
+            return BaseResult.succeed("该平台已登录请勿重复登录");
+        }
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         CuEntity entity = cuMapper.selectById(dto.getKmId());
         if(entity == null){

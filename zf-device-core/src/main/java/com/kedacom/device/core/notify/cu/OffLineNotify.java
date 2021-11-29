@@ -49,7 +49,7 @@ public class OffLineNotify extends INotify {
         cuDeviceLoadThread.getCuClient().getSessionManager().removeSession(ssid);
         //将通知发给业务
         DeviceNotifyRequestDTO notifyRequestDTO = new DeviceNotifyRequestDTO();
-        notifyRequestDTO.setDbId(cuEntity.getId().longValue());
+        notifyRequestDTO.setDbId(cuEntity.getId());
         List<KmListenerEntity> list = listenerService.getAll(MsgType.CU_OFF_LINE.getType());
         if(!CollectionUtil.isEmpty(list)){
             for (KmListenerEntity kmListenerEntity : list) {

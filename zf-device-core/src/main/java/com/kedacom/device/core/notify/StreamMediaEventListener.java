@@ -79,7 +79,6 @@ public class StreamMediaEventListener {
         Integer ssid = event.getNty().getSsid();
         DeviceInfoEntity bySsid = streamMediaService.getBySsid(ssid);
         String id = bySsid.getId();
-        audioActDTO.setDbId(Long.valueOf(id));
         audioActDTO.setMsgType(MsgType.S_M_AUDIO_ACT_NTY.getType());
         //发送webSocket给前端
         SystemWebSocketMessage message = new SystemWebSocketMessage();
@@ -107,7 +106,6 @@ public class StreamMediaEventListener {
         Integer ssid = event.getNty().getSsid();
         DeviceInfoEntity bySsid = streamMediaService.getBySsid(ssid);
         String id = bySsid.getId();
-        burnStateDTO.setDbId(Long.valueOf(id));
         burnStateDTO.setMsgType(MsgType.S_M_BURN_STATE_NTY.getType());
         //发送webSocket给前端
         SystemWebSocketMessage message = new SystemWebSocketMessage();
@@ -136,7 +134,6 @@ public class StreamMediaEventListener {
         Integer ssid = event.getNty().getSsid();
         DeviceInfoEntity bySsid = streamMediaService.getBySsid(ssid);
         String id = bySsid.getId();
-        alarmDTO.setDbId(Long.valueOf(id));
         alarmDTO.setMsgType(MsgType.S_M_ALARM_NTY.getType());
         //发送webSocket给前端
         SystemWebSocketMessage message = new SystemWebSocketMessage();

@@ -25,6 +25,10 @@ public enum MsgType {
     S_M_AUDIO_ACT_NTY(14,"流媒体接收音频功率通知"),
     S_M_BURN_STATE_NTY(15,"流媒体刻录状态通知"),
     S_M_ALARM_NTY(16,"异常告警通知"),
+    CU_ALARM_NTY(17,"监控平台异常告警通知"),
+    CU_CHN_STATE_NTY(18,"监控平台通道状态订阅通知"),
+    CU_CHN_REC_STATE_NTY(19,"监控平台录像状态订阅通知"),
+    CU_DEVICE_REC_STATE_NTY(20,"监控平台设备状态订阅通知"),
 
     ;
 

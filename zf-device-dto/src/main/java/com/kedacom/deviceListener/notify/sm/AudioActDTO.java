@@ -1,5 +1,6 @@
-package com.kedacom.deviceListener.notify;
+package com.kedacom.deviceListener.notify.sm;
 
+import com.kedacom.deviceListener.notify.DeviceNotifyRequestDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +13,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel(description = "音频功率通知")
-public class AudioActDTO extends DeviceNotifyRequestDTO{
+public class AudioActDTO extends DeviceNotifyRequestDTO {
 
     @ApiModelProperty(value = "激励开关 0：关 1：开")
     private Integer ActCfg;

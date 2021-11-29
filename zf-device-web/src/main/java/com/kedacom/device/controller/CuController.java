@@ -292,7 +292,7 @@ public class CuController {
 
     @ApiOperation("获取监控平台分组信息")
     @PostMapping("/cuGroup")
-    public BaseResult<List<CuGroupVo>> cuGroup(@Valid @RequestBody CuRequestDto requestDto, BindingResult br) {
+    public BaseResult<DevEntityVo> cuGroup(@Valid @RequestBody CuRequestDto requestDto, BindingResult br) {
 
         ValidUtils.paramValid(br);
 

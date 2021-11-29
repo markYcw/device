@@ -839,7 +839,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     }
 
     @Override
-    public BaseResult<List<CuGroupVo>> cuGroup(CuRequestDto requestDto) {
+    public BaseResult<DevEntityVo> cuGroup(CuRequestDto requestDto) {
         log.info("==============获取cu分组集合入参CuRequestDto{}",requestDto);
         if(!cuDeviceStatusPoll.get(requestDto.getKmId()).equals(1)){
             log.error("获取cu分组集合失败,设备未加载完成{}");
@@ -849,7 +849,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         Integer ssid = devEntity.getSsid();
         List<PGroup> groupList = this.getGroupList(ssid);
         List<CuGroupVo> collect = groupList.stream().map(pGroup -> convert.covertToCuGroupVo(pGroup)).collect(Collectors.toList());
-        return BaseResult.succeed("获取分组信息成功",collect);
+        DevEntityVo devEntityVo = convert.convertToDevEntityVo(devEntity);
+        devEntityVo.setChildList(collect);
+        return BaseResult.succeed("获取分组信息成功",devEntityVo);
     }
 
     @Override

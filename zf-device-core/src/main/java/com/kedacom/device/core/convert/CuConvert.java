@@ -3,11 +3,11 @@ package com.kedacom.device.core.convert;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.*;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.PChannel;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.PDevice;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.PGroup;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.SrcChn;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 import com.kedacom.device.cu.request.CuLoginRequest;
+import com.kedacom.deviceListener.notify.cu.CuAlarmDTO;
+import com.kedacom.deviceListener.notify.cu.RecVo;
+import com.kedacom.deviceListener.notify.cu.SrcChsVo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -58,4 +58,10 @@ public interface CuConvert {
     CuDeviceVo covertToCuDeviceVo(PDevice pDevice);
 
     CuChannelVo convertToCuChannelVo(SrcChn pChannel);
+
+    CuAlarmDTO convertToCuAlarmDTO(Alarm alarm);
+
+    SrcChsVo convertToSrcChsVo(SrcChns srcChns);
+
+    RecVo convertToRecVo(Rec rec);
 }

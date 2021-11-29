@@ -1,5 +1,6 @@
-package com.kedacom.deviceListener.notify;
+package com.kedacom.deviceListener.notify.sm;
 
+import com.kedacom.deviceListener.notify.DeviceNotifyRequestDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +13,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel(description = "异常告警通知")
-public class AlarmDTO extends DeviceNotifyRequestDTO{
+public class AlarmDTO extends DeviceNotifyRequestDTO {
 
 
     @ApiModelProperty(value = "1:告警 0:消警")

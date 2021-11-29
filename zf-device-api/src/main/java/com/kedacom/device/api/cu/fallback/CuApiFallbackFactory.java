@@ -146,7 +146,7 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
             }
 
             @Override
-            public BaseResult<List<CuGroupVo>> cuGroup(CuRequestDto requestDto) {
+            public BaseResult<DevEntityVo> cuGroup(CuRequestDto requestDto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 

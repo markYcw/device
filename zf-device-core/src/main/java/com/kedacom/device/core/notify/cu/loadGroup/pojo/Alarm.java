@@ -13,7 +13,7 @@ import java.util.List;
  * 
  */
 @Data
-public class Alarm extends DeviceNotifyRequestDTO {
+public class Alarm {
 
 	@ApiModelProperty("1-产生告警，2-恢复告警")
 	private Integer status;
@@ -27,7 +27,7 @@ public class Alarm extends DeviceNotifyRequestDTO {
 	@ApiModelProperty("告警通道")
 	private Integer chn;
 
-	@ApiModelProperty("纠偏后的经度")
+	@ApiModelProperty("视频源信息")
 	private List<SrcChns> srcChns;
 
 	@ApiModelProperty("设备的puId")

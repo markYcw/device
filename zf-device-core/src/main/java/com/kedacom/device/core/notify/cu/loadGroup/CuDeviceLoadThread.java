@@ -8,6 +8,7 @@ import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.cu.dto.DevicesDto;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.pojo.Subscribe;
+import com.kedacom.device.core.convert.CuConvert;
 import com.kedacom.device.core.entity.KmListenerEntity;
 import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
@@ -16,6 +17,7 @@ import com.kedacom.device.core.service.RegisterListenerService;
 import com.kedacom.device.core.service.impl.CuServiceImpl;
 import com.kedacom.device.core.utils.DeviceNotifyUtils;
 import com.kedacom.deviceListener.msgType.MsgType;
+import com.kedacom.deviceListener.notify.cu.*;
 import com.kedacom.pojo.SystemWebSocketMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 监控设备加载线程
@@ -47,6 +50,9 @@ public class CuDeviceLoadThread {
 
     @Autowired
     private DeviceNotifyUtils notifyUtils;
+
+    @Autowired
+    private CuConvert convert;
 
 
     /**
@@ -267,25 +273,7 @@ public class CuDeviceLoadThread {
 
             case GetDeviceStatusNotify.TYPE_ALARM:
                 //报警（告警）收到报警通知以后给前端以及业务发通知内容
-                Alarm alarm = notify.getAlarm();
-                alarm.setPuId(notify.getPuId());
-                //发送webSocket给前端
-                SystemWebSocketMessage message = new SystemWebSocketMessage();
-                message.setOperationType(4);
-                message.setServerName("device");
-                message.setData(alarm);
-                log.info("===============发送CU报警（告警）收到报警通知webSocket给前端{}", JSON.toJSONString(message));
-                websocketFeign.sendInfo(JSON.toJSONString(message));
-                List<KmListenerEntity> all = registerListenerService.getAll(MsgType.S_M_BURN_STATE_NTY.getType());
-                if (!CollectionUtil.isEmpty(all)) {
-                    for (KmListenerEntity kmListenerEntity : all) {
-                        try {
-                            notifyUtils.burnStateNty(kmListenerEntity.getUrl(), alarm);
-                        } catch (Exception e) {
-                            log.error("------------CU发送报警（告警）收到报警通知给业务方失败", e);
-                        }
-                    }
-                }
+                this.onDeviceChnAlarm(notify);
                 break;
             case GetDeviceStatusNotify.TYPE_REC:
                 //录像状态
@@ -321,6 +309,17 @@ public class CuDeviceLoadThread {
         }
     }
 
+    /**
+     * 获取数据库ID
+     * @param ssid
+     */
+    private Integer getDbId(Integer ssid){
+        LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CuEntity::getSsid, ssid);
+        List<CuEntity> cuEntities = cuMapper.selectList(wrapper);
+        return cuEntities.get(DevTypeConstant.getZero).getId();
+    }
+
 
     //设备状态
     private void onDeviceStatus(int ssid, String puid, Integer online) {
@@ -331,6 +330,22 @@ public class CuDeviceLoadThread {
         if (session != null) {
             CuDeviceCache deviceCache = session.getDeviceCache();
             deviceCache.updateDeviceStatus(puid, online);
+            //发送录像状态通知给业务方
+            CuDeviceStateDTO dto = new CuDeviceStateDTO();
+            dto.setMsgType(MsgType.CU_DEVICE_REC_STATE_NTY.getType());
+            dto.setPuId(puid);
+            dto.setOnline(online);
+            dto.setDbId(getDbId(ssid));
+            List<KmListenerEntity> all = registerListenerService.getAll(MsgType.CU_DEVICE_REC_STATE_NTY.getType());
+            if (!CollectionUtil.isEmpty(all)) {
+                for (KmListenerEntity kmListenerEntity : all) {
+                    try {
+                        notifyUtils.cuDeviceNty(kmListenerEntity.getUrl(), dto);
+                    } catch (Exception e) {
+                        log.error("------------CU发送录像状态通知给业务方失败", e);
+                    }
+                }
+            }
         }
     }
 
@@ -340,6 +355,52 @@ public class CuDeviceLoadThread {
         if (session != null) {
             CuDeviceCache deviceCache = session.getDeviceCache();
             deviceCache.updateDeviceChnStatus(puid,srcChns);
+            //发送设备通道状态通知给业务方
+            CuChnStatusDTO dto = new CuChnStatusDTO();
+            dto.setMsgType(MsgType.CU_CHN_STATE_NTY.getType());
+            dto.setPuId(puid);
+            List<SrcChsVo> collect = srcChns.stream().map(a -> convert.convertToSrcChsVo(a)).collect(Collectors.toList());
+            dto.setSrcChsVos(collect);
+            dto.setDbId(getDbId(ssid));
+            List<KmListenerEntity> all = registerListenerService.getAll(MsgType.CU_CHN_STATE_NTY.getType());
+            if (!CollectionUtil.isEmpty(all)) {
+                for (KmListenerEntity kmListenerEntity : all) {
+                    try {
+                        notifyUtils.cuDeviceNty(kmListenerEntity.getUrl(), dto);
+                    } catch (Exception e) {
+                        log.error("------------CU发送录像状态通知给业务方失败", e);
+                    }
+                }
+            }
+        }
+    }
+
+
+    //设备告警通知
+    private void onDeviceChnAlarm(GetDeviceStatusNotify notify) {
+        Alarm alarm = notify.getAlarm();
+        alarm.setPuId(notify.getPuId());
+        CuAlarmDTO cuAlarmDTO = convert.convertToCuAlarmDTO(alarm);
+        List<SrcChns> srcChnInside = alarm.getSrcChns();
+        List<SrcChsVo> collect = srcChnInside.stream().map(a -> convert.convertToSrcChsVo(a)).collect(Collectors.toList());
+        cuAlarmDTO.setSrcChs(collect);
+        cuAlarmDTO.setMsgType(MsgType.CU_ALARM_NTY.getType());
+        //发送webSocket给前端
+        SystemWebSocketMessage message = new SystemWebSocketMessage();
+        message.setOperationType(4);
+        message.setServerName("device");
+        message.setData(alarm);
+        log.info("===============发送CU报警（告警）收到报警通知webSocket给前端{}", JSON.toJSONString(message));
+        websocketFeign.sendInfo(JSON.toJSONString(message));
+        List<KmListenerEntity> all = registerListenerService.getAll(MsgType.CU_ALARM_NTY.getType());
+        if (!CollectionUtil.isEmpty(all)) {
+            for (KmListenerEntity kmListenerEntity : all) {
+                try {
+                    notifyUtils.cuDeviceNty(kmListenerEntity.getUrl(), cuAlarmDTO);
+                } catch (Exception e) {
+                    log.error("------------CU发送报警（告警）收到报警通知给业务方失败", e);
+                }
+            }
         }
     }
 
@@ -349,6 +410,21 @@ public class CuDeviceLoadThread {
         if (session != null) {
             CuDeviceCache deviceCache = session.getDeviceCache();
             deviceCache.updateDeviceChnRecStatus(puid,recs);
+            CuChnRecStatusDTO dto = new CuChnRecStatusDTO();
+            dto.setPuId(puid);
+            List<RecVo> collect = recs.stream().map(a -> convert.convertToRecVo(a)).collect(Collectors.toList());
+            dto.setRecVos(collect);
+            //推送设备录像状态给订阅者
+            List<KmListenerEntity> all = registerListenerService.getAll(MsgType.CU_CHN_REC_STATE_NTY.getType());
+            if (!CollectionUtil.isEmpty(all)) {
+                for (KmListenerEntity kmListenerEntity : all) {
+                    try {
+                        notifyUtils.cuDeviceNty(kmListenerEntity.getUrl(), dto);
+                    } catch (Exception e) {
+                        log.error("------------CU发送设备录像状态通知给业务方失败", e);
+                    }
+                }
+            }
         }
     }
 

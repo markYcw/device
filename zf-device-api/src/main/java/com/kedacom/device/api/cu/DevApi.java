@@ -134,7 +134,7 @@ public interface DevApi {
 
     @ApiOperation("获取监控平台分组信息")
     @PostMapping("/cuGroup")
-    BaseResult<List<CuGroupVo>> cuGroup(@RequestBody CuRequestDto requestDto);
+    BaseResult<DevEntityVo> cuGroup(@RequestBody CuRequestDto requestDto);
 
     @ApiOperation("获取监控平台设备信息")
     @PostMapping("/cuDevice")

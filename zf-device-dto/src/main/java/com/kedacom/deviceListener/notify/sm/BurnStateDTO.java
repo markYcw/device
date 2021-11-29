@@ -1,5 +1,6 @@
-package com.kedacom.deviceListener.notify;
+package com.kedacom.deviceListener.notify.sm;
 
+import com.kedacom.deviceListener.notify.DeviceNotifyRequestDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +13,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel(description = "刻录状态通知")
-public class BurnStateDTO extends DeviceNotifyRequestDTO{
+public class BurnStateDTO extends DeviceNotifyRequestDTO {
 
     @ApiModelProperty(value = "通道号，目前一般为0，合成通道")
     private Integer ChnId;

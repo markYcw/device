@@ -19,5 +19,8 @@ public class DeviceNotifyRequestDTO implements Serializable {
     @ApiModelProperty("数据库ID")
     private Integer dbId;
 
+    @ApiModelProperty("视讯平台数据库ID")
+    private Long mcuId;
+
 
 }

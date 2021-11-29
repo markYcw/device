@@ -841,7 +841,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Override
     public BaseResult<DevEntityVo> cuGroup(CuRequestDto requestDto) {
         log.info("==============获取cu分组集合入参CuRequestDto{}",requestDto);
-        if(!cuDeviceStatusPoll.get(requestDto.getKmId()).equals(1)){
+        if(cuDeviceStatusPoll.get(requestDto.getKmId())==null){
             log.error("获取cu分组集合失败,设备未加载完成{}");
             throw new CuException(DeviceErrorEnum.GET_CU_GROUP_ERROR);
         }
@@ -857,7 +857,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Override
     public BaseResult<List<CuDeviceVo>> cuDevice(CuDevicesDto requestDto) {
         log.info("==============获取cu设备集合入参CuDevicesDto{}",requestDto);
-        if(!cuDeviceStatusPoll.get(requestDto.getKmId()).equals(1)){
+        if(cuDeviceStatusPoll.get(requestDto.getKmId())==null){
             log.error("获取cu设备信息失败,设备未加载完成{}");
             throw new CuException(DeviceErrorEnum.GET_CU_GROUP_ERROR);
         }
@@ -865,7 +865,14 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         Integer ssid = devEntity.getSsid();
         String groupId = requestDto.getGroupId();
         List<PDevice> deviceList = this.getDeviceList(ssid, groupId);
-        List<CuDeviceVo> collect = deviceList.stream().map(pDevice -> convert.covertToCuDeviceVo(pDevice)).collect(Collectors.toList());
+        List<CuDeviceVo> collect = new ArrayList<>();
+        for (PDevice pDevice : deviceList) {
+            CuDeviceVo cuDeviceVo = convert.covertToCuDeviceVo(pDevice);
+            List<SrcChn> srcChns = pDevice.getSrcChns();
+            List<CuChannelVo> chnCollect = srcChns.stream().map(a -> convert.convertToCuChannelVo(a)).collect(Collectors.toList());
+            cuDeviceVo.setChildList(chnCollect);
+            collect.add(cuDeviceVo);
+        }
         return BaseResult.succeed("获取设备信息成功",collect);
     }
 

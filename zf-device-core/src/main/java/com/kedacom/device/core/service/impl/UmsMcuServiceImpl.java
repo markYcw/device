@@ -1,5 +1,6 @@
 package com.kedacom.device.core.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -9,9 +10,14 @@ import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.device.core.constant.DeviceConstants;
+import com.kedacom.device.core.entity.KmListenerEntity;
 import com.kedacom.device.core.mapper.UmsMcuMapper;
 import com.kedacom.device.core.service.McuService;
+import com.kedacom.device.core.service.RegisterListenerService;
 import com.kedacom.device.core.service.UmsMcuService;
+import com.kedacom.device.core.utils.DeviceNotifyUtils;
+import com.kedacom.deviceListener.msgType.MsgType;
+import com.kedacom.deviceListener.notify.DeviceNotifyRequestDTO;
 import com.kedacom.mp.mcu.McuRequestDTO;
 import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import com.kedacom.mp.mcu.pojo.McuPageQueryDTO;
@@ -37,6 +43,12 @@ public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> i
 
     @Autowired
     private McuService mcuService;
+
+    @Autowired
+    private RegisterListenerService registerListenerService;
+
+    @Autowired
+    private DeviceNotifyUtils notifyUtils;
 
     @Override
     public BaseResult<BasePage<UmsMcuEntity>> pageQuery(McuPageQueryDTO queryDTO) {
@@ -100,6 +112,18 @@ public class UmsMcuServiceImpl extends ServiceImpl<UmsMcuMapper, UmsMcuEntity> i
             for (Iterator<UmsMcuEntity> it = mcuEntities.iterator(); it.hasNext(); ) {
                 //收到离线通知先把MCU状态设置为离线
                 McuServiceImpl.mcuStatusPoll.remove(it.next().getId());
+                DeviceNotifyRequestDTO dto = new DeviceNotifyRequestDTO();
+                dto.setMcuId(it.next().getId());
+                List<KmListenerEntity> all = registerListenerService.getAll(MsgType.MCU_OFF_LINE.getType());
+                if (!CollectionUtil.isEmpty(all)) {
+                    for (KmListenerEntity kmListenerEntity : all) {
+                        try {
+                            notifyUtils.cuDeviceNty(kmListenerEntity.getUrl(), dto);
+                        } catch (Exception e) {
+                            log.error("------------发送mcu掉线通知给业务方失败", e);
+                        }
+                    }
+                }
             }
         }
     }

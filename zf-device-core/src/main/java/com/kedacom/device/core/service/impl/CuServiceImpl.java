@@ -130,7 +130,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         String domainId = "";
         if(cuStatusPoll.get(vo.getId())!=null){
            //先判断有没有域id在数据库记录如果没有则查一遍然后更新入库
-            if(cuEntity.getModelType()==null){
+            if(cuEntity.getModelType()==null||cuEntity.getModelType().equals("")){
                 domainId = this.getDomainSingle(vo.getId());
                 cuEntity.setModelType(domainId);
                 cuMapper.updateById(cuEntity);

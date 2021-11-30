@@ -41,8 +41,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -76,11 +78,14 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Autowired
     private CuBasicTool tool;
 
-    @Value("${zf.cuNtyUrl.server_addr:172.16.128.105:9000}")
+    @Value("${zf.cuNtyUrl.server_addr:127.0.0.1:9000}")
     private String cuNtyUrl;
 
     @Autowired
     private CuDeviceLoadThread cuDeviceLoadThread;
+
+    @Autowired
+    private HttpServletRequest HttpServletRequest;
 
     private final static String REQUEST_HEAD = "http://";
 
@@ -123,6 +128,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Override
     public BaseResult<DevEntityVo> info(Integer kmId) {
+        String token = HttpServletRequest.getHeader("Authorization");
         CuEntity cuEntity = cuMapper.selectById(kmId);
         DevEntityVo vo = convert.convertToDevEntityVo(cuEntity);
         String domainId = "";

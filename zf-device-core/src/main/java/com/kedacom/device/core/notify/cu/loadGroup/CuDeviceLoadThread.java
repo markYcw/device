@@ -395,8 +395,10 @@ public class CuDeviceLoadThread {
         alarm.setPuId(notify.getPuId());
         CuAlarmDTO cuAlarmDTO = convert.convertToCuAlarmDTO(alarm);
         List<SrcChns> srcChnInside = alarm.getSrcChns();
-        List<SrcChsVo> collect = srcChnInside.stream().map(a -> convert.convertToSrcChsVo(a)).collect(Collectors.toList());
-        cuAlarmDTO.setSrcChs(collect);
+       if(CollectionUtil.isNotEmpty(srcChnInside)){
+           List<SrcChsVo> collect = srcChnInside.stream().map(a -> convert.convertToSrcChsVo(a)).collect(Collectors.toList());
+           cuAlarmDTO.setSrcChs(collect);
+       }
         cuAlarmDTO.setMsgType(MsgType.CU_ALARM_NTY.getType());
         //发送webSocket给前端
         SystemWebSocketMessage message = new SystemWebSocketMessage();

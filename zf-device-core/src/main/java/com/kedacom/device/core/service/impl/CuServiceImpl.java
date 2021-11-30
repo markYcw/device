@@ -76,7 +76,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Autowired
     private CuBasicTool tool;
 
-    @Value("${zf.cuNtyUrl.server_addr:127.0.0.1:9000}")
+    @Value("${zf.cuNtyUrl.server_addr:172.16.128.105:9000}")
     private String cuNtyUrl;
 
     @Autowired
@@ -412,6 +412,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         CuEntity entity = cuMapper.selectById(dbId);
         check(entity);
         CuBasicParam param = tool.getParam(entity);
+        log.info("发送心跳中间件入参ssno/ssid{}",param.getParamMap());
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/hb/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
         log.info("发送心跳中间件响应{}",exchange.getBody());
         CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);

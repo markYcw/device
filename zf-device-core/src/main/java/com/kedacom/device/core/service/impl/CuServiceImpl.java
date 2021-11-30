@@ -127,13 +127,19 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     public BaseResult<DevEntityVo> info(Integer kmId) {
         CuEntity cuEntity = cuMapper.selectById(kmId);
         DevEntityVo vo = convert.convertToDevEntityVo(cuEntity);
+        String domainId = "";
         if(cuStatusPoll.get(vo.getId())==1){
+           //先判断有没有域id在数据库记录如果没有则查一遍然后更新入库
+            if(cuEntity.getModelType()==null){
+                domainId = this.getDomainSingle(vo.getId());
+                cuEntity.setModelType(domainId);
+                cuMapper.updateById(cuEntity);
+                vo.setDomainId(domainId);
+            }
             vo.setStatus(1);
         }else {
             vo.setStatus(0);
         }
-        String domainId = this.getDomainSingle(vo.getId());
-        vo.setDomainId(domainId);
         return BaseResult.succeed("查询成功",vo);
     }
 

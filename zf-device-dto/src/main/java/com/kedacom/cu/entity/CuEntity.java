@@ -57,7 +57,7 @@ public class CuEntity {
 	private Integer type;
 
 
-	@ApiModelProperty(value = "cu型号类型")
+	@ApiModelProperty(value = "平台域id")
 	private String modelType;
 
 	//实体与表字段忽略映射

@@ -23,6 +23,7 @@ public interface CuConvert {
     @Mappings({@Mapping(target = "user",source = "username")})
     CuLoginRequest convertToCuLoginRequest(CuEntity cuEntity);
 
+    @Mappings({@Mapping(target = "domainId",source = "modelType")})
     DevEntityVo convertToDevEntityVo(CuEntity cuEntity);
 
     CuEntity convertToCuEntity(DevEntityVo devEntityVo);

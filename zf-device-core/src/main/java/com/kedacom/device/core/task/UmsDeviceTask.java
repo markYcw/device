@@ -278,8 +278,8 @@ public class UmsDeviceTask implements Runnable {
         int countNum = 0;
         for (int i = 0; i <= countNum; i++) {
             QuerySubDeviceInfoResponse umsSubDeviceFromThird = getUmsSubDeviceFromThird(umsDeviceId, queryindex, querycount);
-            if (ObjectUtil.isNull(umsSubDeviceFromThird.getQuerycount()) || CollectionUtil.isEmpty(umsSubDeviceFromThird.getDevinfo())) {
-                log.error("从远端获取设备信息为空");
+            if (umsSubDeviceFromThird.getResp().getErrorcode() == 1) {
+                log.error("从远端获取第 {} 页设备信息失败", queryindex);
                 return 0;
             }
             Integer resultCount = umsSubDeviceFromThird.getQuerycount();

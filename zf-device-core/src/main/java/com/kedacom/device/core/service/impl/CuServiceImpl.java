@@ -112,14 +112,12 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         List<CuEntity> cuEntities = queryCuStatus(records);
         //转化为DevEntityVo
         List<DevEntityVo> vos = cuEntities.stream().map(cuEntity -> convert.convertToDevEntityVo(cuEntity)).collect(Collectors.toList());
-        //设置域信息
-        List<DevEntityVo> voAfter = getDomain(vos);
         BasePage<DevEntityVo> basePage = new BasePage<>();
         basePage.setTotal(platformEntityPage.getTotal());
         basePage.setTotalPage(platformEntityPage.getPages());
         basePage.setCurPage(queryDTO.getCurPage());
         basePage.setPageSize(queryDTO.getPageSize());
-        basePage.setData(voAfter);
+        basePage.setData(vos);
         return BaseResult.succeed(basePage);
     }
 

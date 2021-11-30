@@ -71,6 +71,11 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.kedacom.zf</groupId>
+            <artifactId>zf-msgmanager-api</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <build>

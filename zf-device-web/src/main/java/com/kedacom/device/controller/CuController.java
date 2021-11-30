@@ -2,7 +2,6 @@ package com.kedacom.device.controller;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.common.model.Result;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.common.utils.ValidUtils;

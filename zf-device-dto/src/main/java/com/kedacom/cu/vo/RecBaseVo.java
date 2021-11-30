@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Data
 public class RecBaseVo implements Serializable {
 
-    @NotEmpty(message = "平台ID不能为空")
+    @NotNull(message = "平台ID不能为空")
     @ApiModelProperty(value = "平台ID", required = true)
     private Integer dbId;
 
@@ -28,7 +28,7 @@ public class RecBaseVo implements Serializable {
     @ApiModelProperty(value = "设备id", required = true)
     private String puId;
 
-    @NotEmpty(message = "通道号不能为空")
+    @NotNull(message = "通道号不能为空")
     @ApiModelProperty(value = "通道号", required = true)
     private Integer chnId;
 

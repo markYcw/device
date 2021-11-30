@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -27,7 +28,7 @@ public class QueryVideoCalendarRequestDto extends RecBaseVo implements Serializa
     @ApiModelProperty(value = "录像结束时间", required = true)
     private Date endTime;
 
-    @NotEmpty(message = "录像类别不能为空")
+    @NotNull(message = "录像类别不能为空")
     @ApiModelProperty(value = "录像类别： 1：平台录像; 2：前端录像; 3：本地录像", required = true)
     private Integer recType;
 

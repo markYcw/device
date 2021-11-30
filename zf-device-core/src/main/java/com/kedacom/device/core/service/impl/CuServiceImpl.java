@@ -1,7 +1,6 @@
 package com.kedacom.device.core.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -11,7 +10,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.common.constants.DevTypeConstant;
-import com.kedacom.common.model.Result;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.*;
@@ -31,6 +29,8 @@ import com.kedacom.device.cu.CuResponse;
 import com.kedacom.device.cu.request.CuLoginRequest;
 import com.kedacom.device.cu.response.CuLoginResponse;
 import com.kedacom.exception.KMException;
+import com.kedacom.msglog.MsgLogFeign;
+import com.kedacom.msglog.vo.LogVo;
 import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,13 +41,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotBlank;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**
@@ -86,6 +87,11 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Autowired
     private HttpServletRequest HttpServletRequest;
+
+    @Autowired
+    private LogUtil logUtil;
+
+    private final static String modelName = "device";
 
     private final static String REQUEST_HEAD = "http://";
 
@@ -128,7 +134,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Override
     public BaseResult<DevEntityVo> info(Integer kmId) {
-        String token = HttpServletRequest.getHeader("Authorization");
         CuEntity cuEntity = cuMapper.selectById(kmId);
         DevEntityVo vo = convert.convertToDevEntityVo(cuEntity);
         String domainId = "";
@@ -290,6 +295,8 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         getGroups(dto.getKmId(),response.getSsid());
         //往cu状态池放入当前mcu状态 1已登录
         cuStatusPoll.put(dto.getKmId(), DevTypeConstant.updateRecordKey);
+        //记录操作日志
+        logUtil.operateLog(modelName,"根据ID登录监控平台成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("登录监控平台成功",devEntityVo);
     }
 

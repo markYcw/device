@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -497,6 +498,10 @@ public class CuDeviceLoadThread {
 
     //设备加载完成
     private void onDeviceLoadCompate(Integer ssid) {
+        CuSession cuSession = client.getSessionManager().getSessionBySSID(ssid);
+        CuDeviceCache deviceCache = cuSession.getDeviceCache();
+        PGroup rootGroup = deviceCache.getPGroupById(deviceCache.getRootGroupId());
+        CompletableFuture.runAsync(()->deviceCache.deviceCount(rootGroup));
         LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(CuEntity::getSsid, ssid);
         List<CuEntity> cuEntities = cuMapper.selectList(wrapper);

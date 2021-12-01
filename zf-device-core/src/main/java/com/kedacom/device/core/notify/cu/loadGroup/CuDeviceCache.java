@@ -1,5 +1,6 @@
 package com.kedacom.device.core.notify.cu.loadGroup;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 
 import java.text.Collator;
@@ -11,7 +12,7 @@ import java.util.*;
  * @date 2021/11/24
  */
 public class CuDeviceCache {
-	
+
 	/**
 	 * 监控平台内置根分组的ID。
 	 * 通过接口不能获取到内置根分组，只能通过识别“内置未分组”的parentId。
@@ -79,11 +80,11 @@ public class CuDeviceCache {
 	 * @param group
 	 */
 	public void addDeviceGroup(PGroup group){
-		if(group.isUnnamedGroup()){
+		if(group.isRootGroup(group)){
 			/*
-			 * “内置未分组”的上级分组ID，是“内置根分组”
+			 * 查找根分组
 			 */
-			this.rootGroupId = group.getParentId();
+			this.rootGroupId = group.getId();
 		}
 		
 		if(ToolsUtil.isEmpty(group.getParentId())){
@@ -278,9 +279,6 @@ public class CuDeviceCache {
 	 * @param srcChns 设备通道列表
 	 */
 	public void updateDeviceChnStatus(String puid, List<SrcChns> srcChns){
-		if (puid.equals("813d3b6bf2a64f10b1aed37811a12a26@xinyangzhidui")){
-			System.out.println("================================");
-		}
 		for(ArrayList<PDevice> devices : devicesByGroup.values()){
 			for (PDevice pDevice : devices) {
 				if (puid.equals(pDevice.getPuId())) {
@@ -391,6 +389,39 @@ public class CuDeviceCache {
 	public static int compareZH_CN(String s1, String s2){
 		if(s1 == null || s2 == null) return 0;
 		return Collator.getInstance(Locale.CHINA).compare(s1, s2);
+	}
+
+	/**
+	 * 递归得到分组设备总数
+	 * @param pGroup
+	 */
+	public void deviceCount(PGroup pGroup){
+		List<PGroup> sortChildGroups = pGroup.getSortChildGroups();
+		//递归条件从上往下找直到该分组底下没有子分组时就是递归最底层在此之前都递归调用方法本身
+		Iterator<PGroup> iterator = sortChildGroups.iterator();
+		while (iterator.hasNext()){
+			PGroup next = iterator.next();
+			deviceCount(next);
+		}
+		//到最低下一层是没有子分组的所以分组设备数等于该分组所属设备总数，但是往上一层的话该分组设备数等于该分组所属设备数加上其子分组设备数
+		List<PDevice> deivces = this.getDeivcesByGroupId(pGroup.getId());
+		List<PGroup> groups = pGroup.getSortChildGroups();
+		//遍历子分组集合
+		if(CollectionUtil.isNotEmpty(groups)){
+			Iterator<PGroup> pGroupIterator = groups.iterator();
+			Integer groupCount = 0;
+			while (pGroupIterator.hasNext()){
+				PGroup next = pGroupIterator.next();
+				List<PDevice> deivceInside = this.getDeivcesByGroupId(next.getId());
+				//计算单个子分组设备总数
+				groupCount = deivceInside.size()+groupCount;
+			}
+			//当分组下存在子分组时设备总数等于该分组所属设备数＋子分组设备数
+			pGroup.setCount(deivces.size()+groupCount);
+		}else {
+			pGroup.setCount(deivces.size());
+		}
+
 	}
 
 	public Hashtable<String, PChannelStatus> getStatus_map() {

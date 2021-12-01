@@ -8,11 +8,7 @@ import java.util.List;
 
 /**
  * 分组
- * @author dengjie
- * @see PGroup
- * @see PDevice
- * @see PChannel
- * 
+ * @author ycw
  */
 @Data
 public class PGroup implements Cloneable{
@@ -50,37 +46,14 @@ public class PGroup implements Cloneable{
 	@ApiModelProperty("改分组下面是否有设备 0否 1是")
 	private Integer hasDev;
 
-	public String getName() {
-		return name;
-	}
+	@ApiModelProperty("总设备数")
+	private Integer count;
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getParentId() {
-		return parentId;
-	}
-
-	public void setParentId(String parentId) {
-		this.parentId = parentId;
-	}
-
-	public List<PGroup> getSortChildGroups() {
-		return sortChildGroups;
-	}
-
-	public void setSortChildGroups(List<PGroup> sortChildGroups) {
-		this.sortChildGroups = sortChildGroups;
-	}
+	/**
+	 * 设备在线数
+	 */
+	@ApiModelProperty("设备在线数")
+	private Integer onLineCount;
 
 	public void addChildGroup(PGroup group){
 		synchronized(sortChildGroups){
@@ -101,17 +74,17 @@ public class PGroup implements Cloneable{
 	/**
 	 * 返回当前分组是否是监控平台的内置“未分组”。
 	 */
-	public boolean isUnnamedGroup(){
-		return isUnamedGroupId(this.id);
+	public boolean isRootGroup(PGroup pGroup){
+		return rootGroupId(pGroup);
 	}
-	
+
 	/**
-	 * 返回指定的分组ID是否是监控平台内置的“未分组ID”
-	 * @param id
+	 * 判断当前分组是否跟分组
+	 * @param pGroup
 	 * @return
 	 */
-	public static boolean isUnamedGroupId(String id){
-		return id != null && id.equalsIgnoreCase(unNamgedGroupId);
+	public static boolean rootGroupId(PGroup pGroup){
+		return pGroup.getParentId().equals("")?true:false;
 	}
 	
 }

@@ -72,7 +72,7 @@ public class CuGroupVo {
     private Integer onLineCount;
 
     /**
-     * uuid
+     * uuid 前端用后端无需理会此字段
      */
     @ApiModelProperty("uuid")
     private String uuid;

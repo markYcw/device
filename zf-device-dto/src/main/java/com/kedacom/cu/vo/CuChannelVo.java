@@ -54,7 +54,7 @@ public class CuChannelVo {
     private Integer puRecord = 1;
 
     /**
-     * uuid
+     * uuid 前端用后端无需理会此字段
      */
     @ApiModelProperty("uuid")
     private String uuid;

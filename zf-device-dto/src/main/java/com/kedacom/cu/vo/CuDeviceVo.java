@@ -7,6 +7,9 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author ycw
+ */
 @Data
 public class CuDeviceVo {
     /**设备类型：编码器*/
@@ -88,12 +91,6 @@ public class CuDeviceVo {
     private Integer online = 0;
 
     /**
-     * 是否正在录像
-     */
-    @ApiModelProperty("是否正在录像")
-    private boolean rec;
-
-    /**
      * 通道总数当且仅当改设备底下存在通道时有此属性
      */
     @ApiModelProperty("通道总数当且仅当改设备底下存在通道时有此属性")
@@ -106,7 +103,7 @@ public class CuDeviceVo {
     private Integer onLineCount;
 
     /**
-     * uuid
+     * uuid 前端用后端无需理会此字段
      */
     @ApiModelProperty("uuid")
     private String uuid;

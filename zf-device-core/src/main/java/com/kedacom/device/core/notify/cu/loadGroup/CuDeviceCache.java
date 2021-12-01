@@ -405,24 +405,75 @@ public class CuDeviceCache {
 		}
 		//到最低下一层是没有子分组的所以分组设备数等于该分组所属设备总数，但是往上一层的话该分组设备数等于该分组所属设备数加上其子分组设备数
 		List<PDevice> deivces = this.getDeivcesByGroupId(pGroup.getId());
+		Integer deviceOnLineCount = 0;
+		//得到设备在线总数
+		Integer deviceOnLineCountAfter = getDeviceOnLineCount(deivces, deviceOnLineCount);
+		//计算通道在线总数
+		chnOnLineCount(deivces);
 		List<PGroup> groups = pGroup.getSortChildGroups();
 		//遍历子分组集合
 		if(CollectionUtil.isNotEmpty(groups)){
 			Iterator<PGroup> pGroupIterator = groups.iterator();
 			Integer groupCount = 0;
+			Integer deviceOnLine = 0;
 			while (pGroupIterator.hasNext()){
 				PGroup next = pGroupIterator.next();
 				List<PDevice> deivceInside = this.getDeivcesByGroupId(next.getId());
-				//计算单个子分组设备总数
+				//累加子分组设备在线总数
+				deviceOnLine = getDeviceOnLineCount(deivceInside, 0)+deviceOnLine;
+				//累加子分组设备总数
 				groupCount = deivceInside.size()+groupCount;
+				//计算通道在线总数
+				chnOnLineCount(deivceInside);
 			}
 			//当分组下存在子分组时设备总数等于该分组所属设备数＋子分组设备数
 			pGroup.setCount(deivces.size()+groupCount);
+			//当分组下存在子分组时设备在线总数等于该分组所属设备在线数＋子分组设备在线数
+			pGroup.setOnLineCount(deviceOnLineCountAfter+groupCount);
 		}else {
 			pGroup.setCount(deivces.size());
+			pGroup.setOnLineCount(deviceOnLineCountAfter);
 		}
-
 	}
+
+	/**
+	 * 计算设备总在线数
+	 * @param devices
+	 * @param onLineCount
+	 * @return
+	 */
+	private Integer getDeviceOnLineCount(List<PDevice> devices,Integer onLineCount){
+		Iterator<PDevice> iterator = devices.iterator();
+		while (iterator.hasNext()){
+			PDevice next = iterator.next();
+			if(next.getOnline().equals(1)){
+				onLineCount=onLineCount+1;
+			}
+		}
+		return onLineCount;
+	}
+
+	/**
+	 * 计算设备通道在线数
+	 * @param devices
+	 */
+	private void chnOnLineCount(List<PDevice> devices){
+		Iterator<PDevice> iterator = devices.iterator();
+		while (iterator.hasNext()){
+			PDevice next = iterator.next();
+			Integer onLineCount = 0;
+			List<SrcChn> channels = next.getChannels();
+			if(CollectionUtil.isNotEmpty(channels)){
+				for (SrcChn channel : channels) {
+					if(channel.getOnline().equals(1)){
+						onLineCount = onLineCount +1;
+					}
+				}
+			}
+			next.setOnLineCount(onLineCount);
+		}
+	}
+
 
 	public Hashtable<String, PChannelStatus> getStatus_map() {
 		return status_map;

@@ -46,6 +46,9 @@ public class PDevice {
 	@ApiModelProperty("设备是否在线 0:离线，1:在线")
 	private Integer online = 0;
 
+	@ApiModelProperty("通道在线数当且仅当改设备底下存在通道时有此属性")
+	private Integer onLineCount;
+
 	/**
 	 * 获取全部通道
 	 * @return

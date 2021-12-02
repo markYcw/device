@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Data
 public class CuRequestDto implements Serializable {
 
-    @NotNull
+    @NotNull(message = "数据库ID不能为空")
     @ApiModelProperty(value = "数据库ID", required = true)
     private Integer kmId;
 

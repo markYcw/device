@@ -29,8 +29,6 @@ import com.kedacom.device.cu.CuResponse;
 import com.kedacom.device.cu.request.CuLoginRequest;
 import com.kedacom.device.cu.response.CuLoginResponse;
 import com.kedacom.exception.KMException;
-import com.kedacom.msglog.MsgLogFeign;
-import com.kedacom.msglog.vo.LogVo;
 import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,10 +43,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**

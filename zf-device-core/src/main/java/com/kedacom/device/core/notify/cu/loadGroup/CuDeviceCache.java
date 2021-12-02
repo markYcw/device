@@ -166,7 +166,6 @@ public class CuDeviceCache {
 		synchronized (deviceLock) {
 			String puid = device.getPuId();
 			//根据puid判断设备是否已经存在，如果存在就忽略掉，避免重复
-			//if(!this.devices.containsKey(puid)) {
 				PDevice pDevice = this.devices.get(puid);
 				if (pDevice != null) {
 					PDevice pDbk = new PDevice();
@@ -190,9 +189,9 @@ public class CuDeviceCache {
 					device.setGroupId(groupId);
 				}else if(this.rootGroupId != null && groupId.equalsIgnoreCase(this.rootGroupId)){
 					/*
-					 * 如果设备所在分组是“内置根分组”，那把这些设备均放到“内置未分组”下。
+					 *根分组设备设置
 					 */
-					groupId = PGroup.unNamgedGroupId;
+					groupId = this.rootGroupId;
 					device.setGroupId(groupId);
 				}
 				

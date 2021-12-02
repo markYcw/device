@@ -890,6 +890,13 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         }
         CuEntity devEntity = cuMapper.selectById(requestDto.getKmId());
         Integer ssid = devEntity.getSsid();
+        //更新设备在线总数分组中设备总数
+        cuDeviceLoadThread.updateDeviceStatusCount(ssid);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            log.error("==========获取根分组更新设备状态时睡眠失败{}",e);
+        }
         List<PGroup> groupList = this.getGroupList(ssid);
         List<CuGroupVo> collect = groupList.stream().map(pGroup -> convert.covertToCuGroupVo(pGroup)).collect(Collectors.toList());
         DevEntityVo devEntityVo = convert.convertToDevEntityVo(devEntity);

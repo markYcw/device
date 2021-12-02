@@ -510,5 +510,18 @@ public class CuDeviceLoadThread {
         CuServiceImpl.cuDeviceStatusPoll.put(cuEntity.getId(),DevTypeConstant.updateRecordKey);
     }
 
+    /**
+     * 更新设备在线总数分组中设备总数
+     * @param ssid
+     */
+    public void updateDeviceStatusCount(Integer ssid){
+        CuSession session = client.getSessionManager().getSessionBySSID(ssid);
+        if(session!=null){
+            CuDeviceCache deviceCache = session.getDeviceCache();
+            PGroup pGroupById = deviceCache.getPGroupById(deviceCache.getRootGroupId());
+            CompletableFuture.runAsync(()->deviceCache.deviceCount(pGroupById));
+        }
+    }
+
 
 }

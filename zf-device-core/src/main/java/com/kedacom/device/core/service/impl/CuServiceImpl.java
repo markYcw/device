@@ -258,8 +258,14 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Override
     public BaseResult<DevEntityVo> loginById(CuRequestDto dto) {
         log.info("登录cu入参信息:{}", dto.getKmId());
-        if(cuStatusPoll.get(dto.getKmId())!=null){
-            return BaseResult.succeed("该平台已登录请勿重复登录");
+        //登录之前先判断改平台是否已经登录且ssid有效，如果有效告知业务该设备已登录请勿重复登录
+        try {
+            BaseResult<String> hb = this.hb(dto.getKmId());
+            if(cuStatusPoll.get(dto.getKmId())!=null){
+                return BaseResult.succeed("该平台已登录请勿重复登录");
+            }
+        } catch (Exception e) {
+            log.error("======登录时发送心跳失败，ssid已失效");
         }
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         CuEntity entity = cuMapper.selectById(dto.getKmId());

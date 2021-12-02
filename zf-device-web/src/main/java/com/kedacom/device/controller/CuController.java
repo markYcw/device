@@ -325,4 +325,22 @@ public class CuController {
         return cuService.cuDevice(requestDto);
     }
 
+    @ApiOperation("获取国标id")
+    @PostMapping("/gbId")
+    public BaseResult<GbIdVo> gbId(@Valid @RequestBody GbIdDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.gbId(requestDto);
+    }
+
+    @ApiOperation("获取平台2.0puId")
+    @PostMapping("/puIdTwo")
+    public BaseResult<PuIdTwoVo> puIdTwo(@Valid @RequestBody PuIdTwoDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.puIdTwo(requestDto);
+    }
+
 }

@@ -911,6 +911,40 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     }
 
     @Override
+    public BaseResult<GbIdVo> gbId(GbIdDto requestDto) {
+        log.info("=============获取国标id接口入参GbIdDto{}",requestDto);
+        CuEntity entity = cuMapper.selectById(requestDto.getKmId());
+        check(entity);
+        CuBasicParam param = tool.getParam(entity);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/gbid/{ssid}/{ssno}", JSON.toJSONString(requestDto), String.class, param.getParamMap());
+        log.info("获取国标id接口中间件响应{}",s);
+        CuResponse response = JSONObject.parseObject(s, CuResponse.class);
+        String errorMsg = "获取国标id接口失败:{},{},{}";
+        responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_GB_ID_ERROR,response);
+        GbIdVo vo = JSON.parseObject(s, GbIdVo.class);
+        //记录操作日志
+        logUtil.operateLog(modelName,"获取国标id接口成功",HttpServletRequest.getHeader("Authorization"));
+        return BaseResult.succeed("获取国标id接口成功",vo);
+    }
+
+    @Override
+    public BaseResult<PuIdTwoVo> puIdTwo(PuIdTwoDto requestDto) {
+        log.info("=============获取平台2.0puId接口入参CuChnListDto{}",requestDto);
+        CuEntity entity = cuMapper.selectById(requestDto.getKmId());
+        check(entity);
+        CuBasicParam param = tool.getParam(entity);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/puid20/{ssid}/{ssno}", JSON.toJSONString(requestDto), String.class, param.getParamMap());
+        log.info("获取平台2.0puId接口中间件响应{}",s);
+        CuResponse response = JSONObject.parseObject(s, CuResponse.class);
+        String errorMsg = "获取平台2.0puId失败:{},{},{}";
+        responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_Pu_ID_TWO_ERROR,response);
+        PuIdTwoVo vo = JSON.parseObject(s, PuIdTwoVo.class);
+        //记录操作日志
+        logUtil.operateLog(modelName,"获取平台2.0puId成功",HttpServletRequest.getHeader("Authorization"));
+        return BaseResult.succeed("获取平台2.0puId成功",vo);
+    }
+
+    @Override
     public BaseResult<DevEntityVo> cuGroup(CuRequestDto requestDto) {
         log.info("==============获取cu分组集合入参CuRequestDto{}",requestDto);
         if(cuDeviceStatusPoll.get(requestDto.getKmId())==null){

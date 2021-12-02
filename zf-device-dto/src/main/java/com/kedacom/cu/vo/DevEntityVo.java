@@ -35,6 +35,9 @@ public class DevEntityVo {
     @ApiModelProperty(value = "监控平台的IP")
     private String ip;
 
+    @ApiModelProperty(value = "NAT穿越IP")
+    private String natIp;
+
     /**
      * 监控平台端口
      */
@@ -42,6 +45,9 @@ public class DevEntityVo {
     @Max(value = 65536, message = "设备端口号参数不正确")
     @ApiModelProperty(value = "设备端口号 2.0平台端口是80")
     private Integer port;
+
+    @ApiModelProperty(value = "NAT穿越PORT")
+    private Integer natPort;
 
     /**
      * 监控登录平台账号

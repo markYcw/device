@@ -42,10 +42,15 @@ public class CuEntity {
 	@ApiModelProperty(value = "平台端口 2.0平台端口是80")
 	private Integer port;
 
+	@ApiModelProperty(value = "NAT穿越PORT")
+	private Integer natPort;
 
 	@ApiModelProperty(value = "登录监控平台账号")
 	@NotBlank(message = "用户名不能为空")
 	private String username;
+
+	@ApiModelProperty(value = "用户编号")
+	private String userNo;
 
 
 	@ApiModelProperty(value = "登录平台密码")
@@ -59,6 +64,9 @@ public class CuEntity {
 
 	@ApiModelProperty(value = "平台域id")
 	private String modelType;
+
+	@ApiModelProperty(value = "NAT穿越IP")
+	private String natIp;
 
 	//实体与表字段忽略映射
 	@TableField(exist = false)

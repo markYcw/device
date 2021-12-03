@@ -29,6 +29,7 @@ public enum MsgType {
     CU_CHN_STATE_NTY(18,"监控平台通道状态订阅通知"),
     CU_CHN_REC_STATE_NTY(19,"监控平台录像状态订阅通知"),
     CU_DEVICE_REC_STATE_NTY(20,"监控平台设备状态订阅通知"),
+    CU_QUERY_VIDEO_NTY(21,"监控平台查询录像通知"),
 
     ;
 

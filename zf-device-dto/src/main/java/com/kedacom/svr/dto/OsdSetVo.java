@@ -15,7 +15,7 @@ import lombok.Data;
  * @description 设置画面叠加
  */
 @Data
-public class OsdDto extends SvrRequestDto{
+public class OsdSetVo extends SvrRequestDto{
 
     @ApiModelProperty("温湿度叠加")
     private Hum hum;

@@ -10,7 +10,7 @@ import lombok.Data;
  * @description 创建刻录任务
  */
 @Data
-public class CreateBurnDto extends SvrRequestDto{
+public class CreateBurnRequestVo extends SvrRequestDto{
 
     @ApiModelProperty("0：开始新建 1：停止新建")
     private Integer type;

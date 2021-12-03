@@ -34,7 +34,7 @@ public interface SvrConvert {
 
     RemoteCfgVo convertToRemoteCfgVo(RemoteCfgVoResponse response);
 
-    BurnTaskVo convertTOBurnTaskVo(BurnTaskResponse response);
+    GetBurnTaskResponseVo convertTOBurnTaskVo(BurnTaskResponse response);
 
     RecListVo convertToRecListVo(RecListResponse response);
 

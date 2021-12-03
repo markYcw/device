@@ -10,7 +10,7 @@ import lombok.Data;
  * @description 补刻
  */
 @Data
-public class ReBurnDto extends SvrRequestDto{
+public class SupplementBurnVo extends SvrRequestDto{
 
     @ApiModelProperty("0：根据ID补刻 1：根据时间补刻")
     private Integer type;

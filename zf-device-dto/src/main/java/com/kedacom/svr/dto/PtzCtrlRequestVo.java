@@ -10,7 +10,7 @@ import lombok.Data;
  * @description ptz控制
  */
 @Data
-public class PtzDto extends SvrRequestDto{
+public class PtzCtrlRequestVo extends SvrRequestDto{
 
     @ApiModelProperty("通道ID")
     private Integer chnId;
@@ -18,7 +18,7 @@ public class PtzDto extends SvrRequestDto{
     @ApiModelProperty("控制命令 控制指令解释请参考PtzCmd枚举类")
     private Integer cmd;
 
-    @ApiModelProperty("控制指令解释PtzCmd枚举类，此字段为上一个字段起解释说明服务，不比传")
+    @ApiModelProperty("控制指令解释PtzCmd枚举类，此字段为上一个字段起解释说明服务，不必传")
     private PtzCmd ptzCmd;
 
     @ApiModelProperty("命令参数 请参考PtzCmd枚举类")

@@ -82,8 +82,8 @@ public interface SvrApi {
     BaseResult<String> enChn(@RequestBody EnChnDto enChnDto);
 
     @ApiOperation("获取编码器的预置位")
-    @PostMapping("/enCpReset")
-    BaseResult<CpResetVo> enCpReset(EnCpResetDto dto);
+    @PostMapping("/getIpcItem")
+    BaseResult<CpResetVo> getIpcItem(GetIpcItemRequestVo dto);
 
     @ApiOperation("修改编码器预置位")
     @PostMapping("/CpReset")
@@ -108,8 +108,8 @@ public interface SvrApi {
     BaseResult<String> enDeParam(@RequestBody EnDecParamDto dto);
 
     @ApiOperation("PTZ控制")
-    @PostMapping("/ptz")
-    BaseResult<String> ptz(@RequestBody PtzDto dto);
+    @PostMapping("/ptzCtrl")
+    BaseResult<String> ptzCtrl(@RequestBody PtzCtrlRequestVo dto);
 
     @ApiOperation("启用/停止远程点")
     @PostMapping("/remotePoint")
@@ -125,16 +125,16 @@ public interface SvrApi {
     BaseResult<RemoteCfgVo> remotePutCfg(@RequestBody RemotePutCfgDto dto);
 
     @ApiOperation("发送双流")
-    @PostMapping("/dual")
-    BaseResult<String> dual(@RequestBody DualDto dto);
+    @PostMapping("/startDual")
+    BaseResult<String> startDual(@RequestBody StartDualRequestVo dto);
 
     @ApiOperation("刻录控制")
     @PostMapping("/burn")
     BaseResult<String> burn(@RequestBody BurnDto dto);
 
     @ApiOperation("补刻")
-    @PostMapping("/reBurn")
-    BaseResult<String> reBurn(@RequestBody ReBurnDto dto);
+    @PostMapping("/supplementBurn")
+    BaseResult<String> supplementBurn(@RequestBody SupplementBurnVo dto);
 
     @ApiOperation("追加刻录任务")
     @PostMapping("/appendBurn")
@@ -142,24 +142,28 @@ public interface SvrApi {
 
     @ApiOperation("新建刻录任务")
     @PostMapping("/createBurn")
-    BaseResult<String> createBurn(@RequestBody CreateBurnDto dto);
+    BaseResult<String> createBurn(@RequestBody CreateBurnRequestVo dto);
 
     @ApiOperation("获取刻录任务")
-    @PostMapping("/burnTaskList")
-    BaseResult<BurnTaskVo> burnTaskList(@RequestBody BurnTaskListDto dto);
+    @PostMapping("/getBurnTask")
+    BaseResult<GetBurnTaskResponseVo> getBurnTask(@RequestBody GetBurnTaskRequestVo dto);
 
     @ApiOperation("DVD仓门控制")
-    @PostMapping("/dvdDoor")
-    BaseResult<String> dvdDoor(@RequestBody DvdDoorDto dto);
+    @PostMapping("/ctrlDvdDoor")
+    BaseResult<String> ctrlDvdDoor(@RequestBody DvdDoorCtrlVo dto);
 
     @ApiOperation("查询录像")
-    @PostMapping("/recList")
-    BaseResult<RecListVo> recList(@RequestBody RecListDto  dto);
+    @PostMapping("/queryRec")
+    BaseResult<RecListVo> queryRec(@RequestBody QueryRecVo dto);
 
     @ApiOperation("获取画面合成")
-    @PostMapping("/getMerge")
+    @PostMapping("/getSvrComposePic")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
-    BaseResult<GetMergeVo> getMerge(@RequestParam Integer dbId);
+    BaseResult<GetMergeVo> getSvrComposePic(@RequestParam Integer dbId);
+
+    @ApiOperation("设置画面合成")
+    @PostMapping("/setSvrComposePic")
+    BaseResult<String> setSvrComposePic(@RequestBody SetSvrComposePicVo dto);
 
     @ApiOperation("获取画面叠加")
     @PostMapping("/getOsd")
@@ -167,12 +171,12 @@ public interface SvrApi {
     BaseResult<GetOsdVo> getOsd(@RequestParam Integer dbId);
 
     @ApiOperation("设置画面叠加")
-    @PostMapping("/osd")
-    BaseResult<String> osd(@RequestBody OsdDto dto);
+    @PostMapping("/setOsd")
+    BaseResult<String> setOsd(@RequestBody OsdSetVo dto);
 
     @ApiOperation("语音激励控制")
-    @PostMapping("/audioAct")
-    BaseResult<String> audioAct(@RequestBody AudioActDto dto);
+    @PostMapping("/setAudioActNty")
+    BaseResult<String> setAudioActNty(@RequestBody SetAudioActNtyRequestVo dto);
 
     @PostMapping("/hb")
     @ApiOperation(value = "发送心跳")

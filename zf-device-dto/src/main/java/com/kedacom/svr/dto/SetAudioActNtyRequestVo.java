@@ -10,7 +10,7 @@ import lombok.Data;
  * @description 语音激励控制
  */
 @Data
-public class AudioActDto extends SvrRequestDto{
+public class SetAudioActNtyRequestVo extends SvrRequestDto{
 
     @ApiModelProperty("0：开启 1：停止")
     private Integer type;

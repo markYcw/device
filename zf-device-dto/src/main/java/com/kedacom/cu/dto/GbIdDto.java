@@ -29,4 +29,9 @@ public class GbIdDto extends CuRequestDto {
     @NotNull(message = "通道号不能为空")
     private Integer chn;
 
+    @ApiModelProperty("视频源号")
+    @NotNull(message = "视频源号不能为空")
+    private Integer src;
+
+
 }

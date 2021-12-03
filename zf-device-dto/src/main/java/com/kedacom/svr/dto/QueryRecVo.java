@@ -6,11 +6,14 @@ import lombok.Data;
 /**
  * @author ycw
  * @version v1.0
- * @date 2021/9/14 14:29
- * @description 获取刻录任务
+ * @date 2021/9/14 16:01
+ * @description 查询录像
  */
 @Data
-public class BurnTaskListDto extends SvrRequestDto{
+public class QueryRecVo extends SvrRequestDto{
+
+    @ApiModelProperty("通道ID")
+    private Integer chnId;
 
     @ApiModelProperty("开始时间，如：20200827120000")
     private String startTime;
@@ -23,6 +26,5 @@ public class BurnTaskListDto extends SvrRequestDto{
 
     @ApiModelProperty("查询总数，最大值为16")
     private Integer queryCount;
-
 
 }

@@ -13,7 +13,7 @@ import java.util.List;
  * @description
  */
 @Data
-public class MergeInfoDto extends SvrRequestDto {
+public class SetSvrComposePicVo extends SvrRequestDto {
 
     @ApiModelProperty("画面合成风格 0：大画面 1：大小画面，小画面在右下方 2：2 等分 3：1 + 下 2 4：1 + 下 3 5：4 等分 6：1 + 右 3 7：1 + 右 4 8：1 + 5 9：1 + 7 10：9 等分 11：大小画面 11：大小画面 13：大小画面 14：1 + 右 2 ")
     private Integer mergeStyle;

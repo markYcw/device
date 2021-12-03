@@ -10,8 +10,8 @@ import lombok.Data;
 @Data
 public class PuIdTwoVo {
 
-    @ApiModelProperty("平台域")
-    private String domain;
+    @ApiModelProperty("视频源号")
+    private String src;
 
     @ApiModelProperty("设备puId")
     private String puId;

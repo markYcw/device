@@ -3,6 +3,7 @@ package com.kedacom.svr.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -14,6 +15,7 @@ import java.io.Serializable;
 @Data
 public class SvrRequestDto implements Serializable {
 
+    @NotNull(message = "数据库ID不能为空")
     @ApiModelProperty("数据库ID")
     private Integer dbId;
 

@@ -3,7 +3,6 @@ package com.kedacom.device.controller;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
-import com.kedacom.device.core.notify.stragegy.DeviceType;
 import com.kedacom.device.core.service.SvrService;
 import com.kedacom.svr.entity.SvrEntity;
 import com.kedacom.svr.pojo.SvrPageQueryDTO;
@@ -157,8 +156,8 @@ public class SvrController {
     }
 
     @ApiOperation("获取编码器的预置位")
-    @PostMapping("/enCpReset")
-    public BaseResult<CpResetVo> enCpReset(EnCpResetDto dto) {
+    @PostMapping("/getIpcItem")
+    public BaseResult<CpResetVo> getIpcItem(GetIpcItemRequestVo dto) {
 
         return svrService.enCpReset(dto);
     }
@@ -201,8 +200,8 @@ public class SvrController {
 
 
     @ApiOperation("PTZ控制")
-    @PostMapping("/ptz")
-    public BaseResult<String> ptz(@RequestBody PtzDto dto) {
+    @PostMapping("/ptzCtrl")
+    public BaseResult<String> ptzCtrl(@RequestBody PtzCtrlRequestVo dto) {
 
         return svrService.ptz(dto);
     }
@@ -230,8 +229,8 @@ public class SvrController {
     }
 
     @ApiOperation("发送双流")
-    @PostMapping("/dual")
-    public BaseResult<String> dual(@RequestBody DualDto dto) {
+    @PostMapping("/startDual")
+    public BaseResult<String> startDual(@RequestBody StartDualRequestVo dto) {
 
         return svrService.dual(dto);
     }
@@ -244,8 +243,8 @@ public class SvrController {
     }
 
     @ApiOperation("补刻")
-    @PostMapping("/reBurn")
-    public BaseResult<String> reBurn(@RequestBody ReBurnDto dto) {
+    @PostMapping("/supplementBurn")
+    public BaseResult<String> supplementBurn(@RequestBody SupplementBurnVo dto) {
 
         return svrService.reBurn(dto);
     }
@@ -259,43 +258,43 @@ public class SvrController {
 
     @ApiOperation("新建刻录任务")
     @PostMapping("/createBurn")
-    public BaseResult<String> createBurn(@RequestBody CreateBurnDto dto) {
+    public BaseResult<String> createBurn(@RequestBody CreateBurnRequestVo dto) {
 
         return svrService.createBurn(dto);
     }
 
     @ApiOperation("获取刻录任务")
     @PostMapping("/burnTaskList")
-    public BaseResult<BurnTaskVo> burnTaskList(@RequestBody BurnTaskListDto dto) {
+    public BaseResult<GetBurnTaskResponseVo> getBurnTask(@RequestBody GetBurnTaskRequestVo dto) {
 
         return svrService.burnTaskList(dto);
     }
 
     @ApiOperation("DVD仓门控制")
-    @PostMapping("/dvdDoor")
-    public BaseResult<String> dvdDoor(@RequestBody DvdDoorDto dto) {
+    @PostMapping("/ctrlDvdDoor")
+    public BaseResult<String> ctrlDvdDoor(@RequestBody DvdDoorCtrlVo dto) {
 
         return svrService.dvdDoor(dto);
     }
 
     @ApiOperation("查询录像")
-    @PostMapping("/recList")
-    public BaseResult<RecListVo> recList(@RequestBody RecListDto  dto) {
+    @PostMapping("/queryRec")
+    public BaseResult<RecListVo> queryRec(@RequestBody QueryRecVo dto) {
 
         return svrService.recList(dto);
     }
 
     @ApiOperation("获取画面合成")
-    @PostMapping("/getMerge")
+    @PostMapping("/getSvrComposePic")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
-    public BaseResult<GetMergeVo> getMerge(@RequestParam Integer dbId) {
+    public BaseResult<GetMergeVo> getSvrComposePic(@RequestParam Integer dbId) {
 
         return svrService.getMerge(dbId);
     }
 
     @ApiOperation("设置画面合成")
-    @PostMapping("/merge")
-    public BaseResult<String> merge(@RequestBody MergeInfoDto dto) {
+    @PostMapping("/setSvrComposePic")
+    public BaseResult<String> setSvrComposePic(@RequestBody SetSvrComposePicVo dto) {
 
         return svrService.merge(dto);
     }
@@ -309,15 +308,15 @@ public class SvrController {
     }
 
     @ApiOperation("设置画面叠加")
-    @PostMapping("/osd")
-    public BaseResult<String> osd(@RequestBody OsdDto dto) {
+    @PostMapping("/setOsd")
+    public BaseResult<String> setOsd(@RequestBody OsdSetVo dto) {
 
         return svrService.osd(dto);
     }
 
     @ApiOperation("语音激励控制")
-    @PostMapping("/audioAct")
-    public BaseResult<String> audioAct(@RequestBody AudioActDto dto) {
+    @PostMapping("/setAudioActNty")
+    public BaseResult<String> setAudioActNty(@RequestBody SetAudioActNtyRequestVo dto) {
 
         return svrService.audioAct(dto);
     }

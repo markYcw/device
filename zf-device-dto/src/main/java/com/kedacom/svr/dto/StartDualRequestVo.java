@@ -10,7 +10,7 @@ import lombok.Data;
  * @description
  */
 @Data
-public class DualDto extends SvrRequestDto{
+public class StartDualRequestVo extends SvrRequestDto{
 
     @ApiModelProperty("0：开启 1：关闭")
     private Integer type;

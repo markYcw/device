@@ -234,7 +234,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     }
 
     @Override
-    public BaseResult<CpResetVo>  enCpReset(EnCpResetDto dto) {
+    public BaseResult<CpResetVo>  enCpReset(GetIpcItemRequestVo dto) {
         log.info("获取编码器的预置位接口入参EnCpResetDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
@@ -319,7 +319,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     }
 
     @Override
-    public BaseResult<String> ptz(PtzDto dto) {
+    public BaseResult<String> ptz(PtzCtrlRequestVo dto) {
         log.info("ptz控制接口入参PtzDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
@@ -376,7 +376,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     }
 
     @Override
-    public BaseResult<String> dual(DualDto dto) {
+    public BaseResult<String> dual(StartDualRequestVo dto) {
         log.info("发送双流接口入参DualDto:{}",dto);
         Integer dbId = dto.getDbId();
         SvrEntity entity = svrMapper.selectById(dbId);
@@ -405,7 +405,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     }
 
     @Override
-    public BaseResult<String> reBurn(ReBurnDto dto) {
+    public BaseResult<String> reBurn(SupplementBurnVo dto) {
         log.info("补刻接口入参ReBurnDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
@@ -431,7 +431,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     }
 
     @Override
-    public BaseResult<String> createBurn(CreateBurnDto dto) {
+    public BaseResult<String> createBurn(CreateBurnRequestVo dto) {
         log.info("新建刻录任务接口入参CreateBurnDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
@@ -444,7 +444,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     }
 
     @Override
-    public BaseResult<BurnTaskVo> burnTaskList(BurnTaskListDto dto) {
+    public BaseResult<GetBurnTaskResponseVo> burnTaskList(GetBurnTaskRequestVo dto) {
         log.info("获取刻录任务接口入参BurnTaskListDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
@@ -453,12 +453,12 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         BurnTaskResponse response = JSON.parseObject(s, BurnTaskResponse.class);
         String errorMsg = "获取刻录任务失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_BURN_TASK_LIST_FAILED,response);
-        BurnTaskVo vo = convert.convertTOBurnTaskVo(response);
+        GetBurnTaskResponseVo vo = convert.convertTOBurnTaskVo(response);
         return BaseResult.succeed("获取刻录任务成功",vo);
     }
 
     @Override
-    public BaseResult<String> dvdDoor(DvdDoorDto dto) {
+    public BaseResult<String> dvdDoor(DvdDoorCtrlVo dto) {
         log.info("DVD仓门控制接口入参DvdDoorDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
@@ -471,7 +471,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     }
 
     @Override
-    public BaseResult<RecListVo> recList(RecListDto dto) {
+    public BaseResult<RecListVo> recList(QueryRecVo dto) {
         log.info("查询录像接口入参RecListDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
@@ -499,7 +499,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     }
 
     @Override
-    public BaseResult<String> merge(MergeInfoDto dto) {
+    public BaseResult<String> merge(SetSvrComposePicVo dto) {
         log.info("设置画面合成接口入参MergeInfoDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
@@ -528,7 +528,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     }
 
     @Override
-    public BaseResult<String> osd(OsdDto dto) {
+    public BaseResult<String> osd(OsdSetVo dto) {
         log.info("设置画面叠加接口入参OsdDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
@@ -543,7 +543,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     }
 
     @Override
-    public BaseResult<String> audioAct(AudioActDto dto) {
+    public BaseResult<String> audioAct(SetAudioActNtyRequestVo dto) {
         log.info("语音激励控制接口入参AudioActDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);

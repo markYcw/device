@@ -3,6 +3,9 @@ package com.kedacom.svr.pojo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * @author ycw
  * @version v1.0
@@ -12,9 +15,11 @@ import lombok.Data;
 @Data
 public class RtspInfo {
 
+    @NotBlank(message = "rtsp的url不能为空")
     @ApiModelProperty("rtsp的url")
     private String rtspUrl;
 
+    @NotNull(message = "rtsp传输模式不能为空")
     @ApiModelProperty("rtsp传输模式 0:tcp 1:udp ")
     private Integer transMode;
 

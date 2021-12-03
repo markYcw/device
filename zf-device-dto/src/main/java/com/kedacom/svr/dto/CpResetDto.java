@@ -3,6 +3,8 @@ package com.kedacom.svr.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author ycw
  * @version v1.0
@@ -12,9 +14,11 @@ import lombok.Data;
 @Data
 public class CpResetDto extends SvrRequestDto{
 
+    @NotNull(message = "通道ID不能为空")
     @ApiModelProperty("通道ID")
     private Integer chnId;
 
+    @NotNull(message = "预置位信息不能为空")
     @ApiModelProperty("预置位1-255")
     private Integer preset;
 

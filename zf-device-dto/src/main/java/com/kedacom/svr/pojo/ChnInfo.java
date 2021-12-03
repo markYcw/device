@@ -3,6 +3,10 @@ package com.kedacom.svr.pojo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * @author ycw
  * @version v1.0
@@ -12,30 +16,27 @@ import lombok.Data;
 @Data
 public class ChnInfo {
 
+    @NotBlank(message = "设备guid不能为空")
     @ApiModelProperty("设备guid")
     private String guid;
 
-    @ApiModelProperty("通道别名")
-    private String name;
-
+    @NotBlank(message = "设备类型名称不能为空")
     @ApiModelProperty("设备类型名称")
     private String typeName;
 
-    @ApiModelProperty("设备类型:0：无效设备 1：编码器 2：解码器 3：增加支持平台设备,针对版本Beta2 4：多媒体主机,包括SVR29ES 和 SVR27ES 5：SDI编码卡 6：2726-VIN0 VIN1")
-    private Integer devType;
-
+    @NotNull(message = "协议类型不能为空")
     @ApiModelProperty("协议类型:0：VSIP 1：ONVIF 2：RTSP 3：MT（会议）4：SDI 5：平台通道 6：GB（国标）")
     private Integer protoType;
 
+    @NotBlank(message = "设备IP不能为空")
     @ApiModelProperty("设备IP")
     private String ip;
 
-    @ApiModelProperty("设备厂商 0：kedacom 1：外厂商（目前无用）")
-    private Integer devManu;
-
+    @Valid
     @ApiModelProperty("onvif信息，protoType为1时生效")
     private OnVifInfo onvifInfo;
 
+    @Valid
     @ApiModelProperty("rtsp信息，protoType为2时生效")
     private RtspInfo rtspInfo;
 

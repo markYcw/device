@@ -82,7 +82,7 @@ public class SvrApiFallbackFactory implements FallbackFactory<SvrApi> {
             }
 
             @Override
-            public BaseResult<CpResetVo> enCpReset(EnCpResetDto dto) {
+            public BaseResult<CpResetVo> getIpcItem(GetIpcItemRequestVo dto) {
                 return  BaseResult.failed(throwable.getMessage());
             }
 
@@ -112,7 +112,7 @@ public class SvrApiFallbackFactory implements FallbackFactory<SvrApi> {
             }
 
             @Override
-            public BaseResult<String> ptz(PtzDto dto) {
+            public BaseResult<String> ptzCtrl(PtzCtrlRequestVo dto) {
                 return  BaseResult.failed(throwable.getMessage());
             }
 
@@ -132,7 +132,7 @@ public class SvrApiFallbackFactory implements FallbackFactory<SvrApi> {
             }
 
             @Override
-            public BaseResult<String> dual(DualDto dto) {
+            public BaseResult<String> startDual(StartDualRequestVo dto) {
                 return  BaseResult.failed(throwable.getMessage());
             }
 
@@ -142,7 +142,7 @@ public class SvrApiFallbackFactory implements FallbackFactory<SvrApi> {
             }
 
             @Override
-            public BaseResult<String> reBurn(ReBurnDto dto) {
+            public BaseResult<String> supplementBurn(SupplementBurnVo dto) {
                 return  BaseResult.failed(throwable.getMessage());
             }
 
@@ -152,27 +152,32 @@ public class SvrApiFallbackFactory implements FallbackFactory<SvrApi> {
             }
 
             @Override
-            public BaseResult<String> createBurn(CreateBurnDto dto) {
+            public BaseResult<String> createBurn(CreateBurnRequestVo dto) {
                 return  BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<BurnTaskVo> burnTaskList(BurnTaskListDto dto) {
+            public BaseResult<GetBurnTaskResponseVo> getBurnTask(GetBurnTaskRequestVo dto) {
                 return  BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<String> dvdDoor(DvdDoorDto dto) {
+            public BaseResult<String> ctrlDvdDoor(DvdDoorCtrlVo dto) {
                 return  BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<RecListVo> recList(RecListDto dto) {
+            public BaseResult<RecListVo> queryRec(QueryRecVo dto) {
                 return  BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<GetMergeVo> getMerge(Integer dbId) {
+            public BaseResult<GetMergeVo> getSvrComposePic(Integer dbId) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<String> setSvrComposePic(SetSvrComposePicVo dto) {
                 return  BaseResult.failed(throwable.getMessage());
             }
 
@@ -182,12 +187,12 @@ public class SvrApiFallbackFactory implements FallbackFactory<SvrApi> {
             }
 
             @Override
-            public BaseResult<String> osd(OsdDto dto) {
+            public BaseResult<String> setOsd(OsdSetVo dto) {
                 return  BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<String> audioAct(AudioActDto dto) {
+            public BaseResult<String> setAudioActNty(SetAudioActNtyRequestVo dto) {
                 return  BaseResult.failed(throwable.getMessage());
             }
 

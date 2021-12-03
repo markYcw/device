@@ -14,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +37,7 @@ public class MtController {
 
     @ApiOperation("分页查询终端信息")
     @PostMapping("/mtList")
-    public BaseResult<Page<TerminalVo>> mtPage(@RequestBody TerminalQuery terminalQuery){
+    public BaseResult<Page<TerminalVo>> mtList(@RequestBody TerminalQuery terminalQuery){
 
         Page<TerminalVo> page = mtService.mtPage(terminalQuery);
 
@@ -73,6 +74,20 @@ public class MtController {
         return BaseResult.succeed("保存成功", mtService.saveMt(terminalVo));
     }
 
+    @ApiOperation("保存终端信息")
+    @PostMapping("/saveMtFeign")
+    public BaseResult<TerminalVo> saveMtFeign(@RequestBody TerminalVo terminalVo) {
+
+        if (mtService.isRepeatName(terminalVo)) {
+            return BaseResult.failed("终端名称重复看，请重新填写");
+        }
+        if (mtService.isRepeatIp(terminalVo)) {
+            return BaseResult.failed("终端IP重复，请重新填写");
+        }
+
+        return BaseResult.succeed("保存成功", mtService.saveMt(terminalVo));
+    }
+
     @ApiOperation("修改终端信息")
     @PostMapping("/updateMt")
     public BaseResult<String> updateMt(@Valid @RequestBody TerminalVo terminalVo, BindingResult br) {
@@ -83,6 +98,23 @@ public class MtController {
         }
         if (mtService.isRepeatName(terminalVo)) {
             return BaseResult.failed("终端名称重复看，请重新填写");
+        }
+        if (mtService.updateMt(terminalVo)) {
+            return BaseResult.succeed("修改成功");
+        }
+
+        return BaseResult.failed("修改失败");
+    }
+
+    @ApiOperation("修改终端信息")
+    @PostMapping("/updateMtFeign")
+    public BaseResult<String> updateMtFeign(@RequestBody TerminalVo terminalVo) {
+
+        if (mtService.isRepeatName(terminalVo)) {
+            return BaseResult.failed("终端名称重复看，请重新填写");
+        }
+        if (mtService.isRepeatIp(terminalVo)) {
+            return BaseResult.failed("终端IP重复，请重新填写");
         }
         if (mtService.updateMt(terminalVo)) {
             return BaseResult.succeed("修改成功");
@@ -119,9 +151,6 @@ public class MtController {
         return BaseResult.succeed("终端登录成功", mtService.logOutById(dbId));
     }
 
-    /**
-     * ---------------------------------
-     */
     @ApiOperation("发送心跳")
     @PostMapping("/heartBeat")
     public BaseResult<String> heartBeat(@RequestParam Integer dbId) {
@@ -167,9 +196,6 @@ public class MtController {
         return BaseResult.failed("停止点对点会议失败");
     }
 
-    /**
-     * ---------------------------------
-     */
     @ApiOperation("获取终端状态")
     @PostMapping("/getMtStatus")
     public BaseResult<GetMtStatusResponseVo> getMtStatus(@RequestParam Integer dbId) {
@@ -226,9 +252,6 @@ public class MtController {
         return BaseResult.failed("音量设置失败");
     }
 
-    /**
-     * ---------------------------------
-     */
     @ApiOperation("音量获取")
     @PostMapping("/getVolume")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID"),
@@ -238,9 +261,6 @@ public class MtController {
         return BaseResult.succeed("音量获取成功", mtService.getVolume(dbId, type));
     }
 
-    /**
-     * ---------------------------------
-     */
     @ApiOperation("请求关键帧")
     @PostMapping("/keyframe")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID"),
@@ -269,9 +289,6 @@ public class MtController {
         return BaseResult.failed("双流控制请求失败");
     }
 
-    /**
-     * ---------------------------------
-     */
     @ApiOperation("ptz控制")
     @PostMapping("/ptzCtrl")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID"),
@@ -297,6 +314,20 @@ public class MtController {
         }
 
         return BaseResult.failed("设置画面显示模式失败");
+    }
+
+    @ApiOperation(value = "终端通知")
+    @PostMapping("/mtNotify")
+    public BaseResult<Void> mtNotify(@RequestBody String notify) {
+
+        if (StringUtils.isEmpty(notify)) {
+            return BaseResult.failed("发送通知信息为空");
+        }
+        if (mtService.mtNotify(notify)) {
+            return BaseResult.succeed("发送通知成功");
+        }
+
+        return BaseResult.failed("发送通知失败");
     }
 
 }

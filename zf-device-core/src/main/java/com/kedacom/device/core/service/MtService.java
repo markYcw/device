@@ -6,7 +6,6 @@ import com.kedacom.mt.StartMeetingMtVo;
 import com.kedacom.mt.TerminalQuery;
 import com.kedacom.mt.TerminalVo;
 import com.kedacom.mt.response.GetMtStatusResponseVo;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -181,5 +180,12 @@ public interface MtService {
      * @return
      */
     boolean setPipMode(Integer dbId, Integer mode);
+
+    /**
+     * 终端通知
+     * @param notify
+     * @return
+     */
+    boolean mtNotify(String notify);
 
 }

@@ -22,7 +22,7 @@ public enum DeviceType {
 	/**
 	 * 会议终端3代高清
 	 */
-	MT(2),
+	MT(0),
 	
 	/**
 	 * 会议平台5.0
@@ -61,7 +61,7 @@ public enum DeviceType {
 	/**
 	 * 会议终端5.0
 	 */
-	MT5(11),
+	MT5(1),
 	
 	/**
 	 * 录播服务器5.0
@@ -101,7 +101,7 @@ public enum DeviceType {
 	/**
 	 * 软终端（科达天行）
 	 */
-	SKY(25),
+	SKY(1),
 
 	/**
 	 * 签名板PRO

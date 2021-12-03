@@ -5,7 +5,6 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kedacom.cu.entity.CuEntity;
@@ -13,16 +12,14 @@ import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.MtConvert;
 import com.kedacom.device.core.entity.MtEntity;
 import com.kedacom.device.core.entity.MtTypeEntity;
-import com.kedacom.device.core.exception.CuException;
 import com.kedacom.device.core.exception.MtException;
 import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.mapper.MtMapper;
 import com.kedacom.device.core.mapper.MtTypeMapper;
+import com.kedacom.device.core.notify.stragegy.NotifyHandler;
 import com.kedacom.device.core.service.MtService;
 import com.kedacom.device.core.utils.HandleResponseUtil;
 import com.kedacom.device.core.utils.RemoteRestTemplate;
-import com.kedacom.device.cu.CuResponse;
-import com.kedacom.device.cu.response.CuLoginResponse;
 import com.kedacom.mt.*;
 import com.kedacom.mt.response.GetMtStatusResponseVo;
 import com.kedacom.util.NumGen;
@@ -31,7 +28,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -62,6 +58,8 @@ public class MtServiceImpl implements MtService {
 
     @Resource
     RemoteRestTemplate remoteRestTemplate;
+
+    private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/mt/mtNotify";
 
     private final static String MT_REQUEST_URL = "http://172.16.231.202:13000/mid/v2/mt";
 
@@ -164,6 +162,7 @@ public class MtServiceImpl implements MtService {
             throw new MtException(DeviceErrorEnum.DEVICE_NOT_FOUND);
         }
         LoginParamVo loginParamVo = MtConvert.INSTANCE.convertLoginParamVo(entity);
+        loginParamVo.setNtyUrl(NTY_URL);
         Map<String, Long> paramMap = setParamMap(null);
 
         log.info("远端登录终端请求参数 loginParamVo : {}", loginParamVo);
@@ -516,6 +515,25 @@ public class MtServiceImpl implements MtService {
         String errorMsg = "设置画面显示模式失败 : {}, {}, {}";
         assert mtResponse != null;
         responseUtil.handleMtRes(errorMsg, DeviceErrorEnum.MT_SET_PIP_MODE_FAILED, mtResponse);
+
+        return true;
+    }
+
+    @Override
+    public boolean mtNotify(String notify) {
+
+        log.info("终端通知信息 : {}", notify);
+        JSONObject jsonObject = JSONObject.parseObject(notify);
+        Integer ssid = (Integer) jsonObject.get("ssid");
+        Integer type = (Integer) jsonObject.get("type");
+
+        LambdaQueryWrapper<MtEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(MtEntity::getMtid, ssid);
+        MtEntity mtEntity = mtMapper.selectOne(wrapper);
+        if (mtEntity == null) {
+            return false;
+        }
+        NotifyHandler.getInstance().distributeMessages(ssid, mtEntity.getDevtype(), type, notify);
 
         return true;
     }

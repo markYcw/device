@@ -15,11 +15,11 @@ import javax.validation.constraints.NotNull;
 public class CpResetDto extends SvrRequestDto{
 
     @NotNull(message = "通道ID不能为空")
-    @ApiModelProperty("通道ID")
+    @ApiModelProperty(value = "通道ID",required = true)
     private Integer chnId;
 
     @NotNull(message = "预置位信息不能为空")
-    @ApiModelProperty("预置位1-255")
+    @ApiModelProperty(value = "预置位1-255",required = true)
     private Integer preset;
 
 }

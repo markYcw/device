@@ -11,7 +11,7 @@ import java.util.List;
  * @author ycw
  * @version v1.0
  * @date 2021/9/9 14:24
- * @description 编解码通道列表信息
+ * @description 编码通道列表信息
  */
 @Data
 public class ChnListExtendsResponse extends SvrResponse {

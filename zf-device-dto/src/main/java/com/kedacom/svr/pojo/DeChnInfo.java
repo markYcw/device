@@ -3,6 +3,8 @@ package com.kedacom.svr.pojo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author ycw
  * @version v1.0
@@ -12,25 +14,28 @@ import lombok.Data;
 @Data
 public class DeChnInfo {
 
-    @ApiModelProperty("设备guid")
+    @NotBlank(message = "设备guid不能为空")
+    @ApiModelProperty(value = "设备guid",required = true)
     private String guid;
 
-    @ApiModelProperty("通道别名")
+    @NotBlank(message = "通道别名不能为空")
+    @ApiModelProperty(value = "通道别名",required = true)
     private String name;
 
-    @ApiModelProperty("设备类型名称")
+    @NotBlank(message = "设备类型名称不能为空")
+    @ApiModelProperty(value = "设备类型名称",required = true)
     private String typeName;
 
-    @ApiModelProperty("设备类型:0：无效设备 1：编码器 2：解码器 3：增加支持平台设备,针对版本Beta2 4：多媒体主机,包括SVR29ES 和 SVR27ES 5：SDI编码卡 6：2726-VIN0 VIN1")
-    private String devType;
-
-    @ApiModelProperty("协议类型:0：VSIP 1：ONVIF 2：RTSP 3：MT（会议）4：SDI 5：平台通道 6：GB（国标）")
-    private String protoType;
-
-    @ApiModelProperty("设备IP")
+    @ApiModelProperty("设备IP 2.0必填")
     private String ip;
 
-    @ApiModelProperty("设备厂商 0：kedacom 1：外厂商（目前无用）")
-    private String devManu;
+    @ApiModelProperty("传输协议 0：tcp 1：udp 3.0必填")
+    private String transMode;
+
+    @ApiModelProperty("连接模式: 0：被动 1：主动 3.0必填 ")
+    private String connectMode;
+
+    @ApiModelProperty("通信端口 3.0必填")
+    private String port;
 
 }

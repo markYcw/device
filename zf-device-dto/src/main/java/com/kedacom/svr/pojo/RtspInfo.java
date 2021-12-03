@@ -16,11 +16,11 @@ import javax.validation.constraints.NotNull;
 public class RtspInfo {
 
     @NotBlank(message = "rtsp的url不能为空")
-    @ApiModelProperty("rtsp的url")
+    @ApiModelProperty(value = "rtsp的url",required = true)
     private String rtspUrl;
 
     @NotNull(message = "rtsp传输模式不能为空")
-    @ApiModelProperty("rtsp传输模式 0:tcp 1:udp ")
+    @ApiModelProperty(value = "rtsp传输模式 0:tcp 1:udp",required = true)
     private Integer transMode;
 
 }

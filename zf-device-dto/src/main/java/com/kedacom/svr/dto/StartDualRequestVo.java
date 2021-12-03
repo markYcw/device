@@ -3,6 +3,8 @@ package com.kedacom.svr.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author ycw
  * @version v1.0
@@ -12,10 +14,12 @@ import lombok.Data;
 @Data
 public class StartDualRequestVo extends SvrRequestDto{
 
-    @ApiModelProperty("0：开启 1：关闭")
+    @NotNull(message = "type不能为空")
+    @ApiModelProperty(value = "0：开启 1：关闭",required = true)
     private Integer type;
 
-    @ApiModelProperty("远程点通道号")
-    private Integer chnId;
+    @NotNull(message = "远程点名称不能为空")
+    @ApiModelProperty(value = "远程点名称",required = true)
+    private Integer name;
 
 }

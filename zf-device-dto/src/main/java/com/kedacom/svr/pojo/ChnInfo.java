@@ -17,19 +17,19 @@ import javax.validation.constraints.NotNull;
 public class ChnInfo {
 
     @NotBlank(message = "设备guid不能为空")
-    @ApiModelProperty("设备guid")
+    @ApiModelProperty(value = "设备guid",required = true)
     private String guid;
 
     @NotBlank(message = "设备类型名称不能为空")
-    @ApiModelProperty("设备类型名称")
+    @ApiModelProperty(value = "设备类型名称",required = true)
     private String typeName;
 
     @NotNull(message = "协议类型不能为空")
-    @ApiModelProperty("协议类型:0：VSIP 1：ONVIF 2：RTSP 3：MT（会议）4：SDI 5：平台通道 6：GB（国标）")
+    @ApiModelProperty(value = "协议类型:0：VSIP 1：ONVIF 2：RTSP 3：MT（会议）4：SDI 5：平台通道 6：GB（国标）",required = true)
     private Integer protoType;
 
     @NotBlank(message = "设备IP不能为空")
-    @ApiModelProperty("设备IP")
+    @ApiModelProperty(value = "设备IP",required = true)
     private String ip;
 
     @Valid

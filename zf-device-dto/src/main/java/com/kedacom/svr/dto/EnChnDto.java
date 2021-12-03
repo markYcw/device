@@ -18,11 +18,11 @@ import javax.validation.constraints.NotNull;
 public class EnChnDto extends SvrRequestDto {
 
     @NotNull(message = "type不能为空")
-    @ApiModelProperty("0:添加 1：删除")
+    @ApiModelProperty(value = "0:添加 1：删除",required = true)
     private Integer type;
 
     @NotNull(message = "通道ID不能为空")
-    @ApiModelProperty("通道ID")
+    @ApiModelProperty(value = "通道ID",required = true)
     private Integer chnId;
 
     @Valid

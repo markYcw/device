@@ -3,6 +3,8 @@ package com.kedacom.svr.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author ycw
  * @version v1.0
@@ -12,13 +14,16 @@ import lombok.Data;
 @Data
 public class EnDecParamDto extends SvrRequestDto{
 
-    @ApiModelProperty("通道ID")
+    @NotNull(message = "通道ID不能为空")
+    @ApiModelProperty(value = "通道ID",required = true)
     private Integer chnId;
 
-    @ApiModelProperty("解码的源通道ID")
+    @NotNull(message = "解码的源通道ID不能为空")
+    @ApiModelProperty(value = "解码的源通道ID",required = true)
     private Integer srcChnId;
 
-    @ApiModelProperty("是否解码辅流")
+    @NotNull(message = "是否解码辅流不能为空")
+    @ApiModelProperty(value = "是否解码辅流",required = true)
     private Integer isSecChn;
 
 

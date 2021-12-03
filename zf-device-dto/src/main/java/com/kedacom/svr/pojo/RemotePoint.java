@@ -3,6 +3,8 @@ package com.kedacom.svr.pojo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author ycw
  * @version v1.0
@@ -12,10 +14,12 @@ import lombok.Data;
 @Data
 public class RemotePoint {
 
-    @ApiModelProperty("远程点名称")
+    @NotBlank(message = "远程点名称不能为空")
+    @ApiModelProperty(value = "远程点名称",required = true)
     private String name;
 
-    @ApiModelProperty("远程点url")
+    @NotBlank(message = "远程点url不能为空")
+    @ApiModelProperty(value = "远程点url",required = true)
     private String url;
 
 }

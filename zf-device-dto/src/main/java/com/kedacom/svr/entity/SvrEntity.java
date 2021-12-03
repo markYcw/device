@@ -32,28 +32,28 @@ public class SvrEntity {
 	private Integer ssid;
 
     @NotBlank(message = "svr名称不能为空")
-	@ApiModelProperty(value = "svr名称")
+	@ApiModelProperty(value = "svr名称",required = true)
 	private String name;
 
 
-	@ApiModelProperty(value = "svrIP")
+	@ApiModelProperty(value = "svr的IP",required = true)
 	@NotBlank(message = "IP不能为空")
 	private String ip;
 
 	@Min(value = 0, message = "设备端口号参数不正确")
 	@Max(value = 65536, message = "设备端口号参数不正确")
-	@ApiModelProperty(value = "平台端口 SVR2931端口为80 SVR2930端口为9765 其他型号均为8765")
+	@ApiModelProperty(value = "平台端口 SVR2931端口为80 SVR2930端口为9765 其他型号均为8765",required = true)
 	private Integer port;
 
 	@ApiModelProperty(value = "svr的websocket端口，SVR2931端口为8780 SVR2930端口为9766 其他型号均为8766")
 	private Integer webPort;
 
-	@ApiModelProperty(value = "登录svr账号")
+	@ApiModelProperty(value = "登录svr账号",required = true)
 	@NotBlank(message = "用户名不能为空")
 	private String username;
 
 
-	@ApiModelProperty(value = "登录平台密码")
+	@ApiModelProperty(value = "登录平台密码",required = true)
 	@NotBlank(message = "密码不能为空")
 	private String password;
 
@@ -62,7 +62,7 @@ public class SvrEntity {
 	private Integer devType;
 
 	@NotBlank(message = "svr型号类型不能为空")
-	@ApiModelProperty(value = "svr型号类型")
+	@ApiModelProperty(value = "svr型号类型",required = true)
 	private String modelType;
 
 	/**

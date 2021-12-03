@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class PuIdTwoDto extends CuRequestDto {
 
-    @ApiModelProperty("国标id")
+    @ApiModelProperty(value = "国标id",required = true)
     @NotBlank(message = "国标id不能为空")
     private String gbId;
 

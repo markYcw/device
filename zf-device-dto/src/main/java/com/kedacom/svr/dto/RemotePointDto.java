@@ -4,7 +4,8 @@ import com.kedacom.svr.pojo.RemotePoint;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author ycw
@@ -15,10 +16,12 @@ import java.util.List;
 @Data
 public class RemotePointDto extends SvrRequestDto{
 
-    @ApiModelProperty("0：启动远程点 1：停止远程点")
+    @NotNull(message = "type不能为空")
+    @ApiModelProperty(value = "0：启动远程点 1：停止远程点",required = true)
     private Integer type;
 
-    @ApiModelProperty("远程点列表")
-    private List<RemotePoint> remotePointList;
+    @Valid
+    @ApiModelProperty(value = "远程点列表",required = true)
+    private RemotePoint remotePointList;
 
 }

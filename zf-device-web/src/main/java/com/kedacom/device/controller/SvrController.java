@@ -198,7 +198,6 @@ public class SvrController {
         return svrService.enDeParam(dto);
     }
 
-
     @ApiOperation("PTZ控制")
     @PostMapping("/ptzCtrl")
     public BaseResult<String> ptzCtrl(@RequestBody PtzCtrlRequestVo dto) {
@@ -242,7 +241,7 @@ public class SvrController {
         return svrService.burn(dto);
     }
 
-    @ApiOperation("补刻")
+    @ApiOperation("根据时间补刻 如果有刻录任务ID请选择刻录控制接口")
     @PostMapping("/supplementBurn")
     public BaseResult<String> supplementBurn(@RequestBody SupplementBurnVo dto) {
 

@@ -3,6 +3,8 @@ package com.kedacom.svr.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author ycw
  * @version v1.0
@@ -12,7 +14,11 @@ import lombok.Data;
 @Data
 public class AppendBurnDto extends SvrRequestDto{
 
-    @ApiModelProperty("附件源文件夹,默认位置：/usr/mp4pt/tmp")
-    private String dir;
+    @NotBlank(message = "刻录附件的文件夹名不能为空")
+    @ApiModelProperty(value = "刻录附件的文件夹名，或者文件名比如2.0：ajrecord 比如3.0：ajrecord.tar",required = true)
+    private String fileName;
+
+    @ApiModelProperty(value = "解压出的文件夹名称,3.0必填")
+    private String dirName;
 
 }

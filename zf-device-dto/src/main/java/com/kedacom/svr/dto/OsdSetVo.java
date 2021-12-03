@@ -8,6 +8,8 @@ import com.kedacom.svr.pojo.Time;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.Valid;
+
 /**
  * @author ycw
  * @version v1.0
@@ -17,17 +19,21 @@ import lombok.Data;
 @Data
 public class OsdSetVo extends SvrRequestDto{
 
-    @ApiModelProperty("温湿度叠加")
+    @Valid
+    @ApiModelProperty(value = "温湿度叠加",required = true)
     private Hum hum;
 
-    @ApiModelProperty("案件叠加")
+    @Valid
+    @ApiModelProperty(value = "案件叠加",required = true)
     @JSONField(name = "case")
     private Case caseVo;
 
-    @ApiModelProperty("时间叠加")
+    @Valid
+    @ApiModelProperty(value = "时间叠加",required = true)
     private Time time;
 
-    @ApiModelProperty("时间叠加")
+    @Valid
+    @ApiModelProperty(value = "时间叠加",required = true)
     private Subtitle subtitle;
 
 }

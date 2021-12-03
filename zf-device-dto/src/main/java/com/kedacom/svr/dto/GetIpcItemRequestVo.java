@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 public class GetIpcItemRequestVo extends SvrRequestDto{
 
     @NotNull(message = "通道ID不能为空")
-    @ApiModelProperty("通道ID")
+    @ApiModelProperty(value = "通道ID",required = true)
     private Integer chnId;
 
 }

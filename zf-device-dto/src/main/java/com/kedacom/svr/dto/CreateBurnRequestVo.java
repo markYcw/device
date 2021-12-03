@@ -3,6 +3,8 @@ package com.kedacom.svr.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author ycw
  * @version v1.0
@@ -12,13 +14,12 @@ import lombok.Data;
 @Data
 public class CreateBurnRequestVo extends SvrRequestDto{
 
-    @ApiModelProperty("0：开始新建 1：停止新建")
-    private Integer type;
-
-    @ApiModelProperty("开始时间，如：20200827120000 ")
+    @NotBlank(message = "开始时间不能为空")
+    @ApiModelProperty(value = "开始时间，如：20200827120000",required = true)
     private String startTime;
 
-    @ApiModelProperty("结束时间，如：20200827130000")
+    @NotBlank(message = "结束时间不能为空")
+    @ApiModelProperty(value = "结束时间，如：20200827130000",required = true)
     private String endTime;
 
 }

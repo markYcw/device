@@ -107,7 +107,7 @@ public class CuController {
 
     @PostMapping("/hb")
     @ApiOperation(value = "发送心跳 登录CU以后必须每9分钟调用一次这个接口，否则有可能导致C++与CU的token失效，然后你再去尝试调用接口就会失败 接口调用成功会返回0")
-    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID",required = true)})
     public BaseResult<String> hb(@RequestParam Integer kmId) {
 
         return cuService.hb(kmId);
@@ -143,7 +143,7 @@ public class CuController {
 
     @ApiOperation("获取平台时间")
     @PostMapping("/getTime")
-    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID",required = true)})
     public BaseResult<Long> getTime(@RequestParam Integer kmId){
 
         return cuService.time(kmId);

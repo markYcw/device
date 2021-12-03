@@ -6,7 +6,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `ums_mt`;
 CREATE TABLE `ums_mt`
 (
-      `id`               int(11) NOT NULL AUTO_INCREMENT COMMENT '终端标识',
+      `id`               int(11) NOT NULL COMMENT '终端标识',
       `name`             varchar(12) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL COMMENT '终端名称',
       `ip`               varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '终端IP',
       `port`             int(11) NULL DEFAULT NULL COMMENT '终端端口',
@@ -18,4 +18,4 @@ CREATE TABLE `ums_mt`
       `e164`             varchar(128) DEFAULT NULL COMMENT '终端e164号',
       `upuname`          varchar(128) DEFAULT NULL COMMENT 'upu名称',
       PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '终端信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '终端信息表' ROW_FORMAT = Dynamic;

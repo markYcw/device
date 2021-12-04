@@ -10,7 +10,7 @@ import lombok.Data;
  * @date 2021/11/30
  */
 @Data
-@TableName("ums_terminal")
+@TableName("ums_mt")
 public class MtEntity {
 
     @ApiModelProperty("终端标识")

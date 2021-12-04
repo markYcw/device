@@ -162,7 +162,7 @@ public class MtController {
         return BaseResult.failed("发送心跳失败");
     }
 
-    @ApiOperation("获取终端类型")
+    @ApiOperation("获取终端版本")
     @PostMapping("/getMTType")
     public BaseResult<Integer> getMTType(@RequestParam Integer dbId) {
 

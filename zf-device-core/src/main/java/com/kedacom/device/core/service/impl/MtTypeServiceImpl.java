@@ -45,6 +45,7 @@ public class MtTypeServiceImpl implements MtTypeService {
         if (requestDto.getMtVersion() != null) {
             queryWrapper.eq(MtTypeEntity::getMtVersion, requestDto.getMtVersion());
         }
+        queryWrapper.orderByAsc(MtTypeEntity::getId);
         List<MtTypeEntity> selectList = mtTypeMapper.selectList(queryWrapper);
         if (CollectionUtil.isEmpty(selectList)) {
             return null;

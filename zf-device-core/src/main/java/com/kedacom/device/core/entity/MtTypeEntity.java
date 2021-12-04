@@ -17,7 +17,7 @@ public class MtTypeEntity {
 
     @ApiModelProperty(value = "id")
     @TableId(type = IdType.ASSIGN_ID)
-    private String id;
+    private Integer id;
 
     @ApiModelProperty(value = "终端设备类型")
     private Integer mtType;

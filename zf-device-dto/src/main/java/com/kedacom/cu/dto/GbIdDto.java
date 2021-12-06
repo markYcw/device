@@ -17,12 +17,12 @@ import javax.validation.constraints.NotNull;
 @Data
 public class GbIdDto extends CuRequestDto {
 
-    @ApiModelProperty(value = "平台域",required = true)
-    @NotBlank(message = "平台域不能为空")
+    @ApiModelProperty(value = "平台域ID",required = true)
+    @NotBlank(message = "平台域ID不能为空")
     private String domain;
 
-    @ApiModelProperty(value = "设备puId",required = true)
-    @NotBlank(message = "puId不能为空")
+    @ApiModelProperty(value = "设备号",required = true)
+    @NotBlank(message = "设备号不能为空")
     private String puId;
 
     @ApiModelProperty(value = "通道号",required = true)

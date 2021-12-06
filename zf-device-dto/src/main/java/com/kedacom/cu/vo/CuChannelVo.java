@@ -14,7 +14,7 @@ public class CuChannelVo {
     /**
      * 设备编号
      */
-    @ApiModelProperty("设备编号")
+    @ApiModelProperty("设备号")
     private String puId;
 
     /**

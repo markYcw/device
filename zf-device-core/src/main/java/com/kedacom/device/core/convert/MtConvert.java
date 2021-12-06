@@ -34,7 +34,8 @@ public interface MtConvert {
 
     MtEntity convertMtEntity(TerminalVo terminalVo);
 
-    @Mappings({@Mapping(target = "type",source = "devtype")})
+    @Mappings({@Mapping(target = "type",source = "devtype"),
+            @Mapping(target = "user", source = "username"), @Mapping(target = "passWord", source = "password")})
     LoginParamVo convertLoginParamVo(MtEntity mtEntity);
 
     GetMtStatusResponseVo convertGetMtStatusResponseVo(MtStatus mtStatus);

@@ -24,16 +24,15 @@ import com.kedacom.mt.*;
 import com.kedacom.mt.response.GetMtStatusResponseVo;
 import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author wangxy
@@ -63,6 +62,8 @@ public class MtServiceImpl implements MtService {
 
     private final static String MT_REQUEST_URL = "http://172.16.231.202:13000/mid/v2/mt";
 
+    public static Set<Integer> synHashSet = Collections.synchronizedSet(new HashSet<Integer>());
+
     @Override
     public Page<TerminalVo> mtPage(TerminalQuery terminalQuery) {
 
@@ -81,12 +82,31 @@ public class MtServiceImpl implements MtService {
             log.error("分页查询终端信息为空");
             return null;
         }
-        List<TerminalVo> terminalVoList = MtConvert.INSTANCE.convertTerminalVoList(records);
+        List<TerminalVo> terminalVoList = queryConnectionStatus(records);
         Page<TerminalVo> resultPage = new Page<>();
         BeanUtil.copyProperties(page, resultPage);
         resultPage.setRecords(terminalVoList);
 
         return resultPage;
+    }
+
+    public List<TerminalVo> queryConnectionStatus(List<MtEntity> records) {
+
+        List<TerminalVo> terminalVoList = MtConvert.INSTANCE.convertTerminalVoList(records);
+
+        if (CollectionUtil.isEmpty(synHashSet)) {
+            return terminalVoList;
+        }
+        out : for (Integer dbId : synHashSet) {
+            for (TerminalVo terminalVo : terminalVoList) {
+                if (dbId.equals(terminalVo.getId())) {
+                    terminalVo.setStatus(1);
+                    continue out;
+                }
+            }
+        }
+
+        return terminalVoList;
     }
 
     @Override
@@ -96,6 +116,20 @@ public class MtServiceImpl implements MtService {
         MtEntity entity = mtMapper.selectById(dbId);
 
         return MtConvert.INSTANCE.convertTerminalVo(entity);
+    }
+
+    @Override
+    public List<Integer> queryMtIds() {
+
+        LambdaQueryWrapper<MtEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.isNotNull(MtEntity::getMtid);
+        List<MtEntity> mtEntities = mtMapper.selectList(queryWrapper);
+        if (CollectionUtil.isEmpty(mtEntities)) {
+            log.error("查询mtId不为空的终端集合为空");
+            return null;
+        }
+
+        return mtEntities.stream().map(MtEntity::getId).collect(Collectors.toList());
     }
 
     @Override
@@ -154,6 +188,7 @@ public class MtServiceImpl implements MtService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Integer loginById(Integer dbId) {
 
         log.info("登录终端请求参数 : {}", dbId);
@@ -176,10 +211,15 @@ public class MtServiceImpl implements MtService {
         entity.setMtid(mtLoginResponse.getSsid());
         mtMapper.updateById(entity);
 
+        // 将登录的终端id添加到维护终端心跳的缓存中
+        synHashSet.add(dbId);
+        log.info("终端 : {}, 添加到缓存中 synHashSet : {}", dbId, synHashSet);
+
         return mtLoginResponse.getSsid();
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean logOutById(Integer dbId) {
 
         log.info("退出登录终端信息请求参数 : {}", dbId);
@@ -196,6 +236,9 @@ public class MtServiceImpl implements MtService {
         assert mtResponse != null;
         responseUtil.handleMtRes(errorMsg, DeviceErrorEnum.MT_LOGOUT_FAILED, mtResponse);
         entity.setMtid(null);
+
+        // 将退出登录的终端id从维护终端心跳的缓存中删除
+        synHashSet.remove(dbId);
 
         return mtMapper.updateById(entity) > 0;
     }

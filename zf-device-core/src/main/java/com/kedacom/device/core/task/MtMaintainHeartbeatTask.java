@@ -1,6 +1,6 @@
 package com.kedacom.device.core.task;
 
-import com.kedacom.device.core.service.MtService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -15,19 +15,22 @@ import java.util.concurrent.TimeUnit;
  * @describe
  * @date 2021/12/6
  */
+@Slf4j
 @Component
 public class MtMaintainHeartbeatTask implements CommandLineRunner {
 
     @Resource
-    MtService mtService;
+    MaintainHeartbeatRunning maintainHeartbeatRunning;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
 
-        ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(3,
-                new BasicThreadFactory.Builder().namingPattern("scheduled-pool-%d").daemon(true).build());
+        log.info("----- 定时维护终端心跳 -----");
 
-//        scheduledExecutorService.scheduleAtFixedRate(checkRunning, 500, 2000, TimeUnit.MILLISECONDS);
+        ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(3, new BasicThreadFactory.Builder().namingPattern("scheduled-pool-%d").daemon(true).build());
+
+        // 三分钟定时发送心跳
+        scheduledExecutorService.scheduleAtFixedRate(maintainHeartbeatRunning, 1, 240, TimeUnit.SECONDS);
 
     }
 

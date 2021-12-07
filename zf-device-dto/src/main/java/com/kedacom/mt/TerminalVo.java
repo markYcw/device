@@ -57,7 +57,7 @@ public class TerminalVo {
     private String mtname;
 
     @ApiModelProperty("链接状态: 0：未连接 1：已连接")
-    private Integer status;
+    private Integer status = 0;
 
     @ApiModelProperty("UPU名称")
     private String upuname;

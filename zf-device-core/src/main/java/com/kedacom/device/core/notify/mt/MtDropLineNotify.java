@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.kedacom.device.core.entity.MtEntity;
 import com.kedacom.device.core.mapper.MtMapper;
 import com.kedacom.device.core.notify.stragegy.INotify;
+import com.kedacom.device.core.service.impl.MtServiceImpl;
 import com.kedacom.mt.DropLineNotifyVo;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,6 +38,10 @@ public class MtDropLineNotify extends INotify {
         mtEntity.setMtid(null);
 
         mtMapper.updateById(mtEntity);
+
+        MtServiceImpl.synHashSet.remove(mtEntity.getId());
+
+        // TODO 发送给前端
 
     }
 

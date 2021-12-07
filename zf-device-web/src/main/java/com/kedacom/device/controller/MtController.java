@@ -210,9 +210,9 @@ public class MtController {
 
     @ApiOperation("静音/哑音设置")
     @PostMapping("/setDumbMute")
-    @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID"),
-            @ApiImplicitParam(name = "mute", value = "true:静音控制,false:哑音控制"),
-            @ApiImplicitParam(name = "open", value = "静音/哑音开关：true开启 false关闭")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
+            @ApiImplicitParam(name = "mute", value = "true:静音控制,false:哑音控制", required = true),
+            @ApiImplicitParam(name = "open", value = "静音/哑音开关：true开启 false关闭", required = true)})
     public BaseResult<Boolean> setDumbMute(@RequestParam Integer dbId, @RequestParam Boolean mute, @RequestParam String open) {
 
         String type = mute ? "静音" : "哑音";
@@ -225,8 +225,8 @@ public class MtController {
 
     @ApiOperation("静音/哑音状态获取")
     @PostMapping("/getDumbMute")
-    @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID"),
-            @ApiImplicitParam(name = "mute", value = "true:静音控制,false:哑音控制")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
+            @ApiImplicitParam(name = "mute", value = "true:静音控制,false:哑音控制", required = true)})
     public BaseResult<GetDumbMuteVo> getDumbMute(@RequestParam Integer dbId, @RequestParam String mute) {
 
         String type = "true".equals(mute) ? "静音" : "哑音";
@@ -240,9 +240,9 @@ public class MtController {
 
     @ApiOperation("音量控制")
     @PostMapping("/volumeCtrl")
-    @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID"),
-            @ApiImplicitParam(name = "type", value = "1:扬声器 2:麦克"),
-            @ApiImplicitParam(name = "volume", value = "音量大小，最大31")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
+            @ApiImplicitParam(name = "type", value = "1:扬声器 2:麦克", required = true),
+            @ApiImplicitParam(name = "volume", value = "音量大小，最大31", required = true)})
     public BaseResult<Boolean> volumeCtrl(@RequestParam Integer dbId, @RequestParam Integer type, @RequestParam Integer volume) {
 
         if (mtService.setVolume(dbId, type, volume)) {
@@ -254,8 +254,8 @@ public class MtController {
 
     @ApiOperation("音量获取")
     @PostMapping("/getVolume")
-    @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID"),
-            @ApiImplicitParam(name = "type", value = "1:扬声器 2:麦克")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
+            @ApiImplicitParam(name = "type", value = "1:扬声器 2:麦克", required = true)})
     public BaseResult<String> getVolume(@RequestParam Integer dbId, @RequestParam Integer type) {
 
         return BaseResult.succeed("音量获取成功", mtService.getVolume(dbId, type));
@@ -263,9 +263,9 @@ public class MtController {
 
     @ApiOperation("请求关键帧")
     @PostMapping("/keyframe")
-    @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID"),
+    @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
             @ApiImplicitParam(name = "streamType", value = "码流类型, 0: 本地(不支持), 1：远端(不支持), 2:本地视频到任意地址, " +
-                    "3:远端视频到任意地址, 4:本地音频到任意地址, 5:远端音频到任意地址, 6:本地双流到任意地址, 7:远端双流到任意地址")})
+                    "3:远端视频到任意地址, 4:本地音频到任意地址, 5:远端音频到任意地址, 6:本地双流到任意地址, 7:远端双流到任意地址", required = true)})
     public BaseResult<String> keyframe(@RequestParam Integer dbId, @RequestParam Integer streamType) {
 
         if (mtService.keyframe(dbId, streamType)) {
@@ -277,9 +277,9 @@ public class MtController {
 
     @ApiOperation("双流控制")
     @PostMapping("/mtStarteDual")
-    @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID"),
-            @ApiImplicitParam(name = "start", value = "开始发送还是停止:true开始发送 false停止发送"),
-            @ApiImplicitParam(name = "isLocal", value = "true: 本地终端 false: 远端终端(远端暂不支持)")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
+            @ApiImplicitParam(name = "start", value = "开始发送还是停止:true开始发送 false停止发送", required = true),
+            @ApiImplicitParam(name = "isLocal", value = "true: 本地终端 false: 远端终端(远端暂不支持)", required = true)})
     public BaseResult<Boolean> mtStarteDual(@RequestParam Integer dbId, @RequestParam boolean start, @RequestParam boolean isLocal) {
 
         if (mtService.mtStartDual(dbId, start, isLocal)) {
@@ -291,9 +291,9 @@ public class MtController {
 
     @ApiOperation("ptz控制")
     @PostMapping("/ptzCtrl")
-    @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID"),
-            @ApiImplicitParam(name = "type", value = "0:开始，1:停止"),
-            @ApiImplicitParam(name = "ptzCmd", value = "控制命令1:上 2:下 3:左 4:右 5:自动聚焦 6:焦距大 7:焦距小 8:zoomin  9:zoomout 10：亮 11：暗")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
+            @ApiImplicitParam(name = "type", value = "0:开始，1:停止", required = true),
+            @ApiImplicitParam(name = "ptzCmd", value = "控制命令1:上 2:下 3:左 4:右 5:自动聚焦 6:焦距大 7:焦距小 8:zoomin  9:zoomout 10：亮 11：暗", required = true)})
     public BaseResult<Boolean> ptzCtrl(@RequestParam Integer dbId, @RequestParam Integer type, @RequestParam Integer ptzCmd) {
 
         if (mtService.ptzCtrl(dbId, type, ptzCmd)) {
@@ -305,8 +305,8 @@ public class MtController {
 
     @ApiOperation("设置画面显示模式只适用于三代高清终端")
     @PostMapping("/setPipMode")
-    @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID"),
-            @ApiImplicitParam(name = "mode", value = "0：单屏双显 1：双屏双显 2：单屏三显")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
+            @ApiImplicitParam(name = "mode", value = "0：单屏双显 1：双屏双显 2：单屏三显", required = true)})
     public BaseResult<Boolean> setPipMode(@RequestParam Integer dbId, @RequestParam Integer mode) {
 
         if (mtService.setPipMode(dbId, mode)) {

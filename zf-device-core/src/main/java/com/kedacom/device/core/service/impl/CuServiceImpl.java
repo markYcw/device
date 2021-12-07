@@ -315,8 +315,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         cuStatusPoll.put(dto.getKmId(), DevTypeConstant.updateRecordKey);
         //发送心跳
         hbTask(entity.getId());
-        //记录操作日志
-        logUtil.operateLog(modelName,"根据ID登录监控平台成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("登录监控平台成功",devEntityVo);
     }
 

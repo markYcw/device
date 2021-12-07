@@ -27,7 +27,7 @@ public class StartMeetingMtVo implements Serializable {
     @ApiModelProperty("别名（可以不传）")
     private String alias;
 
-    @ApiModelProperty(value = "呼叫码率", required = true)
+    @ApiModelProperty(value = "呼叫码率, 512/768/1024/4096", required = true)
     private Integer bitrate;
 
     @ApiModelProperty(value = "呼叫类型： 0：呼叫SVR 1：呼叫终端", required = true)

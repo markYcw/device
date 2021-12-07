@@ -246,11 +246,13 @@ public class MtServiceImpl implements MtService {
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
         String ip = getIp(startMeetingMtVo.getDstId(), startMeetingMtVo.getCallType());
 
+        RemoteMt remotemt = new RemoteMt();
+        remotemt.setIp(ip);
+        remotemt.setAlias(startMeetingMtVo.getAlias());
+        remotemt.setType(startMeetingMtVo.getAddrType());
         StartP2P startP2P = new StartP2P();
+        startP2P.setRemotemt(remotemt);
         startP2P.setRate(startMeetingMtVo.getBitrate());
-        startP2P.getRemotemt().setIp(ip);
-        startP2P.getRemotemt().setAlias(startMeetingMtVo.getAlias());
-        startP2P.getRemotemt().setType(startMeetingMtVo.getAddrType());
 
         String response = remoteRestTemplate.getRestTemplate()
                 .postForObject(MT_REQUEST_URL + "/p2p/{ssid}/{ssno}", JSON.toJSONString(startP2P), String.class, paramMap);
@@ -420,15 +422,14 @@ public class MtServiceImpl implements MtService {
         GetVolumeVo getVolumeVo = new GetVolumeVo();
         getVolumeVo.setType(type);
 
-        HttpEntity<String> httpEntity = new HttpEntity<>(JSON.toJSONString(getVolumeVo), remoteRestTemplate.getHttpHeaders());
-        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
-                .exchange(MT_REQUEST_URL + "/volume/{ssid}/{ssno}", HttpMethod.GET, httpEntity, String.class, paramMap);
-        log.info("音量获取响应参数 exchange : {}", exchange);
-        MtResponse mtResponse = JSONObject.parseObject(exchange.getBody(), MtResponse.class);
+        String response = remoteRestTemplate.getRestTemplate()
+                .postForObject(MT_REQUEST_URL + "/volumes/{ssid}/{ssno}", JSON.toJSONString(getVolumeVo), String.class, paramMap);
+        log.info("音量获取响应参数 response : {}", response);
+        MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
         String errorMsg = "音量获取失败 : {}, {}, {}";
         assert mtResponse != null;
         responseUtil.handleMtRes(errorMsg, DeviceErrorEnum.MT_GET_VOLUME_FAILED, mtResponse);
-        JSONObject object = JSONObject.parseObject(exchange.getBody());
+        JSONObject object = JSONObject.parseObject(response);
 
         return String.valueOf(object.get("volume"));
     }

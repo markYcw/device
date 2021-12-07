@@ -32,7 +32,7 @@ public class MtSeizeNotify extends INotify {
 
         MtEntity mtEntity = mtMapper.selectOne(queryWrapper);
 
-        log.info("终端掉线通知, 终端名称 : {}, 终端IP : {}", mtEntity.getName(), seizeNotifyVo.getContent().getIp());
+        log.info("终端抢占通知, 终端名称 : {}, 终端被抢占端的IP : {}", mtEntity.getName(), seizeNotifyVo.getContent().getIp());
 
         mtEntity.setMtid(null);
 

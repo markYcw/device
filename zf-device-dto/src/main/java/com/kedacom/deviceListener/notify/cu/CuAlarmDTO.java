@@ -29,9 +29,6 @@ public class CuAlarmDTO extends DeviceNotifyRequestDTO {
     @ApiModelProperty("告警通道")
     private Integer chn;
 
-    @ApiModelProperty("纠偏后的经度")
-    private List<SrcChsVo> srcChs;
-
     @ApiModelProperty("设备的puId")
     private String puId;
 

@@ -1,6 +1,7 @@
 package com.kedacom.device.core.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -18,6 +19,7 @@ import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.CuConvert;
 import com.kedacom.device.core.exception.CuException;
 import com.kedacom.device.core.mapper.CuMapper;
+import com.kedacom.device.core.notify.cu.OffLineNotify;
 import com.kedacom.device.core.notify.cu.loadGroup.CuDeviceLoadThread;
 import com.kedacom.device.core.notify.cu.loadGroup.CuSession;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
@@ -35,12 +37,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -97,6 +103,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     //cu设备状态池 若设备加载完则把数据库ID和状态放入此池中1为已加载完所以设备，若登出则从此状态池中移除
     public static ConcurrentHashMap<Integer,Integer> cuDeviceStatusPoll = new ConcurrentHashMap<>();
+
+    //cu心跳状态池 若登出则从此状态池中移除
+    public static ConcurrentHashMap<Integer,Timer> cuHbStatusPoll = new ConcurrentHashMap<>();
 
     @Override
     public BaseResult<BasePage<DevEntityVo>> pageQuery(DevEntityQuery queryDTO) {
@@ -157,6 +166,10 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             cuEntity.setType(DevTypeConstant.updateRecordKey);
             cuMapper.insert(cuEntity);
             DevEntityVo vo = convert.convertToDevEntityVo(cuEntity);
+            //保存成功后登录平台
+            CuRequestDto dto = new CuRequestDto();
+            dto.setKmId(cuEntity.getId());
+            loginById(dto);
             return BaseResult.succeed("保存成功",vo);
         }
     }
@@ -285,6 +298,10 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
         CuLoginResponse response = JSON.parseObject(string, CuLoginResponse.class);
         String errorMsg = "cu登录失败:{},{},{}";
+        //如果是密码错误或者是用户不存在首先去除定时任务不进行无限重连
+        if(response.getCode()==10012||response.getCode()==10011){
+            removeReTryLogin(entity.getId());
+        }
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_LOGIN_FAILED, response);
         entity.setSsid(response.getSsid());
         entity.setModifyTime(new Date());
@@ -296,9 +313,23 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         getGroups(dto.getKmId(),response.getSsid());
         //往cu状态池放入当前mcu状态 1已登录
         cuStatusPoll.put(dto.getKmId(), DevTypeConstant.updateRecordKey);
+        //发送心跳
+        hbTask(entity.getId());
         //记录操作日志
         logUtil.operateLog(modelName,"根据ID登录监控平台成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("登录监控平台成功",devEntityVo);
+    }
+
+    /**
+     * 去除定时任务不进行无限重连
+     * @param dbId 数据库ID
+     */
+    private void removeReTryLogin(Integer dbId){
+        Timer timer = OffLineNotify.reTryPoll.get(dbId);
+        if(ObjectUtil.isNotNull(timer)){
+            timer.cancel();
+            OffLineNotify.reTryPoll.remove(dbId);
+        }
     }
 
     /**
@@ -365,7 +396,11 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 .set(CuEntity::getModifyTime,new Date())
                 .eq(CuEntity::getId,dto.getKmId());
         cuMapper.update(null,wrapper);
-
+        //去除心跳定时任务
+        Timer timer = CuServiceImpl.cuHbStatusPoll.get(entity.getId());
+        if(com.baomidou.mybatisplus.core.toolkit.ObjectUtils.isNotNull(timer)){
+            timer.cancel();
+        }
         //往cu状态池移除当前cu的id
         cuStatusPoll.remove(dto.getKmId());
         //从cu设备状态池中去除当前cu的ID
@@ -425,7 +460,13 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         return BaseResult.succeed("获取平台时间成功",cuTime);
     }
 
+    /**
+     * 发送心跳 发送失败以后重试3次 三次都失败则不再发送
+     * @param dbId
+     * @return
+     */
     @Override
+    @Retryable(value= {Exception.class},maxAttempts = 3,backoff = @Backoff(delay = 1000l,multiplier = 1))
     public BaseResult<String> hb(Integer dbId) {
         log.info("cu发送心跳接口入参{}",dbId);
         CuEntity entity = cuMapper.selectById(dbId);
@@ -437,9 +478,29 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);
         String errorMsg = "发送心跳失败:{},{},{}";
         responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.DEVICE_HEART_BEAT_FAILED,response);
-        //记录操作日志
-        logUtil.operateLog(modelName,"发送心跳成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("发送心跳成功");
+    }
+
+    @Recover
+    public void recover(Exception e) {
+        log.error("===============CU发送心跳失败，此日志为重试回调");
+    }
+
+    /**
+     * cu维护心跳定时任务 每6分钟发一次心跳
+     * @param dbId
+     */
+    public void hbTask(Integer dbId){
+        Timer timer = new Timer();
+        // 创建定时任务，每6分钟发送一次心跳
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                hb(dbId);
+            }
+        }, 1 * 1000,360*1000); //延迟1秒每6分钟发一次心跳
+        //往心跳状态池放入当前执行任务的timer
+        cuHbStatusPoll.put(dbId,timer);
     }
 
     @Override

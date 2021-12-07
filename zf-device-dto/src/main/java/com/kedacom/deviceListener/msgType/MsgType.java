@@ -11,7 +11,7 @@ public enum MsgType {
      */
     PUT_PICTURE(1,"签名图片通知"),
     MT_OFF_LINE(2,"终端掉线通知"),
-    CU_OFF_LINE(3,"监控平台掉线通知"),
+    CU_OFF_LINE(3,"监控平台掉线通知,即将进行自动重连"),
     MCU_OFF_LINE(4,"视讯平台掉线通知"),
     SVR_OFF_LINE(5,"SVR掉线通知"),
     UPU_OFF_LINE(6,"UPU掉线通知"),

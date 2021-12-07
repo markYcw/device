@@ -66,6 +66,7 @@ public class OffLineNotify extends INotify {
         Timer timer = CuServiceImpl.cuHbStatusPoll.get(cuEntity.getId());
         if(ObjectUtils.isNotNull(timer)){
             timer.cancel();
+            CuServiceImpl.cuHbStatusPoll.remove(cuEntity.getId());
         }
         //将通知发给业务
         DeviceNotifyRequestDTO notifyRequestDTO = new DeviceNotifyRequestDTO();

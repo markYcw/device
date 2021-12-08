@@ -19,7 +19,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableFeignClients(basePackages = {"com.kedacom.device.core.remoteSdk", "com.kedacom.api","com.kedacom.msglog"})
 @EnableKmProxy(proxyPackages = "com.kedacom.device", ipAddr = "${zf.kmProxy.server_addr}", notifyPackages = "com.kedacom.device.core.event")
 @MapperScan(basePackages = "com.kedacom.device.core.mapper")
-@EnableRetry //add by ycw 2021/12/07
 public class DeviceServer {
     public static void main(String[] args) {
         SpringApplication.run(DeviceServer.class);

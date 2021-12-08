@@ -78,28 +78,35 @@ public class OffLineNotify extends INotify {
             }
         }
         //下面将进行自动重连
-            CuService service = ContextUtils.getBean(CuService.class);
-            CuRequestDto dto = new CuRequestDto();
-            dto.setKmId(cuEntity.getId());
-            try {
-                Timer loginTimer = new Timer();
-                //往重连任务池里放入timer
-                reTryPoll.put(cuEntity.getId(),loginTimer);
-                // 创建定时任务，每1分钟重连一次
-                loginTimer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        BaseResult<DevEntityVo> baseResult = service.loginById(dto);
-                        if(baseResult.getErrCode()==0){
-                            loginTimer.cancel();
-                        }
+       this.reTryLogin(cuEntity.getId());
+
+    }
+
+    /**
+     * 根据数据库ID自动重连每一分钟重连一次
+     * @param dbId
+     */
+    public void reTryLogin(Integer dbId){
+        log.info("=====================CU即将进行自动重连数据库ID为：{}",dbId);
+        CuService service = ContextUtils.getBean(CuService.class);
+        CuRequestDto dto = new CuRequestDto();
+        dto.setKmId(dbId);
+        try {
+            Timer loginTimer = new Timer();
+            //往重连任务池里放入timer
+            reTryPoll.put(dbId,loginTimer);
+            // 创建定时任务，每1分钟重连一次
+            loginTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    BaseResult<DevEntityVo> baseResult = service.loginById(dto);
+                    if(baseResult.getErrCode()==0){
+                        loginTimer.cancel();
                     }
-                }, 1 * 1000,60*1000); //延迟1秒每1分钟重连一次
-            } catch (Exception e) {
-               log.error("==============CU掉线自动重连失败，将在1分钟后再次发起重连");
-            }
-
-
-
+                }
+            }, 1 * 1000,60*1000); //延迟1秒每1分钟重连一次
+        } catch (Exception e) {
+            log.error("==============CU掉线自动重连失败，将在1分钟后再次发起重连");
+        }
     }
 }

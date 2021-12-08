@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
@@ -396,9 +397,10 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 .eq(CuEntity::getId,dto.getKmId());
         cuMapper.update(null,wrapper);
         //去除心跳定时任务
-        Timer timer = CuServiceImpl.cuHbStatusPoll.get(entity.getId());
+        Timer timer = cuHbStatusPoll.get(entity.getId());
         if(com.baomidou.mybatisplus.core.toolkit.ObjectUtils.isNotNull(timer)){
             timer.cancel();
+            cuHbStatusPoll.remove(entity.getId());
         }
         //往cu状态池移除当前cu的id
         cuStatusPoll.remove(dto.getKmId());
@@ -465,24 +467,46 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      * @return
      */
     @Override
-    @Retryable(value= {Exception.class},maxAttempts = 3,backoff = @Backoff(delay = 1000l,multiplier = 1))
     public BaseResult<String> hb(Integer dbId) {
         log.info("cu发送心跳接口入参{}",dbId);
         CuEntity entity = cuMapper.selectById(dbId);
         check(entity);
         CuBasicParam param = tool.getParam(entity);
         log.info("发送心跳中间件入参ssno/ssid{}",param.getParamMap());
-        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/hb/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
-        log.info("发送心跳中间件响应{}",exchange.getBody());
-        CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);
-        String errorMsg = "发送心跳失败:{},{},{}";
-        responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.DEVICE_HEART_BEAT_FAILED,response);
+        ResponseEntity<String> exchange = null;
+        try {
+            exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/hb/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
+            log.info("发送心跳中间件响应{}",exchange.getBody());
+            CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);
+            if (response.getCode()!=0){
+                this.reTryLogin(dbId);
+                return BaseResult.failed("发送心跳失败");
+            }
+        } catch (RestClientException e) {
+          log.error("===============发送心跳时发生异常，即将进行自动重连",e);
+            this.reTryLogin(dbId);
+            return BaseResult.failed("发送心跳失败");
+        }
+
         return BaseResult.succeed("发送心跳成功");
     }
 
-    @Recover
-    public void recover(Exception e) {
-        log.error("===============CU发送心跳失败，此日志为重试回调");
+    /**
+     * 根据数据库ID自动重连每一分钟重连一次
+     * @param dbId
+     */
+    public void reTryLogin(Integer dbId){
+        log.info("==================CU发送心跳失败，即将进行自动重连，数据库ID为：{}",dbId);
+        CuRequestDto dto = new CuRequestDto();
+        dto.setKmId(dbId);
+        this.logoutById(dto);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            log.error("==========CU发送心跳失败，进行自动重连时线程睡眠0.5s失败");
+        }
+        OffLineNotify notify = ContextUtils.getBean(OffLineNotify.class);
+        notify.reTryLogin(dbId);
     }
 
     /**

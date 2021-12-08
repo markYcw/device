@@ -19,8 +19,8 @@ public class RecBaseVo implements Serializable {
     @ApiModelProperty(value = "平台数据库ID", required = true)
     private Integer dbId;
 
-    @NotBlank(message = "设备域ID不能为空")
-    @ApiModelProperty(value = "设备域ID", required = true)
+    @NotBlank(message = "域名不能为空")
+    @ApiModelProperty(value = "域名，不是域id，是设备id后面的那部分", required = true)
     private String domain;
 
     @NotBlank(message = "设备号不能为空")

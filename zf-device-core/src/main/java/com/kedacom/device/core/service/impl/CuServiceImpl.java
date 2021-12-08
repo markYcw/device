@@ -22,6 +22,7 @@ import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.notify.cu.OffLineNotify;
 import com.kedacom.device.core.notify.cu.loadGroup.CuDeviceLoadThread;
 import com.kedacom.device.core.notify.cu.loadGroup.CuSession;
+import com.kedacom.device.core.notify.cu.loadGroup.CuSessionManager;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 import com.kedacom.device.core.notify.stragegy.DeviceType;
 import com.kedacom.device.core.notify.stragegy.NotifyHandler;
@@ -51,6 +52,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -294,12 +296,16 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         log.info("登录cu中间件应答:{}", string);
 
         CuLoginResponse response = JSON.parseObject(string, CuLoginResponse.class);
-        String errorMsg = "cu登录失败:{},{},{}";
         //如果是密码错误或者是用户不存在首先去除定时任务不进行无限重连
-        if(response.getCode()==10012||response.getCode()==10011){
-            removeReTryLogin(entity.getId());
+        if(response.getCode()!=0){
+            if(response.getCode()==10012||response.getCode()==10011){
+                removeReTryLogin(entity.getId());
+                return BaseResult.failed("登录失败，用户名或密码错误请检查");
+            }else {
+                return BaseResult.failed("登录失败，请稍后重试");
+            }
         }
-        responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_LOGIN_FAILED, response);
+       //如果登录成功再把ssid保存进数据库
         entity.setSsid(response.getSsid());
         entity.setModifyTime(new Date());
         cuMapper.updateById(entity);
@@ -307,7 +313,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         devEntityVo.setStatus(DevTypeConstant.updateRecordKey);
 
         //登录成功以后加载分组信息
-        getGroups(dto.getKmId(),response.getSsid());
+        CompletableFuture.runAsync(()-> getGroups(dto.getKmId(),response.getSsid()));
         //往cu状态池放入当前mcu状态 1已登录
         cuStatusPoll.put(dto.getKmId(), DevTypeConstant.updateRecordKey);
         //发送心跳
@@ -381,6 +387,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         log.info("根据ID登出cu接口入参{}",dto.getKmId());
         CuEntity entity = cuMapper.selectById(dto.getKmId());
         check(entity);
+        //去除底层session
+        CuSessionManager manager = cuDeviceLoadThread.getCuClient().getSessionManager();
+        manager.removeSession(entity.getSsid());
         CuBasicParam param = tool.getParam(entity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, param.getParamMap());
         CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);
@@ -401,8 +410,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         cuStatusPoll.remove(dto.getKmId());
         //从cu设备状态池中去除当前cu的ID
         cuDeviceStatusPoll.remove(dto.getKmId());
-        //记录操作日志
-        logUtil.operateLog(modelName,"登出cu成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("登出cu成功");
     }
 
@@ -565,8 +572,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         CuResponse response = JSONObject.parseObject(s, CuResponse.class);
         String errorMsg = "获取设备组信息失败:{},{},{}";
         responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_DEV_GROUPS_FAILED,response);
-        //记录操作日志
-        logUtil.operateLog(modelName,"获取设备组信息成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("获取设备组信息成功");
     }
 

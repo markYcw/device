@@ -91,6 +91,8 @@ public class OffLineNotify extends INotify {
         CuService service = ContextUtils.getBean(CuService.class);
         CuRequestDto dto = new CuRequestDto();
         dto.setKmId(dbId);
+        //首先登出
+        service.logoutById(dto);
         try {
             Timer loginTimer = new Timer();
             //往重连任务池里放入timer
@@ -102,9 +104,11 @@ public class OffLineNotify extends INotify {
                     BaseResult<DevEntityVo> baseResult = service.loginById(dto);
                     if(baseResult.getErrCode()==0){
                         loginTimer.cancel();
+                    }else {
+
                     }
                 }
-            }, 1 * 1000,60*1000); //延迟1秒每1分钟重连一次
+            }, 60 * 1000,60*1000); //延迟1分钟每1分钟重连一次
         } catch (Exception e) {
             log.error("==============CU掉线自动重连失败，将在1分钟后再次发起重连");
         }

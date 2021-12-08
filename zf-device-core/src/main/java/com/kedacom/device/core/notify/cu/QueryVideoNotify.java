@@ -29,7 +29,7 @@ import java.util.List;
  * @description 查询录像通知
  */
 @Slf4j
-public class QueryVideoNotify extends INotify {
+public class QueryVideoNotify extends INotify{
     @Override
     protected void consumeMessage(Integer ssid, String message) {
         QueryCuVideoNotify queryCuVideoNotify = JSON.parseObject(message, QueryCuVideoNotify.class);

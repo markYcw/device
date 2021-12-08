@@ -3,6 +3,7 @@ package com.kedacom.device.core.notify.cu;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.kedacom.api.WebsocketFeign;
 import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.QueryCuVideoVo;
@@ -16,6 +17,8 @@ import com.kedacom.device.core.service.RegisterListenerService;
 import com.kedacom.device.core.utils.ContextUtils;
 import com.kedacom.device.core.utils.DeviceNotifyUtils;
 import com.kedacom.deviceListener.msgType.MsgType;
+import com.kedacom.pojo.SystemWebSocketMessage;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -25,6 +28,7 @@ import java.util.List;
  * @date 2021/12/2 19:28
  * @description 查询录像通知
  */
+@Slf4j
 public class QueryVideoNotify extends INotify {
     @Override
     protected void consumeMessage(Integer ssid, String message) {
@@ -46,5 +50,13 @@ public class QueryVideoNotify extends INotify {
                 notifyUtils.cuDeviceNty(kmListenerEntity.getUrl(),vo);
             }
         }
+        //发送webSocket给前端
+        WebsocketFeign websocketFeign = ContextUtils.getBean(WebsocketFeign.class);
+        SystemWebSocketMessage sws = new SystemWebSocketMessage();
+        sws.setOperationType(7);
+        sws.setServerName("device");
+        sws.setData(vo);
+        log.info("===============发送CU录像通知webSocket给前端{}", JSON.toJSONString(message));
+        websocketFeign.sendInfo(JSON.toJSONString(message));
     }
 }

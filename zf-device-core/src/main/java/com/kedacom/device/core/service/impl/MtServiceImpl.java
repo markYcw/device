@@ -116,8 +116,11 @@ public class MtServiceImpl implements MtService {
 
         log.info("查询终端信息请求参数 : {}", dbId);
         MtEntity entity = mtMapper.selectById(dbId);
+        List<MtEntity> entities = new ArrayList<>();
+        entities.add(entity);
+        List<TerminalVo> terminalVoList = queryConnectionStatus(entities);
 
-        return MtConvert.INSTANCE.convertTerminalVo(entity);
+        return terminalVoList.get(0);
     }
 
     @Override

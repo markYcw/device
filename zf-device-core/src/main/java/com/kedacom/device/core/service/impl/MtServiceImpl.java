@@ -19,6 +19,7 @@ import com.kedacom.device.core.mapper.MtTypeMapper;
 import com.kedacom.device.core.notify.stragegy.NotifyHandler;
 import com.kedacom.device.core.service.MtService;
 import com.kedacom.device.core.utils.HandleResponseUtil;
+import com.kedacom.device.core.utils.MtUrlFactory;
 import com.kedacom.device.core.utils.RemoteRestTemplate;
 import com.kedacom.mt.*;
 import com.kedacom.mt.response.GetMtStatusResponseVo;
@@ -53,14 +54,15 @@ public class MtServiceImpl implements MtService {
     MtTypeMapper mtTypeMapper;
 
     @Resource
+    MtUrlFactory mtUrlFactory;
+
+    @Resource
     HandleResponseUtil responseUtil;
 
     @Resource
     RemoteRestTemplate remoteRestTemplate;
 
     private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/mt/mtNotify";
-
-    private final static String MT_REQUEST_URL = "http://172.16.231.202:13000/mid/v2/mt";
 
     public static Set<Integer> synHashSet = Collections.synchronizedSet(new HashSet<Integer>());
 
@@ -196,13 +198,14 @@ public class MtServiceImpl implements MtService {
         if (entity == null) {
             throw new MtException(DeviceErrorEnum.DEVICE_NOT_FOUND);
         }
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         LoginParamVo loginParamVo = MtConvert.INSTANCE.convertLoginParamVo(entity);
         loginParamVo.setNtyUrl(NTY_URL);
         Map<String, Long> paramMap = setParamMap(null);
 
         log.info("远端登录终端请求参数 loginParamVo : {}", loginParamVo);
         String response = remoteRestTemplate.getRestTemplate()
-                .postForObject(MT_REQUEST_URL + "/login/{ssno}", JSON.toJSONString(loginParamVo), String.class, paramMap);
+                .postForObject(mtRequestUrl + "/login/{ssno}", JSON.toJSONString(loginParamVo), String.class, paramMap);
         log.info("远端登录终端响应参数 response : {}", response);
         MtLoginResponse mtLoginResponse = JSON.parseObject(response, MtLoginResponse.class);
         String errorMsg = "终端登录失败 : {}, {}, {}";
@@ -226,10 +229,11 @@ public class MtServiceImpl implements MtService {
         MtEntity entity = mtMapper.selectById(dbId);
         check(entity);
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
 
         log.info("远端退出登录终端请求参数 ssid : {}", entity.getMtid());
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
-                .exchange(MT_REQUEST_URL + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, paramMap);
+                .exchange(mtRequestUrl + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, paramMap);
         log.info("远端退出登录终端响应参数 exchange : {}", exchange);
         MtResponse mtResponse = JSONObject.parseObject(exchange.getBody(), MtResponse.class);
         String errorMsg = "退出终端登录失败 : {}, {}, {}";
@@ -250,9 +254,10 @@ public class MtServiceImpl implements MtService {
         MtEntity entity = mtMapper.selectById(dbId);
         check(entity);
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
 
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
-                .exchange(MT_REQUEST_URL + "/hb/{ssid}/{ssno}", HttpMethod.GET, null, String.class, paramMap);
+                .exchange(mtRequestUrl + "/hb/{ssid}/{ssno}", HttpMethod.GET, null, String.class, paramMap);
         log.info("发送心跳响应参数 exchange : {}", exchange);
         MtResponse mtResponse = JSONObject.parseObject(exchange.getBody(), MtResponse.class);
         String errorMsg = "发送心跳失败 : {}, {}, {}";
@@ -286,6 +291,7 @@ public class MtServiceImpl implements MtService {
         log.info("开启点对点会议请求参数 : {}", startMeetingMtVo);
         MtEntity entity = mtMapper.selectById(startMeetingMtVo.getDbId());
         check(entity);
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
         String ip = getIp(startMeetingMtVo.getDstId(), startMeetingMtVo.getCallType());
 
@@ -298,7 +304,7 @@ public class MtServiceImpl implements MtService {
         startP2P.setRate(startMeetingMtVo.getBitrate());
 
         String response = remoteRestTemplate.getRestTemplate()
-                .postForObject(MT_REQUEST_URL + "/p2p/{ssid}/{ssno}", JSON.toJSONString(startP2P), String.class, paramMap);
+                .postForObject(mtRequestUrl + "/p2p/{ssid}/{ssno}", JSON.toJSONString(startP2P), String.class, paramMap);
         log.info("开启点对点会议响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
         String errorMsg = "开启点对点会议失败 : {}, {}, {}";
@@ -314,11 +320,12 @@ public class MtServiceImpl implements MtService {
         log.info("停止点对点会议请求参数 : {}", dbId);
         MtEntity entity = mtMapper.selectById(dbId);
         check(entity);
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
 
         log.info("停止点对点会议请求参数 ssid : {}", entity.getMtid());
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
-                .exchange(MT_REQUEST_URL + "/p2p/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, paramMap);
+                .exchange(mtRequestUrl + "/p2p/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, paramMap);
         log.info("停止点对点会议响应参数 exchange : {}", exchange);
         MtResponse mtResponse = JSONObject.parseObject(exchange.getBody(), MtResponse.class);
         String errorMsg = "停止点对点会议失败 : {}, {}, {}";
@@ -334,10 +341,11 @@ public class MtServiceImpl implements MtService {
         log.info("获取终端状态请求参数 : {}", dbId);
         MtEntity entity = mtMapper.selectById(dbId);
         check(entity);
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
 
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
-                .exchange(MT_REQUEST_URL + "/status/{ssid}/{ssno}", HttpMethod.GET, null, String.class, paramMap);
+                .exchange(mtRequestUrl + "/status/{ssid}/{ssno}", HttpMethod.GET, null, String.class, paramMap);
         log.info("获取终端状态响应参数 exchange : {}", exchange);
         MtResponse mtResponse = JSONObject.parseObject(exchange.getBody(), MtResponse.class);
         String errorMsg = "获取终端状态失败 : {}, {}, {}";
@@ -364,8 +372,9 @@ public class MtServiceImpl implements MtService {
     public boolean setMute(Map<String, Long> paramMap, SetDumbOrMuteVo dumbOrMuteVo) {
 
         // 设置静音
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         String response = remoteRestTemplate.getRestTemplate()
-                .postForObject(MT_REQUEST_URL + "/silence/{ssid}/{ssno}", JSON.toJSONString(dumbOrMuteVo), String.class, paramMap);
+                .postForObject(mtRequestUrl + "/silence/{ssid}/{ssno}", JSON.toJSONString(dumbOrMuteVo), String.class, paramMap);
         log.info("设置静音响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
         String errorMsg = "设置静音失败 : {}, {}, {}";
@@ -378,8 +387,9 @@ public class MtServiceImpl implements MtService {
     public boolean setDumb(Map<String, Long> paramMap, SetDumbOrMuteVo dumbOrMuteVo) {
 
         // 设置哑音
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         String response = remoteRestTemplate.getRestTemplate()
-                .postForObject(MT_REQUEST_URL + "/mute/{ssid}/{ssno}", JSON.toJSONString(dumbOrMuteVo), String.class, paramMap);
+                .postForObject(mtRequestUrl + "/mute/{ssid}/{ssno}", JSON.toJSONString(dumbOrMuteVo), String.class, paramMap);
         log.info("设置哑音响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
         String errorMsg = "设置哑音失败 : {}, {}, {}";
@@ -406,8 +416,9 @@ public class MtServiceImpl implements MtService {
     public String getMute(Map<String, Long> paramMap) {
 
         // 获取静音
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
-                .exchange(MT_REQUEST_URL + "/silence/{ssid}/{ssno}", HttpMethod.GET, null, String.class, paramMap);
+                .exchange(mtRequestUrl + "/silence/{ssid}/{ssno}", HttpMethod.GET, null, String.class, paramMap);
         log.info("获取静音响应参数 exchange : {}", exchange);
         MtResponse mtResponse = JSONObject.parseObject(exchange.getBody(), MtResponse.class);
         String errorMsg = "获取静音失败 : {}, {}, {}";
@@ -421,8 +432,9 @@ public class MtServiceImpl implements MtService {
     public String getDumb(Map<String, Long> paramMap) {
 
         // 获取哑音
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
-                .exchange(MT_REQUEST_URL + "/mute/{ssid}/{ssno}", HttpMethod.GET, null, String.class, paramMap);
+                .exchange(mtRequestUrl + "/mute/{ssid}/{ssno}", HttpMethod.GET, null, String.class, paramMap);
         log.info("获取哑音响应参数 exchange : {}", exchange);
         MtResponse mtResponse = JSONObject.parseObject(exchange.getBody(), MtResponse.class);
         String errorMsg = "获取哑音失败 : {}, {}, {}";
@@ -439,13 +451,14 @@ public class MtServiceImpl implements MtService {
         log.info("设置音量请求参数, id : {}, type : {}, volume : {}", dbId, type, volume);
         MtEntity entity = mtMapper.selectById(dbId);
         check(entity);
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
         SetVolumeVo setVolumeVo = new SetVolumeVo();
         setVolumeVo.setType(type);
         setVolumeVo.setVolume(volume);
 
         String response = remoteRestTemplate.getRestTemplate()
-                .postForObject(MT_REQUEST_URL + "/volume/{ssid}/{ssno}", JSON.toJSONString(setVolumeVo), String.class, paramMap);
+                .postForObject(mtRequestUrl + "/volume/{ssid}/{ssno}", JSON.toJSONString(setVolumeVo), String.class, paramMap);
         log.info("设置音量响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
         String errorMsg = "设置音量失败 : {}, {}, {}";
@@ -461,12 +474,13 @@ public class MtServiceImpl implements MtService {
         log.info("音量获取请求参数, id : {}, type : {}", dbId, type);
         MtEntity entity = mtMapper.selectById(dbId);
         check(entity);
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
         GetVolumeVo getVolumeVo = new GetVolumeVo();
         getVolumeVo.setType(type);
 
         String response = remoteRestTemplate.getRestTemplate()
-                .postForObject(MT_REQUEST_URL + "/volumes/{ssid}/{ssno}", JSON.toJSONString(getVolumeVo), String.class, paramMap);
+                .postForObject(mtRequestUrl + "/volumes/{ssid}/{ssno}", JSON.toJSONString(getVolumeVo), String.class, paramMap);
         log.info("音量获取响应参数 response : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
         String errorMsg = "音量获取失败 : {}, {}, {}";
@@ -483,12 +497,13 @@ public class MtServiceImpl implements MtService {
         log.info("请求关键帧请求参数, id : {}, streamType : {}", dbId, streamType);
         MtEntity entity = mtMapper.selectById(dbId);
         check(entity);
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
         KeyframeVo keyframeVo = new KeyframeVo();
         keyframeVo.setStreamType(streamType);
 
         String response = remoteRestTemplate.getRestTemplate()
-                .postForObject(MT_REQUEST_URL + "/volume/{ssid}/{ssno}", JSON.toJSONString(keyframeVo), String.class, paramMap);
+                .postForObject(mtRequestUrl + "/volume/{ssid}/{ssno}", JSON.toJSONString(keyframeVo), String.class, paramMap);
         log.info("请求关键帧响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
         String errorMsg = "请求关键帧失败 : {}, {}, {}";
@@ -504,13 +519,14 @@ public class MtServiceImpl implements MtService {
         log.info("双流控制请求参数, id : {}, start : {}, isLocal: {}", dbId, type, isLocal);
         MtEntity entity = mtMapper.selectById(dbId);
         check(entity);
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
         MtStartDualVo mtStartDualVo = new MtStartDualVo();
         mtStartDualVo.setType(type ? 0 : 1);
         mtStartDualVo.setIsLocal(isLocal ? 1 : 0);
 
         String response = remoteRestTemplate.getRestTemplate()
-                .postForObject(MT_REQUEST_URL + "/dual/{ssid}/{ssno}", JSON.toJSONString(mtStartDualVo), String.class, paramMap);
+                .postForObject(mtRequestUrl + "/dual/{ssid}/{ssno}", JSON.toJSONString(mtStartDualVo), String.class, paramMap);
         log.info("双流控制响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
         String errorMsg = "双流控制失败 : {}, {}, {}";
@@ -526,13 +542,14 @@ public class MtServiceImpl implements MtService {
         log.info("ptz控制请求参数, id : {}, start : {}, ptzCmd: {}", dbId, type, ptzCmd);
         MtEntity entity = mtMapper.selectById(dbId);
         check(entity);
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
         PtzCtrlVo ptzCtrlVo = new PtzCtrlVo();
         ptzCtrlVo.setType(type);
         ptzCtrlVo.setPtzCmd(ptzCmd);
 
         String response = remoteRestTemplate.getRestTemplate()
-                .postForObject(MT_REQUEST_URL + "/ptz/{ssid}/{ssno}", JSON.toJSONString(ptzCtrlVo), String.class, paramMap);
+                .postForObject(mtRequestUrl + "/ptz/{ssid}/{ssno}", JSON.toJSONString(ptzCtrlVo), String.class, paramMap);
         log.info("ptz控制响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
         String errorMsg = "ptz控制失败 : {}, {}, {}";
@@ -548,12 +565,13 @@ public class MtServiceImpl implements MtService {
         log.info("设置画面显示模式请求参数, id : {}, mode : {}", dbId, mode);
         MtEntity entity = mtMapper.selectById(dbId);
         check(entity);
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
         SetPipModeVo setPipModeVo = new SetPipModeVo();
         setPipModeVo.setMode(mode);
 
         String response = remoteRestTemplate.getRestTemplate()
-                .postForObject(MT_REQUEST_URL + "/pip/{ssid}/{ssno}", JSON.toJSONString(setPipModeVo), String.class, paramMap);
+                .postForObject(mtRequestUrl + "/pip/{ssid}/{ssno}", JSON.toJSONString(setPipModeVo), String.class, paramMap);
         log.info("设置画面显示模式响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
         String errorMsg = "设置画面显示模式失败 : {}, {}, {}";

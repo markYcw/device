@@ -34,8 +34,10 @@ public class HandleResponseUtil {
     private McuErrCode mcuErrCode;
 
     @Autowired
-    private CuErrCode cuErrCode;
+    private MtErrorCode mtErrorCode;
 
+    @Autowired
+    private CuErrCode cuErrCode;
 
     /**
      * 处理拼控服务响应消息
@@ -169,12 +171,18 @@ public class HandleResponseUtil {
         }
     }
 
+    /**
+     * 处理终端异常
+     * @param str
+     * @param errorEnum
+     * @param res
+     */
     public void handleMtRes(String str, DeviceErrorEnum errorEnum, MtResponse res) {
         if (ObjectUtil.notEqual(res.getCode(), DeviceConstants.SUCCESS)) {
-            if(StringUtils.isNotBlank(cuErrCode.matchErrMsg(res.getCode()))){
-                log.error(str, res.getCode(), errorEnum.getCode(), cuErrCode.matchErrMsg(res.getCode()));
-                throw new MtException(errorEnum.getCode(), cuErrCode.matchErrMsg(res.getCode()));
-            }else {
+            if(StringUtils.isNotBlank(mtErrorCode.matchErrMsg(res.getCode()))){
+                log.error(str, res.getCode(), errorEnum.getCode(), mtErrorCode.matchErrMsg(res.getCode()));
+                throw new MtException(errorEnum.getCode(), mtErrorCode.matchErrMsg(res.getCode()));
+            } else {
                 log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
                 throw new MtException(res.getCode(), errorEnum.getMsg());
             }

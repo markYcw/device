@@ -45,4 +45,16 @@ public class Subscribe implements Serializable {
     @NotNull
     private Integer transdata;
 
+    @ApiModelProperty("设备入网通知： 0:不订阅1：订阅")
+    @NotNull
+    private Integer deviceAdd;
+
+    @ApiModelProperty("设备退网通知： 0:不订阅1：订阅")
+    @NotNull
+    private Integer deviceDel;
+
+    @ApiModelProperty("设备修改通知： 0:不订阅1：订阅")
+    @NotNull
+    private Integer deviceMod;
+
 }

@@ -7,7 +7,6 @@ import com.kedacom.api.WebsocketFeign;
 import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.QueryCuVideoVo;
-import com.kedacom.device.core.convert.CuConvert;
 import com.kedacom.device.core.entity.KmListenerEntity;
 import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.notify.cu.loadGroup.notify.QueryCuVideoNotify;
@@ -19,6 +18,7 @@ import com.kedacom.device.core.utils.DeviceNotifyUtils;
 import com.kedacom.deviceListener.msgType.MsgType;
 import com.kedacom.pojo.SystemWebSocketMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 
 import java.util.List;
 
@@ -33,9 +33,9 @@ public class QueryVideoNotify extends INotify{
     @Override
     protected void consumeMessage(Integer ssid, String message) {
         QueryCuVideoNotify queryCuVideoNotify = JSON.parseObject(message, QueryCuVideoNotify.class);
-        CuConvert convert = JSON.parseObject(message, CuConvert.class);
         QueryVideoInsideNotify content = queryCuVideoNotify.getContent();
-        QueryCuVideoVo vo = convert.convertToQueryCuVideoVo(content);
+        QueryCuVideoVo vo = new QueryCuVideoVo();
+        BeanUtils.copyProperties(content,vo);
         CuMapper cuMapper = ContextUtils.getBean(CuMapper.class);
         RegisterListenerService listenerService = ContextUtils.getBean(RegisterListenerService.class);
         DeviceNotifyUtils notifyUtils = ContextUtils.getBean(DeviceNotifyUtils.class);
@@ -56,7 +56,7 @@ public class QueryVideoNotify extends INotify{
         sws.setOperationType(7);
         sws.setServerName("device");
         sws.setData(vo);
-        log.info("===============发送CU录像通知webSocket给前端{}", JSON.toJSONString(message));
+        log.info("===============发送CU录像通知webSocket给前端{}", message);
         websocketFeign.sendInfo(JSON.toJSONString(message));
     }
 }

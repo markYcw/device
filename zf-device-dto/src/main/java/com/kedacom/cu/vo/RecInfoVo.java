@@ -18,6 +18,7 @@ public class RecInfoVo {
     @ApiModelProperty("设备号")
     private String puId;
 
+
     @ApiModelProperty("通道号")
     private Integer chn;
 

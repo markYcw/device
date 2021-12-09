@@ -160,6 +160,9 @@ public class CuDeviceLoadThread {
         subscribe.setTvwall(0);
         subscribe.setRec(1);
         subscribe.setTransdata(0);
+        subscribe.setDeviceAdd(1);
+        subscribe.setDeviceDel(1);
+        subscribe.setDeviceMod(1);
         devicesDto.setSubscribe(subscribe);
         devicesDto.setKmId(cuEntity.getId());
         devicesDto.setGroupId(groupId);
@@ -306,6 +309,7 @@ public class CuDeviceLoadThread {
 
             case GetDeviceStatusNotify.TYPE_DEVICE_IN:
                 //设备入网
+                this.onDeviceIN(ssid, notify.getDevice());
                 break;
 
             case GetDeviceStatusNotify.TYPE_DEVICE_OUT:
@@ -315,7 +319,7 @@ public class CuDeviceLoadThread {
 
             case GetDeviceStatusNotify.TYPE_DEVICE_UPDATE:
                 //设备更新
-                this.onDeviceUpdate(ssid, puid);
+                this.onDeviceUpdate(ssid, notify.getDevice());
                 break;
 
             default:
@@ -468,6 +472,27 @@ public class CuDeviceLoadThread {
         deviceCache.addDevice(device);
     }
 
+    //设备更新
+    private void onDeviceUpdate(int ssid, PDevice device) {
+        log.info("===> onDeviceUpdate ssid=" + ssid + " device=" + (device != null ? device.getName() : null));
+        if (device == null)
+            return;
+
+        CuSession cuSession = client.getSessionManager().getSessionBySSID(ssid);
+        CuDeviceCache deviceCache = cuSession.getDeviceCache();
+        PDevice oldDevice = deviceCache.getDevice(device.getPuId());
+
+        // 先删除老的设备信息
+        if (oldDevice != null) {
+            deviceCache.removeDevice(oldDevice.getPuId());
+
+        }
+
+        // 添加新入会设备信息
+        deviceCache.addDevice(device);
+
+    }
+
     //设备退网
     @SuppressWarnings("deprecation")
     private void onDeviceOut(int ssid, String puid) {
@@ -483,12 +508,6 @@ public class CuDeviceLoadThread {
             deviceCache.removeDevice(puid);
 
         }
-    }
-
-    //设备更新
-    private void onDeviceUpdate(int ssid, String puid) {
-        //TODO 设备更新只能根据设备所在分组加载分组下全部设备，但现在无法确定设备所在分组，所以暂时无法处理。
-
     }
 
     //设备加载完成

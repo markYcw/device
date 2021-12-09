@@ -108,7 +108,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     //cu设备状态池 若设备加载完则把数据库ID和状态放入此池中1为已加载完所以设备，若登出则从此状态池中移除
     public static ConcurrentHashMap<Integer,Integer> cuDeviceStatusPoll = new ConcurrentHashMap<>();
 
-    //cu心跳状态池 若登出则从此状态池中移除
+    //cu心跳状态池 若登出或者掉线则从此状态池中移除
     public static ConcurrentHashMap<Integer,Timer> cuHbStatusPoll = new ConcurrentHashMap<>();
 
     @Override

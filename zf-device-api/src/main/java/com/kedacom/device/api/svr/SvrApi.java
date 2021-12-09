@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * svr相关操作
@@ -28,6 +29,10 @@ public interface SvrApi {
     @PostMapping("/pageQuery")
     @ApiOperation(value = "svr分页查询")
     BaseResult<BasePage<SvrEntity>> pageQuery(@RequestBody SvrPageQueryDTO queryDTO);
+
+    @PostMapping("/all")
+    @ApiOperation(value = "查询所有SVR")
+    BaseResult<List<SvrEntity>> all();
 
     @PostMapping("/info")
     @ApiOperation(value = "根据id获取svr信息")

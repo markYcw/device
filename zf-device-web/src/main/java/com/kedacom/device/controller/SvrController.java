@@ -43,6 +43,14 @@ public class SvrController {
         return svrService.pageQuery(queryDTO);
     }
 
+    @PostMapping("/all")
+    @ApiOperation(value = "查询所有SVR")
+    public BaseResult<List<SvrEntity>> all() {
+
+        List<SvrEntity> list = svrService.list();
+        return BaseResult.succeed(list);
+    }
+
 
     @PostMapping("/info")
     @ApiOperation(value = "根据id获取svr信息")

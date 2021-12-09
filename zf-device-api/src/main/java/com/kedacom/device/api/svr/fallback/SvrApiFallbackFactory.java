@@ -10,6 +10,7 @@ import com.kedacom.svr.vo.*;
 import feign.hystrix.FallbackFactory;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author ycw
@@ -23,6 +24,11 @@ public class SvrApiFallbackFactory implements FallbackFactory<SvrApi> {
         return new SvrApi() {
             @Override
             public BaseResult<BasePage<SvrEntity>> pageQuery(SvrPageQueryDTO queryDTO) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<List<SvrEntity>> all() {
                 return BaseResult.failed(throwable.getMessage());
             }
 

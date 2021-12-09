@@ -3,6 +3,7 @@ package com.kedacom.device.controller;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.cu.dto.*;
+import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.CuService;
@@ -42,6 +43,14 @@ public class CuController {
         log.info("cu分页接口入参:{}", queryDTO);
 
         return cuService.pageQuery(queryDTO);
+    }
+
+    @PostMapping("/all")
+    @ApiOperation(value = "查询所有CU")
+    public BaseResult<List<CuEntity>> all() {
+
+        List<CuEntity> list = cuService.list();
+        return BaseResult.succeed("查询所有设备成功",list);
     }
 
     @PostMapping("/info")

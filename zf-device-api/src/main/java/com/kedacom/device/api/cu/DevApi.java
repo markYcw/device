@@ -3,6 +3,7 @@ package com.kedacom.device.api.cu;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.cu.dto.*;
+import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.api.cu.fallback.CuApiFallbackFactory;
 import io.swagger.annotations.ApiImplicitParam;
@@ -29,6 +30,10 @@ public interface DevApi {
     @PostMapping("/list")
     @ApiOperation(value = "cu分页查询")
     BaseResult<BasePage<DevEntityVo>> list(@RequestBody DevEntityQuery queryDTO);
+
+    @PostMapping("/all")
+    @ApiOperation(value = "查询所有CU")
+    BaseResult<List<CuEntity>> all();
 
     @PostMapping("/info")
     @ApiOperation(value = "根据数据库id获取cu信息")

@@ -3,6 +3,7 @@ package com.kedacom.device.api.cu.fallback;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.cu.dto.*;
+import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.api.cu.DevApi;
 import feign.hystrix.FallbackFactory;
@@ -24,6 +25,11 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
 
             @Override
             public BaseResult<BasePage<DevEntityVo>> list(DevEntityQuery queryDTO) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<List<CuEntity>> all() {
                 return BaseResult.failed(throwable.getMessage());
             }
 

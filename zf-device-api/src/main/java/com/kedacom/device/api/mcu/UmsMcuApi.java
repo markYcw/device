@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 /**
  * @author hxj
  * @date: 2021/8/23 10:04
@@ -25,6 +27,10 @@ public interface UmsMcuApi {
     @PostMapping("/pageQuery")
     @ApiOperation(value = "会议平台信息分页查询")
     BaseResult<BasePage<UmsMcuEntity>> pageQuery(@RequestBody McuPageQueryDTO queryDTO);
+
+    @PostMapping("/all")
+    @ApiOperation(value = "查询所有MCU")
+    BaseResult<List<UmsMcuEntity>> all();
 
     /**
      * 信息

@@ -1,12 +1,10 @@
 package com.kedacom.device.core.notify.mt;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.kedacom.device.core.entity.MtEntity;
 import com.kedacom.device.core.mapper.MtMapper;
 import com.kedacom.device.core.notify.stragegy.INotify;
 import com.kedacom.device.core.service.impl.MtServiceImpl;
-import com.kedacom.mt.DropLineNotifyVo;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
@@ -22,26 +20,29 @@ public class MtDropLineNotify extends INotify {
     @Resource
     MtMapper mtMapper;
 
+    @Resource
+    MtSendMessage mtSendMessage;
+
     @Override
     protected void consumeMessage(Integer ssid, String message) {
 
-        DropLineNotifyVo dropLineNotifyVo = JSON.parseObject(message, DropLineNotifyVo.class);
-
         LambdaQueryWrapper<MtEntity> queryWrapper = new LambdaQueryWrapper<>();
 
-        queryWrapper.eq(MtEntity::getIp, dropLineNotifyVo.getContent().getIp());
+        queryWrapper.eq(MtEntity::getMtid, ssid);
 
         MtEntity mtEntity = mtMapper.selectOne(queryWrapper);
 
-        log.info("终端掉线通知, 终端名称 : {}, 终端IP : {}", mtEntity.getName(), mtEntity.getIp());
+        log.info("终端掉线通知, 终端名称 : {}", mtEntity.getName());
 
         mtEntity.setMtid(null);
-
+        // 将该终端与中间件交互的 mtId 修改为 null
         mtMapper.updateById(mtEntity);
-
+        // 将该终端从维护心跳的缓存中删除
         MtServiceImpl.synHashSet.remove(mtEntity.getId());
 
-        // TODO 发送给前端
+        String msg = mtEntity.getName() + " 终端已掉线！";
+        // 向前端发送终端掉线通知
+        mtSendMessage.sendMessage(msg);
 
     }
 

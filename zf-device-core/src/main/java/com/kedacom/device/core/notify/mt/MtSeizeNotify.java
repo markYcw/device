@@ -22,6 +22,9 @@ public class MtSeizeNotify extends INotify {
     @Resource
     MtMapper mtMapper;
 
+    @Resource
+    MtSendMessage mtSendMessage;
+
     @Override
     protected void consumeMessage(Integer ssid, String message) {
 
@@ -29,7 +32,7 @@ public class MtSeizeNotify extends INotify {
 
         LambdaQueryWrapper<MtEntity> queryWrapper = new LambdaQueryWrapper<>();
 
-        queryWrapper.eq(MtEntity::getIp, seizeNotifyVo.getContent().getIp());
+        queryWrapper.eq(MtEntity::getMtid, ssid);
 
         MtEntity mtEntity = mtMapper.selectOne(queryWrapper);
 
@@ -41,7 +44,9 @@ public class MtSeizeNotify extends INotify {
 
         MtServiceImpl.synHashSet.remove(mtEntity.getId());
 
-        // TODO 发送给前端
+        String msg = mtEntity.getName() + " 终端已被 " + seizeNotifyVo.getContent().getIp() + " 端抢占！";
+        // 向前端发送终端被抢占登录通知
+        mtSendMessage.sendMessage(msg);
 
     }
 }

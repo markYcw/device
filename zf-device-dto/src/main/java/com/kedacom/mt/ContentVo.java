@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class ContentVo implements Serializable {
 
     /**
-     * 终端ip
+     * 抢占端 ip
      */
     private String ip;
 

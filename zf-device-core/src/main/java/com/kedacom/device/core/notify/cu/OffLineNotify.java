@@ -91,13 +91,13 @@ public class OffLineNotify extends INotify {
         CuService service = ContextUtils.getBean(CuService.class);
         CuRequestDto dto = new CuRequestDto();
         dto.setKmId(dbId);
-        //首先登出
-        service.logoutById(dto);
         ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2);
         reTryPoll.put(dbId,scheduled);
         scheduled.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
+                //首先登出
+                service.logoutById(dto);
                 BaseResult<DevEntityVo> baseResult = service.loginById(dto);
                 if(baseResult.getErrCode()==0){
                     scheduled.shutdownNow();

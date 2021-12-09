@@ -32,7 +32,7 @@ public class GetMtStatusResponseVo implements Serializable {
     private Integer pvVideo;
 
     @ApiModelProperty("0：第二路无视频， 1：第二路有视频")
-    private Integer avVideo;
+    private Integer svVideo;
 
     @ApiModelProperty("0：不在会议中， 1：在会议中")
     private Integer confStatus;

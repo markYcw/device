@@ -19,13 +19,13 @@ import com.kedacom.device.core.utils.ContextUtils;
 import com.kedacom.device.core.utils.DeviceNotifyUtils;
 import com.kedacom.deviceListener.msgType.MsgType;
 import com.kedacom.deviceListener.notify.DeviceNotifyRequestDTO;
-import kotlin.jvm.Volatile;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author ycw
@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class OffLineNotify extends INotify {
 
     //CU重连任务池 若是登录的时候报密码错误则从此状态池中移除
-    public static ConcurrentHashMap<Integer,Timer> reTryPoll = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<Integer,ScheduledThreadPoolExecutor> reTryPoll = new ConcurrentHashMap<>();
 
     /**
      * cu掉线以后状态置为离线并发送通知给业务
@@ -93,24 +93,16 @@ public class OffLineNotify extends INotify {
         dto.setKmId(dbId);
         //首先登出
         service.logoutById(dto);
-        try {
-            Timer loginTimer = new Timer();
-            //往重连任务池里放入timer
-            reTryPoll.put(dbId,loginTimer);
-            // 创建定时任务，每1分钟重连一次
-            loginTimer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    BaseResult<DevEntityVo> baseResult = service.loginById(dto);
-                    if(baseResult.getErrCode()==0){
-                        loginTimer.cancel();
-                    }else {
-
-                    }
+        ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2);
+        reTryPoll.put(dbId,scheduled);
+        scheduled.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                BaseResult<DevEntityVo> baseResult = service.loginById(dto);
+                if(baseResult.getErrCode()==0){
+                    scheduled.shutdownNow();
                 }
-            }, 60 * 1000,60*1000); //延迟1分钟每1分钟重连一次
-        } catch (Exception e) {
-            log.error("==============CU掉线自动重连失败，将在1分钟后再次发起重连");
-        }
+            }
+        },60,60, TimeUnit.MILLISECONDS);
     }
 }

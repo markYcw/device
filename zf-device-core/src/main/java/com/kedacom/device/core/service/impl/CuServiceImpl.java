@@ -54,6 +54,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 /**
@@ -326,9 +327,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      * @param dbId 数据库ID
      */
     private void removeReTryLogin(Integer dbId){
-        Timer timer = OffLineNotify.reTryPoll.get(dbId);
-        if(ObjectUtil.isNotNull(timer)){
-            timer.cancel();
+        ScheduledThreadPoolExecutor schedule = OffLineNotify.reTryPoll.get(dbId);
+        if(ObjectUtil.isNotNull(schedule)){
+            schedule.shutdownNow();
             OffLineNotify.reTryPoll.remove(dbId);
         }
     }

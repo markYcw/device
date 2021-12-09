@@ -56,7 +56,7 @@ public class QueryVideoNotify extends INotify{
         sws.setOperationType(7);
         sws.setServerName("device");
         sws.setData(vo);
-        log.info("===============发送CU录像通知webSocket给前端{}", message);
-        websocketFeign.sendInfo(JSON.toJSONString(message));
+        log.info("===============发送CU录像通知webSocket给前端{}", sws);
+        websocketFeign.sendInfo(JSON.toJSONString(sws));
     }
 }

@@ -97,7 +97,11 @@ public class OffLineNotify extends INotify {
             @Override
             public void run() {
                 //首先登出
-                service.logoutById(dto);
+                try {
+                    service.logoutById(dto);
+                } catch (Exception e) {
+                    log.error("=============中间件重启中登出失败");
+                }
                 BaseResult<DevEntityVo> baseResult = service.loginById(dto);
                 if(baseResult.getErrCode()==0){
                     scheduled.shutdownNow();

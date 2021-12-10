@@ -157,4 +157,6 @@ public interface CuService extends IService<CuEntity> {
     BaseResult<GbIdVo> gbId(GbIdDto requestDto);
 
     BaseResult<PuIdTwoVo> puIdTwo(PuIdTwoDto requestDto);
+
+    void reTryLoginNow(Integer dbId);
 }

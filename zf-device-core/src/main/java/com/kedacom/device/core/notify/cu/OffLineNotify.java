@@ -22,8 +22,7 @@ import com.kedacom.deviceListener.notify.DeviceNotifyRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -35,9 +34,6 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class OffLineNotify extends INotify {
-
-    //CU重连任务池 若是登录的时候报密码错误则从此状态池中移除
-    public static ConcurrentHashMap<Integer,ScheduledThreadPoolExecutor> reTryPoll = new ConcurrentHashMap<>();
 
     /**
      * cu掉线以后状态置为离线并发送通知给业务
@@ -63,9 +59,9 @@ public class OffLineNotify extends INotify {
         //去除会话信息
         cuDeviceLoadThread.getCuClient().getSessionManager().removeSession(ssid);
         //去除心跳定时任务
-        Timer timer = CuServiceImpl.cuHbStatusPoll.get(cuEntity.getId());
-        if(ObjectUtils.isNotNull(timer)){
-            timer.cancel();
+        ScheduledThreadPoolExecutor poolExecutor = CuServiceImpl.cuHbStatusPoll.get(cuEntity.getId());
+        if(ObjectUtils.isNotNull(poolExecutor)){
+            poolExecutor.shutdownNow();
             CuServiceImpl.cuHbStatusPoll.remove(cuEntity.getId());
         }
         //将通知发给业务
@@ -74,7 +70,11 @@ public class OffLineNotify extends INotify {
         List<KmListenerEntity> list = listenerService.getAll(MsgType.CU_OFF_LINE.getType());
         if(!CollectionUtil.isEmpty(list)){
             for (KmListenerEntity kmListenerEntity : list) {
-                notifyUtils.offLineNty(kmListenerEntity.getUrl(),notifyRequestDTO);
+                try {
+                    CompletableFuture.runAsync(()->notifyUtils.offLineNty(kmListenerEntity.getUrl(),notifyRequestDTO));
+                } catch (Exception e) {
+                    log.error("==========发送CU掉线通知给业务时失败{}",e);
+                }
             }
         }
         //下面将进行自动重连
@@ -88,25 +88,7 @@ public class OffLineNotify extends INotify {
      */
     public void reTryLogin(Integer dbId){
         log.info("=====================CU即将进行自动重连数据库ID为：{}",dbId);
-        CuService service = ContextUtils.getBean(CuService.class);
-        CuRequestDto dto = new CuRequestDto();
-        dto.setKmId(dbId);
-        ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2);
-        reTryPoll.put(dbId,scheduled);
-        scheduled.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                //首先登出
-                try {
-                    service.logoutById(dto);
-                } catch (Exception e) {
-                    log.error("=============中间件重启中登出失败");
-                }
-                BaseResult<DevEntityVo> baseResult = service.loginById(dto);
-                if(baseResult.getErrCode()==0){
-                    scheduled.shutdownNow();
-                }
-            }
-        },60,60, TimeUnit.MILLISECONDS);
+        CuService cuService = ContextUtils.getBean(CuService.class);
+        cuService.reTryLoginNow(dbId);
     }
 }

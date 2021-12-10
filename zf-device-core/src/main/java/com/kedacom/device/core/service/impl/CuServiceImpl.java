@@ -19,7 +19,6 @@ import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.CuConvert;
 import com.kedacom.device.core.exception.CuException;
 import com.kedacom.device.core.mapper.CuMapper;
-import com.kedacom.device.core.notify.cu.OffLineNotify;
 import com.kedacom.device.core.notify.cu.loadGroup.CuDeviceLoadThread;
 import com.kedacom.device.core.notify.cu.loadGroup.CuSession;
 import com.kedacom.device.core.notify.cu.loadGroup.CuSessionManager;
@@ -38,9 +37,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Recover;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -50,11 +46,11 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -91,7 +87,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Autowired
     private CuDeviceLoadThread cuDeviceLoadThread;
 
-    @Autowired
+    @Resource
     private HttpServletRequest HttpServletRequest;
 
     @Autowired
@@ -110,7 +106,10 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     public static ConcurrentHashMap<Integer,Integer> cuDeviceStatusPoll = new ConcurrentHashMap<>();
 
     //cu心跳状态池 若登出或者掉线则从此状态池中移除
-    public static ConcurrentHashMap<Integer,Timer> cuHbStatusPoll = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<Integer,ScheduledThreadPoolExecutor> cuHbStatusPoll = new ConcurrentHashMap<>();
+
+    //CU重连任务池 若是登录的时候报密码错误则从此状态池中移除
+    public static ConcurrentHashMap<Integer,ScheduledThreadPoolExecutor> reTryPoll = new ConcurrentHashMap<>();
 
     @Override
     public BaseResult<BasePage<DevEntityVo>> pageQuery(DevEntityQuery queryDTO) {
@@ -327,10 +326,10 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      * @param dbId 数据库ID
      */
     private void removeReTryLogin(Integer dbId){
-        ScheduledThreadPoolExecutor schedule = OffLineNotify.reTryPoll.get(dbId);
+        ScheduledThreadPoolExecutor schedule = reTryPoll.get(dbId);
         if(ObjectUtil.isNotNull(schedule)){
             schedule.shutdownNow();
-            OffLineNotify.reTryPoll.remove(dbId);
+            reTryPoll.remove(dbId);
         }
     }
 
@@ -402,9 +401,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 .eq(CuEntity::getId,dto.getKmId());
         cuMapper.update(null,wrapper);
         //去除心跳定时任务
-        Timer timer = cuHbStatusPoll.get(entity.getId());
-        if(com.baomidou.mybatisplus.core.toolkit.ObjectUtils.isNotNull(timer)){
-            timer.cancel();
+        ScheduledThreadPoolExecutor Executor = cuHbStatusPoll.get(entity.getId());
+        if(ObjectUtil.isNotNull(Executor)){
+            Executor.shutdownNow();
             cuHbStatusPoll.remove(entity.getId());
         }
         //往cu状态池移除当前cu的id
@@ -487,11 +486,28 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             }
         } catch (RestClientException e) {
           log.error("===============发送心跳时发生异常，即将进行自动重连",e);
-            this.reTryLogin(dbId);
+            //中间件挂了以后先去除心跳任务
+            removeHbTask(dbId);
+            CompletableFuture.runAsync(()->this.reTryLogin(dbId));
             return BaseResult.failed("发送心跳失败");
         }
 
         return BaseResult.succeed("发送心跳成功");
+    }
+
+    /**
+     * 去除心跳任务并且状态置为离线
+     * @param dbId
+     */
+    public void removeHbTask(Integer dbId){
+        log.info("==========去除心跳任务");
+        ScheduledThreadPoolExecutor scheduled = cuHbStatusPoll.get(dbId);
+        if(ObjectUtil.isNotNull(scheduled)){
+            scheduled.shutdownNow();
+        }
+        if(cuStatusPoll.get(dbId)!=null){
+            cuStatusPoll.remove(dbId);
+        }
     }
 
     /**
@@ -502,31 +518,55 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         log.info("==================CU发送心跳失败，即将进行自动重连，数据库ID为：{}",dbId);
         CuRequestDto dto = new CuRequestDto();
         dto.setKmId(dbId);
-        this.logoutById(dto);
         try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            log.error("==========CU发送心跳失败，进行自动重连时线程睡眠0.5s失败");
+            this.logoutById(dto);
+        } catch (Exception e) {
+            log.error("===============发送心跳时失败尝试重启监控平台的时候先做登出，但登出失败");
         }
-        OffLineNotify notify = ContextUtils.getBean(OffLineNotify.class);
-        notify.reTryLogin(dbId);
+        reTryLoginNow(dbId);
     }
 
     /**
-     * cu维护心跳定时任务 每6分钟发一次心跳
+     * 根据数据库ID自动重连每一分钟重连一次
+     * @param dbId
+     */
+    @Override
+    public void reTryLoginNow(Integer dbId){
+        log.info("=====================CU即将进行自动重连数据库ID为：{}",dbId);
+        CuService service = ContextUtils.getBean(CuService.class);
+        CuRequestDto dto = new CuRequestDto();
+        dto.setKmId(dbId);
+        ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2);
+        reTryPoll.put(dbId,scheduled);
+        scheduled.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                //首先登出
+                try {
+                    service.logoutById(dto);
+                } catch (Exception e) {
+                    log.error("=============中间件重启/或者cu掉线后登出失败");
+                }
+                BaseResult<DevEntityVo> baseResult = service.loginById(dto);
+                if(baseResult.getErrCode()==0){
+                    scheduled.shutdownNow();
+                }
+            }
+        },60,60, TimeUnit.SECONDS);
+    }
+
+    /**
+     * cu维护心跳定时任务 每1分钟发一次心跳
      * @param dbId
      */
     public void hbTask(Integer dbId){
-        Timer timer = new Timer();
+        ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2);
         // 创建定时任务，每6分钟发送一次心跳
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                hb(dbId);
-            }
-        }, 1 * 1000,360*1000); //延迟1秒每6分钟发一次心跳
-        //往心跳状态池放入当前执行任务的timer
-        cuHbStatusPoll.put(dbId,timer);
+        scheduled.scheduleAtFixedRate(()->{
+            hb(dbId);
+        },1,60,  TimeUnit.SECONDS);//延迟1秒每1分钟发一次心跳
+        //往心跳状态池放入当前执行任务的scheduled
+        cuHbStatusPoll.put(dbId,scheduled);
     }
 
     @Override

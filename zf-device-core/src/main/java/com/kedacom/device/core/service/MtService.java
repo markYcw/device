@@ -31,10 +31,16 @@ public interface MtService {
     TerminalVo queryMt(Integer dbId);
 
     /**
-     * 查询所有mtid不为空的终端id
+     * 查询所有 mtId 不为空的终端 id
      * @return
      */
     List<Integer> queryMtIds();
+
+    /**
+     * 修改 mtId
+     * @param dbId
+     */
+    void setMtId(Integer dbId);
 
     /**
      * 终端IP判重

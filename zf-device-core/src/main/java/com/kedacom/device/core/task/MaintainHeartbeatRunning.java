@@ -31,7 +31,6 @@ public class MaintainHeartbeatRunning implements Runnable {
 
     @Override
     public void run() {
-
         // 只加载一次查询
         if (!FLAG) {
             // 查询mtId不为空的终端id
@@ -52,9 +51,9 @@ public class MaintainHeartbeatRunning implements Runnable {
             } catch (RuntimeException e) {
                 log.error("终端id : {} 发送心跳异常, 异常信息 : {}", integer, e.getMessage());
                 synHashSet.remove(integer);
+                mtService.setMtId(integer);
             }
         }
-
     }
 
 }

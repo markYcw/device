@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
@@ -135,6 +136,17 @@ public class MtServiceImpl implements MtService {
         }
 
         return mtEntities.stream().map(MtEntity::getId).collect(Collectors.toList());
+    }
+
+    @Override
+    public void setMtId(Integer dbId) {
+
+        LambdaUpdateWrapper<MtEntity> updateWrapper = new LambdaUpdateWrapper<>();
+
+        updateWrapper.eq(MtEntity::getId, dbId).set(MtEntity::getMtid, null);
+
+        mtMapper.update(null, updateWrapper);
+
     }
 
     @Override
@@ -368,14 +380,14 @@ public class MtServiceImpl implements MtService {
         Integer state = "true".equals(open) ? 1 : 0;
         SetDumbOrMuteVo dumbOrMuteVo = new SetDumbOrMuteVo();
         dumbOrMuteVo.setState(state);
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
 
-        return mute ? setMute(paramMap, dumbOrMuteVo) : setDumb(paramMap, dumbOrMuteVo);
+        return mute ? setMute(paramMap, mtRequestUrl, dumbOrMuteVo) : setDumb(paramMap, mtRequestUrl, dumbOrMuteVo);
     }
 
-    public boolean setMute(Map<String, Long> paramMap, SetDumbOrMuteVo dumbOrMuteVo) {
+    public boolean setMute(Map<String, Long> paramMap, String mtRequestUrl, SetDumbOrMuteVo dumbOrMuteVo) {
 
         // 设置静音
-        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         String response = remoteRestTemplate.getRestTemplate()
                 .postForObject(mtRequestUrl + "/silence/{ssid}/{ssno}", JSON.toJSONString(dumbOrMuteVo), String.class, paramMap);
         log.info("设置静音响应参数 : {}", response);
@@ -387,10 +399,9 @@ public class MtServiceImpl implements MtService {
         return true;
     }
 
-    public boolean setDumb(Map<String, Long> paramMap, SetDumbOrMuteVo dumbOrMuteVo) {
+    public boolean setDumb(Map<String, Long> paramMap, String mtRequestUrl, SetDumbOrMuteVo dumbOrMuteVo) {
 
         // 设置哑音
-        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         String response = remoteRestTemplate.getRestTemplate()
                 .postForObject(mtRequestUrl + "/mute/{ssid}/{ssno}", JSON.toJSONString(dumbOrMuteVo), String.class, paramMap);
         log.info("设置哑音响应参数 : {}", response);
@@ -407,8 +418,9 @@ public class MtServiceImpl implements MtService {
 
         MtEntity entity = mtMapper.selectById(dbId);
         check(entity);
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
-        String state = "true".equals(mute) ? getMute(paramMap) : getDumb(paramMap);
+        String state = "true".equals(mute) ? getMute(paramMap, mtRequestUrl) : getDumb(paramMap, mtRequestUrl);
         GetDumbMuteVo getDumbMuteVo = new GetDumbMuteVo();
         getDumbMuteVo.setMute(mute);
         getDumbMuteVo.setOpen(state);
@@ -416,10 +428,9 @@ public class MtServiceImpl implements MtService {
         return getDumbMuteVo;
     }
 
-    public String getMute(Map<String, Long> paramMap) {
+    public String getMute(Map<String, Long> paramMap, String mtRequestUrl) {
 
         // 获取静音
-        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
                 .exchange(mtRequestUrl + "/silence/{ssid}/{ssno}", HttpMethod.GET, null, String.class, paramMap);
         log.info("获取静音响应参数 exchange : {}", exchange);
@@ -432,10 +443,9 @@ public class MtServiceImpl implements MtService {
         return String.valueOf(object.get("state"));
     }
 
-    public String getDumb(Map<String, Long> paramMap) {
+    public String getDumb(Map<String, Long> paramMap, String mtRequestUrl) {
 
         // 获取哑音
-        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
                 .exchange(mtRequestUrl + "/mute/{ssid}/{ssno}", HttpMethod.GET, null, String.class, paramMap);
         log.info("获取哑音响应参数 exchange : {}", exchange);

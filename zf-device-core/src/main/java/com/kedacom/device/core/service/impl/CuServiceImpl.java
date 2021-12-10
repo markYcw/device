@@ -19,6 +19,7 @@ import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.CuConvert;
 import com.kedacom.device.core.exception.CuException;
 import com.kedacom.device.core.mapper.CuMapper;
+import com.kedacom.device.core.notify.cu.loadGroup.CuClient;
 import com.kedacom.device.core.notify.cu.loadGroup.CuDeviceLoadThread;
 import com.kedacom.device.core.notify.cu.loadGroup.CuSession;
 import com.kedacom.device.core.notify.cu.loadGroup.CuSessionManager;
@@ -485,9 +486,12 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 return BaseResult.failed("发送心跳失败");
             }
         } catch (RestClientException e) {
-          log.error("===============发送心跳时发生异常，即将进行自动重连",e);
+          log.error("===============发送心跳时发生异常，即将进行自动重连，数据库ID为：{}",dbId);
+            //去除ssid 和cuSession
+            removeSession(dbId);
             //中间件挂了以后先去除心跳任务
             removeHbTask(dbId);
+            //进行重连
             CompletableFuture.runAsync(()->this.reTryLogin(dbId));
             return BaseResult.failed("发送心跳失败");
         }
@@ -508,6 +512,19 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         if(cuStatusPoll.get(dbId)!=null){
             cuStatusPoll.remove(dbId);
         }
+    }
+
+    /**
+     * 去除会话和ssId
+     * @param dbId
+     */
+    public void removeSession(Integer dbId){
+        log.info("==============去除CUSession数据库ID为：{}",dbId);
+        CuEntity entity = cuMapper.selectById(dbId);
+        CuClient cuClient = cuDeviceLoadThread.getCuClient();
+        cuClient.getSessionManager().removeSession(entity.getSsid());
+        entity.setSsid(null);
+        cuMapper.updateById(entity);
     }
 
     /**

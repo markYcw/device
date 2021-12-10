@@ -27,7 +27,7 @@ public class SvrEntity {
 	@TableId(value = "id" , type = IdType.AUTO)
 	private Integer id;
 
-
+	@TableField(updateStrategy = FieldStrategy.IGNORED) //更新时Set值为null生效
 	@ApiModelProperty(value = "ssid登录SVR后返回的sessionID保存SVR时可不传")
 	private Integer ssid;
 

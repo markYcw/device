@@ -31,6 +31,7 @@ public class UmsMcuEntity implements Serializable {
     /**
      * 登录成功后会话id
      */
+    @TableField(updateStrategy = FieldStrategy.IGNORED) //更新时Set值为null生效
     @ApiModelProperty(value = "登录成功后会话id")
     private String ssid;
     /**

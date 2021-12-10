@@ -24,7 +24,7 @@ public class MtSendMessage {
 
         webSocketMessage.setServerName("device");
 
-        webSocketMessage.setOperationType(7);
+        webSocketMessage.setOperationType(8);
         // 向前端发送终端掉线信息
         websocketFeign.sendInfo(JSON.toJSONString(webSocketMessage));
 

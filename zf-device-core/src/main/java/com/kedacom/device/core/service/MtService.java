@@ -40,7 +40,7 @@ public interface MtService {
      * 修改 mtId
      * @param dbId
      */
-    void setMtId(Integer dbId);
+    void setNullOfMtId(Integer dbId);
 
     /**
      * 终端IP判重

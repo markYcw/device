@@ -139,7 +139,7 @@ public class MtServiceImpl implements MtService {
     }
 
     @Override
-    public void setMtId(Integer dbId) {
+    public void setNullOfMtId(Integer dbId) {
 
         LambdaUpdateWrapper<MtEntity> updateWrapper = new LambdaUpdateWrapper<>();
 

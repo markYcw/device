@@ -314,7 +314,7 @@ public class CuDeviceLoadThread {
                 this.onDeviceOut(ssid, puid);
                 break;
 
-            case GetDeviceStatusNotify.TYPE_DEVICE_UPDATE:
+            case GetDeviceStatusNotify.TYPE_UPDATE_CHANNEL_NAME:
                 //设备更新
                 this.onDeviceUpdate(ssid, notify);
                 break;

@@ -63,8 +63,11 @@ public class GetDeviceStatusNotify {
 	@ApiModelProperty("告警信息 stateType为1时生效")
 	private Alarm alarm;
 
-	@ApiModelProperty("设备信息stateType为14和16时生效")
+	@ApiModelProperty("设备入网信息stateType为14时生效")
 	private PDevice device;
+
+	@ApiModelProperty("视频源名称修改stateType为19时生效")
+	private SrcName srcChnName;
 
 
 

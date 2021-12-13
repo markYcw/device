@@ -160,9 +160,6 @@ public class CuDeviceLoadThread {
         subscribe.setTvwall(0);
         subscribe.setRec(1);
         subscribe.setTransdata(0);
-        subscribe.setDeviceAdd(1);
-        subscribe.setDeviceDel(1);
-        subscribe.setDeviceMod(1);
         devicesDto.setSubscribe(subscribe);
         devicesDto.setKmId(cuEntity.getId());
         devicesDto.setGroupId(groupId);
@@ -319,7 +316,7 @@ public class CuDeviceLoadThread {
 
             case GetDeviceStatusNotify.TYPE_DEVICE_UPDATE:
                 //设备更新
-                this.onDeviceUpdate(ssid, notify.getDevice());
+                this.onDeviceUpdate(ssid, notify);
                 break;
 
             default:
@@ -473,23 +470,34 @@ public class CuDeviceLoadThread {
     }
 
     //设备更新
-    private void onDeviceUpdate(int ssid, PDevice device) {
-        log.info("===> onDeviceUpdate ssid=" + ssid + " device=" + (device != null ? device.getName() : null));
-        if (device == null)
+    private void onDeviceUpdate(int ssid, GetDeviceStatusNotify notify) {
+        log.info("===> onDeviceUpdate ssid={},Notify:{}",ssid,notify);
+        SrcName srcName = notify.getSrcChnName();
+        if (srcName == null)
             return;
 
         CuSession cuSession = client.getSessionManager().getSessionBySSID(ssid);
         CuDeviceCache deviceCache = cuSession.getDeviceCache();
-        PDevice oldDevice = deviceCache.getDevice(device.getPuId());
+        PDevice oldDevice = deviceCache.getDevice(notify.getPuId());
 
         // 先删除老的设备信息
         if (oldDevice != null) {
             deviceCache.removeDevice(oldDevice.getPuId());
 
         }
-
+        //设置新名称
+        oldDevice.setName(srcName.getDevName());
+        //设置视频源名称
+        List<SrcChn> srcChns = oldDevice.getSrcChns();
+        Iterator<SrcChn> iterator = srcChns.iterator();
+        while (iterator.hasNext()){
+            SrcChn next = iterator.next();
+            if(next.getSn().equals(srcName.getChnSn())){
+                next.setName(srcName.getChnName());
+            }
+        }
         // 添加新入会设备信息
-        deviceCache.addDevice(device);
+        deviceCache.addDevice(oldDevice);
 
     }
 

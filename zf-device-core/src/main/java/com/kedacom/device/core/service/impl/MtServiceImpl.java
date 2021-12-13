@@ -65,6 +65,9 @@ public class MtServiceImpl implements MtService {
 
     private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/mt/mtNotify";
 
+    /**
+     * 在线终端缓存（id）
+     */
     public static Set<Integer> synHashSet = Collections.synchronizedSet(new HashSet<Integer>());
 
     @Override
@@ -614,11 +617,14 @@ public class MtServiceImpl implements MtService {
     }
 
     private void check(MtEntity entity) {
+
         if (ObjectUtils.isEmpty(entity)) {
             throw new MtException(DeviceErrorEnum.DEVICE_NOT_FOUND);
         }
-        if (entity.getMtid()==null) {
-            throw new MtException(DeviceErrorEnum.DEVICE_NOT_LOGIN);
+        // 该终端状态为离线，将重新登录终端
+        if (!synHashSet.contains(entity.getId())) {
+            log.info("终端 - {} 状态为离线，现重新登录", entity.getName());
+            loginById(entity.getId());
         }
     }
 

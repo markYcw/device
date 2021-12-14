@@ -36,6 +36,7 @@ import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -492,7 +493,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             //中间件挂了以后先去除心跳任务
             removeHbTask(dbId);
             //进行重连
-            CompletableFuture.runAsync(()->this.reTryLogin(dbId));
+            CompletableFuture.runAsync(()->ContextUtils.publishReLogin(dbId));
             return BaseResult.failed("发送心跳失败");
         }
 
@@ -531,8 +532,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      * 根据数据库ID自动重连每一分钟重连一次
      * @param dbId
      */
+    @EventListener
     public void reTryLogin(Integer dbId){
-        log.info("==================CU发送心跳失败，即将进行自动重连，数据库ID为：{}",dbId);
+        log.info("==================观察者收到CU发送心跳失败，即将进行自动重连，数据库ID为：{}",dbId);
         CuRequestDto dto = new CuRequestDto();
         dto.setKmId(dbId);
         try {

@@ -64,4 +64,14 @@ public class ContextUtils implements ApplicationContextAware {
         return getApplicationContext().getBean(name, clazz);
     }
 
+    /**
+     * 发布监控平台重新登录通知
+     * @param dbId 通知
+     */
+    public static void publishReLogin(Integer dbId) {
+
+        applicationContext.publishEvent(dbId);
+
+    }
+
 }

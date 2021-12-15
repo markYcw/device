@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.rholder.retry.*;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.common.constants.DevTypeConstant;
@@ -15,6 +16,7 @@ import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.core.basicParam.CuBasicParam;
+import com.kedacom.device.core.basicParam.CuReLoginParam;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.CuConvert;
 import com.kedacom.device.core.exception.CuException;
@@ -49,10 +51,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -100,6 +99,17 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     private final static String REQUEST_HEAD = "http://";
 
     private final static String NOTIFY_URL = "/api/api-device/ums/cu/cuNotify";
+
+    static Retryer<BaseResult> retryer;
+
+    static {
+        retryer = RetryerBuilder.<BaseResult>newBuilder()
+                .retryIfResult(baseResult -> baseResult.getErrCode() != 0) // 返回false时重试
+                .retryIfExceptionOfType(Exception.class) // 抛出Exception时重试
+                .withWaitStrategy(WaitStrategies.fixedWait(2000, TimeUnit.MILLISECONDS)) // 2s后重试
+                .withStopStrategy(StopStrategies.stopAfterAttempt(15)) // 重试15次后停止
+                .build();
+    }
 
     //cu状态池 若成功登录则把数据库ID和登录状态放入此池中1为已登录，若登出则从此状态池中移除
     public static ConcurrentHashMap<Integer,Integer> cuStatusPoll = new ConcurrentHashMap<>();
@@ -493,7 +503,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             //中间件挂了以后先去除心跳任务
             removeHbTask(dbId);
             //进行重连
-            CompletableFuture.runAsync(()->ContextUtils.publishReLogin(dbId));
+            CuReLoginParam paramLogin = new CuReLoginParam();
+            paramLogin.setDbId(dbId);
+            CompletableFuture.runAsync(()->ContextUtils.publishReLogin(paramLogin));
             return BaseResult.failed("发送心跳失败");
         }
 
@@ -566,12 +578,47 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 } catch (Exception e) {
                     log.error("=============中间件重启/或者cu掉线后登出失败");
                 }
-                BaseResult<DevEntityVo> baseResult = service.loginById(dto);
-                if(baseResult.getErrCode()==0){
-                    scheduled.shutdownNow();
+                BaseResult<DevEntityVo> baseResult = null;
+                try {
+                    baseResult = service.loginById(dto);
+                    if(baseResult.getErrCode()==0){
+                        scheduled.shutdownNow();
+                    }
+                } catch (Exception e) {
+                    log.error("=======定时任务重连监控平台失败");
                 }
+
             }
         },60,60, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void initCu() {
+        try {
+            retryer.call(()->{
+                LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
+                wrapper.isNotNull(cuEntity -> cuEntity.getId());
+                List<CuEntity> list = cuMapper.selectList(wrapper);
+                Iterator<CuEntity> iterator = list.iterator();
+                while (iterator.hasNext()){
+                    CuEntity next = iterator.next();
+                    CuRequestDto dto = new CuRequestDto();
+                    dto.setKmId(next.getId());
+                    try {
+                        BaseResult<DevEntityVo> devEntityVoBaseResult = this.loginById(dto);
+                        return BaseResult.succeed("服务启动登录CU成功");
+                    } catch (Exception e) {
+                        log.error("服务启动登录CU失败{}",e);
+                        return BaseResult.failed("服务启动登录CU失败");
+                    }
+                }
+                return BaseResult.succeed("服务启动登录CU成功");
+            });
+        } catch (ExecutionException e) {
+            log.error("服务启动登录CU失败:{}",e);
+        } catch (RetryException e) {
+            log.error("服务启动登录CU失败:{}",e);
+        }
     }
 
     /**
@@ -580,7 +627,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      */
     public void hbTask(Integer dbId){
         ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2);
-        // 创建定时任务，每6分钟发送一次心跳
+        // 创建定时任务，每1分钟发送一次心跳
         scheduled.scheduleAtFixedRate(()->{
             hb(dbId);
         },1,60,  TimeUnit.SECONDS);//延迟1秒每1分钟发一次心跳

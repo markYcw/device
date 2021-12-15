@@ -1,5 +1,6 @@
 package com.kedacom.device.core.utils;
 
+import com.kedacom.device.core.basicParam.CuReLoginParam;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -66,11 +67,11 @@ public class ContextUtils implements ApplicationContextAware {
 
     /**
      * 发布监控平台重新登录通知
-     * @param dbId 通知
+     * @param param 通知
      */
-    public static void publishReLogin(Integer dbId) {
+    public static void publishReLogin(CuReLoginParam param) {
 
-        applicationContext.publishEvent(dbId);
+        applicationContext.publishEvent(param);
 
     }
 

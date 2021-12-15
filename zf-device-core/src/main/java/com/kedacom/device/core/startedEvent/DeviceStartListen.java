@@ -3,6 +3,7 @@ package com.kedacom.device.core.startedEvent;
 import com.kedacom.core.ConnectorListener;
 import com.kedacom.core.ConnectorListenerManager;
 import com.kedacom.device.core.notify.stragegy.NotifyFactory;
+import com.kedacom.device.core.service.CuService;
 import com.kedacom.device.core.utils.CuUrlFactory;
 import com.kedacom.device.core.utils.McuUrlFactory;
 import com.kedacom.device.core.utils.SvrUrlFactory;
@@ -13,6 +14,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @Auther: hxj
@@ -33,6 +35,9 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
     @Autowired
     private CuUrlFactory cuUrlFactory;
 
+    @Autowired
+    private CuService cuService;
+
     @Value("${zf.kmProxy.server_addr}")
     private String kmProxy;
 
@@ -52,6 +57,8 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
         svrUrlFactory.setMap();
         //cu访问地址初始化
         cuUrlFactory.setMap();
+        //服务重启时重启监控平台
+        CompletableFuture.runAsync(()->cuService.initCu());
 
         if (kmProxy.contains(DEVICE_PORT)) {
             ConnectorListenerManager.getInstance().register(connectorListener);

@@ -238,6 +238,7 @@ public class DeviceManagerServiceImpl implements DeviceManagerService {
         if (CollectionUtil.isEmpty(subDeviceInfoEntities)) {
             log.error("根据国标id查询设备信息为空");
             return null;
+
         }
         log.info("根据国标id查询设备信息 : [{}]", subDeviceInfoEntities);
 

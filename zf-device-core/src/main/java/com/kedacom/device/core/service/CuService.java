@@ -153,4 +153,10 @@ public interface CuService extends IService<CuEntity> {
     BaseResult<List<CuGroupVo>> cuGroupById(CuGroupDto requestDto);
 
     BaseResult<List<CuChannelVo>> getCuChannelList(CuChnListDto requestDto);
+
+    BaseResult<GbIdVo> gbId(GbIdDto requestDto);
+
+    BaseResult<PuIdTwoVo> puIdTwo(PuIdTwoDto requestDto);
+
+    void reTryLoginNow(Integer dbId);
 }

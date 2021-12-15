@@ -1,10 +1,7 @@
 package com.kedacom.device.core.notify.cu.loadGroup.pojo;
 
-import com.kedacom.deviceListener.notify.DeviceNotifyRequestDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * Gps信息
@@ -26,9 +23,6 @@ public class Alarm {
 
 	@ApiModelProperty("告警通道")
 	private Integer chn;
-
-	@ApiModelProperty("视频源信息")
-	private List<SrcChns> srcChns;
 
 	@ApiModelProperty("设备的puId")
     private String puId;

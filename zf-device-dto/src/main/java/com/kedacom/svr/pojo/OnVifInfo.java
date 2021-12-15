@@ -3,6 +3,8 @@ package com.kedacom.svr.pojo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author ycw
  * @version v1.0
@@ -12,16 +14,20 @@ import lombok.Data;
 @Data
 public class OnVifInfo {
 
-    @ApiModelProperty("onvif设备uuid")
+    @NotBlank(message = "onvif设备uuid不能为空")
+    @ApiModelProperty(value = "onvif设备uuid",required = true)
     private String uuid;
 
-    @ApiModelProperty("onvif设备xaddr")
+    @NotBlank(message = "onvif设备xaddr不能为空")
+    @ApiModelProperty(value = "onvif设备xaddr",required = true)
     private String xaddr;
 
-    @ApiModelProperty("onvif设备登录用户名")
+    @NotBlank(message = "onvif设备登录用户名不能为空")
+    @ApiModelProperty(value = "onvif设备登录用户名",required = true)
     private String userName;
 
-    @ApiModelProperty("onvif设备登录密码")
+    @NotBlank(message = "onvif设备登录密码不能为空")
+    @ApiModelProperty(value = "onvif设备登录密码",required = true)
     private String passWord;
 
 

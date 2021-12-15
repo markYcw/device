@@ -13,7 +13,7 @@ import java.util.List;
  * @description
  */
 @Data
-public class BurnTaskVo {
+public class GetBurnTaskResponseVo {
 
     @ApiModelProperty("刻录任务列表")
     private List<BurnTask> burnTaskList;

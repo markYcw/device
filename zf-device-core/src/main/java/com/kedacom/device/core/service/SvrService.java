@@ -86,7 +86,7 @@ public interface SvrService extends IService<SvrEntity> {
      * @param dto
      * @return
      */
-    BaseResult<CpResetVo>  enCpReset(EnCpResetDto dto);
+    BaseResult<CpResetVo>  enCpReset(GetIpcItemRequestVo dto);
 
     /**
      * 修改编码器预置位
@@ -128,7 +128,7 @@ public interface SvrService extends IService<SvrEntity> {
      * @param dto
      * @return
      */
-    BaseResult<String> ptz(PtzDto dto);
+    BaseResult<String> ptz(PtzCtrlRequestVo dto);
 
     /**
      * 启用/停止远程点
@@ -157,7 +157,7 @@ public interface SvrService extends IService<SvrEntity> {
      * @param dto
      * @return
      */
-    BaseResult<String> dual(DualDto dto);
+    BaseResult<String> dual(StartDualRequestVo dto);
 
     /**
      * 刻录控制
@@ -171,7 +171,7 @@ public interface SvrService extends IService<SvrEntity> {
      * @param dto
      * @return
      */
-    BaseResult<String> reBurn(ReBurnDto dto);
+    BaseResult<String> reBurn(SupplementBurnVo dto);
 
     /**
      * 追加刻录任务
@@ -185,28 +185,28 @@ public interface SvrService extends IService<SvrEntity> {
      * @param dto
      * @return
      */
-    BaseResult<String> createBurn(CreateBurnDto dto);
+    BaseResult<String> createBurn(CreateBurnRequestVo dto);
 
     /**
      * 获取刻录任务
      * @param dto
      * @return
      */
-    BaseResult<BurnTaskVo> burnTaskList(BurnTaskListDto dto);
+    BaseResult<GetBurnTaskResponseVo> burnTaskList(GetBurnTaskRequestVo dto);
 
     /**
      * DVD仓门控制
      * @param dto
      * @return
      */
-    BaseResult<String> dvdDoor(DvdDoorDto dto);
+    BaseResult<String> dvdDoor(DvdDoorCtrlVo dto);
 
     /**
      * 查询录像
      * @param dto
      * @return
      */
-    BaseResult<RecListVo> recList(RecListDto dto);
+    BaseResult<RecListVo> recList(QueryRecVo dto);
 
     /**
      * 获取画面合成
@@ -220,7 +220,7 @@ public interface SvrService extends IService<SvrEntity> {
      * @param dto
      * @return
      */
-    BaseResult<String> merge(MergeInfoDto dto);
+    BaseResult<String> merge(SetSvrComposePicVo dto);
 
     /**
      * 获取画面叠加
@@ -234,14 +234,14 @@ public interface SvrService extends IService<SvrEntity> {
      * @param dto
      * @return
      */
-    BaseResult<String> osd(OsdDto dto);
+    BaseResult<String> osd(OsdSetVo dto);
 
     /**
      * 语音激励控制
      * @param dto
      * @return
      */
-    BaseResult<String> audioAct(AudioActDto dto);
+    BaseResult<String> audioAct(SetAudioActNtyRequestVo dto);
 
     /**
      * 发送心跳

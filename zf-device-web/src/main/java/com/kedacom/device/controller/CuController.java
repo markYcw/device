@@ -3,6 +3,7 @@ package com.kedacom.device.controller;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.cu.dto.*;
+import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.CuService;
@@ -42,6 +43,14 @@ public class CuController {
         log.info("cu分页接口入参:{}", queryDTO);
 
         return cuService.pageQuery(queryDTO);
+    }
+
+    @PostMapping("/all")
+    @ApiOperation(value = "查询所有CU")
+    public BaseResult<List<CuEntity>> all() {
+
+        List<CuEntity> list = cuService.list();
+        return BaseResult.succeed("查询所有设备成功",list);
     }
 
     @PostMapping("/info")
@@ -107,7 +116,7 @@ public class CuController {
 
     @PostMapping("/hb")
     @ApiOperation(value = "发送心跳 登录CU以后必须每9分钟调用一次这个接口，否则有可能导致C++与CU的token失效，然后你再去尝试调用接口就会失败 接口调用成功会返回0")
-    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID",required = true)})
     public BaseResult<String> hb(@RequestParam Integer kmId) {
 
         return cuService.hb(kmId);
@@ -143,7 +152,7 @@ public class CuController {
 
     @ApiOperation("获取平台时间")
     @PostMapping("/getTime")
-    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID",required = true)})
     public BaseResult<Long> getTime(@RequestParam Integer kmId){
 
         return cuService.time(kmId);
@@ -323,6 +332,24 @@ public class CuController {
         ValidUtils.paramValid(br);
 
         return cuService.cuDevice(requestDto);
+    }
+
+    @ApiOperation("获取国标id")
+    @PostMapping("/gbId")
+    public BaseResult<GbIdVo> gbId(@Valid @RequestBody GbIdDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.gbId(requestDto);
+    }
+
+    @ApiOperation("获取平台2.0puId")
+    @PostMapping("/puIdTwo")
+    public BaseResult<PuIdTwoVo> puIdTwo(@Valid @RequestBody PuIdTwoDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.puIdTwo(requestDto);
     }
 
 }

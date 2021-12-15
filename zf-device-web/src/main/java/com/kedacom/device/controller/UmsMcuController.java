@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -42,6 +43,16 @@ public class UmsMcuController {
         BaseResult<BasePage<UmsMcuEntity>> basepPage = umsMcuService.pageQuery(queryDTO);
 
         return basepPage;
+    }
+
+
+    @PostMapping("/all")
+    @ApiOperation(value = "查询所有MCU")
+    public BaseResult<List<UmsMcuEntity>> all() {
+
+        List<UmsMcuEntity> list = umsMcuService.list();
+
+        return BaseResult.succeed(list);
     }
 
     /**

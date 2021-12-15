@@ -3,6 +3,8 @@ package com.kedacom.svr.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author ycw
  * @version v1.0
@@ -10,9 +12,10 @@ import lombok.Data;
  * @description 语音激励控制
  */
 @Data
-public class AudioActDto extends SvrRequestDto{
+public class SetAudioActNtyRequestVo extends SvrRequestDto{
 
-    @ApiModelProperty("0：开启 1：停止")
+    @NotNull(message = "type不能为空")
+    @ApiModelProperty(value = "0：开启 1：停止",required = true)
     private Integer type;
 
 }

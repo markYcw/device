@@ -21,6 +21,7 @@ public class CuNotifyFactory {
         factory.register(DeviceType.CU2.getValue(),500,new GroupNotify());
         factory.register(DeviceType.CU2.getValue(),501,new DevicesNotify());
         factory.register(DeviceType.CU2.getValue(),502,new DevicesStatusSubscribeNotify());
+        factory.register(DeviceType.CU2.getValue(),503,new QueryVideoNotify());
     }
 
 }

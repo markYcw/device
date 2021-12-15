@@ -170,6 +170,8 @@ public enum DeviceErrorEnum {
     GET_CU_CHANNEL_INFO_ERROR(6022,"获取设备具体通道信息失败"),
     GET_CU_GROUP_ERROR(6023,"获取监控平台（分组/设备）信息失败，设备未加载完成请稍后重试"),
     GET_CU_CHANNEL_LIST_ERROR(6024,"获取设备通道集合信息失败"),
+    CU_GB_ID_ERROR(6025,"获取国标id失败"),
+    CU_Pu_ID_TWO_ERROR(6026,"获取平台2.0puId失败"),
 
 
     SCHEDULE_ADD_DEVICE_FAILED(9001, "添加调度组成员设备失败"),

@@ -20,8 +20,8 @@ import java.io.Serializable;
 @Data
 public class SelectTreeDto extends CuRequestDto {
 
-    @ApiModelProperty("设备树id")
-    @NotBlank
+    @ApiModelProperty(value = "设备树id",required = true)
+    @NotBlank(message = "设备树id不能为空")
     private String id;
 
 }

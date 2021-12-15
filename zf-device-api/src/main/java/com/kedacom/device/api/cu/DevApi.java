@@ -3,6 +3,7 @@ package com.kedacom.device.api.cu;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.cu.dto.*;
+import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.api.cu.fallback.CuApiFallbackFactory;
 import io.swagger.annotations.ApiImplicitParam;
@@ -29,6 +30,10 @@ public interface DevApi {
     @PostMapping("/list")
     @ApiOperation(value = "cu分页查询")
     BaseResult<BasePage<DevEntityVo>> list(@RequestBody DevEntityQuery queryDTO);
+
+    @PostMapping("/all")
+    @ApiOperation(value = "查询所有CU")
+    BaseResult<List<CuEntity>> all();
 
     @PostMapping("/info")
     @ApiOperation(value = "根据数据库id获取cu信息")
@@ -142,11 +147,19 @@ public interface DevApi {
 
     @ApiOperation("获取监控平台子分组信息")
     @PostMapping("/cuGroupById")
-    BaseResult<List<CuGroupVo>> cuGroupById(@Valid @RequestBody CuGroupDto requestDto, BindingResult br);
+    BaseResult<List<CuGroupVo>> cuGroupById(@RequestBody CuGroupDto requestDto);
 
     @ApiOperation("获取设备通道集合")
     @PostMapping("getCuChannelList")
-    BaseResult<List<CuChannelVo>> getCuChannelList(@RequestBody CuChnListDto requestDto, BindingResult br);
+    BaseResult<List<CuChannelVo>> getCuChannelList(@RequestBody CuChnListDto requestDto);
+
+    @ApiOperation("获取国标id")
+    @PostMapping("/gbId")
+    BaseResult<GbIdVo> gbId(@RequestBody GbIdDto requestDto);
+
+    @ApiOperation("获取平台2.0puId")
+    @PostMapping("/puIdTwo")
+    BaseResult<PuIdTwoVo> puIdTwo(@RequestBody PuIdTwoDto requestDto);
 
 
 }

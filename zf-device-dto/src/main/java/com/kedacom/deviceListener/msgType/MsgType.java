@@ -11,7 +11,7 @@ public enum MsgType {
      */
     PUT_PICTURE(1,"签名图片通知"),
     MT_OFF_LINE(2,"终端掉线通知"),
-    CU_OFF_LINE(3,"监控平台掉线通知"),
+    CU_OFF_LINE(3,"监控平台掉线通知,即将进行自动重连"),
     MCU_OFF_LINE(4,"视讯平台掉线通知"),
     SVR_OFF_LINE(5,"SVR掉线通知"),
     UPU_OFF_LINE(6,"UPU掉线通知"),
@@ -29,6 +29,8 @@ public enum MsgType {
     CU_CHN_STATE_NTY(18,"监控平台通道状态订阅通知"),
     CU_CHN_REC_STATE_NTY(19,"监控平台录像状态订阅通知"),
     CU_DEVICE_REC_STATE_NTY(20,"监控平台设备状态订阅通知"),
+    CU_QUERY_VIDEO_NTY(21,"监控平台查询录像通知"),
+    SVR_DEVICE_STATE_NTY(22,"SVR编解码设备上报通知"),
 
     ;
 

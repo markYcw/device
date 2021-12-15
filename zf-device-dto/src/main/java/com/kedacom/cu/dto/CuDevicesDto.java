@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class CuDevicesDto extends CuRequestDto {
 
-    @ApiModelProperty("设备组id")
+    @ApiModelProperty(value = "设备组id",required = true)
     @NotBlank(message = "设备组id不能为空")
     private String groupId;
 

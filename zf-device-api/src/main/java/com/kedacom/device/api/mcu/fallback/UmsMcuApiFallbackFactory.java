@@ -7,6 +7,8 @@ import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import com.kedacom.mp.mcu.pojo.McuPageQueryDTO;
 import feign.hystrix.FallbackFactory;
 
+import java.util.List;
+
 /**
  * @author hxj
  * @date: 2021/8/23 10:05
@@ -18,6 +20,11 @@ public class UmsMcuApiFallbackFactory implements FallbackFactory<UmsMcuApi> {
         return new UmsMcuApi() {
             @Override
             public BaseResult<BasePage<UmsMcuEntity>> pageQuery(McuPageQueryDTO queryDTO) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<List<UmsMcuEntity>> all() {
                 return BaseResult.failed(throwable.getMessage());
             }
 

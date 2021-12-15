@@ -306,6 +306,7 @@ public class CuDeviceLoadThread {
 
             case GetDeviceStatusNotify.TYPE_DEVICE_IN:
                 //设备入网
+                this.onDeviceIN(ssid, notify.getDevice());
                 break;
 
             case GetDeviceStatusNotify.TYPE_DEVICE_OUT:
@@ -313,9 +314,9 @@ public class CuDeviceLoadThread {
                 this.onDeviceOut(ssid, puid);
                 break;
 
-            case GetDeviceStatusNotify.TYPE_DEVICE_UPDATE:
+            case GetDeviceStatusNotify.TYPE_UPDATE_CHANNEL_NAME:
                 //设备更新
-                this.onDeviceUpdate(ssid, puid);
+                this.onDeviceUpdate(ssid, notify);
                 break;
 
             default:
@@ -395,11 +396,6 @@ public class CuDeviceLoadThread {
         Alarm alarm = notify.getAlarm();
         alarm.setPuId(notify.getPuId());
         CuAlarmDTO cuAlarmDTO = convert.convertToCuAlarmDTO(alarm);
-        List<SrcChns> srcChnInside = alarm.getSrcChns();
-       if(CollectionUtil.isNotEmpty(srcChnInside)){
-           List<SrcChsVo> collect = srcChnInside.stream().map(a -> convert.convertToSrcChsVo(a)).collect(Collectors.toList());
-           cuAlarmDTO.setSrcChs(collect);
-       }
         cuAlarmDTO.setMsgType(MsgType.CU_ALARM_NTY.getType());
         //发送webSocket给前端
         SystemWebSocketMessage message = new SystemWebSocketMessage();
@@ -473,6 +469,38 @@ public class CuDeviceLoadThread {
         deviceCache.addDevice(device);
     }
 
+    //设备更新
+    private void onDeviceUpdate(int ssid, GetDeviceStatusNotify notify) {
+        log.info("===> onDeviceUpdate ssid={},Notify:{}",ssid,notify);
+        SrcName srcName = notify.getSrcChnName();
+        if (srcName == null)
+            return;
+
+        CuSession cuSession = client.getSessionManager().getSessionBySSID(ssid);
+        CuDeviceCache deviceCache = cuSession.getDeviceCache();
+        PDevice oldDevice = deviceCache.getDevice(notify.getPuId());
+
+        // 先删除老的设备信息
+        if (oldDevice != null) {
+            deviceCache.removeDevice(oldDevice.getPuId());
+
+        }
+        //设置新名称
+        oldDevice.setName(srcName.getDevName());
+        //设置视频源名称
+        List<SrcChn> srcChns = oldDevice.getSrcChns();
+        Iterator<SrcChn> iterator = srcChns.iterator();
+        while (iterator.hasNext()){
+            SrcChn next = iterator.next();
+            if(next.getSn().equals(srcName.getChnSn())){
+                next.setName(srcName.getChnName());
+            }
+        }
+        // 添加新入会设备信息
+        deviceCache.addDevice(oldDevice);
+
+    }
+
     //设备退网
     @SuppressWarnings("deprecation")
     private void onDeviceOut(int ssid, String puid) {
@@ -488,12 +516,6 @@ public class CuDeviceLoadThread {
             deviceCache.removeDevice(puid);
 
         }
-    }
-
-    //设备更新
-    private void onDeviceUpdate(int ssid, String puid) {
-        //TODO 设备更新只能根据设备所在分组加载分组下全部设备，但现在无法确定设备所在分组，所以暂时无法处理。
-
     }
 
     //设备加载完成

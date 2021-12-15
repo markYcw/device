@@ -25,14 +25,14 @@ public class DevEntityVo {
     /**
      * 监控平台名称
      */
-    @ApiModelProperty(value = "设备名称")
+    @ApiModelProperty(value = "设备名称",required = true)
     private String name;
 
     /**
      * 监控平台IP
      */
     @NotBlank(message = "IP不能为空")
-    @ApiModelProperty(value = "监控平台的IP")
+    @ApiModelProperty(value = "监控平台的IP",required = true)
     private String ip;
 
     @ApiModelProperty(value = "NAT穿越IP")
@@ -43,7 +43,7 @@ public class DevEntityVo {
      */
     @Min(value = 0, message = "设备端口号参数不正确")
     @Max(value = 65536, message = "设备端口号参数不正确")
-    @ApiModelProperty(value = "设备端口号 2.0平台端口是80")
+    @ApiModelProperty(value = "设备端口号 2.0平台端口是80",required = true)
     private Integer port;
 
     @ApiModelProperty(value = "NAT穿越PORT")
@@ -52,14 +52,14 @@ public class DevEntityVo {
     /**
      * 监控登录平台账号
      */
-    @ApiModelProperty(value = "登录监控平台账号")
+    @ApiModelProperty(value = "登录监控平台账号",required = true)
     @NotBlank(message = "登录监控平台账号不能为空")
     private String username;
 
     /**
      * 监控登录平台密码
      */
-    @ApiModelProperty(value = "监控登录平台密码")
+    @ApiModelProperty(value = "监控登录平台密码",required = true)
     @NotBlank(message = "密码不能为空")
     private String password;
 

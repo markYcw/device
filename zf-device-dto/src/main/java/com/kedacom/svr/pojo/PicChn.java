@@ -3,6 +3,8 @@ package com.kedacom.svr.pojo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author ycw
  * @version v1.0
@@ -12,10 +14,12 @@ import lombok.Data;
 @Data
 public class PicChn {
 
-    @ApiModelProperty("通道ID")
+    @NotNull(message = "chnId不能为空")
+    @ApiModelProperty(value = "通道ID （64位空通道)",required = true)
     private Integer chnId;
 
-    @ApiModelProperty("是否辅流 0：主流 1：辅流")
+    @NotNull(message = "是否辅流不能为空")
+    @ApiModelProperty(value = "是否辅流 0：主流 1：辅流",required = true)
     private Integer isSec;
 
 }

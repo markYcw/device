@@ -28,7 +28,7 @@ public class CuDeviceVo {
     /**
      * 设备所在的平台域的域编号(2.0有效)
      */
-    @ApiModelProperty("设备所在的平台域的域编号(2.0有效)")
+    @ApiModelProperty("平台域id")
     private String domain;
 
     /**

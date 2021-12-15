@@ -1,6 +1,7 @@
 package com.kedacom.device.core.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -18,8 +19,10 @@ import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.CuConvert;
 import com.kedacom.device.core.exception.CuException;
 import com.kedacom.device.core.mapper.CuMapper;
+import com.kedacom.device.core.notify.cu.loadGroup.CuClient;
 import com.kedacom.device.core.notify.cu.loadGroup.CuDeviceLoadThread;
 import com.kedacom.device.core.notify.cu.loadGroup.CuSession;
+import com.kedacom.device.core.notify.cu.loadGroup.CuSessionManager;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 import com.kedacom.device.core.notify.stragegy.DeviceType;
 import com.kedacom.device.core.notify.stragegy.NotifyHandler;
@@ -33,17 +36,23 @@ import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -80,7 +89,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Autowired
     private CuDeviceLoadThread cuDeviceLoadThread;
 
-    @Autowired
+    @Resource
     private HttpServletRequest HttpServletRequest;
 
     @Autowired
@@ -97,6 +106,12 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     //cu设备状态池 若设备加载完则把数据库ID和状态放入此池中1为已加载完所以设备，若登出则从此状态池中移除
     public static ConcurrentHashMap<Integer,Integer> cuDeviceStatusPoll = new ConcurrentHashMap<>();
+
+    //cu心跳状态池 若登出或者掉线则从此状态池中移除
+    public static ConcurrentHashMap<Integer,ScheduledThreadPoolExecutor> cuHbStatusPoll = new ConcurrentHashMap<>();
+
+    //CU重连任务池 若是登录的时候报密码错误则从此状态池中移除
+    public static ConcurrentHashMap<Integer,ScheduledThreadPoolExecutor> reTryPoll = new ConcurrentHashMap<>();
 
     @Override
     public BaseResult<BasePage<DevEntityVo>> pageQuery(DevEntityQuery queryDTO) {
@@ -157,6 +172,10 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             cuEntity.setType(DevTypeConstant.updateRecordKey);
             cuMapper.insert(cuEntity);
             DevEntityVo vo = convert.convertToDevEntityVo(cuEntity);
+            //保存成功后登录平台
+            CuRequestDto dto = new CuRequestDto();
+            dto.setKmId(cuEntity.getId());
+            loginById(dto);
             return BaseResult.succeed("保存成功",vo);
         }
     }
@@ -258,9 +277,10 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Override
     public BaseResult<DevEntityVo> loginById(CuRequestDto dto) {
         log.info("登录cu入参信息:{}", dto.getKmId());
-        if(cuStatusPoll.get(dto.getKmId())!=null){
-            return BaseResult.succeed("该平台已登录请勿重复登录");
-        }
+        //登录之前先判断改平台是否已经登录，如果已经登录告知业务该设备已登录请勿重复登录
+            if(cuStatusPoll.get(dto.getKmId())!=null){
+                return BaseResult.succeed("该平台已登录请勿重复登录");
+            }
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         CuEntity entity = cuMapper.selectById(dto.getKmId());
         if(entity == null){
@@ -278,8 +298,16 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         log.info("登录cu中间件应答:{}", string);
 
         CuLoginResponse response = JSON.parseObject(string, CuLoginResponse.class);
-        String errorMsg = "cu登录失败:{},{},{}";
-        responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_LOGIN_FAILED, response);
+        //如果是密码错误或者是用户不存在首先去除定时任务不进行无限重连
+        if(response.getCode()!=0){
+            if(response.getCode()==10012||response.getCode()==10011){
+                removeReTryLogin(entity.getId());
+                return BaseResult.failed("登录失败，用户名或密码错误请检查");
+            }else {
+                return BaseResult.failed("登录失败，请稍后重试");
+            }
+        }
+       //如果登录成功再把ssid保存进数据库
         entity.setSsid(response.getSsid());
         entity.setModifyTime(new Date());
         cuMapper.updateById(entity);
@@ -287,12 +315,24 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         devEntityVo.setStatus(DevTypeConstant.updateRecordKey);
 
         //登录成功以后加载分组信息
-        getGroups(dto.getKmId(),response.getSsid());
+        CompletableFuture.runAsync(()-> getGroups(dto.getKmId(),response.getSsid()));
         //往cu状态池放入当前mcu状态 1已登录
         cuStatusPoll.put(dto.getKmId(), DevTypeConstant.updateRecordKey);
-        //记录操作日志
-        logUtil.operateLog(modelName,"根据ID登录监控平台成功",HttpServletRequest.getHeader("Authorization"));
+        //发送心跳
+        hbTask(entity.getId());
         return BaseResult.succeed("登录监控平台成功",devEntityVo);
+    }
+
+    /**
+     * 去除定时任务不进行无限重连
+     * @param dbId 数据库ID
+     */
+    private void removeReTryLogin(Integer dbId){
+        ScheduledThreadPoolExecutor schedule = reTryPoll.get(dbId);
+        if(ObjectUtil.isNotNull(schedule)){
+            schedule.shutdownNow();
+            reTryPoll.remove(dbId);
+        }
     }
 
     /**
@@ -349,6 +389,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         log.info("根据ID登出cu接口入参{}",dto.getKmId());
         CuEntity entity = cuMapper.selectById(dto.getKmId());
         check(entity);
+        //去除底层session
+        CuSessionManager manager = cuDeviceLoadThread.getCuClient().getSessionManager();
+        manager.removeSession(entity.getSsid());
         CuBasicParam param = tool.getParam(entity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, param.getParamMap());
         CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);
@@ -359,13 +402,16 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 .set(CuEntity::getModifyTime,new Date())
                 .eq(CuEntity::getId,dto.getKmId());
         cuMapper.update(null,wrapper);
-
+        //去除心跳定时任务
+        ScheduledThreadPoolExecutor Executor = cuHbStatusPoll.get(entity.getId());
+        if(ObjectUtil.isNotNull(Executor)){
+            Executor.shutdownNow();
+            cuHbStatusPoll.remove(entity.getId());
+        }
         //往cu状态池移除当前cu的id
         cuStatusPoll.remove(dto.getKmId());
         //从cu设备状态池中去除当前cu的ID
         cuDeviceStatusPoll.remove(dto.getKmId());
-        //记录操作日志
-        logUtil.operateLog(modelName,"登出cu成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("登出cu成功");
     }
 
@@ -419,6 +465,11 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         return BaseResult.succeed("获取平台时间成功",cuTime);
     }
 
+    /**
+     * 发送心跳 发送失败以后重试3次 三次都失败则不再发送
+     * @param dbId
+     * @return
+     */
     @Override
     public BaseResult<String> hb(Integer dbId) {
         log.info("cu发送心跳接口入参{}",dbId);
@@ -426,14 +477,115 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         check(entity);
         CuBasicParam param = tool.getParam(entity);
         log.info("发送心跳中间件入参ssno/ssid{}",param.getParamMap());
-        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/hb/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
-        log.info("发送心跳中间件响应{}",exchange.getBody());
-        CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);
-        String errorMsg = "发送心跳失败:{},{},{}";
-        responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.DEVICE_HEART_BEAT_FAILED,response);
-        //记录操作日志
-        logUtil.operateLog(modelName,"发送心跳成功",HttpServletRequest.getHeader("Authorization"));
+        ResponseEntity<String> exchange = null;
+        try {
+            exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/hb/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
+            log.info("发送心跳中间件响应{}",exchange.getBody());
+            CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);
+            if (response.getCode()!=0){
+                this.reTryLogin(dbId);
+                return BaseResult.failed("发送心跳失败");
+            }
+        } catch (RestClientException e) {
+          log.error("===============发送心跳时发生异常，即将进行自动重连，数据库ID为：{}",dbId);
+            //去除ssid 和cuSession
+            removeSession(dbId);
+            //中间件挂了以后先去除心跳任务
+            removeHbTask(dbId);
+            //进行重连
+            CompletableFuture.runAsync(()->ContextUtils.publishReLogin(dbId));
+            return BaseResult.failed("发送心跳失败");
+        }
+
         return BaseResult.succeed("发送心跳成功");
+    }
+
+    /**
+     * 去除心跳任务并且状态置为离线
+     * @param dbId
+     */
+    public void removeHbTask(Integer dbId){
+        log.info("==========去除心跳任务");
+        ScheduledThreadPoolExecutor scheduled = cuHbStatusPoll.get(dbId);
+        if(ObjectUtil.isNotNull(scheduled)){
+            scheduled.shutdownNow();
+        }
+        if(cuStatusPoll.get(dbId)!=null){
+            cuStatusPoll.remove(dbId);
+        }
+    }
+
+    /**
+     * 去除会话和ssId
+     * @param dbId
+     */
+    public void removeSession(Integer dbId){
+        log.info("==============去除CUSession数据库ID为：{}",dbId);
+        CuEntity entity = cuMapper.selectById(dbId);
+        CuClient cuClient = cuDeviceLoadThread.getCuClient();
+        cuClient.getSessionManager().removeSession(entity.getSsid());
+        entity.setSsid(null);
+        cuMapper.updateById(entity);
+    }
+
+    /**
+     * 根据数据库ID自动重连每一分钟重连一次
+     * @param dbId
+     */
+    @EventListener
+    public void reTryLogin(Integer dbId){
+        log.info("==================观察者收到CU发送心跳失败，即将进行自动重连，数据库ID为：{}",dbId);
+        CuRequestDto dto = new CuRequestDto();
+        dto.setKmId(dbId);
+        try {
+            this.logoutById(dto);
+        } catch (Exception e) {
+            log.error("===============发送心跳时失败尝试重启监控平台的时候先做登出，但登出失败");
+        }
+        reTryLoginNow(dbId);
+    }
+
+    /**
+     * 根据数据库ID自动重连每一分钟重连一次
+     * @param dbId
+     */
+    @Override
+    public void reTryLoginNow(Integer dbId){
+        log.info("=====================CU即将进行自动重连数据库ID为：{}",dbId);
+        CuService service = ContextUtils.getBean(CuService.class);
+        CuRequestDto dto = new CuRequestDto();
+        dto.setKmId(dbId);
+        ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2);
+        reTryPoll.put(dbId,scheduled);
+        scheduled.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                //首先登出
+                try {
+                    service.logoutById(dto);
+                } catch (Exception e) {
+                    log.error("=============中间件重启/或者cu掉线后登出失败");
+                }
+                BaseResult<DevEntityVo> baseResult = service.loginById(dto);
+                if(baseResult.getErrCode()==0){
+                    scheduled.shutdownNow();
+                }
+            }
+        },60,60, TimeUnit.SECONDS);
+    }
+
+    /**
+     * cu维护心跳定时任务 每1分钟发一次心跳
+     * @param dbId
+     */
+    public void hbTask(Integer dbId){
+        ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2);
+        // 创建定时任务，每6分钟发送一次心跳
+        scheduled.scheduleAtFixedRate(()->{
+            hb(dbId);
+        },1,60,  TimeUnit.SECONDS);//延迟1秒每1分钟发一次心跳
+        //往心跳状态池放入当前执行任务的scheduled
+        cuHbStatusPoll.put(dbId,scheduled);
     }
 
     @Override
@@ -480,8 +632,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         CuResponse response = JSONObject.parseObject(s, CuResponse.class);
         String errorMsg = "获取设备组信息失败:{},{},{}";
         responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_DEV_GROUPS_FAILED,response);
-        //记录操作日志
-        logUtil.operateLog(modelName,"获取设备组信息成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("获取设备组信息成功");
     }
 
@@ -902,6 +1052,40 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             log.error("获取获取设备通道集合失败{}", e.getMessage());
             throw new CuException(DeviceErrorEnum.GET_CU_CHANNEL_LIST_ERROR);
         }
+    }
+
+    @Override
+    public BaseResult<GbIdVo> gbId(GbIdDto requestDto) {
+        log.info("=============获取国标id接口入参GbIdDto{}",requestDto);
+        CuEntity entity = cuMapper.selectById(requestDto.getKmId());
+        check(entity);
+        CuBasicParam param = tool.getParam(entity);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/gbid/{ssid}/{ssno}", JSON.toJSONString(requestDto), String.class, param.getParamMap());
+        log.info("获取国标id接口中间件响应{}",s);
+        CuResponse response = JSONObject.parseObject(s, CuResponse.class);
+        String errorMsg = "获取国标id接口失败:{},{},{}";
+        responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_GB_ID_ERROR,response);
+        GbIdVo vo = JSON.parseObject(s, GbIdVo.class);
+        //记录操作日志
+        logUtil.operateLog(modelName,"获取国标id接口成功",HttpServletRequest.getHeader("Authorization"));
+        return BaseResult.succeed("获取国标id接口成功",vo);
+    }
+
+    @Override
+    public BaseResult<PuIdTwoVo> puIdTwo(PuIdTwoDto requestDto) {
+        log.info("=============获取平台2.0puId接口入参CuChnListDto{}",requestDto);
+        CuEntity entity = cuMapper.selectById(requestDto.getKmId());
+        check(entity);
+        CuBasicParam param = tool.getParam(entity);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/puid20/{ssid}/{ssno}", JSON.toJSONString(requestDto), String.class, param.getParamMap());
+        log.info("获取平台2.0puId接口中间件响应{}",s);
+        CuResponse response = JSONObject.parseObject(s, CuResponse.class);
+        String errorMsg = "获取平台2.0puId失败:{},{},{}";
+        responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_Pu_ID_TWO_ERROR,response);
+        PuIdTwoVo vo = JSON.parseObject(s, PuIdTwoVo.class);
+        //记录操作日志
+        logUtil.operateLog(modelName,"获取平台2.0puId成功",HttpServletRequest.getHeader("Authorization"));
+        return BaseResult.succeed("获取平台2.0puId成功",vo);
     }
 
     @Override

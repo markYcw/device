@@ -3,6 +3,8 @@ package com.kedacom.svr.pojo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author ycw
  * @version v1.0
@@ -12,16 +14,20 @@ import lombok.Data;
 @Data
 public class Case {
 
-    @ApiModelProperty("是否显示")
+    @NotNull(message = "是否显示不能为空")
+    @ApiModelProperty(value = "是否显示",required = true)
     private Integer showOsd;
 
-    @ApiModelProperty("叠加位置x")
+    @NotNull(message = "叠加位置x不能为空")
+    @ApiModelProperty(value = "叠加位置x",required = true)
     private Integer xPos;
 
-    @ApiModelProperty("叠加位置y")
+    @NotNull(message = "叠加位置y不能为空")
+    @ApiModelProperty(value = "叠加位置y",required = true)
     private Integer yPos;
 
-    @ApiModelProperty("持续时间")
+    @NotNull(message = "持续时间不能为空")
+    @ApiModelProperty(value = "持续时间",required = true)
     private Integer duration;
 
 

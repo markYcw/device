@@ -42,6 +42,7 @@ public class OffLineNotify extends INotify {
      */
     @Override
     public void consumeMessage(Integer ssid, String message) {
+        log.info("======================收到掉线通知ssid{}",ssid);
         CuMapper cuMapper = ContextUtils.getBean(CuMapper.class);
         CuDeviceLoadThread cuDeviceLoadThread = ContextUtils.getBean(CuDeviceLoadThread.class);
         RegisterListenerService listenerService = ContextUtils.getBean(RegisterListenerService.class);

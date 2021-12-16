@@ -100,16 +100,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     private final static String NOTIFY_URL = "/api/api-device/ums/cu/cuNotify";
 
-    static Retryer<BaseResult> retryer;
-
-    static {
-        retryer = RetryerBuilder.<BaseResult>newBuilder()
-                .retryIfResult(baseResult -> baseResult.getErrCode() != 0) // 返回false时重试
-                .retryIfExceptionOfType(Exception.class) // 抛出Exception时重试
-                .withWaitStrategy(WaitStrategies.fixedWait(60, TimeUnit.SECONDS)) // 60s后重试
-                .withStopStrategy(StopStrategies.stopAfterAttempt(15)) // 重试15次后停止
-                .build();
-    }
 
     //cu状态池 若成功登录则把数据库ID和登录状态放入此池中1为已登录，若登出则从此状态池中移除
     public static ConcurrentHashMap<Integer,Integer> cuStatusPoll = new ConcurrentHashMap<>();
@@ -566,7 +556,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Override
     public void reTryLoginNow(Integer dbId){
         log.info("=====================CU即将进行自动重连数据库ID为：{}",dbId);
-        CuService service = ContextUtils.getBean(CuService.class);
         CuRequestDto dto = new CuRequestDto();
         dto.setKmId(dbId);
         ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2);
@@ -576,13 +565,13 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             public void run() {
                 //首先登出
                 try {
-                    service.logoutById(dto);
+                    logoutById(dto);
                 } catch (Exception e) {
                     log.error("=============中间件重启/或者cu掉线后登出失败");
                 }
                 BaseResult<DevEntityVo> baseResult = null;
                 try {
-                    baseResult = service.loginById(dto);
+                    baseResult = loginById(dto);
                     if(baseResult.getErrCode()==0){
                         scheduled.shutdownNow();
                     }
@@ -593,36 +582,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             }
         },60,60, TimeUnit.SECONDS);
     }
-
-/*    @Override
-    public BaseResult<String> initCu() {
-        try {
-            retryer.call(()->{
-                LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
-                wrapper.isNotNull(cuEntity -> cuEntity.getId());
-                List<CuEntity> list = cuMapper.selectList(null);
-                Iterator<CuEntity> iterator = list.iterator();
-                while (iterator.hasNext()){
-                    CuEntity next = iterator.next();
-                    CuRequestDto dto = new CuRequestDto();
-                    dto.setKmId(next.getId());
-                    try {
-                        BaseResult<DevEntityVo> devEntityVoBaseResult = this.loginById(dto);
-                        return BaseResult.succeed("服务启动登录CU成功");
-                    } catch (Exception e) {
-                        log.error("服务启动登录CU失败{}",e);
-                        return BaseResult.failed("服务启动登录CU失败");
-                    }
-                }
-                return BaseResult.succeed("服务启动登录CU成功");
-            });
-        } catch (ExecutionException e) {
-            log.error("服务启动登录CU失败:{}",e);
-        } catch (RetryException e) {
-            log.error("服务启动登录CU失败:{}",e);
-        }
-        return BaseResult.succeed("服务启动登录CU成功");
-    }*/
 
         @Override
     public void initCu() {

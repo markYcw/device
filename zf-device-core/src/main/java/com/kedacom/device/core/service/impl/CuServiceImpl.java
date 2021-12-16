@@ -106,7 +106,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         retryer = RetryerBuilder.<BaseResult>newBuilder()
                 .retryIfResult(baseResult -> baseResult.getErrCode() != 0) // 返回false时重试
                 .retryIfExceptionOfType(Exception.class) // 抛出Exception时重试
-                .withWaitStrategy(WaitStrategies.fixedWait(2000, TimeUnit.MILLISECONDS)) // 2s后重试
+                .withWaitStrategy(WaitStrategies.fixedWait(60, TimeUnit.SECONDS)) // 60s后重试
                 .withStopStrategy(StopStrategies.stopAfterAttempt(15)) // 重试15次后停止
                 .build();
     }
@@ -598,7 +598,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             retryer.call(()->{
                 LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
                 wrapper.isNotNull(cuEntity -> cuEntity.getId());
-                List<CuEntity> list = cuMapper.selectList(wrapper);
+                List<CuEntity> list = cuMapper.selectList(null);
                 Iterator<CuEntity> iterator = list.iterator();
                 while (iterator.hasNext()){
                     CuEntity next = iterator.next();

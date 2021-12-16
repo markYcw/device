@@ -493,7 +493,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             log.info("发送心跳中间件响应{}",exchange.getBody());
             CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);
             if (response.getCode()!=0){
-                this.reTryLogin(dbId);
+                CuReLoginParam p = new CuReLoginParam();
+                p.setDbId(dbId);
+                this.reTryLogin(p);
                 return BaseResult.failed("发送心跳失败");
             }
         } catch (RestClientException e) {
@@ -542,19 +544,19 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     /**
      * 根据数据库ID自动重连每一分钟重连一次
-     * @param dbId
+     * @param paramLogin
      */
     @EventListener
-    public void reTryLogin(Integer dbId){
-        log.info("==================观察者收到CU发送心跳失败，即将进行自动重连，数据库ID为：{}",dbId);
+    public void reTryLogin(CuReLoginParam paramLogin){
+        log.info("==================观察者收到CU发送心跳失败，即将进行自动重连，数据库ID为：{}",paramLogin.getDbId());
         CuRequestDto dto = new CuRequestDto();
-        dto.setKmId(dbId);
+        dto.setKmId(paramLogin.getDbId());
         try {
             this.logoutById(dto);
         } catch (Exception e) {
             log.error("===============发送心跳时失败尝试重启监控平台的时候先做登出，但登出失败");
         }
-        reTryLoginNow(dbId);
+        reTryLoginNow(paramLogin.getDbId());
     }
 
     /**

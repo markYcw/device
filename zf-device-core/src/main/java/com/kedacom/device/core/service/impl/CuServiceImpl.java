@@ -293,7 +293,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         Map<String, Long> paramMap = new HashMap<>();
         paramMap.put("ssno", (long) NumGen.getNum());
 
-        log.info("登录cu中间件入参信息:{}", JSON.toJSONString(request));
+        log.info("登录cu中间件入参信息:{},登录cu的ssno为：{}", JSON.toJSONString(request),paramMap);
         String string = template.postForObject(url + "/login/{ssno}", JSON.toJSONString(request), String.class, paramMap);
         log.info("登录cu中间件应答:{}", string);
 

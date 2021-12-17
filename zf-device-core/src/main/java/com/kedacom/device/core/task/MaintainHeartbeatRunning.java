@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -44,16 +45,18 @@ public class MaintainHeartbeatRunning implements Runnable {
             return;
         }
         log.info("终端登录的缓存集合synHashSet : {}", synHashSet);
+        Set<Integer> invalidSet = new HashSet<>();
         for (Integer integer : synHashSet) {
             try {
                 log.info("终端id : {} 发送心跳", integer);
                 mtService.heartBeat(integer);
             } catch (RuntimeException e) {
                 log.error("终端id : {} 发送心跳异常, 异常信息 : {}", integer, e.getMessage());
-                synHashSet.remove(integer);
+                invalidSet.add(integer);
                 mtService.setNullOfMtId(integer);
             }
         }
+        synHashSet.removeAll(invalidSet);
     }
 
 }

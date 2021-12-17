@@ -30,8 +30,8 @@ public class RemoteRestTemplate {
 
         OkHttp3ClientHttpRequestFactory httpRequestFactory = new OkHttp3ClientHttpRequestFactory();
         httpRequestFactory.setConnectTimeout(15000);
-        httpRequestFactory.setReadTimeout(60000);
-        httpRequestFactory.setWriteTimeout(60000);
+        httpRequestFactory.setReadTimeout(40000);
+        httpRequestFactory.setWriteTimeout(30000);
 
         restTemplate = new RestTemplate(httpRequestFactory);
         setRestTemplateEncode(restTemplate);

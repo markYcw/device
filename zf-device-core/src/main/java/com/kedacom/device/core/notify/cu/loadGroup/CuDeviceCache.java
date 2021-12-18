@@ -162,8 +162,6 @@ public class CuDeviceCache {
 	 * @param device
 	 */
 	public void addDevice(PDevice device){
-		
-		synchronized (deviceLock) {
 			String puid = device.getPuId();
 			//根据puid判断设备是否已经存在，如果存在就忽略掉，避免重复
 				PDevice pDevice = this.devices.get(puid);
@@ -210,8 +208,6 @@ public class CuDeviceCache {
 					}
 				}
 				list.add(i, device);
-			//}
-		}
 	}
 	
 	public void addDevices(Collection<PDevice> devices){

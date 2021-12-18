@@ -391,6 +391,16 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         //去除底层session
         CuSessionManager manager = cuDeviceLoadThread.getCuClient().getSessionManager();
         manager.removeSession(entity.getSsid());
+        //去除心跳定时任务
+        ScheduledThreadPoolExecutor Executor = cuHbStatusPoll.get(entity.getId());
+        if(ObjectUtil.isNotNull(Executor)){
+            Executor.shutdownNow();
+            cuHbStatusPoll.remove(entity.getId());
+        }
+        //往cu状态池移除当前cu的id
+        cuStatusPoll.remove(dto.getKmId());
+        //从cu设备状态池中去除当前cu的ID
+        cuDeviceStatusPoll.remove(dto.getKmId());
         CuBasicParam param = tool.getParam(entity);
         log.info("根据ID登出cu接口入参kmId：{},ssid/ssno{}",dto.getKmId(),param);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, param.getParamMap());
@@ -402,16 +412,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 .set(CuEntity::getModifyTime,new Date())
                 .eq(CuEntity::getId,dto.getKmId());
         cuMapper.update(null,wrapper);
-        //去除心跳定时任务
-        ScheduledThreadPoolExecutor Executor = cuHbStatusPoll.get(entity.getId());
-        if(ObjectUtil.isNotNull(Executor)){
-            Executor.shutdownNow();
-            cuHbStatusPoll.remove(entity.getId());
-        }
-        //往cu状态池移除当前cu的id
-        cuStatusPoll.remove(dto.getKmId());
-        //从cu设备状态池中去除当前cu的ID
-        cuDeviceStatusPoll.remove(dto.getKmId());
         return BaseResult.succeed("登出cu成功");
     }
 

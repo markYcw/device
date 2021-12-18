@@ -14,7 +14,8 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Auther: hxj
@@ -58,7 +59,8 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
         //cu访问地址初始化
         cuUrlFactory.setMap();
         //服务重启时重启监控平台
-        CompletableFuture.runAsync(()->cuService.initCu());
+        ScheduledThreadPoolExecutor poolExecutor = new ScheduledThreadPoolExecutor(1);
+        poolExecutor.schedule(()->cuService.initCu(),2, TimeUnit.MINUTES);
 
         if (kmProxy.contains(DEVICE_PORT)) {
             ConnectorListenerManager.getInstance().register(connectorListener);

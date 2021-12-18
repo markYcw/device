@@ -386,13 +386,13 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Override
     public BaseResult logoutById(CuRequestDto dto) {
-        log.info("根据ID登出cu接口入参{}",dto.getKmId());
         CuEntity entity = cuMapper.selectById(dto.getKmId());
         check(entity);
         //去除底层session
         CuSessionManager manager = cuDeviceLoadThread.getCuClient().getSessionManager();
         manager.removeSession(entity.getSsid());
         CuBasicParam param = tool.getParam(entity);
+        log.info("根据ID登出cu接口入参kmId：{},ssid/ssno{}",dto.getKmId(),param);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, param.getParamMap());
         CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);
         String errorMsg = "登出cu失败:{},{},{}";
@@ -567,7 +567,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 try {
                     logoutById(dto);
                 } catch (Exception e) {
-                    log.error("=============中间件重启/或者cu掉线后登出失败");
+                    log.error("=============中间件重启/或者cu掉线后登出失败{}",e);
                 }
                 BaseResult<DevEntityVo> baseResult = null;
                 try {

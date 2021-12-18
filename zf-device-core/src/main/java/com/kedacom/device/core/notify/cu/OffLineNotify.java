@@ -50,9 +50,6 @@ public class OffLineNotify extends INotify {
         LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(CuEntity::getSsid,ssid);
         CuEntity cuEntity = cuMapper.selectList(wrapper).get(DevTypeConstant.getZero);
-        //收到掉线通知后将ssid清除
-        cuEntity.setSsid(null);
-        cuMapper.updateById(cuEntity);
         //除去cu状态池中已登录状态
         CuServiceImpl.cuStatusPoll.remove(cuEntity.getId());
         //除去cu设备状态池中的状态

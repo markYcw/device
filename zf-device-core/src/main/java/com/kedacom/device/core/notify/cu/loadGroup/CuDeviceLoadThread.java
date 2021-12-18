@@ -116,10 +116,12 @@ public class CuDeviceLoadThread {
 
         String groupId = null;
         LinkedList<String> list = unKownDeviceGroup.get(ssid);
+        log.info("==============开始获取分组设备未获取设备分组List:{}",list);
         if (list != null) {
             synchronized (list) {
                 if (list.size() > 0) {
                     groupId = list.poll();
+                    log.info("==============开始获取对应分组下设备组ID为{}",groupId);
                 }
             }
         }

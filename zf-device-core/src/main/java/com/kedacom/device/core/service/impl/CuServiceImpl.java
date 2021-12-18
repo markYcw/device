@@ -558,17 +558,17 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         log.info("=====================CU即将进行自动重连数据库ID为：{}",dbId);
         CuRequestDto dto = new CuRequestDto();
         dto.setKmId(dbId);
+        //首先登出
+        try {
+            logoutById(dto);
+        } catch (Exception e) {
+            log.error("=============中间件重启/或者cu掉线后登出失败{}",e);
+        }
         ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2);
         reTryPoll.put(dbId,scheduled);
         scheduled.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                //首先登出
-                try {
-                    logoutById(dto);
-                } catch (Exception e) {
-                    log.error("=============中间件重启/或者cu掉线后登出失败{}",e);
-                }
                 BaseResult<DevEntityVo> baseResult = null;
                 try {
                     baseResult = loginById(dto);

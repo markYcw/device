@@ -490,8 +490,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             }
         } catch (RestClientException e) {
           log.error("===============发送心跳时发生异常，即将进行自动重连，数据库ID为：{}",dbId);
-            //去除ssid 和cuSession
-            removeSession(dbId);
             //中间件挂了以后先去除心跳任务
             removeHbTask(dbId);
             //进行重连

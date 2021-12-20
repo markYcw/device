@@ -241,8 +241,9 @@ public class CuDeviceLoadThread {
         CuSession session = client.getSessionManager().getSessionBySSID(ssid);
         //有可能当前分组底下未挂载设备但是子分组底下挂载设备所以对设备列表进行判空
         if (session != null) {
+            log.info("添加设备开始");
             session.getDeviceCache().addDevices(devices);
-
+            log.info("添加设备结束");
             if (isSend == 1) {
                 //一个分组下的设备获取完成，获取下一个分组的设备
                 loadNextDeviceGroup(ssid);
@@ -274,27 +275,35 @@ public class CuDeviceLoadThread {
         int type = notify.getStateType();
         switch (type) {
             case GetDeviceStatusNotify.TYPE_DEVICE_STATUS:
+                log.info("===========加载设备上线状态开始");
                 //设备上下线
                 Integer online = notify.getOnline();
                 if (online != null) {
                     this.onDeviceStatus(ssid, puid, online);
                 }
+                log.info("===========加载设备上线状态结束");
                 break;
 
             case GetDeviceStatusNotify.TYPE_Channel:
                 //视频源（通道）上下线
+                log.info("===========加载设备通道状态开始");
 				List<SrcChns> srcChns = notify.getSrcChns();
 				this.onDeviceChnStatus(ssid, puid, srcChns);
+                log.info("===========加载设备通道状态结束");
                 break;
 
             case GetDeviceStatusNotify.TYPE_ALARM:
+                log.info("===========加载设备告警状态开始");
                 //报警（告警）收到报警通知以后给前端以及业务发通知内容
                 this.onDeviceChnAlarm(notify);
+                log.info("===========加载设备告警状态结束");
                 break;
             case GetDeviceStatusNotify.TYPE_REC:
                 //录像状态
+                log.info("===========加载设备录像状态开始");
                 List<Rec> recs = notify.getRecs();
                 this.onDeviceChnRecStatus(ssid, puid, recs);
+                log.info("===========加载设备录像状态结束");
                 break;
 
             case GetDeviceStatusNotify.TYPE_GPS:

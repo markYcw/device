@@ -24,6 +24,7 @@ public class DevicesStatusSubscribeNotify extends INotify {
         DeviceStatusNotify deviceNotify = JSON.parseObject(message, DeviceStatusNotify.class);
         GetDeviceStatusNotify content = deviceNotify.getContent();
         content.setSsid(deviceNotify.getSsid());
+        content.setSsno(deviceNotify.getSsno());
         CuDeviceLoadThread cuDeviceLoadThread = ContextUtils.getBean(CuDeviceLoadThread.class);
         cuDeviceLoadThread.onDeviceStatus(content);
         log.info("加载设备ID为"+content.getPuId()+"的设备状态");

@@ -12,8 +12,11 @@ import lombok.Data;
 @Data
 public class CuNotify {
 
-    @ApiModelProperty("ssid")
+    @ApiModelProperty("会话号")
     private Integer ssid;
+
+    @ApiModelProperty("流水号")
+    private Integer ssno;
 
     @ApiModelProperty("通知类型")
     private Integer type;

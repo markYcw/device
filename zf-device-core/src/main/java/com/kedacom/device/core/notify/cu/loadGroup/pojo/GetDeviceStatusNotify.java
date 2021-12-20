@@ -39,6 +39,9 @@ public class GetDeviceStatusNotify {
 	@ApiModelProperty("ssid")
 	private Integer ssid;
 
+	@ApiModelProperty("流水号")
+	private Integer ssno;
+
 	@ApiModelProperty("在线 0, 报警1, 视频源通道2,gps 3,录像状态4,收到透明数据5, 电视墙新增10,电视墙删除11,电视墙修改12,电视墙状态13,设备入网14,设备退网15,设备修改16,增加组17,删除组18,视频源别名改变19")
 	private Integer stateType;
 

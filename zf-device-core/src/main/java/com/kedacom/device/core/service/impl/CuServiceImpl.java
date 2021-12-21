@@ -587,6 +587,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
         @Override
     public void initCu() {
+        log.info("======服务启动登录平台");
         LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.isNotNull(cuEntity -> cuEntity.getId());
         List<CuEntity> list = cuMapper.selectList(null);
@@ -600,6 +601,25 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 this.loginById(dto);
             } catch (Exception e) {
                 log.error("服务启动登录CU失败{}", e);
+            }
+        }
+    }
+
+    @Override
+    public void logoutCu() {
+        log.info("======服务启动登出平台");
+        LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.isNotNull(cuEntity -> cuEntity.getId());
+        List<CuEntity> list = cuMapper.selectList(null);
+        Iterator<CuEntity> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            CuEntity next = iterator.next();
+            CuRequestDto dto = new CuRequestDto();
+            dto.setKmId(next.getId());
+            try {
+                this.logoutById(dto);
+            } catch (Exception e) {
+                log.error("服务启动登出CU失败{}", e);
             }
         }
     }

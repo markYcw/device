@@ -59,7 +59,8 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
         //cu访问地址初始化
         cuUrlFactory.setMap();
         //服务重启时重启监控平台
-        ScheduledThreadPoolExecutor poolExecutor = new ScheduledThreadPoolExecutor(1);
+        ScheduledThreadPoolExecutor poolExecutor = new ScheduledThreadPoolExecutor(2);
+        poolExecutor.schedule(()->cuService.logoutCu(),1,TimeUnit.SECONDS);
         poolExecutor.schedule(()->cuService.initCu(),2, TimeUnit.MINUTES);
 
         if (kmProxy.contains(DEVICE_PORT)) {

@@ -163,6 +163,8 @@ public interface CuService extends IService<CuEntity> {
 
     void initCu();
 
+    void logoutCu();
+
     void subscribe(DeviceSubscribe deviceSubscribe);
 
     CuEntity getBySsid(Integer ssid);

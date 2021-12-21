@@ -7,6 +7,7 @@ import com.kedacom.api.WebsocketFeign;
 import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.cu.dto.DevicesDto;
 import com.kedacom.cu.entity.CuEntity;
+import com.kedacom.cu.pojo.DeviceSubscribe;
 import com.kedacom.cu.pojo.Subscribe;
 import com.kedacom.device.core.convert.CuConvert;
 import com.kedacom.device.core.entity.KmListenerEntity;
@@ -478,6 +479,17 @@ public class CuDeviceLoadThread {
 
         // 添加新入会设备信息
         deviceCache.addDevice(device);
+        DeviceSubscribe subscribe = new DeviceSubscribe();
+        subscribe.setOnline(1);
+        subscribe.setAlarm(1);
+        subscribe.setChn(1);
+        subscribe.setGps(0);
+        subscribe.setTvwall(0);
+        subscribe.setRec(1);
+        CuEntity entity = cuService.getBySsid(ssid);
+        subscribe.setDbId(entity.getId());
+        //收到入网通知后需要重新订阅设备状态
+        CompletableFuture.runAsync(()->cuService.subscribe(subscribe));
     }
 
     //设备更新

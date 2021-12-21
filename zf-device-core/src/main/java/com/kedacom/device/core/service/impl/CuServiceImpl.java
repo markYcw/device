@@ -14,6 +14,7 @@ import com.kedacom.BaseResult;
 import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
+import com.kedacom.cu.pojo.DeviceSubscribe;
 import com.kedacom.cu.vo.*;
 import com.kedacom.device.core.basicParam.CuBasicParam;
 import com.kedacom.device.core.basicParam.CuReLoginParam;
@@ -45,7 +46,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
@@ -602,6 +602,29 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 log.error("服务启动登录CU失败{}", e);
             }
         }
+    }
+
+    @Override
+    public void subscribe(DeviceSubscribe deviceSubscribe) {
+        log.info("单个设备状态订阅接口入参{}",deviceSubscribe);
+        CuEntity entity = cuMapper.selectById(deviceSubscribe.getDbId());
+        check(entity);
+        CuBasicParam param = tool.getParam(entity);
+        log.info("单个设备状态订阅接口入参/ssid/ssno",param.getParamMap());
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/devicegroups/{ssid}/{ssno}", JSON.toJSONString(deviceSubscribe), String.class, param.getParamMap());
+        log.info("单个设备状态订阅中间件响应{}",s);
+        CuResponse response = JSONObject.parseObject(s, CuResponse.class);
+        String errorMsg = "单个设备状态订阅失败:{},{},{}";
+        responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_SUBSCRIBE_ERROR,response);
+    }
+
+    @Override
+    public CuEntity getBySsid(Integer ssid) {
+       log.info("=======根据ssid获取cu入参ssid{}",ssid);
+        LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CuEntity::getSsid,ssid);
+        List<CuEntity> cuEntities = cuMapper.selectList(wrapper);
+        return cuEntities.get(DevTypeConstant.getZero);
     }
 
     /**

@@ -6,6 +6,7 @@ import com.kedacom.BaseResult;
 import com.kedacom.common.model.Result;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
+import com.kedacom.cu.pojo.DeviceSubscribe;
 import com.kedacom.cu.vo.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -161,4 +162,8 @@ public interface CuService extends IService<CuEntity> {
     void reTryLoginNow(Integer dbId);
 
     void initCu();
+
+    void subscribe(DeviceSubscribe deviceSubscribe);
+
+    CuEntity getBySsid(Integer ssid);
 }

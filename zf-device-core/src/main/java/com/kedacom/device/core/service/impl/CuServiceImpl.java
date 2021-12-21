@@ -115,6 +115,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Override
     public BaseResult<BasePage<DevEntityVo>> pageQuery(DevEntityQuery queryDTO) {
+        log.info("==========分页查询开始");
         Page<CuEntity> page = new Page<>();
         page.setCurrent(queryDTO.getCurPage());
         page.setSize(queryDTO.getPageSize());
@@ -130,7 +131,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         Page<CuEntity> platformEntityPage = cuMapper.selectPage(page, queryWrapper);
         List<CuEntity> records = platformEntityPage.getRecords();
         //查询监控平台连接状态
+        log.info("分页查询监控平台链接状态开始");
         List<CuEntity> cuEntities = queryCuStatus(records);
+        log.info("分页查询监控平台链接状态结束");
         //转化为DevEntityVo
         List<DevEntityVo> vos = cuEntities.stream().map(cuEntity -> convert.convertToDevEntityVo(cuEntity)).collect(Collectors.toList());
         BasePage<DevEntityVo> basePage = new BasePage<>();
@@ -139,6 +142,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         basePage.setCurPage(queryDTO.getCurPage());
         basePage.setPageSize(queryDTO.getPageSize());
         basePage.setData(vos);
+        log.info("==========分页查询结束");
         return BaseResult.succeed(basePage);
     }
 
@@ -488,8 +492,8 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 this.reTryLogin(p);
                 return BaseResult.failed("发送心跳失败");
             }
-        } catch (RestClientException e) {
-          log.error("===============发送心跳时发生异常，即将进行自动重连，数据库ID为：{}",dbId);
+        } catch (Exception e) {
+          log.error("===============发送心跳时发生异常，即将进行自动重连，数据库ID为：{},错误原因为{}",dbId,e);
             //中间件挂了以后先去除心跳任务
             removeHbTask(dbId);
             //进行重连

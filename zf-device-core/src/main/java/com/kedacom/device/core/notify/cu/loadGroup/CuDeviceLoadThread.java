@@ -480,6 +480,9 @@ public class CuDeviceLoadThread {
         // 添加新入会设备信息
         deviceCache.addDevice(device);
         DeviceSubscribe subscribe = new DeviceSubscribe();
+        ArrayList<String> list = new ArrayList<>();
+        list.add(device.getPuId());
+        subscribe.setPuIds(list);
         subscribe.setOnline(1);
         subscribe.setAlarm(1);
         subscribe.setChn(1);

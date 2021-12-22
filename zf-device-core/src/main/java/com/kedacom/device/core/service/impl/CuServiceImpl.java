@@ -597,7 +597,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             CuRequestDto dto = new CuRequestDto();
             dto.setKmId(next.getId());
             try {
-                this.logoutById(dto);
                 this.loginById(dto);
             } catch (Exception e) {
                 log.error("服务启动登录CU失败{}", e);

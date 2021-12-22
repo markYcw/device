@@ -272,9 +272,10 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         Integer type = (Integer) jsonObject.get("type");
         Integer ssid = (Integer) jsonObject.get("ssid");
 
-        if(ssid !=null){
+        /*if(ssid !=null){
             CompletableFuture.runAsync(()->NotifyHandler.getInstance().distributeMessages(ssid,DeviceType.CU2.getValue(),type,notify));
-        }
+        }*/
+        NotifyHandler.getInstance().distributeMessages(ssid,DeviceType.CU2.getValue(),type,notify);
 
     }
 

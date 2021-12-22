@@ -19,11 +19,12 @@ public class DevicesNotify extends INotify {
 
     @Override
     protected void consumeMessage(Integer ssid, String message) {
+        log.info("========测试加载设备开始");
         DeviceNotify deviceNotify = JSON.parseObject(message, DeviceNotify.class);
         GetDeviceNotify content = deviceNotify.getContent();
         content.setSsid(deviceNotify.getSsid());
         CuDeviceLoadThread cuDeviceLoadThread = ContextUtils.getBean(CuDeviceLoadThread.class);
         cuDeviceLoadThread.onDeviceNotify(content);
-        log.info("加载设备通知，本次加载"+content.getDeviceList().size()+"个设备");
+        log.info("========测试加载设备结束");
     }
 }

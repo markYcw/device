@@ -631,7 +631,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         check(entity);
         CuBasicParam param = tool.getParam(entity);
         log.info("单个设备状态订阅接口入参/ssid/ssno",param.getParamMap());
-        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/devicegroups/{ssid}/{ssno}", JSON.toJSONString(deviceSubscribe), String.class, param.getParamMap());
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/subscribe/{ssid}/{ssno}", JSON.toJSONString(deviceSubscribe), String.class, param.getParamMap());
         log.info("单个设备状态订阅中间件响应{}",s);
         CuResponse response = JSONObject.parseObject(s, CuResponse.class);
         String errorMsg = "单个设备状态订阅失败:{},{},{}";

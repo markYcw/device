@@ -1984,6 +1984,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      */
     public List<PDevice> getDeviceList(Integer ssid, String groupId) throws KMException {
 
+        log.info("根据分组ID获取设备列表入参ssid:{},groupId:{}",ssid,groupId);
         CuSession cuSession = cuDeviceLoadThread.getCuClient().getSessionManager().getSessionBySSID(ssid);
         List<PDevice> pDeviceList;
         if (StringUtils.isEmpty(groupId)) {
@@ -1991,6 +1992,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
         } else {
             pDeviceList = cuSession.getDeviceCache().getDeivcesByGroupId(groupId);
+            log.info("根据分组ID获取设备列表获取结果为：",pDeviceList);
         }
         return pDeviceList;
     }

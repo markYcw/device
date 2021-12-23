@@ -101,7 +101,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     private final static String NOTIFY_URL = "/api/api-device/ums/cu/cuNotify";
 
 
-    //cu状态池 若成功登录则把数据库ID和登录状态放入此池中1为已登录，若登出则从此状态池中移除
+    //cu状态池 若成功登录则把数据库ID和登录状态放入此池中1为已登录，若登出或者删除则从此状态池中移除
     public static ConcurrentHashMap<Integer,Integer> cuStatusPoll = new ConcurrentHashMap<>();
 
     //cu设备状态池 若设备加载完则把数据库ID和状态放入此池中1为已加载完所以设备，若登出则从此状态池中移除
@@ -199,7 +199,19 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Override
     public BaseResult<String> deleteDev(List<Integer> ids) {
-        cuMapper.deleteBatchIds(ids);
+        log.info("=======删除CU接口入参：{}",ids);
+        for (Integer id : ids) {
+            if(cuStatusPoll.get(id)!=null){
+                CuRequestDto dto = new CuRequestDto();
+                dto.setKmId(id);
+                try {
+                    logoutById(dto);
+                } catch (Exception e) {
+                    log.error("======删除CU时登出失败{}",e);
+                }
+            }
+            cuMapper.deleteById(id);
+        }
         return BaseResult.succeed("删除成功");
     }
 
@@ -305,7 +317,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         CuLoginResponse response = JSON.parseObject(string, CuLoginResponse.class);
         //如果是密码错误或者是用户不存在首先去除定时任务不进行无限重连
         if(response.getCode()!=0){
-            if(response.getCode()==10012||response.getCode()==10011){
+            if(response.getCode()==10012||response.getCode()==10011||response.getCode()==100){
                 removeReTryLogin(entity.getId());
                 return BaseResult.failed("登录失败，用户名或密码错误请检查");
             }else {

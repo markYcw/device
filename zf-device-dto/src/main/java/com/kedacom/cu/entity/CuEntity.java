@@ -25,7 +25,6 @@ public class CuEntity {
 	@TableId(value = "id" , type = IdType.AUTO)
 	private Integer id;
 
-	@TableField(updateStrategy = FieldStrategy.IGNORED) //更新时Set值为null生效
 	@ApiModelProperty(value = "登录成功后返回的ssid")
 	private Integer ssid;
 

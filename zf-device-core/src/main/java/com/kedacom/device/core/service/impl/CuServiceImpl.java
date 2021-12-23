@@ -754,7 +754,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         if(ObjectUtils.isEmpty(entity)){
             throw new CuException(DeviceErrorEnum.DEVICE_NOT_FOUND);
         }
-        if(entity.getSsid()==null){
+        if(!cuStatusPoll.get(entity.getId()).equals(1)){
             throw new CuException(DeviceErrorEnum.DEVICE_NOT_LOGIN);
         }
     }

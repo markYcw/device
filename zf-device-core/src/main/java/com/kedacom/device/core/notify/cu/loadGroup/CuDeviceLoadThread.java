@@ -258,11 +258,14 @@ public class CuDeviceLoadThread {
 	 */
 	public void setSnPuId(PDevice pDevice){
 		List<SrcChn> srcChns = pDevice.getSrcChns();
-		Iterator<SrcChn> iterator = srcChns.iterator();
-		while (iterator.hasNext()){
-			SrcChn next = iterator.next();
-			next.setPuId(pDevice.getPuId());
-		}
+		if(CollectionUtil.isNotEmpty(srcChns)){
+            Iterator<SrcChn> iterator = srcChns.iterator();
+            while (iterator.hasNext()){
+                SrcChn next = iterator.next();
+                next.setPuId(pDevice.getPuId());
+            }
+        }
+
 	}
 
     /**

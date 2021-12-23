@@ -186,10 +186,22 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Override
     public BaseResult<DevEntityVo> updateDev(DevEntityVo devEntityVo) {
+        log.info("修改CU接口入参：{}",devEntityVo);
         synchronized (this){
+            CuEntity entity = cuMapper.selectById(devEntityVo.getId());
             CuEntity cuEntity = convert.convertToCuEntity(devEntityVo);
             if(!isRepeat(cuEntity)){
                 throw new CuException(DeviceErrorEnum.IP_OR_NAME_REPEAT);
+            }
+            if(!entity.getIp().equals(cuEntity.getIp())||!entity.getUsername().equals(cuEntity.getUsername())||!entity.getPassword().equals(cuEntity.getPassword())||!entity.getPort().equals(cuEntity.getPort())){
+                CuRequestDto dto = new CuRequestDto();
+                dto.setKmId(entity.getId());
+                try {
+                    logoutById(dto);
+                    loginById(dto);
+                } catch (Exception e) {
+                    log.error("=====更新CU时登出CU/或登录CU失败");
+                }
             }
             cuMapper.updateById(cuEntity);
             DevEntityVo vo = convert.convertToDevEntityVo(cuEntity);

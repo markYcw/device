@@ -42,6 +42,7 @@ public class CuEntity {
 	@ApiModelProperty(value = "平台端口 2.0平台端口是80")
 	private Integer port;
 
+	@TableField(updateStrategy = FieldStrategy.IGNORED) //更新时Set值为null生效
 	@ApiModelProperty(value = "NAT穿越PORT")
 	private Integer natPort;
 
@@ -65,6 +66,7 @@ public class CuEntity {
 	@ApiModelProperty(value = "平台域id")
 	private String modelType;
 
+	@TableField(updateStrategy = FieldStrategy.IGNORED) //更新时Set值为null生效
 	@ApiModelProperty(value = "NAT穿越IP")
 	private String natIp;
 

@@ -80,7 +80,6 @@ public class CuController {
     @PostMapping("/updateDev")
     public BaseResult<DevEntityVo> updateDev(@Valid @RequestBody DevEntityVo devEntityVo, BindingResult br){
 
-        log.info("修改cu:{}", devEntityVo);
         ValidUtils.paramValid(br);
 
         return cuService.updateDev(devEntityVo);

@@ -477,6 +477,11 @@ public class CuDeviceLoadThread {
 
         }
 
+        //入网后给设备设置PuID
+        String puId = device.getPuId();
+        List<SrcChn> channels = device.getChannels();
+        channels.stream().forEach(a->a.setPuId(puId));
+
         // 添加新入会设备信息
         deviceCache.addDevice(device);
         DeviceSubscribe subscribe = new DeviceSubscribe();

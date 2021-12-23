@@ -285,7 +285,7 @@ public class CuDeviceCache {
 	}
 
 	/**
-	 * 更新设备通道在线状态
+	 * 更新设备录像在线状态
 	 * @param puid 设备ID
 	 * @param recs 录像状态列表
 	 */
@@ -293,7 +293,7 @@ public class CuDeviceCache {
 		for(ArrayList<PDevice> devices : devicesByGroup.values()){
 			for (PDevice pDevice : devices) {
 				if (puid.equals(pDevice.getPuId())) {
-					recs.stream().forEach(rec -> pDevice.updateChnRec(rec));
+					 pDevice.updateChnRec(recs);
 				}
 			}
 		}

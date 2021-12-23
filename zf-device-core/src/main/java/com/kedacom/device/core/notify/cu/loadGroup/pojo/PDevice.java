@@ -76,15 +76,19 @@ public class PDevice {
 
 	/**
 	 * 更新通道录像状态
-	 * @param rec
+	 * @param recs
 	 */
-	public void updateChnRec(Rec rec){
-		Iterator<SrcChn> iterator = this.srcChns.iterator();
-		while (iterator.hasNext()){
-			SrcChn next = iterator.next();
-			if(next.getSn().equals(rec.getSn())){
-				next.setPlatRecord(rec.getPlat());
-				next.setPuRecord(rec.getPu());
+	public void updateChnRec(List<Rec> recs){
+		for (Rec rec : recs) {
+			for (SrcChn srcChn : srcChns) {
+				if (srcChn.getSn().equals(rec.getSn())){
+					if(rec.getPlat()!=null){
+						srcChn.setPuRecord(rec.getPlat());
+					}
+					if(rec.getPu()!=null){
+						srcChn.setPuRecord(rec.getPu());
+					}
+				}
 			}
 		}
 	}

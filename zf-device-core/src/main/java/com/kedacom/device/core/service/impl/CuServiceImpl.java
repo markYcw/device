@@ -188,26 +188,24 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     public BaseResult<DevEntityVo> updateDev(DevEntityVo devEntityVo) {
         log.info("修改CU接口入参：{}",devEntityVo);
         synchronized (this){
-            CuEntity entity = cuMapper.selectById(devEntityVo.getId());
             CuEntity cuEntity = convert.convertToCuEntity(devEntityVo);
             if(!isRepeat(cuEntity)){
                 throw new CuException(DeviceErrorEnum.IP_OR_NAME_REPEAT);
             }
-            if(!(entity.getIp().equals(cuEntity.getIp()) && entity.getUsername().equals(cuEntity.getUsername()) && entity.getPassword().equals(cuEntity.getPassword()) && entity.getPort() == cuEntity.getPort())){
-                CuRequestDto dto = new CuRequestDto();
-                dto.setKmId(entity.getId());
-                try {
-                    logoutById(dto);
-                } catch (Exception e) {
-                    log.error("=====更新CU时登出CU失败");
-                }
-                try {
-                    loginById(dto);
-                } catch (Exception e) {
-                    log.error("=====更新CU时CU登录CU失败");
-                }
+            CuRequestDto dto = new CuRequestDto();
+            dto.setKmId(cuEntity.getId());
+            try {
+                this.logoutById(dto);
+            } catch (Exception e) {
+                log.info("======更新时登出CU失败",e);
             }
             cuMapper.updateById(cuEntity);
+            try {
+                this.loginById(dto);
+            } catch (Exception e) {
+                log.info("======更新时登录CU失败",e);
+            }
+
             DevEntityVo vo = convert.convertToDevEntityVo(cuEntity);
             return BaseResult.succeed("修改成功",vo);
         }

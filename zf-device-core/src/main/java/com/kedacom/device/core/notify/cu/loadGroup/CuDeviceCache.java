@@ -198,16 +198,17 @@ public class CuDeviceCache {
 				if(list == null){
 					list = new ArrayList<PDevice>();
 					this.devicesByGroup.put(groupId, list);
+				}else {
+					int i = 0;
+					for( ; i < list.size(); i ++){
+						PDevice dev = list.get(i);
+						if(device.getName().compareTo(dev.getName()) <= 0){
+							break;
+						}
+					}
+					list.add(i, device);
 				}
 
-				int i = 0;
-				for( ; i < list.size(); i ++){
-					PDevice dev = list.get(i);
-					if(device.getName().compareTo(dev.getName()) <= 0){
-						break;
-					}
-				}
-				list.add(i, device);
 	}
 	
 	public void addDevices(Collection<PDevice> devices){

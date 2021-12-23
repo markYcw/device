@@ -331,7 +331,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         CuLoginResponse response = JSON.parseObject(string, CuLoginResponse.class);
         //如果是密码错误或者是用户不存在首先去除定时任务不进行无限重连
         if(response.getCode()!=0){
-            if(response.getCode()==10012||response.getCode()==10011||response.getCode()==100){
+            if(response.getCode()==10012||response.getCode()==10011||response.getCode()==9||response.getCode()==10){
                 removeReTryLogin(entity.getId());
                 return BaseResult.failed("登录失败，用户名或密码错误请检查");
             }else {

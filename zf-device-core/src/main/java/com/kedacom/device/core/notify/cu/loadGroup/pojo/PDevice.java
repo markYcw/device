@@ -82,7 +82,6 @@ public class PDevice {
 	 * @param recs
 	 */
 	public void updateChnRec(List<Rec> recs){
-		log.info("=====更新设备录像状态List<Rec>：{}",recs);
 		for (Rec rec : recs) {
 			for (SrcChn srcChn : srcChns) {
 				if (srcChn.getSn().equals(rec.getSn())){

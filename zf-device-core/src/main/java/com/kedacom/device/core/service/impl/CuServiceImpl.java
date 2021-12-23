@@ -193,7 +193,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             if(!isRepeat(cuEntity)){
                 throw new CuException(DeviceErrorEnum.IP_OR_NAME_REPEAT);
             }
-            if(!entity.getIp().equals(cuEntity.getIp())||!entity.getUsername().equals(cuEntity.getUsername())||!entity.getPassword().equals(cuEntity.getPassword())||!entity.getPort().equals(cuEntity.getPort())){
+            if(!(entity.getIp().equals(cuEntity.getIp()))||!(entity.getUsername().equals(cuEntity.getUsername()))||!(entity.getPassword().equals(cuEntity.getPassword()))||!(entity.getPort().equals(cuEntity.getPort()))){
                 CuRequestDto dto = new CuRequestDto();
                 dto.setKmId(entity.getId());
                 try {

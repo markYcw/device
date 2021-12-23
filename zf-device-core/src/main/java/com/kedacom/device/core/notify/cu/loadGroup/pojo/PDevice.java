@@ -87,7 +87,7 @@ public class PDevice {
 			for (SrcChn srcChn : srcChns) {
 				if (srcChn.getSn().equals(rec.getSn())){
 					if(rec.getPlat()!=null){
-						srcChn.setPuRecord(rec.getPlat());
+						srcChn.setPlatRecord(rec.getPlat());
 					}
 					if(rec.getPu()!=null){
 						srcChn.setPuRecord(rec.getPu());

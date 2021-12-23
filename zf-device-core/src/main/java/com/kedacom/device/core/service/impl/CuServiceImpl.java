@@ -198,9 +198,13 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 dto.setKmId(entity.getId());
                 try {
                     logoutById(dto);
+                } catch (Exception e) {
+                    log.error("=====更新CU时登出CU失败");
+                }
+                try {
                     loginById(dto);
                 } catch (Exception e) {
-                    log.error("=====更新CU时登出CU/或登录CU失败");
+                    log.error("=====更新CU时CU登录CU失败");
                 }
             }
             cuMapper.updateById(cuEntity);

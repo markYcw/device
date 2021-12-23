@@ -4,6 +4,8 @@ package com.kedacom.device.core.notify.cu.loadGroup.pojo;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.List;
  *
  */
 @Data
+@Slf4j
 public class PDevice {
 
 	@ApiModelProperty("设备所在的平台域的域编号")
@@ -79,6 +82,7 @@ public class PDevice {
 	 * @param recs
 	 */
 	public void updateChnRec(List<Rec> recs){
+		log.info("=====更新设备录像状态List<Rec>：{}",recs);
 		for (Rec rec : recs) {
 			for (SrcChn srcChn : srcChns) {
 				if (srcChn.getSn().equals(rec.getSn())){

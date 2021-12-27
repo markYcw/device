@@ -1233,8 +1233,10 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         for (PDevice pDevice : deviceList) {
             CuDeviceVo cuDeviceVo = convert.covertToCuDeviceVo(pDevice);
             List<SrcChn> srcChns = pDevice.getSrcChns();
-            List<CuChannelVo> chnCollect = srcChns.stream().map(a -> convert.convertToCuChannelVo(a)).collect(Collectors.toList());
-            cuDeviceVo.setChildList(chnCollect);
+            if(CollectionUtil.isNotEmpty(srcChns)){
+                List<CuChannelVo> chnCollect = srcChns.stream().map(a -> convert.convertToCuChannelVo(a)).collect(Collectors.toList());
+                cuDeviceVo.setChildList(chnCollect);
+            }
             collect.add(cuDeviceVo);
         }
         //记录操作日志

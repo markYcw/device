@@ -242,9 +242,7 @@ public class CuDeviceLoadThread {
         CuSession session = client.getSessionManager().getSessionBySSID(ssid);
         //有可能当前分组底下未挂载设备但是子分组底下挂载设备所以对设备列表进行判空
         if (session != null) {
-            log.info("添加设备开始");
             session.getDeviceCache().addDevices(devices);
-            log.info("添加设备结束");
             if (isSend == 1) {
                 //一个分组下的设备获取完成，获取下一个分组的设备
                 loadNextDeviceGroup(ssid);

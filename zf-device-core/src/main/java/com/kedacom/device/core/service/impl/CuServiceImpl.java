@@ -307,51 +307,53 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Override
     public BaseResult<DevEntityVo> loginById(CuRequestDto dto) {
-        log.info("登录cu入参信息:{}", dto.getKmId());
-        //登录之前先判断改平台是否已经登录，如果已经登录告知业务该设备已登录请勿重复登录
+        synchronized (this){
+            log.info("登录cu入参信息:{}", dto.getKmId());
+            //登录之前先判断改平台是否已经登录，如果已经登录告知业务该设备已登录请勿重复登录
             if(cuStatusPoll.get(dto.getKmId())!=null){
                 return BaseResult.succeed("该平台已登录请勿重复登录");
             }
-        RestTemplate template = remoteRestTemplate.getRestTemplate();
-        CuEntity entity = cuMapper.selectById(dto.getKmId());
-        if(entity == null){
-            throw new CuException(DeviceErrorEnum.DEVICE_NOT_FOUND);
-        }
-        CuLoginRequest request = convert.convertToCuLoginRequest(entity);
-        String ntyUrl = REQUEST_HEAD + cuNtyUrl + NOTIFY_URL;
-        request.setNtyUrl(ntyUrl);
-        String url = factory.geturl(entity.getType());
-        Map<String, Long> paramMap = new HashMap<>();
-        paramMap.put("ssno", (long) NumGen.getNum());
-
-        log.info("登录cu中间件入参信息:{},登录cu的ssno为：{}", JSON.toJSONString(request),paramMap);
-        String string = template.postForObject(url + "/login/{ssno}", JSON.toJSONString(request), String.class, paramMap);
-        log.info("登录cu中间件应答:{}", string);
-
-        CuLoginResponse response = JSON.parseObject(string, CuLoginResponse.class);
-        //如果是密码错误或者是用户不存在首先去除定时任务不进行无限重连
-        if(response.getCode()!=0){
-            if(response.getCode()==10012||response.getCode()==10011||response.getCode()==9||response.getCode()==10){
-                removeReTryLogin(entity.getId());
-                return BaseResult.failed("登录失败，用户名或密码错误请检查");
-            }else {
-                return BaseResult.failed("登录失败，请稍后重试");
+            RestTemplate template = remoteRestTemplate.getRestTemplate();
+            CuEntity entity = cuMapper.selectById(dto.getKmId());
+            if(entity == null){
+                throw new CuException(DeviceErrorEnum.DEVICE_NOT_FOUND);
             }
-        }
-       //如果登录成功再把ssid保存进数据库
-        entity.setSsid(response.getSsid());
-        entity.setModifyTime(new Date());
-        cuMapper.updateById(entity);
-        DevEntityVo devEntityVo = convert.convertToDevEntityVo(entity);
-        devEntityVo.setStatus(DevTypeConstant.updateRecordKey);
+            CuLoginRequest request = convert.convertToCuLoginRequest(entity);
+            String ntyUrl = REQUEST_HEAD + cuNtyUrl + NOTIFY_URL;
+            request.setNtyUrl(ntyUrl);
+            String url = factory.geturl(entity.getType());
+            Map<String, Long> paramMap = new HashMap<>();
+            paramMap.put("ssno", (long) NumGen.getNum());
 
-        //登录成功以后加载分组信息
-        CompletableFuture.runAsync(()-> getGroups(dto.getKmId(),response.getSsid()));
-        //往cu状态池放入当前mcu状态 1已登录
-        cuStatusPoll.put(dto.getKmId(), DevTypeConstant.updateRecordKey);
-        //发送心跳
-        hbTask(entity.getId());
-        return BaseResult.succeed("登录监控平台成功",devEntityVo);
+            log.info("登录cu中间件入参信息:{},登录cu的ssno为：{}", JSON.toJSONString(request),paramMap);
+            String string = template.postForObject(url + "/login/{ssno}", JSON.toJSONString(request), String.class, paramMap);
+            log.info("登录cu中间件应答:{}", string);
+
+            CuLoginResponse response = JSON.parseObject(string, CuLoginResponse.class);
+            //如果是密码错误或者是用户不存在首先去除定时任务不进行无限重连
+            if(response.getCode()!=0){
+                if(response.getCode()==10012||response.getCode()==10011||response.getCode()==9||response.getCode()==10){
+                    removeReTryLogin(entity.getId());
+                    return BaseResult.failed("登录失败，用户名或密码错误请检查");
+                }else {
+                    return BaseResult.failed("登录失败，请稍后重试");
+                }
+            }
+            //如果登录成功再把ssid保存进数据库
+            entity.setSsid(response.getSsid());
+            entity.setModifyTime(new Date());
+            cuMapper.updateById(entity);
+            DevEntityVo devEntityVo = convert.convertToDevEntityVo(entity);
+            devEntityVo.setStatus(DevTypeConstant.updateRecordKey);
+
+            //登录成功以后加载分组信息
+            CompletableFuture.runAsync(()-> getGroups(dto.getKmId(),response.getSsid()));
+            //往cu状态池放入当前mcu状态 1已登录
+            cuStatusPoll.put(dto.getKmId(), DevTypeConstant.updateRecordKey);
+            //发送心跳
+            hbTask(entity.getId());
+            return BaseResult.succeed("登录监控平台成功",devEntityVo);
+        }
     }
 
     /**
@@ -1226,6 +1228,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         Integer ssid = devEntity.getSsid();
         String groupId = requestDto.getGroupId();
         List<PDevice> deviceList = this.getDeviceList(ssid, groupId);
+        log.info("=======获取到设备集合结果：{}",deviceList);
         List<CuDeviceVo> collect = new ArrayList<>();
         for (PDevice pDevice : deviceList) {
             CuDeviceVo cuDeviceVo = convert.covertToCuDeviceVo(pDevice);
@@ -2022,7 +2025,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
         } else {
             pDeviceList = cuSession.getDeviceCache().getDeivcesByGroupId(groupId);
-            log.info("根据分组ID获取设备列表获取结果为：",pDeviceList);
         }
         return pDeviceList;
     }

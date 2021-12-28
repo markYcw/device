@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MtUrlFactory {
 
-    @Value("${zf.mt.server_addr}")
+    @Value("${zf.kmProxy.server_addr}")
     private String server_addr;
 
     private String mtHttp = "http://";

@@ -12,6 +12,7 @@ import com.kedacom.device.cu.CuResponse;
 import com.kedacom.device.mp.MpResponse;
 import com.kedacom.device.svr.SvrResponse;
 import com.kedacom.mp.mcu.entity.UmsMcuEntity;
+import com.kedacom.mt.MtResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,8 +35,10 @@ public class HandleResponseUtil {
     private McuErrCode mcuErrCode;
 
     @Autowired
-    private CuErrCode cuErrCode;
+    private MtErrorCode mtErrorCode;
 
+    @Autowired
+    private CuErrCode cuErrCode;
 
     /**
      * 处理拼控服务响应消息
@@ -165,6 +168,24 @@ public class HandleResponseUtil {
             }else {
                 log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
                 throw new CuException(res.getCode(), errorEnum.getMsg());
+            }
+        }
+    }
+
+    /**
+     * 处理终端异常
+     * @param str
+     * @param errorEnum
+     * @param res
+     */
+    public void handleMtRes(String str, DeviceErrorEnum errorEnum, MtResponse res) {
+        if (ObjectUtil.notEqual(res.getCode(), DeviceConstants.SUCCESS)) {
+            if(StringUtils.isNotBlank(mtErrorCode.matchErrMsg(res.getCode()))){
+                log.error(str, res.getCode(), errorEnum.getCode(), mtErrorCode.matchErrMsg(res.getCode()));
+                throw new MtException(errorEnum.getCode(), mtErrorCode.matchErrMsg(res.getCode()));
+            } else {
+                log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
+                throw new MtException(res.getCode(), errorEnum.getMsg());
             }
         }
     }

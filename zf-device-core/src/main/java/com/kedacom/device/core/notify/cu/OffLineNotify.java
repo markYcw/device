@@ -1,6 +1,7 @@
 package com.kedacom.device.core.notify.cu;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.kedacom.BaseResult;
@@ -43,13 +44,14 @@ public class OffLineNotify extends INotify {
     @Override
     public void consumeMessage(Integer ssid, String message) {
         log.info("======================收到掉线通知ssid{}",ssid);
-        CuMapper cuMapper = ContextUtils.getBean(CuMapper.class);
+        CuService service = ContextUtils.getBean(CuService.class);
+        CuEntity cuEntity = service.getBySsid(ssid);
+        if(ObjectUtil.isNull(cuEntity)){
+            return;
+        }
         CuDeviceLoadThread cuDeviceLoadThread = ContextUtils.getBean(CuDeviceLoadThread.class);
         RegisterListenerService listenerService = ContextUtils.getBean(RegisterListenerService.class);
         DeviceNotifyUtils notifyUtils = ContextUtils.getBean(DeviceNotifyUtils.class);
-        LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(CuEntity::getSsid,ssid);
-        CuEntity cuEntity = cuMapper.selectList(wrapper).get(DevTypeConstant.getZero);
         //除去cu设备状态池中的状态
         CuServiceImpl.cuDeviceStatusPoll.remove(cuEntity.getId());
         //去除会话信息

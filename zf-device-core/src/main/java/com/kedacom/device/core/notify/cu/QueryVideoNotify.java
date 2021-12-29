@@ -1,6 +1,7 @@
 package com.kedacom.device.core.notify.cu;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.kedacom.api.WebsocketFeign;
@@ -12,6 +13,7 @@ import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.notify.cu.loadGroup.notify.QueryCuVideoNotify;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.QueryVideoInsideNotify;
 import com.kedacom.device.core.notify.stragegy.INotify;
+import com.kedacom.device.core.service.CuService;
 import com.kedacom.device.core.service.RegisterListenerService;
 import com.kedacom.device.core.utils.ContextUtils;
 import com.kedacom.device.core.utils.DeviceNotifyUtils;
@@ -32,18 +34,19 @@ import java.util.List;
 public class QueryVideoNotify extends INotify{
     @Override
     protected void consumeMessage(Integer ssid, String message) {
+        CuService service = ContextUtils.getBean(CuService.class);
+        CuEntity entity = service.getBySsid(ssid);
+        if(ObjectUtil.isNull(entity)){
+            return;
+        }
         QueryCuVideoNotify queryCuVideoNotify = JSON.parseObject(message, QueryCuVideoNotify.class);
         QueryVideoInsideNotify content = queryCuVideoNotify.getContent();
         QueryCuVideoVo vo = new QueryCuVideoVo();
         BeanUtils.copyProperties(content,vo);
-        CuMapper cuMapper = ContextUtils.getBean(CuMapper.class);
         RegisterListenerService listenerService = ContextUtils.getBean(RegisterListenerService.class);
         DeviceNotifyUtils notifyUtils = ContextUtils.getBean(DeviceNotifyUtils.class);
-        LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(CuEntity::getSsid,ssid);
-        CuEntity cuEntity = cuMapper.selectList(wrapper).get(DevTypeConstant.getZero);
         //将通知发给业务
-        vo.setDbId(cuEntity.getId());
+        vo.setDbId(entity.getId());
         List<KmListenerEntity> list = listenerService.getAll(MsgType.CU_QUERY_VIDEO_NTY.getType());
         if(!CollectionUtil.isEmpty(list)){
             for (KmListenerEntity kmListenerEntity : list) {

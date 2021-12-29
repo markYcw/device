@@ -1,12 +1,15 @@
 package com.kedacom.device.core.notify.cu;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.kedacom.common.constants.DevTypeConstant;
+import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.device.core.notify.cu.loadGroup.CuDeviceLoadThread;
 import com.kedacom.device.core.notify.cu.loadGroup.notify.GroupsNotify;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.GetGroupNotify;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.PGroup;
 import com.kedacom.device.core.notify.stragegy.INotify;
+import com.kedacom.device.core.service.CuService;
 import com.kedacom.device.core.utils.ContextUtils;
 
 import java.util.Iterator;
@@ -23,6 +26,11 @@ public class GroupNotify extends INotify {
     protected void consumeMessage(Integer ssid, String message) {
         GroupsNotify getGroupNotify = JSON.parseObject(message, GroupsNotify.class);
         GetGroupNotify content = getGroupNotify.getContent();
+        CuService service = ContextUtils.getBean(CuService.class);
+        CuEntity entity = service.getBySsid(content.getSsid());
+        if(ObjectUtil.isNull(entity)){
+            return;
+        }
         //去除分组底下没有挂载设备的空分组
         Iterator<PGroup> iterator = content.getGroupList().iterator();
         while (iterator.hasNext()){

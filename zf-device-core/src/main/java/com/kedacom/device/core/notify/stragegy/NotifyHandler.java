@@ -29,6 +29,13 @@ public class NotifyHandler {
         return instance;
     }
 
+    /**
+     * 根据设备类型和通知类型得到具体的消息处理类处理消息
+     * @param ssid 会话ID
+     * @param devType 设备类型
+     * @param notifyType 通知类型
+     * @param message 消息
+     */
     public void distributeMessages(Integer ssid,Integer devType, Integer notifyType, String message){
         INotify notify = ContextUtils.getBean(NotifyFactory.class).getNotify(devType, notifyType);
         notify.consumeMessage(ssid,message);

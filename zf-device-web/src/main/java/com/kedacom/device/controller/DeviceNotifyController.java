@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @description 设备消息接收控制层
  */
 @RestController
-@RequestMapping("ums/notify")
+@RequestMapping("ums/device")
 @Api(value = "设备消息接收控制层", tags = "设备消息接收控制层")
 public class DeviceNotifyController {
 

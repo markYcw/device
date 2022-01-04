@@ -63,7 +63,7 @@ public class MtServiceImpl implements MtService {
     @Resource
     RemoteRestTemplate remoteRestTemplate;
 
-    private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/mt/mtNotify";
+    private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/device/notify";
 
     /**
      * 在线终端缓存（id）
@@ -318,7 +318,7 @@ public class MtServiceImpl implements MtService {
         remotemt.setAlias(startMeetingMtVo.getAlias());
         remotemt.setType(startMeetingMtVo.getAddrType());
         StartP2P startP2P = new StartP2P();
-        startP2P.setRemotemt(remotemt);
+        startP2P.setRemoteMt(remotemt);
         startP2P.setRate(startMeetingMtVo.getBitrate());
 
         String response = remoteRestTemplate.getRestTemplate()

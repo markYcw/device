@@ -20,6 +20,6 @@ public class StartP2P implements Serializable {
     /**
      * 终端
      */
-    private RemoteMt remotemt;
+    private RemoteMt remoteMt;
 
 }

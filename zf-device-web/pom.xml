@@ -84,7 +84,7 @@
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}-${project.version}-${current.time}-${version-flag}</finalName>
+        <finalName>${project.artifactId}-${project.version}-${version-flag}-${current.time}</finalName>
 <!--        <finalName>${project.artifactId}-${current.time}-${version-flag}</finalName>-->
         <!--重要 若是不设置resource 会致使application.yaml中的@@找不到pom文件中的配置-->
         <resources>

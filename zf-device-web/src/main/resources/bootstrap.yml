@@ -6,7 +6,7 @@ spring:
       discovery:
         server-addr: 127.0.0.1:18848
         metadata:
-          app-version: @project.version@
+          app-version: @project.artifactId@-@project.version@-@version-flag@-@current.time@
           build-time: @timestamp@
           context-path: ${server.servlet.context-path}
       config:

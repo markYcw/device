@@ -15,6 +15,7 @@ if [ ! -d ./10-common/version/release/linux/zf-device-cloud-platform ];then
   mkdir -p ./10-common/version/release/linux/zf-device-cloud-platform
 else
   echo ./10-common/version/release/linux/zf-device-cloud-platform exist
+  rm -fr ./10-common/version/release/linux/zf-device-cloud-platform/*
 fi
 
 cp ./zf-device-web/target/*.jar    ./10-common/version/release/linux/zf-device-cloud-platform/

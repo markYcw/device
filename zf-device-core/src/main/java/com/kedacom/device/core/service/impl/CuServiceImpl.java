@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.rholder.retry.*;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.common.constants.DevTypeConstant;
@@ -26,7 +26,10 @@ import com.kedacom.device.core.notify.cu.loadGroup.CuClient;
 import com.kedacom.device.core.notify.cu.loadGroup.CuDeviceLoadThread;
 import com.kedacom.device.core.notify.cu.loadGroup.CuSession;
 import com.kedacom.device.core.notify.cu.loadGroup.CuSessionManager;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.CuSessionStatus;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.PDevice;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.PGroup;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.SrcChn;
 import com.kedacom.device.core.notify.stragegy.DeviceType;
 import com.kedacom.device.core.notify.stragegy.NotifyHandler;
 import com.kedacom.device.core.service.CuService;
@@ -51,7 +54,10 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -598,7 +604,8 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         } catch (Exception e) {
             log.error("=============中间件重启/或者cu掉线后登出失败{}",e);
         }
-        ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2);
+        ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2,
+                new ThreadFactoryBuilder().setNameFormat("reTryLogin-pool-%d").build());
         reTryPoll.put(dbId,scheduled);
         scheduled.scheduleAtFixedRate(new Runnable() {
             @Override
@@ -606,7 +613,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 BaseResult<DevEntityVo> baseResult = null;
                 try {
                     baseResult = loginById(dto);
-                    if(baseResult.getErrCode()==0){
+                    if (baseResult.getErrCode() == 0) {
                         scheduled.shutdownNow();
                     }
                 } catch (Exception e) {
@@ -614,7 +621,8 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 }
 
             }
-        },60,60, TimeUnit.SECONDS);
+        }, 60, 60, TimeUnit.SECONDS);
+
     }
 
         @Override
@@ -683,7 +691,8 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      * @param dbId
      */
     public void hbTask(Integer dbId){
-        ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2);
+        ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2,
+                new ThreadFactoryBuilder().setNameFormat("hbTask-pool-%d").build());
         // 创建定时任务，每1分钟发送一次心跳
         scheduled.scheduleAtFixedRate(()->{
             hb(dbId);

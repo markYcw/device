@@ -107,6 +107,7 @@ public class NIOConnector extends Connector {
 
         try {
             socketChannel = SocketChannel.open();
+            socketChannel.configureBlocking(false);
             socketChannel.connect(new InetSocketAddress(InetAddress.getByName(serverIp), serverPort));
         } catch (IOException e) {
             log.error("connect to server failed ,serverIp {} serverPort {} ,caused by ", serverIp, serverPort, e);

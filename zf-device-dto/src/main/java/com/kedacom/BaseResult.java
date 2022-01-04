@@ -3,6 +3,7 @@ package com.kedacom;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -14,6 +15,7 @@ import java.io.Serializable;
  */
 @ApiModel(description = "统一结果")
 @Getter
+@NoArgsConstructor
 public class BaseResult<T> implements Serializable {
 
     @ApiModelProperty("错误码，0为结果正常；非0为结果异常，具体异常码和异常信息请参考接口文档")

@@ -156,7 +156,7 @@ public class MtController {
     public BaseResult<String> heartBeat(@RequestParam Integer dbId) {
 
         if (mtService.heartBeat(dbId)) {
-            return BaseResult.succeed("终端登录成功");
+            return BaseResult.succeed("发送心跳成功");
         }
 
         return BaseResult.failed("发送心跳失败");
@@ -196,7 +196,7 @@ public class MtController {
         return BaseResult.failed("停止点对点会议失败");
     }
 
-    @ApiOperation("获取终端状态")
+    @ApiOperation("获取终端状态(不支持五代终端)")
     @PostMapping("/getMtStatus")
     public BaseResult<GetMtStatusResponseVo> getMtStatus(@RequestParam Integer dbId) {
 
@@ -238,7 +238,7 @@ public class MtController {
         return BaseResult.succeed(type + "状态获取成功", dumbMute);
     }
 
-    @ApiOperation("音量控制")
+    @ApiOperation("音量控制(不支持五代终端)")
     @PostMapping("/volumeCtrl")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
             @ApiImplicitParam(name = "type", value = "1:扬声器 2:麦克", required = true),
@@ -252,7 +252,7 @@ public class MtController {
         return BaseResult.failed("音量设置失败");
     }
 
-    @ApiOperation("音量获取")
+    @ApiOperation("音量获取(不支持五代终端)")
     @PostMapping("/getVolume")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
             @ApiImplicitParam(name = "type", value = "1:扬声器 2:麦克", required = true)})
@@ -303,7 +303,7 @@ public class MtController {
         return BaseResult.failed("ptz控制失败");
     }
 
-    @ApiOperation("设置画面显示模式只适用于三代高清终端")
+    @ApiOperation("设置画面显示模式(不支持五代终端)")
     @PostMapping("/setPipMode")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
             @ApiImplicitParam(name = "mode", value = "0：单屏双显 1：双屏双显 2：单屏三显", required = true)})

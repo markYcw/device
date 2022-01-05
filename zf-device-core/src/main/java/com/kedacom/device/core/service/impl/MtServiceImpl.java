@@ -519,7 +519,7 @@ public class MtServiceImpl implements MtService {
         keyframeVo.setStreamType(streamType);
 
         String response = remoteRestTemplate.getRestTemplate()
-                .postForObject(mtRequestUrl + "/volume/{ssid}/{ssno}", JSON.toJSONString(keyframeVo), String.class, paramMap);
+                .postForObject(mtRequestUrl + "/keyframe/{ssid}/{ssno}", JSON.toJSONString(keyframeVo), String.class, paramMap);
         log.info("请求关键帧响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
         String errorMsg = "请求关键帧失败 : {}, {}, {}";

@@ -46,6 +46,15 @@ public enum DeviceModelType {
      */
     SVR10(4,"SVR"),
 
+
+    SVR_2830(5,"SVR2830"),
+
+    SVR_2831(5,"SVR2831"),
+
+    SVR_2916(5,"SVR2916"),
+
+    SVR_2930(5,"SVR2930"),
+
     /**
      * SVR_2931
      */

@@ -1,6 +1,6 @@
 package com.kedacom.svr.dto;
 
-import com.kedacom.svr.pojo.PicChn;
+import com.kedacom.svr.pojo.PicChnVo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -47,6 +47,6 @@ public class SetSvrComposePicVo extends SvrRequestDto {
     private String borderColorBlue;
 
     @ApiModelProperty(value = "画面通道ID列表",required = true)
-    private List<PicChn> picChnList;
+    private List<PicChnVo> picChnList;
 
 }

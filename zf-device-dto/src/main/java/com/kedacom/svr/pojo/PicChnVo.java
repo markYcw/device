@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
  * @description 通道信息
  */
 @Data
-public class PicChn {
+public class PicChnVo {
 
     @NotNull(message = "chnId不能为空")
     @ApiModelProperty(value = "通道ID （64位空通道)",required = true)

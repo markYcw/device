@@ -1,5 +1,6 @@
 package com.kedacom.device.core.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -9,7 +10,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.SvrConvert;
 import com.kedacom.device.core.basicParam.SvrBasicParam;
@@ -22,9 +22,14 @@ import com.kedacom.device.core.notify.stragegy.NotifyHandler;
 import com.kedacom.device.core.service.SvrService;
 import com.kedacom.device.core.utils.*;
 import com.kedacom.device.svr.SvrResponse;
+import com.kedacom.device.svr.pojo.MergeInfo;
+import com.kedacom.device.svr.pojo.PicChn;
+import com.kedacom.device.svr.pojo.RecVo;
 import com.kedacom.device.svr.request.SvrLoginRequest;
 import com.kedacom.device.svr.response.*;
 import com.kedacom.svr.entity.SvrEntity;
+import com.kedacom.svr.pojo.PicChnVo;
+import com.kedacom.svr.pojo.RemotePoint;
 import com.kedacom.svr.pojo.SvrPageQueryDTO;
 import com.kedacom.svr.dto.*;
 import com.kedacom.svr.vo.*;
@@ -38,10 +43,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -182,7 +184,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     }
 
     @Override
-    public BaseResult<SvrTimeVo> svrTime(Integer dbId) {
+    public BaseResult<String> svrTime(Integer dbId) {
         log.info("获取SVR时间接口入参{}",dbId);
         SvrEntity entity = svrMapper.selectById(dbId);
         check(entity);
@@ -191,8 +193,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         SvrTimeResponse response = JSONObject.parseObject(exchange.getBody(), SvrTimeResponse.class);
         String errorMsg = "获取SVR时间失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_TIME_FAILED,response);
-        SvrTimeVo svrTimeVo = convert.convertTOSvrTimeVo(response);
-        return BaseResult.succeed("获取SVR时间成功",svrTimeVo);
+        return BaseResult.succeed("获取SVR时间成功",response.getTime());
     }
 
     @Override
@@ -337,16 +338,22 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     }
 
     @Override
-    public BaseResult<String> remotePoint(RemotePointDto dto) {
-        log.info("启用/停止远程点接口入参RemotePointDto:{}",dto);
+    public BaseResult<String> remotePoint(RemotePointOnVo dto) {
+        log.info("启用远程点接口入参RemotePointOnVo:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
         SvrBasicParam param = tool.getParam(entity);
-        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/remotepoint/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        RemotePointDto pointDto = new RemotePointDto();
+        pointDto.setType(0);
+        RemotePoint remotePoint = new RemotePoint();
+        remotePoint.setName(dto.getRpName());
+        remotePoint.setUrl(dto.getUrl());
+        pointDto.setRemotePoint(remotePoint);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/remotepoint/{ssid}/{ssno}", JSON.toJSONString(pointDto), String.class, param.getParamMap());
         SvrResponse response = JSON.parseObject(s, SvrResponse.class);
-        String errorMsg = "启用/停止远程点失败:{},{},{}";
+        String errorMsg = "启用远程点失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_REMOTE_FAILED,response);
-        return BaseResult.succeed("启用/停止远程点成功");
+        return BaseResult.succeed("启用远程点成功");
     }
 
     @Override
@@ -474,7 +481,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     }
 
     @Override
-    public BaseResult<RecListVo> recList(QueryRecVo dto) {
+    public BaseResult<List<RecInfoVo>> recList(QueryRecVo dto) {
         log.info("查询录像接口入参RecListDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
@@ -483,12 +490,26 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         RecListResponse response = JSON.parseObject(s, RecListResponse.class);
         String errorMsg = "查询录像失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_REC_LIST_FAILED,response);
-        RecListVo vo = convert.convertToRecListVo(response);
-        return BaseResult.succeed("查询录像成功",vo);
+        List<RecVo> recList = response.getRecList();
+        ArrayList<RecInfoVo> recListVos = new ArrayList<>();
+        if(CollectionUtil.isNotEmpty(recList)){
+            for (RecVo recVo : recList) {
+                RecInfoVo recInfoVo = new RecInfoVo();
+                recInfoVo.setId(recVo.getRecId());
+                recInfoVo.setSize(recVo.getSize());
+                recInfoVo.setResolution(Integer.valueOf(recVo.getRes()));
+                recInfoVo.setChn(recVo.getChnId());
+                recInfoVo.setStarttime(recVo.getStartTime());
+                recInfoVo.setEndtime(recVo.getEndTime());
+                recInfoVo.setMd5(recVo.getMd5());
+                recListVos.add(recInfoVo);
+            }
+        }
+        return BaseResult.succeed("查询录像成功",recListVos);
     }
 
     @Override
-    public BaseResult<GetMergeVo> getMerge(Integer dbId) {
+    public BaseResult<GetSvrComposePicResponseVo> getMerge(Integer dbId) {
         log.info("获取画面合成接口入参dbId:{}",dbId);
         SvrEntity entity = svrMapper.selectById(dbId);
         check(entity);
@@ -497,7 +518,18 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         GetMergeResponse response = JSON.parseObject(exchange.getBody(), GetMergeResponse.class);
         String errorMsg = "获取画面合成失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_GET_MERGE_FAILED,response);
-        GetMergeVo vo = convert.convertToGetMergeVo(response);
+        MergeInfo mergeInfo = response.getMergeInfo();
+        GetSvrComposePicResponseVo vo = new GetSvrComposePicResponseVo();
+        vo.setVideoresolution(mergeInfo.getResolution());
+        vo.setBorderwidth(mergeInfo.getBorderWidth());
+        vo.setMergestyle(mergeInfo.getMergeStyle());
+        vo.setStretchStyle(mergeInfo.getStretchStyle());
+        vo.setBorderColorRed(mergeInfo.getBorderColorRed());
+        vo.setBorderColorGreen(mergeInfo.getBorderColorGreen());
+        vo.setBorderColorBlue(mergeInfo.getBorderColorBlue());
+        List<PicChn> list = mergeInfo.getPicChnList();
+        List<PicChnVo> collect = list.stream().map(a -> convert.convertToPicChnVo(a)).collect(Collectors.toList());
+        vo.setPicChnList(collect);
         return BaseResult.succeed("获取画面合成成功",vo);
     }
 
@@ -581,6 +613,25 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         entity.setDevType(DeviceModelType.getEnum(modelType));
         svrMapper.insert(entity);
         return BaseResult.succeed("保存SVR成功",entity);
+    }
+
+    @Override
+    public BaseResult<String> remotePointOff(RemotePointOffVo vo) {
+        log.info("停用远程点接口入参RemotePointOffVo:{}",vo);
+        SvrEntity entity = svrMapper.selectById(vo.getDbId());
+        check(entity);
+        SvrBasicParam param = tool.getParam(entity);
+        RemotePointDto pointDto = new RemotePointDto();
+        pointDto.setType(1);
+        RemotePoint remotePoint = new RemotePoint();
+        remotePoint.setName(vo.getRpName());
+        remotePoint.setUrl(vo.getUrl());
+        pointDto.setRemotePoint(remotePoint);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/remotepoint/{ssid}/{ssno}", JSON.toJSONString(pointDto), String.class, param.getParamMap());
+        SvrResponse response = JSON.parseObject(s, SvrResponse.class);
+        String errorMsg = "停用远程点失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_REMOTE_FAILED,response);
+        return BaseResult.succeed("停用远程点成功");
     }
 
     /**

@@ -21,7 +21,7 @@ public class RemotePointDto extends SvrRequestDto{
     private Integer type;
 
     @Valid
-    @ApiModelProperty(value = "远程点列表",required = true)
-    private RemotePoint remotePointList;
+    @ApiModelProperty(value = "远程点",required = true)
+    private RemotePoint remotePoint;
 
 }

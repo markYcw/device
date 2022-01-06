@@ -58,7 +58,7 @@ public interface SvrService extends IService<SvrEntity> {
      * @param dbId
      * @return
      */
-    BaseResult<SvrTimeVo> svrTime(Integer dbId);
+    BaseResult<String> svrTime(Integer dbId);
 
     /**
      * 搜索编解码设备
@@ -136,7 +136,7 @@ public interface SvrService extends IService<SvrEntity> {
      * @return
      */
 
-    BaseResult<String> remotePoint(RemotePointDto dto);
+    BaseResult<String> remotePoint(RemotePointOnVo dto);
 
     /**
      * 获取远程点配置
@@ -206,14 +206,14 @@ public interface SvrService extends IService<SvrEntity> {
      * @param dto
      * @return
      */
-    BaseResult<RecListVo> recList(QueryRecVo dto);
+    BaseResult<List<RecInfoVo>> recList(QueryRecVo dto);
 
     /**
      * 获取画面合成
      * @param dbId
      * @return
      */
-    BaseResult<GetMergeVo> getMerge(Integer dbId);
+    BaseResult<GetSvrComposePicResponseVo> getMerge(Integer dbId);
 
     /**
      * 设置画面合成
@@ -256,4 +256,6 @@ public interface SvrService extends IService<SvrEntity> {
      * @return
      */
     BaseResult<SvrEntity> saveInfo(SvrEntity entity);
+
+    BaseResult<String> remotePointOff(RemotePointOffVo vo);
 }

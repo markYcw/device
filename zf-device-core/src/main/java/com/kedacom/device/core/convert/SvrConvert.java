@@ -2,9 +2,11 @@ package com.kedacom.device.core.convert;
 
 import com.kedacom.device.svr.pojo.DeChnList;
 import com.kedacom.device.svr.pojo.EnChnList;
+import com.kedacom.device.svr.pojo.PicChn;
 import com.kedacom.device.svr.request.SvrLoginRequest;
 import com.kedacom.device.svr.response.*;
 import com.kedacom.svr.entity.SvrEntity;
+import com.kedacom.svr.pojo.PicChnVo;
 import com.kedacom.svr.vo.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -41,5 +43,7 @@ public interface SvrConvert {
     GetMergeVo convertToGetMergeVo(GetMergeResponse response);
 
     GetOsdVo convertToGetOsdVo(GetOsdResponse response);
+
+    PicChnVo convertToPicChnVo(PicChn picChn);
 
 }

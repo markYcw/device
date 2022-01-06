@@ -68,7 +68,7 @@ public class SvrApiFallbackFactory implements FallbackFactory<SvrApi> {
             }
 
             @Override
-            public BaseResult<SvrTimeVo> svrTime(Integer dbId) {
+            public BaseResult<String> getBurnTime(Integer dbId) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
@@ -123,7 +123,12 @@ public class SvrApiFallbackFactory implements FallbackFactory<SvrApi> {
             }
 
             @Override
-            public BaseResult<String> remotePoint(RemotePointDto dto) {
+            public BaseResult<String> remotePointOn(RemotePointOnVo dto) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<String> remotePointOff(RemotePointOffVo vo) {
                 return  BaseResult.failed(throwable.getMessage());
             }
 
@@ -173,12 +178,12 @@ public class SvrApiFallbackFactory implements FallbackFactory<SvrApi> {
             }
 
             @Override
-            public BaseResult<RecListVo> queryRec(QueryRecVo dto) {
+            public BaseResult<List<RecInfoVo>> queryRec(QueryRecVo dto) {
                 return  BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<GetMergeVo> getSvrComposePic(Integer dbId) {
+            public BaseResult<GetSvrComposePicResponseVo> getSvrComposePic(Integer dbId) {
                 return  BaseResult.failed(throwable.getMessage());
             }
 

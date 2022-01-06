@@ -15,6 +15,9 @@ public class RecVo {
     @ApiModelProperty("录像ID")
     private Integer recId;
 
+    @ApiModelProperty("录像记录数据大小，单位MB")
+    private Integer size;
+
     @ApiModelProperty("通道号")
     private String chnId;
 

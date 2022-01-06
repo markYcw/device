@@ -26,7 +26,7 @@ public class Subtitle {
     @ApiModelProperty(value = "叠加位置y",required = true)
     private Integer yPos;
 
-    @NotNull(message = "自定义内容不能为空")
+    @NotNull(message = "字幕叠加内容 最大64字符，2816 1.0最大32字符")
     @ApiModelProperty(value = "自定义内容",required = true)
     private Integer content;
 

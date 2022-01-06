@@ -2,6 +2,7 @@ package com.kedacom.device.controller;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
+import com.kedacom.common.model.Result;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.SvrService;
 import com.kedacom.svr.entity.SvrEntity;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
 
@@ -125,9 +127,9 @@ public class SvrController {
     }
 
     @ApiOperation("获取SVR时间")
-    @PostMapping("/svrTime")
+    @PostMapping("/getBurnTime")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
-    public BaseResult<SvrTimeVo> svrTime(@RequestParam Integer dbId) {
+    public BaseResult<String> getBurnTime(@NotNull(message = "Svr设备数据库ID不能为空") @RequestParam Integer dbId) {
 
         return svrService.svrTime(dbId);
     }
@@ -200,16 +202,25 @@ public class SvrController {
 
     @ApiOperation("PTZ控制")
     @PostMapping("/ptzCtrl")
-    public BaseResult<String> ptzCtrl(@RequestBody PtzCtrlRequestVo dto) {
+    public BaseResult<String> ptzCtrl(@Valid @RequestBody PtzCtrlRequestVo dto) {
 
         return svrService.ptz(dto);
     }
 
-    @ApiOperation("启用/停止远程点")
-    @PostMapping("/remotePoint")
-    public BaseResult<String> remotePoint(@RequestBody RemotePointDto dto) {
+    @ApiOperation("启用远程点")
+    @PostMapping("/remotePointOn")
+    public BaseResult<String> remotePointOn(@Valid @RequestBody RemotePointOnVo vo,BindingResult br) {
+         ValidUtils.paramValid(br);
 
-         return svrService.remotePoint(dto);
+         return svrService.remotePoint(vo);
+    }
+
+    @ApiOperation("停用远程点")
+    @PostMapping("remotePointOff")
+    public BaseResult<String> remotePointOff(@Valid @RequestBody RemotePointOffVo vo,BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return svrService.remotePointOff(vo);
     }
 
     @ApiOperation("获取远程点配置")
@@ -278,7 +289,7 @@ public class SvrController {
 
     @ApiOperation("查询录像")
     @PostMapping("/queryRec")
-    public BaseResult<RecListVo> queryRec(@RequestBody QueryRecVo dto) {
+    public BaseResult<List<RecInfoVo>> queryRec(@RequestBody QueryRecVo dto) {
 
         return svrService.recList(dto);
     }
@@ -286,7 +297,7 @@ public class SvrController {
     @ApiOperation("获取画面合成")
     @PostMapping("/getSvrComposePic")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
-    public BaseResult<GetMergeVo> getSvrComposePic(@RequestParam Integer dbId) {
+    public BaseResult<GetSvrComposePicResponseVo> getSvrComposePic(@RequestParam Integer dbId) {
 
         return svrService.getMerge(dbId);
     }

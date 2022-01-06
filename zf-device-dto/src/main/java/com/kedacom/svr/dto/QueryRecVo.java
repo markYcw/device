@@ -1,5 +1,6 @@
 package com.kedacom.svr.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -17,15 +18,18 @@ public class QueryRecVo extends SvrRequestDto{
 
     @NotNull(message = "通道ID不能为空")
     @ApiModelProperty(value = "通道ID",required = true)
-    private Integer chnId;
+    @JSONField(name = "chnId")
+    private Integer chnid;
 
     @NotBlank(message = "开始时间不能为空")
     @ApiModelProperty(value = "开始时间，如：20200827120000",required = true)
-    private String startTime;
+    @JSONField(name = "startTime")
+    private String starttime;
 
     @NotBlank(message = "结束时间不能为空")
     @ApiModelProperty(value = "结束时间，如：20200827130000",required = true)
-    private String endTime;
+    @JSONField(name = "endTime")
+    private String endtime;
 
     @NotNull(message = "查询起始索引不能为空")
     @ApiModelProperty(value = "查询起始索引",required = true)

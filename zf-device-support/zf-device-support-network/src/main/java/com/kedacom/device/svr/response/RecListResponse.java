@@ -4,6 +4,7 @@ import com.kedacom.device.svr.SvrResponse;
 
 import com.kedacom.device.svr.pojo.RecVo;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
  * @date 2021/9/14 15:59
  * @description
  */
+@Data
 public class RecListResponse extends SvrResponse {
 
     @ApiModelProperty("录像列表")

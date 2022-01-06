@@ -18,8 +18,7 @@ public class BurnDto extends SvrRequestDto{
     @ApiModelProperty(value = "0：开始刻录 1：暂停刻录 2：恢复刻录 3：停止刻录 4：中断刻录",required = true)
     private Integer type;
 
-    @NotNull(message = "刻录任务ID不能为空")
-    @ApiModelProperty(value = "刻录任务ID 补刻开始时可以填0",required = true)
+    @ApiModelProperty(value = "刻录任务ID 除开始刻录模式以外都必填此字段")
     private Integer burnTaskId;
 
     @ApiModelProperty("刻录模式 0：无效 1：双盘同步刻录 2：只刻录DVD1(暂不支持) 3：只刻录DVD2(暂不支持) 4：循环连续刻录")

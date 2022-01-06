@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -67,9 +68,9 @@ public interface SvrApi {
     BaseResult<SvrCapVo> svrCap(@RequestParam Integer dbId);
 
     @ApiOperation("获取SVR时间")
-    @PostMapping("/svrTime")
+    @PostMapping("/getBurnTime")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value="数据库ID")})
-    BaseResult<SvrTimeVo> svrTime(@RequestParam Integer dbId);
+    BaseResult<String> getBurnTime(@RequestParam Integer dbId);
 
     @ApiOperation("搜索编解码设备")
     @PostMapping("/searchDev")
@@ -116,9 +117,13 @@ public interface SvrApi {
     @PostMapping("/ptzCtrl")
     BaseResult<String> ptzCtrl(@RequestBody PtzCtrlRequestVo dto);
 
-    @ApiOperation("启用/停止远程点")
-    @PostMapping("/remotePoint")
-    BaseResult<String> remotePoint(@RequestBody RemotePointDto dto);
+    @ApiOperation("启用远程点")
+    @PostMapping("/remotePointOn")
+    BaseResult<String> remotePointOn(@RequestBody RemotePointOnVo dto);
+
+    @ApiOperation("停用远程点")
+    @PostMapping("remotePointOff")
+    public BaseResult<String> remotePointOff(@RequestBody RemotePointOffVo vo);
 
     @ApiOperation("获取远程点配置")
     @PostMapping("/remoteCfg")
@@ -159,12 +164,12 @@ public interface SvrApi {
 
     @ApiOperation("查询录像")
     @PostMapping("/queryRec")
-    BaseResult<RecListVo> queryRec(@RequestBody QueryRecVo dto);
+    BaseResult<List<RecInfoVo>> queryRec(@RequestBody QueryRecVo dto);
 
     @ApiOperation("获取画面合成")
     @PostMapping("/getSvrComposePic")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
-    BaseResult<GetMergeVo> getSvrComposePic(@RequestParam Integer dbId);
+    BaseResult<GetSvrComposePicResponseVo> getSvrComposePic(@RequestParam Integer dbId);
 
     @ApiOperation("设置画面合成")
     @PostMapping("/setSvrComposePic")

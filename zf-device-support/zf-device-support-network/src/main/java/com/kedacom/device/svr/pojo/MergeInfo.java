@@ -20,6 +20,9 @@ public class MergeInfo {
     @ApiModelProperty("拉伸方式 ,当自定义画面为标准风格时候有效 0：铺满所在区域 1：按原比例缩放 2：自适应")
     private Integer stretchStyle;
 
+    @ApiModelProperty("分辨率")
+    private Integer resolution;
+
     @ApiModelProperty("边框宽度")
     private Integer borderWidth;
 
@@ -29,7 +32,7 @@ public class MergeInfo {
     @ApiModelProperty("边框颜色G")
     private Integer borderColorGreen;
 
-    @ApiModelProperty("设备IP")
+    @ApiModelProperty("边框颜色B")
     private String borderColorBlue;
 
     @ApiModelProperty("画面通道ID列表")

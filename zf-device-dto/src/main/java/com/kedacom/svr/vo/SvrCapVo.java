@@ -21,4 +21,11 @@ public class SvrCapVo implements Serializable {
     @ApiModelProperty("支持最大解码通道数")
     private Integer maxDecNum;
 
+    @ApiModelProperty("支持最大远程点通道数")
+    private Integer maxRemChnNum;
+
+    @ApiModelProperty("远程通道起始id")
+    private Integer remChnIdStart;
+
+
 }

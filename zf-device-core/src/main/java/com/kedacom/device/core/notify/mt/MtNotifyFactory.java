@@ -18,11 +18,11 @@ public class MtNotifyFactory {
 
         NotifyFactory factory = ContextUtils.getBean(NotifyFactory.class);
 
-        factory.register(DeviceType.MT.getValue(), 1, new OffLineNotify());
+        factory.register(DeviceType.MT.getValue(), 1, new MtDropLineNotify());
 
         factory.register(DeviceType.MT.getValue(), 100, new MtSeizeNotify());
 
-        factory.register(DeviceType.MT5.getValue(), 1, new OffLineNotify());
+        factory.register(DeviceType.MT5.getValue(), 1, new MtDropLineNotify());
 
         factory.register(DeviceType.MT5.getValue(), 100, new MtSeizeNotify());
 

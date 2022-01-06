@@ -45,7 +45,7 @@ public class MtEntity {
     @ApiModelProperty("会议终端e164号")
     private String e164;
 
-    @ApiModelProperty("UPU名称")
+    @ApiModelProperty("会议终端别名")
     private String upuname;
 
 }

@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
+import com.kedacom.device.core.constant.MtConstants;
 import com.kedacom.device.core.convert.MtConvert;
 import com.kedacom.device.core.entity.MtEntity;
 import com.kedacom.device.core.entity.MtTypeEntity;
@@ -311,16 +312,12 @@ public class MtServiceImpl implements MtService {
         check(entity);
         String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
-        String ip = getIp(startMeetingMtVo.getDstId(), startMeetingMtVo.getCallType());
 
-        RemoteMt remotemt = new RemoteMt();
-        remotemt.setIp(ip);
-        remotemt.setAlias(startMeetingMtVo.getAlias());
-        remotemt.setType(startMeetingMtVo.getAddrType());
-        StartP2P startP2P = new StartP2P();
-        startP2P.setRemoteMt(remotemt);
-        startP2P.setRate(startMeetingMtVo.getBitrate());
-
+        StartP2P startP2P = structureParam(startMeetingMtVo, entity);
+        if (startP2P == null) {
+            throw new MtException(null, "对端为五代终端，不可通过终端别名呼叫");
+        }
+        log.info("开启点对点会议-请求中间件参数 : {}", startP2P.toString());
         String response = remoteRestTemplate.getRestTemplate()
                 .postForObject(mtRequestUrl + "/p2p/{ssid}/{ssno}", JSON.toJSONString(startP2P), String.class, paramMap);
         log.info("开启点对点会议响应参数 : {}", response);
@@ -330,6 +327,51 @@ public class MtServiceImpl implements MtService {
         responseUtil.handleMtRes(errorMsg, DeviceErrorEnum.MT_START_P2P_FAILED, mtResponse);
 
         return true;
+    }
+
+    public StartP2P structureParam(StartMeetingMtVo startMeetingMtVo, MtEntity entity) {
+
+        // 对端设备的信息类型，如： ip， e164， h323， id
+        Integer key = startMeetingMtVo.getKey();
+        // 呼叫对端设备方式，如： ip， e164， h323
+        Integer addrType = startMeetingMtVo.getAddrType();
+        String ip = null, e164 = null, h323 = null;
+        if (key.equals(MtConstants.IP)) {
+            ip = startMeetingMtVo.getValue();
+        } else if (key.equals(MtConstants.E164)) {
+            e164 = startMeetingMtVo.getValue();
+        } else if (key.equals(MtConstants.H323)) {
+            h323 = startMeetingMtVo.getValue();
+        } else {
+            if (addrType.equals(MtConstants.IP)) {
+                ip = getIp(startMeetingMtVo.getCallType(), startMeetingMtVo.getCallType());
+            } else if (addrType.equals(MtConstants.E164)) {
+                e164 = entity.getE164();
+            } else {
+                h323 = entity.getUpuname();
+                if (StrUtil.isBlank(h323)) {
+                    return null;
+                }
+            }
+        }
+
+        RemoteMt remotemt = new RemoteMt();
+        if (addrType.equals(MtConstants.IP)) {
+            remotemt.setIp(ip);
+            remotemt.setAlias("");
+        } else if (addrType.equals(MtConstants.E164)) {
+            remotemt.setIp("");
+            remotemt.setAlias(e164);
+        } else {
+            remotemt.setIp("");
+            remotemt.setAlias(h323);
+        }
+        remotemt.setType(addrType);
+        StartP2P startP2P = new StartP2P();
+        startP2P.setRemoteMt(remotemt);
+        startP2P.setRate(startMeetingMtVo.getBitrate());
+
+        return startP2P;
     }
 
     @Override

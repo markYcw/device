@@ -258,7 +258,9 @@ public class MtController {
             @ApiImplicitParam(name = "type", value = "1:扬声器 2:麦克", required = true)})
     public BaseResult<String> getVolume(@RequestParam Integer dbId, @RequestParam Integer type) {
 
-        return BaseResult.succeed("音量获取成功", mtService.getVolume(dbId, type));
+        String typeStr = type == 1 ? "扬声器" : "麦克风";
+
+        return BaseResult.succeed(typeStr + "音量获取成功", mtService.getVolume(dbId, type));
     }
 
     @ApiOperation("请求关键帧")

@@ -92,14 +92,6 @@ public class SvrController {
     }
 
 
-    @PostMapping("/svrNotify")
-    @ApiOperation(value = "svr通知")
-    public void svrNotify(@RequestBody String notify) {
-
-        svrService.svrNotify(notify);
-    }
-
-
     @PostMapping("/loginById")
     @ApiOperation(value = "根据ID登录SVR")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})

@@ -54,5 +54,8 @@ public class SvrLoginRequest implements Serializable {
     @ApiModelProperty(value = "心跳检测时间，单位分钟，默认为10 eg:10")
     private Integer hbTime;
 
+    @ApiModelProperty(value = "设备的devType")
+    private Integer devType;
+
 
 }

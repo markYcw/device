@@ -15,17 +15,17 @@ public enum DeviceModelType {
     /**
      * 会议平台4.7
      */
-    MCU(1,"MCU"),
+    MCU(2,"MCU"),
 
     /**
      * 会议终端3代高清
      */
-    MT(0,"MT"),
+    MT3(0,"MT"),
 
     /**
      * 会议平台5.0
      */
-    MCU5(4,"MCU5"),
+    MCU5(3,"MCU5"),
 
     /**
      * GK服务器
@@ -35,7 +35,7 @@ public enum DeviceModelType {
     /**
      * 监控平台2.0
      */
-    CU2(1,"CU2"),
+    CU2(9,"CU2"),
 
     /**
      * 存储柜
@@ -44,17 +44,17 @@ public enum DeviceModelType {
     /**
      * Svr
      */
-    SVR(10,"SVR"),
+    SVR10(4,"SVR"),
 
     /**
      * SVR_2931
      */
-    SVR_NVRV7(30,"SVR_NVRV7"),
+    SVR_2931(6,"SVR2931"),
 
     /**
      * SVR_2832
      */
-    SVR_2832(2,"SVR_2832"),
+    SVR_2832(6,"SVR2832"),
 
     /**
      * 会议终端5.0

@@ -1,5 +1,6 @@
 package com.kedacom.device.core.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -8,10 +9,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
+import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.SvrConvert;
 import com.kedacom.device.core.basicParam.SvrBasicParam;
 import com.kedacom.device.core.enums.DeviceModelType;
+import com.kedacom.device.core.exception.CuException;
 import com.kedacom.device.core.exception.SvrException;
 import com.kedacom.device.core.mapper.SvrMapper;
 import com.kedacom.device.core.notify.stragegy.DeviceType;
@@ -74,7 +77,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
 
     private final static String REQUEST_HEAD = "http://";
 
-    private final static String NOTIFY_URL = "/api/api-device/ums/svr/svrNotify";
+    private final static String NOTIFY_URL = "/api/api-device/ums/device/notify";
 
     @Override
     public BaseResult<BasePage<SvrEntity>> pageQuery(SvrPageQueryDTO queryDTO) {
@@ -570,10 +573,45 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
 
     @Override
     public BaseResult<SvrEntity> saveInfo(SvrEntity entity) {
+        log.info("==========保存SVR接口入参：{}",entity);
+        if(!isRepeat(entity)){
+            throw new CuException(DeviceErrorEnum.IP_OR_NAME_REPEAT);
+        }
         String modelType = entity.getModelType();
         entity.setDevType(DeviceModelType.getEnum(modelType));
         svrMapper.insert(entity);
         return BaseResult.succeed("保存SVR成功",entity);
+    }
+
+    /**
+     * 对名称和IP做唯一校验
+     * @return
+     */
+    public boolean isRepeat(SvrEntity devEntity) {
+        Integer id = devEntity.getId();
+        String ip = devEntity.getIp();
+        String name = devEntity.getName();
+        LambdaQueryWrapper<SvrEntity> wrapper = new LambdaQueryWrapper<>();
+        if (id == null) {
+            wrapper.eq(SvrEntity::getIp, ip).or().eq(SvrEntity::getName,name);
+            List<SvrEntity> devEntitiesInsert = svrMapper.selectList(wrapper);
+            if (CollectionUtil.isNotEmpty(devEntitiesInsert)) {
+                log.info("=============添加SVR时IP或名称重复===============");
+                return false;
+            }
+        } else {
+            wrapper.eq(SvrEntity::getIp, ip).ne(SvrEntity::getId,id);
+            List<SvrEntity> devEntitiesUpdate = svrMapper.selectList(wrapper);
+            LambdaQueryWrapper<SvrEntity> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(SvrEntity::getName,name).ne(SvrEntity::getId,id);
+            List<SvrEntity> devEntities = svrMapper.selectList(queryWrapper);
+            if (CollectionUtil.isNotEmpty(devEntitiesUpdate)||CollectionUtil.isNotEmpty(devEntities)) {
+                log.info("==================修改SVR时IP或名称重复========================");
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

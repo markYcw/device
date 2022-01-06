@@ -69,7 +69,7 @@ public class MtServiceImpl implements MtService {
     @Resource
     RemoteRestTemplate remoteRestTemplate;
 
-    private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/device/notify";
+    private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/mt/mtNotify";
 
     /**
      * 在线终端缓存（id）

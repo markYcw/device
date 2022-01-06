@@ -200,4 +200,11 @@ public interface MtService {
      */
     boolean mtNotify(String notify);
 
+    /**
+     * ping
+     * @param dbId
+     * @return
+     */
+    boolean ping(Integer dbId);
+
 }

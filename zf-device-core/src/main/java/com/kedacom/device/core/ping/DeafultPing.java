@@ -1,11 +1,14 @@
 package com.kedacom.device.core.ping;
 
+import org.springframework.stereotype.Component;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
 public class DeafultPing implements IPing{
     @Override
     public boolean isAlive(PingInfo pingInfo) {
@@ -47,11 +50,11 @@ public class DeafultPing implements IPing{
         return 0;
     }
 
-    public  static  void main(String[] args)  throws Exception {
-        PingInfo pingInfo= new PingInfo("172.16.129.214");
-        System.out.println(pingInfo);
-        boolean alive = new DeafultPing().isAlive(pingInfo);
-        System.out.println(alive);
-    }
+//    public  static  void main(String[] args)  throws Exception {
+//        PingInfo pingInfo= new PingInfo("172.16.129.214");
+//        System.out.println(pingInfo);
+//        boolean alive = new DeafultPing().isAlive(pingInfo);
+//        System.out.println(alive);
+//    }
 
 }

@@ -332,4 +332,15 @@ public class MtController {
         return BaseResult.failed("发送通知失败");
     }
 
+    @ApiOperation(value = "PING")
+    @PostMapping("/ping")
+    public BaseResult<Boolean> ping(@RequestParam Integer dbId) {
+
+        if (mtService.ping(dbId)) {
+            return BaseResult.succeed("ping 成功");
+        }
+
+        return BaseResult.failed("ping 成功");
+    }
+
 }

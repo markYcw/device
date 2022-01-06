@@ -19,6 +19,8 @@ import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.mapper.MtMapper;
 import com.kedacom.device.core.mapper.MtTypeMapper;
 import com.kedacom.device.core.notify.stragegy.NotifyHandler;
+import com.kedacom.device.core.ping.DeafultPing;
+import com.kedacom.device.core.ping.PingInfo;
 import com.kedacom.device.core.service.MtService;
 import com.kedacom.device.core.utils.HandleResponseUtil;
 import com.kedacom.device.core.utils.MtUrlFactory;
@@ -51,6 +53,9 @@ public class MtServiceImpl implements MtService {
 
     @Resource
     CuMapper cuMapper;
+
+    @Resource
+    DeafultPing deafultPing;
 
     @Resource
     MtTypeMapper mtTypeMapper;
@@ -656,6 +661,18 @@ public class MtServiceImpl implements MtService {
         NotifyHandler.getInstance().distributeMessages(ssid, mtEntity.getDevtype(), type, notify);
 
         return true;
+    }
+
+    @Override
+    public boolean ping(Integer dbId) {
+
+        log.info("ping 终端请求参数, id : {}", dbId);
+        MtEntity entity = mtMapper.selectById(dbId);
+        check(entity);
+        PingInfo pingInfo = new PingInfo();
+        pingInfo.setIp(entity.getIp());
+
+        return deafultPing.isAlive(pingInfo);
     }
 
     private void check(MtEntity entity) {

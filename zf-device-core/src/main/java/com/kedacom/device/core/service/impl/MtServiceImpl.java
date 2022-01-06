@@ -63,7 +63,7 @@ public class MtServiceImpl implements MtService {
     @Resource
     RemoteRestTemplate remoteRestTemplate;
 
-    private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/mt/mtNotify";
+    private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/device/notify";
 
     /**
      * 在线终端缓存（id）
@@ -318,7 +318,7 @@ public class MtServiceImpl implements MtService {
         remotemt.setAlias(startMeetingMtVo.getAlias());
         remotemt.setType(startMeetingMtVo.getAddrType());
         StartP2P startP2P = new StartP2P();
-        startP2P.setRemotemt(remotemt);
+        startP2P.setRemoteMt(remotemt);
         startP2P.setRate(startMeetingMtVo.getBitrate());
 
         String response = remoteRestTemplate.getRestTemplate()
@@ -519,7 +519,7 @@ public class MtServiceImpl implements MtService {
         keyframeVo.setStreamType(streamType);
 
         String response = remoteRestTemplate.getRestTemplate()
-                .postForObject(mtRequestUrl + "/volume/{ssid}/{ssno}", JSON.toJSONString(keyframeVo), String.class, paramMap);
+                .postForObject(mtRequestUrl + "/keyframe/{ssid}/{ssno}", JSON.toJSONString(keyframeVo), String.class, paramMap);
         log.info("请求关键帧响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
         String errorMsg = "请求关键帧失败 : {}, {}, {}";

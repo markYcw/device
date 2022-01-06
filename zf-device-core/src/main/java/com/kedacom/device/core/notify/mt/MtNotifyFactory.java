@@ -1,6 +1,5 @@
 package com.kedacom.device.core.notify.mt;
 
-import com.kedacom.device.core.notify.cu.OffLineNotify;
 import com.kedacom.device.core.notify.stragegy.DeviceType;
 import com.kedacom.device.core.notify.stragegy.NotifyFactory;
 import com.kedacom.device.core.utils.ContextUtils;

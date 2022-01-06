@@ -26,8 +26,6 @@ public class MtDropLineNotify extends INotify {
     @Override
     protected void consumeMessage(Integer ssid, String message) {
 
-        log.info("通知信息 message : {}", message);
-
         LambdaQueryWrapper<MtEntity> queryWrapper = new LambdaQueryWrapper<>();
 
         queryWrapper.eq(MtEntity::getMtid, ssid);

@@ -325,7 +325,7 @@ public class MtServiceImpl implements MtService {
         String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
 
-        StartP2P startP2P = structureParam(startMeetingMtVo, entity);
+        StartP2P startP2P = structureParam(startMeetingMtVo);
         if (startP2P == null) {
             throw new MtException(null, "对端为五代终端，不可通过终端别名呼叫");
         }
@@ -341,22 +341,26 @@ public class MtServiceImpl implements MtService {
         return true;
     }
 
-    public StartP2P structureParam(StartMeetingMtVo startMeetingMtVo, MtEntity entity) {
+    public StartP2P structureParam(StartMeetingMtVo startMeetingMtVo) {
 
         // 对端设备的信息类型，如： ip， e164， h323， id
         Integer key = startMeetingMtVo.getKey();
         // 呼叫对端设备方式，如： ip， e164， h323
         Integer addrType = startMeetingMtVo.getAddrType();
         String ip = null, e164 = null, h323 = null;
+        String value = startMeetingMtVo.getValue();
         if (key.equals(MtConstants.IP)) {
-            ip = startMeetingMtVo.getValue();
+            ip = value;
         } else if (key.equals(MtConstants.E164)) {
-            e164 = startMeetingMtVo.getValue();
+            e164 = value;
         } else if (key.equals(MtConstants.H323)) {
-            h323 = startMeetingMtVo.getValue();
+            h323 = value;
         } else {
+            MtEntity entity = mtMapper.selectById(value);
+            Integer callType = startMeetingMtVo.getCallType();
             if (addrType.equals(MtConstants.IP)) {
-                ip = getIp(startMeetingMtVo.getCallType(), startMeetingMtVo.getCallType());
+                // 对端为 svr 时只支持 ip 呼叫，e164 和 h323 两种呼叫暂不支持
+                ip = callType == 1 ? entity.getIp() : getIp(value);
             } else if (addrType.equals(MtConstants.E164)) {
                 e164 = entity.getE164();
             } else {
@@ -698,16 +702,12 @@ public class MtServiceImpl implements MtService {
         return paramMap;
     }
 
-    public String getIp(Integer dstId, Integer callType) {
+    public String getIp(String dstId) {
 
-        if (callType == 0 ) {
-            // 对端为svr，对应监控平台ip
-            CuEntity cuEntity = cuMapper.selectById(dstId);
-            return cuEntity.getIp();
-        }
-        MtEntity mtEntity = mtMapper.selectById(dstId);
+        // 对端为svr，对应监控平台ip
+        CuEntity cuEntity = cuMapper.selectById(dstId);
 
-        return mtEntity.getIp();
+        return cuEntity.getIp();
     }
 
     public void handleMtNotify(Integer mtId, Integer msgType, String content) {

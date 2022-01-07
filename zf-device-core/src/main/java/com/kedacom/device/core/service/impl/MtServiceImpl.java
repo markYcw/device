@@ -663,6 +663,7 @@ public class MtServiceImpl implements MtService {
         Integer mtId = (Integer) jsonObject.get("ssid");
         String content = (String) jsonObject.get("content");
         Integer msgType = (Integer) jsonObject.get("msgType");
+        log.info("终端通知消息，ssid : {}, msgType : {}, content : {}", mtId, msgType, content);
 
         handleMtNotify(mtId, msgType, content);
     }
@@ -714,13 +715,13 @@ public class MtServiceImpl implements MtService {
 
         // 终端的掉线通知
         if (SEIZE.equals(msgType)) {
-            log.info("mtId 终端掉线");
+            log.info("ssid : {} 终端掉线", mtId);
             consumeMtDropLineNotify(mtId);
         }
         // 终端的抢占通知
         if (DROP_LINE.equals(msgType)) {
 
-            log.info("mtId 终端被抢占");
+            log.info("ssid : {} 终端被抢占", mtId);
             consumeMtSeizeNotify(mtId, content);
         }
     }

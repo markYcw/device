@@ -1,10 +1,7 @@
 package com.kedacom.device.core.notify.stragegy;
 
 import com.kedacom.device.core.notify.cu.CuNotifyFactory;
-import com.kedacom.device.core.notify.mt.MtNotifyFactory;
 import com.kedacom.device.core.notify.svr.SvrNotifyFactory;
-import com.kedacom.device.core.utils.ContextUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

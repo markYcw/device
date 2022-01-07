@@ -18,7 +18,7 @@ import com.kedacom.device.core.exception.MtException;
 import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.mapper.MtMapper;
 import com.kedacom.device.core.mapper.MtTypeMapper;
-import com.kedacom.device.core.notify.mt.MtNotifyFactory;
+import com.kedacom.device.core.notify.mt.MtSendMessage;
 import com.kedacom.device.core.ping.DeafultPing;
 import com.kedacom.device.core.ping.PingInfo;
 import com.kedacom.device.core.service.MtService;
@@ -64,13 +64,17 @@ public class MtServiceImpl implements MtService {
     MtUrlFactory mtUrlFactory;
 
     @Resource
-    MtNotifyFactory mtNotifyFactory;
+    MtSendMessage mtSendMessage;
 
     @Resource
     HandleResponseUtil responseUtil;
 
     @Resource
     RemoteRestTemplate remoteRestTemplate;
+
+    private static final Integer SEIZE = 100;
+
+    private static final Integer DROP_LINE = 1;
 
     private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/mt/mtNotify";
 
@@ -656,7 +660,7 @@ public class MtServiceImpl implements MtService {
         String content = (String) jsonObject.get("content");
         Integer msgType = (Integer) jsonObject.get("msgType");
 
-        mtNotifyFactory.handleMtNotify(mtId, msgType, content);
+        handleMtNotify(mtId, msgType, content);
     }
 
     @Override
@@ -704,5 +708,66 @@ public class MtServiceImpl implements MtService {
         MtEntity mtEntity = mtMapper.selectById(dstId);
 
         return mtEntity.getIp();
+    }
+
+    public void handleMtNotify(Integer mtId, Integer msgType, String content) {
+
+        // 终端的掉线通知
+        if (SEIZE.equals(msgType)) {
+            log.info("mtId 终端掉线");
+            consumeMtDropLineNotify(mtId);
+        }
+        // 终端的抢占通知
+        if (DROP_LINE.equals(msgType)) {
+
+            log.info("mtId 终端被抢占");
+            consumeMtSeizeNotify(mtId, content);
+        }
+    }
+
+    public void consumeMtDropLineNotify(Integer mtId) {
+
+        LambdaQueryWrapper<MtEntity> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(MtEntity::getMtid, mtId);
+
+        MtEntity mtEntity = mtMapper.selectOne(queryWrapper);
+
+        log.info("终端掉线通知, 终端名称 : {}", mtEntity.getName());
+
+        mtEntity.setMtid(null);
+        // 将该终端与中间件交互的 mtId 修改为 null
+        mtMapper.updateById(mtEntity);
+        // 将该终端从维护心跳的缓存中删除
+        MtServiceImpl.synHashSet.remove(mtEntity.getId());
+
+        String msg = mtEntity.getName() + " 终端已掉线！";
+        // 向前端发送终端掉线通知
+        mtSendMessage.sendMessage(msg);
+
+    }
+
+    public void consumeMtSeizeNotify(Integer mtId, String message) {
+
+        SeizeNotifyVo seizeNotifyVo = JSON.parseObject(message, SeizeNotifyVo.class);
+
+        LambdaQueryWrapper<MtEntity> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(MtEntity::getMtid, mtId);
+
+        MtEntity mtEntity = mtMapper.selectOne(queryWrapper);
+
+        log.info("终端抢占通知, 终端名称 : {}, 终端被抢占端的IP : {}", mtEntity.getName(), seizeNotifyVo.getContent().getIp());
+
+        mtEntity.setMtid(null);
+
+        mtMapper.updateById(mtEntity);
+
+        MtServiceImpl.synHashSet.remove(mtEntity.getId());
+
+        String msg = mtEntity.getName() + " 终端已被 " + seizeNotifyVo.getContent().getIp() + " 端抢占！";
+        // 向前端发送终端被抢占登录通知
+        mtSendMessage.sendMessage(msg);
+
     }
 }

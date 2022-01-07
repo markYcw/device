@@ -3,6 +3,7 @@ package com.kedacom.device.core.notify.mt;
 import com.alibaba.fastjson.JSON;
 import com.kedacom.api.WebsocketFeign;
 import com.kedacom.pojo.SystemWebSocketMessage;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
@@ -11,6 +12,7 @@ import javax.annotation.Resource;
  * @describe
  * @date 2021/12/9
  */
+@Component
 public class MtSendMessage {
 
     @Resource

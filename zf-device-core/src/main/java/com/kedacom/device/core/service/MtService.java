@@ -198,7 +198,7 @@ public interface MtService {
      * @param notify
      * @return
      */
-    boolean mtNotify(String notify);
+    void mtNotify(String notify);
 
     /**
      * ping

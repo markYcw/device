@@ -18,7 +18,7 @@ import com.kedacom.device.core.exception.MtException;
 import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.mapper.MtMapper;
 import com.kedacom.device.core.mapper.MtTypeMapper;
-import com.kedacom.device.core.notify.stragegy.NotifyHandler;
+import com.kedacom.device.core.notify.mt.MtNotifyFactory;
 import com.kedacom.device.core.ping.DeafultPing;
 import com.kedacom.device.core.ping.PingInfo;
 import com.kedacom.device.core.service.MtService;
@@ -64,12 +64,15 @@ public class MtServiceImpl implements MtService {
     MtUrlFactory mtUrlFactory;
 
     @Resource
+    MtNotifyFactory mtNotifyFactory;
+
+    @Resource
     HandleResponseUtil responseUtil;
 
     @Resource
     RemoteRestTemplate remoteRestTemplate;
 
-    private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/device/notify";
+    private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/mt/mtNotify";
 
     /**
      * 在线终端缓存（id）
@@ -645,22 +648,15 @@ public class MtServiceImpl implements MtService {
     }
 
     @Override
-    public boolean mtNotify(String notify) {
+    public void mtNotify(String notify) {
 
         log.info("终端通知信息 : {}", notify);
         JSONObject jsonObject = JSONObject.parseObject(notify);
-        Integer ssid = (Integer) jsonObject.get("ssid");
-        Integer type = (Integer) jsonObject.get("type");
+        Integer mtId = (Integer) jsonObject.get("ssid");
+        String content = (String) jsonObject.get("content");
+        Integer msgType = (Integer) jsonObject.get("msgType");
 
-        LambdaQueryWrapper<MtEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(MtEntity::getMtid, ssid);
-        MtEntity mtEntity = mtMapper.selectOne(wrapper);
-        if (mtEntity == null) {
-            return false;
-        }
-        NotifyHandler.getInstance().distributeMessages(ssid, mtEntity.getDevtype(), type, notify);
-
-        return true;
+        mtNotifyFactory.handleMtNotify(mtId, msgType, content);
     }
 
     @Override

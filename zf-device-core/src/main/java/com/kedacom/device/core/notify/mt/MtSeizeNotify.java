@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.kedacom.device.core.entity.MtEntity;
 import com.kedacom.device.core.mapper.MtMapper;
-import com.kedacom.device.core.notify.stragegy.INotify;
 import com.kedacom.device.core.service.impl.MtServiceImpl;
 import com.kedacom.mt.SeizeNotifyVo;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,7 @@ import javax.annotation.Resource;
  * @date 2021/12/3
  */
 @Slf4j
-public class MtSeizeNotify extends INotify {
+public class MtSeizeNotify /*extends INotify*/ {
 
     @Resource
     MtMapper mtMapper;
@@ -25,7 +24,7 @@ public class MtSeizeNotify extends INotify {
     @Resource
     MtSendMessage mtSendMessage;
 
-    @Override
+//    @Override
     protected void consumeMessage(Integer ssid, String message) {
 
         SeizeNotifyVo seizeNotifyVo = JSON.parseObject(message, SeizeNotifyVo.class);

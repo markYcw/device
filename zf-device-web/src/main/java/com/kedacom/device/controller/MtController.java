@@ -323,13 +323,11 @@ public class MtController {
     public BaseResult<Void> mtNotify(@RequestBody String notify) {
 
         if (StringUtils.isEmpty(notify)) {
-            return BaseResult.failed("发送通知信息为空");
+            return BaseResult.failed("接收终端通知信息为空");
         }
-        if (mtService.mtNotify(notify)) {
-            return BaseResult.succeed("发送通知成功");
-        }
+        mtService.mtNotify(notify);
 
-        return BaseResult.failed("发送通知失败");
+        return BaseResult.succeed("终端通知消费成功");
     }
 
     @ApiOperation(value = "PING")

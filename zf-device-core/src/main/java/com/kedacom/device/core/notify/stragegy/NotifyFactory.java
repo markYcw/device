@@ -45,7 +45,7 @@ public class NotifyFactory {
    public static void init(){
        SvrNotifyFactory.init();
        CuNotifyFactory.init();
-       MtNotifyFactory.init();
+//       MtNotifyFactory.init();
    }
 
     /**

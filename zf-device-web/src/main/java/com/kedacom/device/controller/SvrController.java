@@ -289,7 +289,8 @@ public class SvrController {
 
     @ApiOperation("查询录像")
     @PostMapping("/queryRec")
-    public BaseResult<List<RecInfoVo>> queryRec(@RequestBody QueryRecVo dto) {
+    public BaseResult<List<RecInfoVo>> queryRec(@Valid @RequestBody QueryRecVo dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.recList(dto);
     }
@@ -304,7 +305,8 @@ public class SvrController {
 
     @ApiOperation("设置画面合成")
     @PostMapping("/setSvrComposePic")
-    public BaseResult<String> setSvrComposePic(@RequestBody SetSvrComposePicVo dto) {
+    public BaseResult<String> setSvrComposePic(@Valid @RequestBody SetSvrComposePicVo dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.merge(dto);
     }

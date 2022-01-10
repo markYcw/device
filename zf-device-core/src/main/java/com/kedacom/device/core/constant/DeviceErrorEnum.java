@@ -193,6 +193,11 @@ public enum DeviceErrorEnum {
     MT_PTZ_CONTROLLER_FAILED(7015, "ptz控制失败"),
     MT_SET_PIP_MODE_FAILED(7016, "设置画面显示模式失败"),
 
+    // 录像机相关错误码
+    VS_LOGIN_FAILED(8000,"登录VRS失败请稍后重试"),
+    VS_QUERY_REC_FAILED(8001, "查询录像失败"),
+    VS_QUERY_LIVE_FAILED(8002, "查询直播失败"),
+
     SCHEDULE_ADD_DEVICE_FAILED(9001, "添加调度组成员设备失败"),
     SCHEDULE_DELETE_DEVICE_FAILED(9002, "删除调度组成员设备失败"),
     SCHEDULE_CREATE_FAILED(9003, "创建调度组失败"),

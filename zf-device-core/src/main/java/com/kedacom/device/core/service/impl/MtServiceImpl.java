@@ -753,13 +753,6 @@ public class MtServiceImpl implements MtService {
 
         MtEntity mtEntity = mtMapper.selectOne(queryWrapper);
 
-        if (mtEntity == null) {
-
-            log.error("该终端未登录或不存在");
-
-            return;
-        }
-
         log.info("终端掉线通知, 终端名称 : {}", mtEntity.getName());
 
         mtEntity.setMtid(null);
@@ -785,13 +778,6 @@ public class MtServiceImpl implements MtService {
         queryWrapper.eq(MtEntity::getMtid, mtId);
 
         MtEntity mtEntity = mtMapper.selectOne(queryWrapper);
-
-        if (mtEntity == null) {
-
-            log.error("该终端未登录或不存在");
-
-            return;
-        }
 
         log.info("终端抢占通知, 终端名称 : {}, 终端已被抢占", mtEntity.getName());
 

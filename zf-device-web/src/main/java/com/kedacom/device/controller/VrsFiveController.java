@@ -5,10 +5,7 @@ import com.kedacom.BaseResult;
 import com.kedacom.device.core.convert.VrsConvert;
 import com.kedacom.device.core.service.VrsFiveService;
 import com.kedacom.vs.entity.VsEntity;
-import com.kedacom.vs.vo.QueryRecListVo;
-import com.kedacom.vs.vo.VrsQuery;
-import com.kedacom.vs.vo.VrsRecInfoDecVo;
-import com.kedacom.vs.vo.VrsVo;
+import com.kedacom.vs.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -28,7 +25,7 @@ import java.util.stream.Collectors;
  */
 @Api(tags = "VrsFiveController/Vrs2100/4100接口")
 @RestController
-@RequestMapping("vrsFive")
+@RequestMapping("ums/vs")
 public class VrsFiveController {
 
     @Autowired
@@ -46,9 +43,6 @@ public class VrsFiveController {
         return BaseResult.succeed("查询录播服务器集合成功",collect);
     }
 
-    /**
-     * 分页查询vrs信息
-     */
     @ApiOperation("分页查询vrs信息")
     @PostMapping("/vrsList")
     public BaseResult<BasePage<VsEntity>> terminalList(@RequestBody VrsQuery vrsQuery) {
@@ -90,6 +84,20 @@ public class VrsFiveController {
     public BaseResult<VrsRecInfoDecVo> vrsQueryHttpRec(@RequestBody QueryRecListVo queryRecListVo){
 
         return vrsFiveService.vrsQueryHttpRec(queryRecListVo);
+    }
+
+    @ApiOperation("查询录像")
+    @PostMapping("/queryRec")
+    public BaseResult<VrsRecInfoVo> queryRec(@RequestBody QueryRecVo vo){
+
+        return vrsFiveService.queryRec(vo);
+    }
+
+    @ApiOperation("查询直播")
+    @PostMapping("/queryRec")
+    public BaseResult<LiveInfoVo> queryLive(@RequestBody QueryLiveVo vo){
+
+        return vrsFiveService.queryLive(vo);
     }
 
 

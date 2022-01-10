@@ -9,24 +9,21 @@ import lombok.Data;
  * @create 2021/06/23 11:00
  */
 @Data
-public class QueryRecListVo {
+public class QueryRecVo {
 
     @ApiModelProperty("数据库ID")
     private Integer dbId;
 
-    @ApiModelProperty("查询类型 可不填")
-    private Integer type = 1;
+    @ApiModelProperty("查询类型 0：rtsp 1：http（5.0不支持）")
+    private Integer type;
 
-    @ApiModelProperty("查询的页码（从0开始）")
-    @JSONField(name = "start")
-    private Integer pageNum;
+    @ApiModelProperty("查询起始，从0开始")
+    private Integer start;
 
     @ApiModelProperty("每页的大小")
-    @JSONField(name = "count")
-    private Integer pageSize;
+    private Integer count;
 
     @ApiModelProperty("模糊匹配的录像名字")
-    @JSONField(name = "includeName")
-    private String recName;
+    private String includeName;
 
 }

@@ -34,10 +34,7 @@ import com.kedacom.svr.vo.SvrCapVo;
 import com.kedacom.svr.vo.SvrLoginVO;
 import com.kedacom.util.NumGen;
 import com.kedacom.vs.entity.VsEntity;
-import com.kedacom.vs.vo.QueryRecListVo;
-import com.kedacom.vs.vo.VrsQuery;
-import com.kedacom.vs.vo.VrsRecInfoDecVo;
-import com.kedacom.vs.vo.VrsVo;
+import com.kedacom.vs.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -209,7 +206,6 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
     @Override
     public BaseResult<VrsRecInfoDecVo> vrsQueryHttpRec(QueryRecListVo queryRecListVo) {
         log.info("==============分页查询HTTP录像接口入参QueryRecListVo：{}",queryRecListVo);
-
         Integer dbId = queryRecListVo.getDbId();
         Integer login = login(dbId);
         if(login==null){
@@ -217,14 +213,52 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         }
         VsEntity entity = vrsMapper.selectById(dbId);
         VsBasicParam param = getParam(entity);
+        log.info("分页查询HTTP录像中间件入参信息:{}", JSON.toJSONString(queryRecListVo));
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/queryrec/{ssid}/{ssno}", JSON.toJSONString(queryRecListVo), String.class, param.getParamMap());
         VsResponse response = JSON.parseObject(s, VsResponse.class);
         String errorMsg = "分页查询HTTP录像失败:{},{},{}";
         handleVrs(errorMsg,DeviceErrorEnum.VS_QUERY_REC_FAILED,response);
 
         VrsRecInfoDecVo vo = JSON.parseObject(s, VrsRecInfoDecVo.class);
-
         return BaseResult.succeed("分页查询HTTP录像接口",vo);
+    }
+
+    @Override
+    public BaseResult<VrsRecInfoVo> queryRec(QueryRecVo vo) {
+        log.info("==============查询录像接口入参QueryRecVo：{}",vo);
+        Integer login = login(vo.getDbId());
+        if(login==null){
+            throw new VrsException(DeviceErrorEnum.VS_LOGIN_FAILED);
+        }
+        VsEntity entity = vrsMapper.selectById(vo.getDbId());
+        VsBasicParam param = getParam(entity);
+        log.info("查询录像中间件入参信息:{}", JSON.toJSONString(vo));
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/queryrec/{ssid}/{ssno}", JSON.toJSONString(vo), String.class, param.getParamMap());
+        VsResponse response = JSON.parseObject(s, VsResponse.class);
+        String errorMsg = "查询录像失败:{},{},{}";
+        handleVrs(errorMsg,DeviceErrorEnum.VS_QUERY_REC_FAILED,response);
+
+        VrsRecInfoVo vrsRecInfoVo = JSON.parseObject(s, VrsRecInfoVo.class);
+        return BaseResult.succeed("分页查询HTTP录像接口",vrsRecInfoVo);
+    }
+
+    @Override
+    public BaseResult<LiveInfoVo> queryLive(QueryLiveVo vo) {
+        log.info("==============查询直播接口入参QueryRecVo：{}",vo);
+        Integer login = login(vo.getDbId());
+        if(login==null){
+            throw new VrsException(DeviceErrorEnum.VS_LOGIN_FAILED);
+        }
+        VsEntity entity = vrsMapper.selectById(vo.getDbId());
+        VsBasicParam param = getParam(entity);
+        log.info("查询直播中间件入参信息:{}", JSON.toJSONString(vo));
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/querylive/{ssid}/{ssno}", JSON.toJSONString(vo), String.class, param.getParamMap());
+        VsResponse response = JSON.parseObject(s, VsResponse.class);
+        String errorMsg = "查询直播失败:{},{},{}";
+        handleVrs(errorMsg,DeviceErrorEnum.VS_QUERY_LIVE_FAILED,response);
+
+        LiveInfoVo liveInfoVo = JSON.parseObject(s, LiveInfoVo.class);
+        return BaseResult.succeed("分页查询HTTP录像接口",liveInfoVo);
     }
 
     public String getUrl() {

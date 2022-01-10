@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.vs.entity.VsEntity;
-import com.kedacom.vs.vo.QueryRecListVo;
-import com.kedacom.vs.vo.VrsQuery;
-import com.kedacom.vs.vo.VrsRecInfoDecVo;
-import com.kedacom.vs.vo.VrsVo;
+import com.kedacom.vs.vo.*;
 
 import java.util.List;
 
@@ -67,4 +64,7 @@ public interface VrsFiveService extends IService<VsEntity> {
      */
     BaseResult<VrsRecInfoDecVo> vrsQueryHttpRec(QueryRecListVo queryRecListVo);
 
+    BaseResult<VrsRecInfoVo> queryRec(QueryRecVo vo);
+
+    BaseResult<LiveInfoVo> queryLive(QueryLiveVo vo);
 }

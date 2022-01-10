@@ -11,11 +11,11 @@ import java.util.List;
  * @create 2021/06/23 10:25
  */
 @Data
-public class VrsRecInfoDecVo {
+public class VrsRecInfoVo {
 
     @ApiModelProperty("录像总数")
     private Integer total;
 
     @ApiModelProperty("分页查询HTTP录像信息接口返回列表")
-    private List<RecInfoHttpVo> recs;
+    private List<RecInfoVo> recs;
 }

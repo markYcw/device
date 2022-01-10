@@ -20,7 +20,7 @@
 
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
-        <version-flag>Beta</version-flag>
+        <version-flag>Release</version-flag>
     </properties>
 
     <dependencies>

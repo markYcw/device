@@ -32,6 +32,13 @@ public class MaintainHeartbeatRunning implements Runnable {
 
     @Override
     public void run() {
+
+        // 定时维护终端心跳
+        running();
+    }
+
+    public synchronized void running() {
+
         // 只加载一次查询
         if (!FLAG) {
             // 查询mtId不为空的终端id
@@ -57,6 +64,7 @@ public class MaintainHeartbeatRunning implements Runnable {
             }
         }
         synHashSet.removeAll(invalidSet);
+
     }
 
 }

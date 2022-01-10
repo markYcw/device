@@ -743,9 +743,13 @@ public class MtServiceImpl implements MtService {
         // 将该终端从维护心跳的缓存中删除
         MtServiceImpl.synHashSet.remove(mtEntity.getId());
 
+        log.info("开始发送日志信息");
+
         String msg = mtEntity.getName() + " 终端已掉线！";
         // 向前端发送终端掉线通知
         mtSendMessage.sendMessage(msg);
+
+        log.info("结束发送日志信息");
 
     }
 

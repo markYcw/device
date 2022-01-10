@@ -596,7 +596,7 @@ public class MtServiceImpl implements MtService {
         String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
         MtStartDualVo mtStartDualVo = new MtStartDualVo();
-        mtStartDualVo.setType(type ? 0 : 1);
+        mtStartDualVo.setType(type ? 1 : 0);
         mtStartDualVo.setIsLocal(isLocal ? 1 : 0);
 
         String response = remoteRestTemplate.getRestTemplate()

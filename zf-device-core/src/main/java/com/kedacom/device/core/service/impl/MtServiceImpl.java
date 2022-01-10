@@ -680,6 +680,24 @@ public class MtServiceImpl implements MtService {
         return deafultPing.isAlive(pingInfo);
     }
 
+    @Override
+    public boolean check(Integer callType, Integer key, String value) {
+
+        if (key.equals(MtConstants.ID)) {
+            boolean mtFlag = false, cuFlag = false;
+            if (callType == 1) {
+                MtEntity mtEntity = mtMapper.selectById(value);
+                mtFlag = mtEntity != null;
+            } else {
+                CuEntity cuEntity = cuMapper.selectById(value);
+                cuFlag = cuEntity != null;
+            }
+            return mtFlag || cuFlag;
+        }
+
+        return true;
+    }
+
     private void check(MtEntity entity) {
 
         if (ObjectUtils.isEmpty(entity)) {

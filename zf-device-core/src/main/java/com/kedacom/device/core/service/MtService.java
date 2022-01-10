@@ -207,4 +207,13 @@ public interface MtService {
      */
     boolean ping(Integer dbId);
 
+    /**
+     * 校验开会参数
+     * @param callType
+     * @param key
+     * @param value
+     * @return
+     */
+    boolean check(Integer callType, Integer key, String value);
+
 }

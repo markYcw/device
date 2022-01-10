@@ -178,6 +178,9 @@ public class MtController {
     @PostMapping("/startP2P")
     public BaseResult<Boolean> startP2P(@RequestBody StartMeetingMtVo startMeetingMtVo) {
 
+        if (mtService.check(startMeetingMtVo.getCallType(), startMeetingMtVo.getKey(), startMeetingMtVo.getValue())) {
+            return BaseResult.failed("对端id为:" + startMeetingMtVo.getKey() + "的设备不存在");
+        }
         if (mtService.startP2P(startMeetingMtVo)) {
             return BaseResult.succeed("开启点对点会议成功", true);
         }

@@ -661,8 +661,8 @@ public class MtServiceImpl implements MtService {
         log.info("终端通知信息 : {}", notify);
         JSONObject jsonObject = JSONObject.parseObject(notify);
         Integer mtId = (Integer) jsonObject.get("ssid");
-        String content = (String) jsonObject.get("content");
         Integer msgType = (Integer) jsonObject.get("msgType");
+        String content = String.valueOf(jsonObject.get("content"));
         log.info("终端通知消息，ssid : {}, msgType : {}, content : {}", mtId, msgType, content);
 
         handleMtNotify(mtId, msgType, content);
@@ -713,16 +713,17 @@ public class MtServiceImpl implements MtService {
 
     public void handleMtNotify(Integer mtId, Integer msgType, String content) {
 
-        // 终端的掉线通知
-        if (SEIZE.equals(msgType)) {
-            log.info("ssid : {} 终端掉线", mtId);
-            consumeMtDropLineNotify(mtId);
-        }
         // 终端的抢占通知
-        if (DROP_LINE.equals(msgType)) {
+        if (SEIZE.equals(msgType)) {
 
             log.info("ssid : {} 终端被抢占", mtId);
             consumeMtSeizeNotify(mtId, content);
+        }
+        // 终端的掉线通知
+        if (DROP_LINE.equals(msgType)) {
+
+            log.info("ssid : {} 终端掉线", mtId);
+            consumeMtDropLineNotify(mtId);
         }
     }
 
@@ -750,7 +751,7 @@ public class MtServiceImpl implements MtService {
 
     public void consumeMtSeizeNotify(Integer mtId, String message) {
 
-        SeizeNotifyVo seizeNotifyVo = JSON.parseObject(message, SeizeNotifyVo.class);
+//        SeizeNotifyVo seizeNotifyVo = JSON.parseObject(message, SeizeNotifyVo.class);
 
         LambdaQueryWrapper<MtEntity> queryWrapper = new LambdaQueryWrapper<>();
 
@@ -758,7 +759,7 @@ public class MtServiceImpl implements MtService {
 
         MtEntity mtEntity = mtMapper.selectOne(queryWrapper);
 
-        log.info("终端抢占通知, 终端名称 : {}, 终端被抢占端的IP : {}", mtEntity.getName(), seizeNotifyVo.getContent().getIp());
+        log.info("终端抢占通知, 终端名称 : {}, 终端已被抢占", mtEntity.getName());
 
         mtEntity.setMtid(null);
 
@@ -766,7 +767,7 @@ public class MtServiceImpl implements MtService {
 
         MtServiceImpl.synHashSet.remove(mtEntity.getId());
 
-        String msg = mtEntity.getName() + " 终端已被 " + seizeNotifyVo.getContent().getIp() + " 端抢占！";
+        String msg = mtEntity.getName() + " 终端已被抢占！";
         // 向前端发送终端被抢占登录通知
         mtSendMessage.sendMessage(msg);
 

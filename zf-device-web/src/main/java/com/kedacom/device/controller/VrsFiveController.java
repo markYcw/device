@@ -93,7 +93,7 @@ public class VrsFiveController {
         return vrsFiveService.queryRec(vo);
     }
 
-    @ApiOperation("查询直播")
+    @ApiOperation("查询直播 5.1版本才支持")
     @PostMapping("/queryRec")
     public BaseResult<LiveInfoVo> queryLive(@RequestBody QueryLiveVo vo){
 

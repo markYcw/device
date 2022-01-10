@@ -54,7 +54,7 @@ public interface VrsFiveApi {
     @PostMapping("/queryRec")
     public BaseResult<VrsRecInfoVo> queryRec(@RequestBody QueryRecVo vo);
 
-    @ApiOperation("查询直播")
+    @ApiOperation("查询直播 5.1版本才支持")
     @PostMapping("/queryRec")
     public BaseResult<LiveInfoVo> queryLive(@RequestBody QueryLiveVo vo);
 

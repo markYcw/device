@@ -717,7 +717,7 @@ public class MtServiceImpl implements MtService {
         if (SEIZE.equals(msgType)) {
 
             log.info("ssid : {} 终端被抢占", mtId);
-            consumeMtSeizeNotify(mtId, content);
+            consumeMtSeizeNotify(mtId);
         }
         // 终端的掉线通知
         if (DROP_LINE.equals(msgType)) {
@@ -734,6 +734,13 @@ public class MtServiceImpl implements MtService {
         queryWrapper.eq(MtEntity::getMtid, mtId);
 
         MtEntity mtEntity = mtMapper.selectOne(queryWrapper);
+
+        if (mtEntity == null) {
+
+            log.error("该终端未登录或不存在");
+
+            return;
+        }
 
         log.info("终端掉线通知, 终端名称 : {}", mtEntity.getName());
 
@@ -753,15 +760,20 @@ public class MtServiceImpl implements MtService {
 
     }
 
-    public void consumeMtSeizeNotify(Integer mtId, String message) {
-
-//        SeizeNotifyVo seizeNotifyVo = JSON.parseObject(message, SeizeNotifyVo.class);
+    public void consumeMtSeizeNotify(Integer mtId) {
 
         LambdaQueryWrapper<MtEntity> queryWrapper = new LambdaQueryWrapper<>();
 
         queryWrapper.eq(MtEntity::getMtid, mtId);
 
         MtEntity mtEntity = mtMapper.selectOne(queryWrapper);
+
+        if (mtEntity == null) {
+
+            log.error("该终端未登录或不存在");
+
+            return;
+        }
 
         log.info("终端抢占通知, 终端名称 : {}, 终端已被抢占", mtEntity.getName());
 

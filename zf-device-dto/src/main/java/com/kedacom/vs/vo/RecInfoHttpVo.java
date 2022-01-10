@@ -24,6 +24,6 @@ public class RecInfoHttpVo {
     private String starttime;
 
     @ApiModelProperty("录像持续时间(单位:秒)")
-    private String duration;
+    private Integer duration;
 
 }

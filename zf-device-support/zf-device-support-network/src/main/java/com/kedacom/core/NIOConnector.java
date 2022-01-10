@@ -38,14 +38,13 @@ public class NIOConnector extends Connector {
     private Integer serverPort;
 
 
-
     /**
      * 默认初始化为未连接状态
      */
     private volatile ConnStatus status = ConnStatus.DIS_CONNECT;
 
 
-    public NIOConnector(){
+    public NIOConnector() {
 
     }
 
@@ -57,7 +56,7 @@ public class NIOConnector extends Connector {
 
         listenerManager = ConnectorListenerManager.getInstance();
 
-       // socketChannel = SocketChannel.open();
+        // socketChannel = SocketChannel.open();
 
         this.serverIp = serverIp;
 
@@ -79,7 +78,8 @@ public class NIOConnector extends Connector {
 
     /**
      * 初始化连接监控组件
-     * @param serverIp 服务端IP
+     *
+     * @param serverIp   服务端IP
      * @param serverPort 服务端端口
      */
     private synchronized void initConnMonitor(String serverIp, int serverPort) {
@@ -90,7 +90,7 @@ public class NIOConnector extends Connector {
         status = ConnStatus.CONNECTING;
 
         if (connMonitor == null || !connMonitor.isConnected()) {
-            connMonitor = new NIOConnMonitor( this);
+            connMonitor = new NIOConnMonitor(this);
             log.info("start ConnMonitor");
             connMonitor.start(serverIp, serverPort);
         }
@@ -99,7 +99,8 @@ public class NIOConnector extends Connector {
 
     /**
      * 真正进行网络连接的方法
-     * @param serverIp 服务端IP
+     *
+     * @param serverIp   服务端IP
      * @param serverPort 服务端端口
      * @throws IOException
      */
@@ -120,6 +121,15 @@ public class NIOConnector extends Connector {
             return false;
         }
 
+        while (!socketChannel.finishConnect()) {
+            // 等待连接结束
+            try {
+                Thread.sleep(500);
+            } catch (Exception e) {
+                log.error("等待连接结束异常：{}", e.getMessage());
+            }
+        }
+
         //只有网络连接成功之后才可以setup
         setup(socketChannel);
 
@@ -133,6 +143,7 @@ public class NIOConnector extends Connector {
         publishConnectEvent(status, serverIp, serverPort);
 
         return true;
+
     }
 
     public NotifyContext getNotifyContext() {
@@ -179,8 +190,9 @@ public class NIOConnector extends Connector {
 
     /**
      * 发布通知
-     * @param status 连接状态
-     * @param serverIp 服务端IP
+     *
+     * @param status     连接状态
+     * @param serverIp   服务端IP
      * @param serverPort 服务端Port
      */
     private void publishConnectEvent(ConnStatus status, String serverIp, Integer serverPort) {
@@ -196,7 +208,7 @@ public class NIOConnector extends Connector {
     }
 
 
-    public CompletableFuture<Response> sendRequest(Request request,Class<?> returnType) {
+    public CompletableFuture<Response> sendRequest(Request request, Class<?> returnType) {
 
         // 判断连接状态
         if (ConnStatus.CONNECTED != status) {
@@ -216,16 +228,16 @@ public class NIOConnector extends Connector {
         //发送请求
         send(packet);
 
-        putProcessRequests(ssno,returnType, future);
+        putProcessRequests(ssno, returnType, future);
 
         return future;
 
     }
 
-    private void putProcessRequests(Integer requestId,Class<?> returnType, CompletableFuture<Response> future) {
+    private void putProcessRequests(Integer requestId, Class<?> returnType, CompletableFuture<Response> future) {
 
         processRequests.putFuture(requestId, future, returnType);
-       // processRequests.putReturnType(requestId, returnType);
+        // processRequests.putReturnType(requestId, returnType);
     }
 
 
@@ -244,8 +256,8 @@ public class NIOConnector extends Connector {
 
             log.info("[ssno:{}]: receive resp ------> {}", respHead.getSsno(), msg);
 
-            handlerResp(msg,respHead);
-           // handlerNty(msg, null);
+            handlerResp(msg, respHead);
+            // handlerNty(msg, null);
 
         } else if (jsonObject.containsKey("nty")) {
 
@@ -257,12 +269,13 @@ public class NIOConnector extends Connector {
 
         } else {
             log.error("cannot read the msg ! msg is {}", msg);
-           // throw new UnSupportMsgException("unknown the msg");
+            // throw new UnSupportMsgException("unknown the msg");
         }
 
     }
 
     Notify notify = null;
+
     private void handlerNty(String msg, NotifyHead notifyHead) {
 
         String name = notifyHead.getName();
@@ -278,7 +291,7 @@ public class NIOConnector extends Connector {
         Class<?> clazz = notifyMap.get(name);
 
         if (clazz == null) {
-           // throw new KMProxyException(name + " can not match the Class");
+            // throw new KMProxyException(name + " can not match the Class");
             log.error("{} can not match the Class , nty {}", name, msg);
             return;
         }
@@ -293,19 +306,20 @@ public class NIOConnector extends Connector {
         } catch (Exception e) {
             log.error("parse nty data error ,e: ", e);
             //TODO 发布异常处理
-           // throw new ParseDataException("parse nty data error");
+            // throw new ParseDataException("parse nty data error");
         }
 
 
     }
 
     Response response = null;
-    private void handlerResp(String msg,RespHead respHead) {
+
+    private void handlerResp(String msg, RespHead respHead) {
 
         try {
 
             //测试超时
-           // Thread.sleep(10000);
+            // Thread.sleep(10000);
             Class<?> aClass = processRequests.getReturnType(respHead.getSsno());
 
             response = JSONObject.parseObject(msg, (Type) aClass);
@@ -316,15 +330,11 @@ public class NIOConnector extends Connector {
             }
         } catch (Exception e) {
             log.error("parse resp data error ssno is [{}], e: ", respHead.getSsno(), e);
-            processRequests.exception(new ParseDataException("[ ssno : "+respHead.getSsno() +" ] "+ e.getMessage(), e), respHead.getSsno());
-           // throw new ParseDataException("parse resp data error");
+            processRequests.exception(new ParseDataException("[ ssno : " + respHead.getSsno() + " ] " + e.getMessage(), e), respHead.getSsno());
+            // throw new ParseDataException("parse resp data error");
         }
 
     }
-
-
-
-
 
 
 }

@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kedacom.BaseResult;
 import com.kedacom.common.utils.ValidUtils;
+import com.kedacom.device.core.constant.MtConstants;
 import com.kedacom.device.core.service.MtService;
 import com.kedacom.mt.GetDumbMuteVo;
 import com.kedacom.mt.StartMeetingMtVo;
@@ -178,7 +179,8 @@ public class MtController {
     @PostMapping("/startP2P")
     public BaseResult<Boolean> startP2P(@RequestBody StartMeetingMtVo startMeetingMtVo) {
 
-        if (mtService.check(startMeetingMtVo.getCallType(), startMeetingMtVo.getKey(), startMeetingMtVo.getValue())) {
+        if (startMeetingMtVo.getKey().equals(MtConstants.ID)
+                && mtService.check(startMeetingMtVo.getCallType(), startMeetingMtVo.getValue())) {
             return BaseResult.failed("对端id为:" + startMeetingMtVo.getKey() + "的设备不存在");
         }
         if (mtService.startP2P(startMeetingMtVo)) {

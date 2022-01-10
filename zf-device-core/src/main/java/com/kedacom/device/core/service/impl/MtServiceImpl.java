@@ -222,7 +222,7 @@ public class MtServiceImpl implements MtService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Integer loginById(Integer dbId) {
+    public synchronized Integer loginById(Integer dbId) {
 
         log.info("登录终端请求参数 : {}", dbId);
         MtEntity entity = mtMapper.selectById(dbId);
@@ -254,7 +254,7 @@ public class MtServiceImpl implements MtService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean logOutById(Integer dbId) {
+    public synchronized boolean logOutById(Integer dbId) {
 
         log.info("退出登录终端信息请求参数 : {}", dbId);
         MtEntity entity = mtMapper.selectById(dbId);
@@ -681,21 +681,18 @@ public class MtServiceImpl implements MtService {
     }
 
     @Override
-    public boolean check(Integer callType, Integer key, String value) {
+    public boolean check(Integer callType, String value) {
 
-        if (key.equals(MtConstants.ID)) {
-            boolean mtFlag = false, cuFlag = false;
-            if (callType == 1) {
-                MtEntity mtEntity = mtMapper.selectById(value);
-                mtFlag = mtEntity != null;
-            } else {
-                CuEntity cuEntity = cuMapper.selectById(value);
-                cuFlag = cuEntity != null;
-            }
-            return mtFlag || cuFlag;
+        boolean flag;
+        if (callType == 1) {
+            MtEntity mtEntity = mtMapper.selectById(value);
+            flag = mtEntity == null;
+        } else {
+            CuEntity cuEntity = cuMapper.selectById(value);
+            flag = cuEntity == null;
         }
 
-        return true;
+        return flag;
     }
 
     private void check(MtEntity entity) {

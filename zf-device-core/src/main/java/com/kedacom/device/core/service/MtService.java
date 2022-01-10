@@ -210,10 +210,9 @@ public interface MtService {
     /**
      * 校验开会参数
      * @param callType
-     * @param key
      * @param value
      * @return
      */
-    boolean check(Integer callType, Integer key, String value);
+    boolean check(Integer callType, String value);
 
 }

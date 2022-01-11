@@ -761,6 +761,8 @@ public class MtServiceImpl implements MtService {
         mtMapper.update(null, updateWrapper);
         // 将该终端从维护心跳的缓存中删除
         MtServiceImpl.synHashSet.remove(mtEntity.getId());
+        // 登出终端
+        logOutById(mtEntity.getId());
 
         log.info("开始发送日志信息");
 
@@ -790,6 +792,8 @@ public class MtServiceImpl implements MtService {
         mtMapper.update(null, updateWrapper);
 
         MtServiceImpl.synHashSet.remove(mtEntity.getId());
+        // 登出终端
+        logOutById(mtEntity.getId());
 
         String msg = mtEntity.getName() + " 终端已被抢占！";
         // 向前端发送终端被抢占登录通知

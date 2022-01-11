@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 终端
+ * 录播服务器
  *
  * @author ycw
  * @email yucongwang@kedacom.com

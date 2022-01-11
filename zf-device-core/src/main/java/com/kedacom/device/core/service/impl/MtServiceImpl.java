@@ -258,7 +258,7 @@ public class MtServiceImpl implements MtService {
 
         log.info("退出登录终端信息请求参数 : {}", dbId);
         MtEntity entity = mtMapper.selectById(dbId);
-        check(entity);
+//        check(entity);
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
         String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
 

@@ -343,7 +343,7 @@ public class MtController {
             return BaseResult.succeed("ping 成功");
         }
 
-        return BaseResult.failed("ping 成功");
+        return BaseResult.failed("ping 失败");
     }
 
 }

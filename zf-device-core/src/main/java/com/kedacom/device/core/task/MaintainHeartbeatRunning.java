@@ -37,7 +37,7 @@ public class MaintainHeartbeatRunning implements Runnable {
         running();
     }
 
-    public synchronized void running() {
+    public void running() {
 
         // 只加载一次查询
         if (!FLAG) {

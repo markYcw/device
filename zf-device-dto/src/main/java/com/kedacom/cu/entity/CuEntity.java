@@ -58,7 +58,7 @@ public class CuEntity {
 	private String password;
 
 
-	@ApiModelProperty(value = "cu版本:0:1.0平台; 1:2.0平台", example = "0：1", required = true)
+	@ApiModelProperty(value = "cu版本:8:1.0平台; 9:2.0平台", example = "0：1", required = true)
 	private Integer type;
 
 

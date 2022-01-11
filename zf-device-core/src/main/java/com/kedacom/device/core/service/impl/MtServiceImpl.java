@@ -752,9 +752,12 @@ public class MtServiceImpl implements MtService {
 
         log.info("终端掉线通知, 终端名称 : {}", mtEntity.getName());
 
-        mtEntity.setMtid(null);
+        LambdaUpdateWrapper<MtEntity> updateWrapper = new LambdaUpdateWrapper<>();
+
+        updateWrapper.eq(MtEntity::getMtid, mtId)
+                .set(MtEntity::getMtid, null);
         // 将该终端与中间件交互的 mtId 修改为 null
-        mtMapper.updateById(mtEntity);
+        mtMapper.update(null, updateWrapper);
         // 将该终端从维护心跳的缓存中删除
         MtServiceImpl.synHashSet.remove(mtEntity.getId());
 
@@ -778,9 +781,12 @@ public class MtServiceImpl implements MtService {
 
         log.info("终端抢占通知, 终端名称 : {}, 终端已被抢占", mtEntity.getName());
 
-        mtEntity.setMtid(null);
+        LambdaUpdateWrapper<MtEntity> updateWrapper = new LambdaUpdateWrapper<>();
 
-        mtMapper.updateById(mtEntity);
+        updateWrapper.eq(MtEntity::getMtid, mtId)
+                .set(MtEntity::getMtid, null);
+        // 将该终端与中间件交互的 mtId 修改为 null
+        mtMapper.update(null, updateWrapper);
 
         MtServiceImpl.synHashSet.remove(mtEntity.getId());
 

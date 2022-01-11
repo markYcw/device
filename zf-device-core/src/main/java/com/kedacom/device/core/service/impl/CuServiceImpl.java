@@ -20,6 +20,7 @@ import com.kedacom.device.core.basicParam.CuBasicParam;
 import com.kedacom.device.core.basicParam.CuReLoginParam;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.CuConvert;
+import com.kedacom.device.core.enums.DeviceModelType;
 import com.kedacom.device.core.exception.CuException;
 import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.notify.cu.loadGroup.CuClient;
@@ -104,7 +105,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     private final static String REQUEST_HEAD = "http://";
 
-    private final static String NOTIFY_URL = "/api/api-device/ums/cu/cuNotify";
+    private final static String NOTIFY_URL = "/api/api-device/ums/device/notify";
 
 
     //cu状态池 若成功登录则把数据库ID和登录状态放入此池中1为已登录，若登出或者删除则从此状态池中移除
@@ -327,6 +328,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             CuLoginRequest request = convert.convertToCuLoginRequest(entity);
             String ntyUrl = REQUEST_HEAD + cuNtyUrl + NOTIFY_URL;
             request.setNtyUrl(ntyUrl);
+            request.setDevType(DeviceModelType.CU2.getCode());
             String url = factory.geturl(entity.getType());
             Map<String, Long> paramMap = new HashMap<>();
             paramMap.put("ssno", (long) NumGen.getNum());
@@ -770,7 +772,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         if(ObjectUtils.isEmpty(entity)){
             throw new CuException(DeviceErrorEnum.DEVICE_NOT_FOUND);
         }
-        if(!cuStatusPoll.get(entity.getId()).equals(1)){
+        if(cuStatusPoll.get(entity.getId())==null){
             throw new CuException(DeviceErrorEnum.DEVICE_NOT_LOGIN);
         }
     }

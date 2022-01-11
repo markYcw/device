@@ -3,12 +3,14 @@ package com.kedacom.device.core.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.kedacom.BaseResult;
 import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.McuConvert;
 import com.kedacom.device.core.basicParam.McuBasicParam;
+import com.kedacom.device.core.enums.DeviceModelType;
 import com.kedacom.device.core.exception.MpException;
 import com.kedacom.device.core.mapper.UmsMcuMapper;
 import com.kedacom.device.core.service.McuService;
@@ -38,7 +40,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author hxj ycw
+ * @author ycw
  * @date: 2021/8/13 13:50
  * @description 会议平台业务类
  */
@@ -69,7 +71,7 @@ public class McuServiceImpl implements McuService {
 
     private final static String REQUEST_HEAD = "http://";
 
-    private final static String NOTIFY_URL = "/api/api-device/ums/umsMcu/mcuNotify";
+    private final static String NOTIFY_URL = "/api/api-device/ums/device/notify";
 
     //mcu状态池 若成功登录则把数据库ID和登录状态放入此池中1为已登录，若登出则从此状态池中移除
     public static ConcurrentHashMap<Long,Integer> mcuStatusPoll = new ConcurrentHashMap<>();
@@ -86,7 +88,7 @@ public class McuServiceImpl implements McuService {
         String ntyUrl = REQUEST_HEAD + mcuNtyUrl + NOTIFY_URL;
         request.setNtyUrl(ntyUrl);
         //设置mcu类型目前只考虑5.0所以暂时 type为1
-        request.setType(DevTypeConstant.updateRecordKey);
+        request.setDevType(DeviceModelType.MCU5.getCode());
         String url = factory.geturl(entity.getDevtype());
         Map<String, Long> paramMap = new HashMap<>();
         paramMap.put("ssno", (long) NumGen.getNum());
@@ -757,6 +759,33 @@ public class McuServiceImpl implements McuService {
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_REC_STATUS_FAILED, response);
         RecsVO vo = JSON.parseObject(s, RecsVO.class);
         return BaseResult.succeed("mcu获取录像列表成功",vo);
+    }
+
+    @Override
+    public BaseResult<VrsVO> vrs(McuRequestDTO dto) {
+        log.info("获取vrs列表:{}", dto);
+        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
+        responseUtil.handleMp(entity);
+        McuBasicParam param = tool.getParam(entity);
+        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/vrs/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
+        log.info("获取vrs列表响应:{}", exchange.getBody());
+        String errorMsg = "获取vrs列表失败:{},{},{}";
+        MpResponse response = JSON.parseObject(exchange.getBody(), MpResponse.class);
+        responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_HB_FAILED, response);
+        VrsVO vrsVO = JSON.parseObject(exchange.getBody(), VrsVO.class);
+        return BaseResult.succeed(vrsVO);
+    }
+
+    @Override
+    public UmsMcuEntity getBySsid(Integer ssid) {
+        log.info("========根据ssId获取MCU入参：",ssid);
+        LambdaQueryWrapper<UmsMcuEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(UmsMcuEntity::getSsid,ssid);
+        List<UmsMcuEntity> list = mapper.selectList(wrapper);
+        if(CollectionUtil.isEmpty(list)){
+            throw new MpException(DeviceErrorEnum.DEVICE_NOT_FOUND);
+        }
+        return list.get(0);
     }
 
 }

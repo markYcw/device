@@ -2,6 +2,7 @@ package com.kedacom.device.core.service;
 
 import com.kedacom.BaseResult;
 import com.kedacom.mp.mcu.McuRequestDTO;
+import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import com.kedacom.mp.mcu.pojo.ConfTemplateInfoVo;
 import com.kedacom.mp.mcu.request.*;
 import com.kedacom.mp.mcu.response.*;
@@ -78,4 +79,8 @@ public interface McuService {
     BaseResult<DepartmentVO> department(DepartmentDTO dto);
 
     BaseResult<RecsVO> recs(RecsDTO dto);
+
+    BaseResult<VrsVO> vrs(McuRequestDTO dto);
+
+    UmsMcuEntity getBySsid(Integer ssid);
 }

@@ -297,5 +297,14 @@ public class McuController {
     }
 
 
+    @ApiOperation("获取vrs列表")
+    @PostMapping("/vrs")
+    public BaseResult<VrsVO> vrs(@Valid @RequestBody McuRequestDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return mcuService.vrs(dto);
+    }
+
+
 
 }

@@ -36,7 +36,7 @@ public class McuApiFallbackFactory implements FallbackFactory<McuApi> {
             }
 
             @Override
-            public BaseResult<AccountsVo> accounts(@Valid AccountsDto dto, BindingResult br) {
+            public BaseResult<AccountsVo> accounts(AccountsDto dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
@@ -166,17 +166,22 @@ public class McuApiFallbackFactory implements FallbackFactory<McuApi> {
             }
 
             @Override
-            public BaseResult<DepartmentsVO> departments(@Valid McuRequestDTO dto) {
+            public BaseResult<DepartmentsVO> departments(McuRequestDTO dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<DepartmentVO> department(@Valid DepartmentDTO dto) {
+            public BaseResult<DepartmentVO> department(DepartmentDTO dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public BaseResult<RecsVO> recs(@Valid RecsDTO dto, BindingResult br) {
+            public BaseResult<RecsVO> recs(RecsDTO dto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<VrsVO> vrs(McuRequestDTO dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
 

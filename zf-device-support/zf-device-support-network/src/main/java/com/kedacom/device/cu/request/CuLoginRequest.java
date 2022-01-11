@@ -28,10 +28,10 @@ public class CuLoginRequest implements Serializable {
     private Integer port;
 
     /**
-     * type
+     * devType
      */
-    @ApiModelProperty(value = "类型，0:1.0平台 1:2.0平台")
-    private Integer type;
+    @ApiModelProperty(value = "类型，8:1.0平台 9:2.0平台")
+    private Integer devType;
 
     /**
      * 登录cu用户名

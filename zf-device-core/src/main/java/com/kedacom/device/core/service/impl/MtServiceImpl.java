@@ -714,6 +714,7 @@ public class MtServiceImpl implements MtService {
         if (sessionId != null) {
             paramMap.put("ssid", Long.valueOf(sessionId));
         }
+        log.info("paramMap : {}", paramMap.toString());
 
         return paramMap;
     }

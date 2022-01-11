@@ -4,13 +4,13 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 172.16.129.214:18848
+        server-addr: 127.0.0.1:18848
         metadata:
           app-version: @project.version@-@version-flag@-@current.time@
           build-time: @timestamp@
           context-path: ${server.servlet.context-path}
       config:
-        server-addr: 172.16.129.214:18848
+        server-addr: 127.0.0.1:18848
         group: DEFAULT_GROUP
         file-extension: yml
         shared-configs:

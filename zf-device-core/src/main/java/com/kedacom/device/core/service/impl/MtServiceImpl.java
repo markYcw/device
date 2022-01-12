@@ -754,8 +754,13 @@ public class MtServiceImpl implements MtService {
         log.info("终端"+ type + "通知, 终端名称 : {}", mtEntity.getName());
 
         MtServiceImpl.synHashSet.remove(mtEntity.getId());
-        // 登出终端
-        logOutById(mtEntity.getId());
+
+        try {
+            // 登出终端
+            logOutById(mtEntity.getId());
+        } catch (Exception e) {
+            log.error("消费通知后退出终端失败 : {}", e.getMessage());
+        }
 
         MT_CHECK_SWITCH = true;
 

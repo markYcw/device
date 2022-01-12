@@ -1,6 +1,5 @@
 package com.kedacom.vs.vo;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -20,7 +19,7 @@ public class QueryRecVo {
     @ApiModelProperty("查询起始，从0开始")
     private Integer start;
 
-    @ApiModelProperty("每页的大小")
+    @ApiModelProperty("查询总数")
     private Integer count;
 
     @ApiModelProperty("模糊匹配的录像名字")

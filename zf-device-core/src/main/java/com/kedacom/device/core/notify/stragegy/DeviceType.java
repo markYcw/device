@@ -13,11 +13,11 @@ public enum DeviceType {
 	/**
 	 * 监控平台
 	 */
-	CU(0),
+	CU(8),
 	/**
 	 * 会议平台4.7
 	 */
-	MCU(1),
+	MCU(2),
 	
 	/**
 	 * 会议终端3代高清
@@ -27,7 +27,7 @@ public enum DeviceType {
 	/**
 	 * 会议平台5.0
 	 */
-	MCU5(4),
+	MCU5(3),
 	
 	/**
 	 * GK服务器
@@ -37,7 +37,7 @@ public enum DeviceType {
 	/**
 	 * 监控平台2.0
 	 */
-	CU2(1),
+	CU2(9),
 	
 	/**
 	 * 存储柜

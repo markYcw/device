@@ -2,6 +2,8 @@ package com.kedacom.vs.vo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author ycw
  * @create 2021/06/23 13:41
@@ -10,10 +12,10 @@ import lombok.Data;
 public class LiveInfoVo {
 
 
-    @ApiModelProperty("名称")
-    private String name;
+    @ApiModelProperty("总数")
+    private Integer total;
 
-    @ApiModelProperty("hls的播放url")
-    private String rtspUrl;
+    @ApiModelProperty("直播列表")
+    private List<LiveInfo> lives;
 
 }

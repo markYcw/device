@@ -76,6 +76,8 @@ public class MtServiceImpl implements MtService {
 
     private static final Integer DROP_LINE = 1;
 
+    private static boolean MT_CHECK_SWITCH = true;
+
     private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/mt/mtNotify";
 
     /**
@@ -258,7 +260,7 @@ public class MtServiceImpl implements MtService {
 
         log.info("退出登录终端信息请求参数 : {}", dbId);
         MtEntity entity = mtMapper.selectById(dbId);
-        check(entity);
+//        check(entity);
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
         String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
 
@@ -283,7 +285,10 @@ public class MtServiceImpl implements MtService {
 
         log.info("发送心跳请求参数 : {}", dbId);
         MtEntity entity = mtMapper.selectById(dbId);
-        check(entity);
+        // 当处理终端通知时，维护心跳的过程不做校验终端中的重新登录
+        if (MT_CHECK_SWITCH) {
+            check(entity);
+        }
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
         String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
 
@@ -665,7 +670,7 @@ public class MtServiceImpl implements MtService {
         String content = String.valueOf(jsonObject.get("content"));
         log.info("终端通知消息，ssid : {}, msgType : {}, content : {}", mtId, msgType, content);
 
-        handleMtNotify(mtId, msgType, content);
+        handleMtNotify(mtId, msgType);
     }
 
     @Override
@@ -714,6 +719,7 @@ public class MtServiceImpl implements MtService {
         if (sessionId != null) {
             paramMap.put("ssid", Long.valueOf(sessionId));
         }
+        log.info("paramMap : {}", paramMap.toString());
 
         return paramMap;
     }
@@ -726,23 +732,11 @@ public class MtServiceImpl implements MtService {
         return cuEntity.getIp();
     }
 
-    public void handleMtNotify(Integer mtId, Integer msgType, String content) {
+    public void handleMtNotify(Integer mtId, Integer msgType) {
 
-        // 终端的抢占通知
-        if (SEIZE.equals(msgType)) {
+        MT_CHECK_SWITCH = false;
 
-            log.info("ssid : {} 终端被抢占", mtId);
-            consumeMtSeizeNotify(mtId);
-        }
-        // 终端的掉线通知
-        if (DROP_LINE.equals(msgType)) {
-
-            log.info("ssid : {} 终端掉线", mtId);
-            consumeMtDropLineNotify(mtId);
-        }
-    }
-
-    public void consumeMtDropLineNotify(Integer mtId) {
+        String type = DROP_LINE.equals(msgType) ? "掉线" : "被抢占";
 
         LambdaQueryWrapper<MtEntity> queryWrapper = new LambdaQueryWrapper<>();
 
@@ -750,41 +744,22 @@ public class MtServiceImpl implements MtService {
 
         MtEntity mtEntity = mtMapper.selectOne(queryWrapper);
 
-        log.info("终端掉线通知, 终端名称 : {}", mtEntity.getName());
+        if (mtEntity == null) {
 
-        mtEntity.setMtid(null);
-        // 将该终端与中间件交互的 mtId 修改为 null
-        mtMapper.updateById(mtEntity);
-        // 将该终端从维护心跳的缓存中删除
-        MtServiceImpl.synHashSet.remove(mtEntity.getId());
+            log.error("该终端离线或不存在");
 
-        log.info("开始发送日志信息");
+            return;
+        }
 
-        String msg = mtEntity.getName() + " 终端已掉线！";
-        // 向前端发送终端掉线通知
-        mtSendMessage.sendMessage(msg);
-
-        log.info("结束发送日志信息");
-
-    }
-
-    public void consumeMtSeizeNotify(Integer mtId) {
-
-        LambdaQueryWrapper<MtEntity> queryWrapper = new LambdaQueryWrapper<>();
-
-        queryWrapper.eq(MtEntity::getMtid, mtId);
-
-        MtEntity mtEntity = mtMapper.selectOne(queryWrapper);
-
-        log.info("终端抢占通知, 终端名称 : {}, 终端已被抢占", mtEntity.getName());
-
-        mtEntity.setMtid(null);
-
-        mtMapper.updateById(mtEntity);
+        log.info("终端"+ type + "通知, 终端名称 : {}", mtEntity.getName());
 
         MtServiceImpl.synHashSet.remove(mtEntity.getId());
+        // 登出终端
+        logOutById(mtEntity.getId());
 
-        String msg = mtEntity.getName() + " 终端已被抢占！";
+        MT_CHECK_SWITCH = true;
+
+        String msg = mtEntity.getName() + " 终端已" + type;
         // 向前端发送终端被抢占登录通知
         mtSendMessage.sendMessage(msg);
 

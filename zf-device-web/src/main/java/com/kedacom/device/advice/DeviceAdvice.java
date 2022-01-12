@@ -138,6 +138,20 @@ public class DeviceAdvice {
         return BaseResult.failed(e.getMessage());
     }
 
+    /**
+     * Vrs异常捕获
+     *
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler({VrsException.class})
+    public BaseResult handleException(VrsException e) {
+        log.error("vrs异常捕获:{}", e.getMessage());
+        return BaseResult.failed(e.getMessage());
+    }
+
+
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler({AiBoxException.class})
     public BaseResult handleException(AiBoxException e) {

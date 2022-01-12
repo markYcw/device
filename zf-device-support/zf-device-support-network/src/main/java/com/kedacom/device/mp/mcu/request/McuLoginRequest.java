@@ -30,8 +30,8 @@ public class McuLoginRequest implements Serializable {
     /**
      * 平台类型
      */
-    @ApiModelProperty(value = "平台类型 0:4.7 1:5.0")
-    private Integer type;
+    @ApiModelProperty(value = "平台类型 2:4.7 3:5.0")
+    private Integer devType;
 
     /**
      * 登录会议平台用户名

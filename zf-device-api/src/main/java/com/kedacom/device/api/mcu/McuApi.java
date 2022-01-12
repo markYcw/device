@@ -36,7 +36,7 @@ public interface McuApi {
 
     @ApiOperation("查询所有账户")
     @PostMapping("/accounts")
-    BaseResult<AccountsVo> accounts(@Valid @RequestBody AccountsDto dto, BindingResult br);
+    BaseResult<AccountsVo> accounts(@RequestBody AccountsDto dto);
 
     @ApiOperation("获取会议列表")
     @PostMapping("/confs")
@@ -144,14 +144,18 @@ public interface McuApi {
 
     @ApiOperation("查询所有部门")
     @PostMapping("/departments")
-    BaseResult<DepartmentsVO> departments(@Valid @RequestBody McuRequestDTO dto);
+    BaseResult<DepartmentsVO> departments(@RequestBody McuRequestDTO dto);
 
     @ApiOperation("创建/删除部门")
     @PostMapping("/department")
-    BaseResult<DepartmentVO> department(@Valid @RequestBody DepartmentDTO dto);
+    BaseResult<DepartmentVO> department(@RequestBody DepartmentDTO dto);
 
     @ApiOperation("获取录像列表")
     @PostMapping("/recs")
-    BaseResult<RecsVO> recs(@Valid @RequestBody RecsDTO dto, BindingResult br);
+    BaseResult<RecsVO> recs(@RequestBody RecsDTO dto);
+
+    @ApiOperation("获取vrs列表")
+    @PostMapping("/vrs")
+    public BaseResult<VrsVO> vrs(@RequestBody McuRequestDTO dto);
 
 }

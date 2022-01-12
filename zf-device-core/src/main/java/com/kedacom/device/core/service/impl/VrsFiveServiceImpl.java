@@ -212,6 +212,7 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
             throw new VrsException(DeviceErrorEnum.VS_LOGIN_FAILED);
         }
         VsEntity entity = vrsMapper.selectById(dbId);
+        entity.setSsid(login);
         VsBasicParam param = getParam(entity);
         log.info("分页查询HTTP录像中间件入参信息:{}", JSON.toJSONString(queryRecListVo));
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/queryrec/{ssid}/{ssno}", JSON.toJSONString(queryRecListVo), String.class, param.getParamMap());
@@ -220,7 +221,7 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         handleVrs(errorMsg,DeviceErrorEnum.VS_QUERY_REC_FAILED,response);
 
         VrsRecInfoDecVo vo = JSON.parseObject(s, VrsRecInfoDecVo.class);
-        return BaseResult.succeed("分页查询HTTP录像接口",vo);
+        return BaseResult.succeed("分页查询HTTP录像接口成功",vo);
     }
 
     @Override
@@ -231,15 +232,17 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
             throw new VrsException(DeviceErrorEnum.VS_LOGIN_FAILED);
         }
         VsEntity entity = vrsMapper.selectById(vo.getDbId());
+        entity.setSsid(login);
         VsBasicParam param = getParam(entity);
         log.info("查询录像中间件入参信息:{}", JSON.toJSONString(vo));
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/queryrec/{ssid}/{ssno}", JSON.toJSONString(vo), String.class, param.getParamMap());
+        log.info("查询录像中间件应答:{}", s);
         VsResponse response = JSON.parseObject(s, VsResponse.class);
         String errorMsg = "查询录像失败:{},{},{}";
         handleVrs(errorMsg,DeviceErrorEnum.VS_QUERY_REC_FAILED,response);
 
         VrsRecInfoVo vrsRecInfoVo = JSON.parseObject(s, VrsRecInfoVo.class);
-        return BaseResult.succeed("分页查询HTTP录像接口",vrsRecInfoVo);
+        return BaseResult.succeed("查询录像成功",vrsRecInfoVo);
     }
 
     @Override
@@ -250,15 +253,17 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
             throw new VrsException(DeviceErrorEnum.VS_LOGIN_FAILED);
         }
         VsEntity entity = vrsMapper.selectById(vo.getDbId());
+        entity.setSsid(login);
         VsBasicParam param = getParam(entity);
         log.info("查询直播中间件入参信息:{}", JSON.toJSONString(vo));
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/querylive/{ssid}/{ssno}", JSON.toJSONString(vo), String.class, param.getParamMap());
+        log.info("查询直播中间件应答:{}", s);
         VsResponse response = JSON.parseObject(s, VsResponse.class);
         String errorMsg = "查询直播失败:{},{},{}";
         handleVrs(errorMsg,DeviceErrorEnum.VS_QUERY_LIVE_FAILED,response);
 
         LiveInfoVo liveInfoVo = JSON.parseObject(s, LiveInfoVo.class);
-        return BaseResult.succeed("分页查询HTTP录像接口",liveInfoVo);
+        return BaseResult.succeed("查询直播成功",liveInfoVo);
     }
 
     public String getUrl() {

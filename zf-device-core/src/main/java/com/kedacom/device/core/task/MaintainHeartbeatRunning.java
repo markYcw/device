@@ -59,13 +59,12 @@ public class MaintainHeartbeatRunning implements Runnable {
                 mtService.heartBeat(integer);
             } catch (RuntimeException e) {
                 invalidSet.add(integer);
-                mtService.setNullOfMtId(integer);
                 mtService.logOutById(integer);
                 log.error("终端id : {} 发送心跳异常, 异常信息 : {}", integer, e.getMessage());
             }
         }
-        synHashSet.removeAll(invalidSet);
 
+        synHashSet.removeAll(invalidSet);
     }
 
 }

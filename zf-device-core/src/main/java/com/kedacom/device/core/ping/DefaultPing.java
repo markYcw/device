@@ -1,5 +1,6 @@
 package com.kedacom.device.core.ping;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -9,7 +10,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
-public class DeafultPing implements IPing{
+@Slf4j
+public class DefaultPing implements IPing{
     @Override
     public boolean isAlive(PingInfo pingInfo) {
         BufferedReader in = null;
@@ -17,7 +19,7 @@ public class DeafultPing implements IPing{
         String pingCommand = "ping " + pingInfo.getIp() + " -n "
                 + pingInfo.getTimes() + " -w " + pingInfo.getTimeout();
         try {
-            System.out.println(pingCommand);
+            log.info("isAlive: {} ", pingCommand);
             Process p = r.exec(pingCommand);
             if (p == null) {
                 return false;
@@ -28,6 +30,7 @@ public class DeafultPing implements IPing{
             while ((line = in.readLine()) != null) {
                 connectedCount += getCheckResult(line);
             }    //  如果出现类似=23ms TTL=62这样的字样,出现的次数=测试次数则返回真
+            log.info("ping sucess times : {}", connectedCount);
             return connectedCount == pingInfo.getTimes();
         } catch (Exception ex) {
             ex.printStackTrace();    //  出现异常则返回假
@@ -50,11 +53,11 @@ public class DeafultPing implements IPing{
         return 0;
     }
 
-//    public  static  void main(String[] args)  throws Exception {
-//        PingInfo pingInfo= new PingInfo("172.16.129.214");
-//        System.out.println(pingInfo);
-//        boolean alive = new DeafultPing().isAlive(pingInfo);
-//        System.out.println(alive);
-//    }
+    public  static  void main(String[] args)  throws Exception {
+        PingInfo pingInfo= new PingInfo("172.16.231.43");
+        System.out.println(pingInfo);
+        boolean alive = new DefaultPing().isAlive(pingInfo);
+        System.out.println(alive);
+    }
 
 }

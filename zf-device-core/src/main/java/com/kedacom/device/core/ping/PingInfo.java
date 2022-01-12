@@ -3,10 +3,12 @@ package com.kedacom.device.core.ping;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class PingInfo {
     private String ip;
     //ping 次数

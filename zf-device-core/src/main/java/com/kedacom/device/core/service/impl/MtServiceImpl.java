@@ -19,7 +19,7 @@ import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.mapper.MtMapper;
 import com.kedacom.device.core.mapper.MtTypeMapper;
 import com.kedacom.device.core.notify.mt.MtSendMessage;
-import com.kedacom.device.core.ping.DeafultPing;
+import com.kedacom.device.core.ping.DefaultPing;
 import com.kedacom.device.core.ping.PingInfo;
 import com.kedacom.device.core.service.MtService;
 import com.kedacom.device.core.utils.HandleResponseUtil;
@@ -55,7 +55,7 @@ public class MtServiceImpl implements MtService {
     CuMapper cuMapper;
 
     @Resource
-    DeafultPing deafultPing;
+    DefaultPing defaultPing;
 
     @Resource
     MtTypeMapper mtTypeMapper;
@@ -677,7 +677,7 @@ public class MtServiceImpl implements MtService {
         PingInfo pingInfo = new PingInfo();
         pingInfo.setIp(entity.getIp());
 
-        return deafultPing.isAlive(pingInfo);
+        return defaultPing.isAlive(pingInfo);
     }
 
     @Override

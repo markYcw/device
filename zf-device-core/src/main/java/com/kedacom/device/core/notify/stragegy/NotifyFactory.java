@@ -23,6 +23,8 @@ public class NotifyFactory {
     /**
      * 注册通知
      * @param devType 设备类型
+     * @param notifyType 消息通知类型
+     * @param iNotify 对应的消息处理类
      */
     public void register(Integer devType,Integer notifyType,INotify iNotify){
         HashMap<Integer, INotify> detail = NotifyFactory.map.get(devType);

@@ -1,13 +1,16 @@
 package com.kedacom.device.core.ping;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//@Component
-//@Slf4j
+@Component
+@Slf4j
 public class DefaultPing implements IPing{
     @Override
     public boolean isAlive(PingInfo pingInfo) {
@@ -16,8 +19,7 @@ public class DefaultPing implements IPing{
         String pingCommand = "ping " + pingInfo.getIp() + " -c "
                 + pingInfo.getTimes() + " -w " + pingInfo.getTimeout();
         try {
-            //log.info("isAlive: {} ", pingCommand);
-            System.out.println(pingCommand);
+            log.info("isAlive: {} ", pingCommand);
             Process p = r.exec(pingCommand);
             if (p == null) {
                 return false;
@@ -28,8 +30,7 @@ public class DefaultPing implements IPing{
             while ((line = in.readLine()) != null) {
                 connectedCount += getCheckResult(line);
             }    //  如果出现类似=23ms TTL=62这样的字样,出现的次数=测试次数则返回真
-            //log.info("ping sucess times : {}", connectedCount);
-            System.out.println(connectedCount);
+            log.info("ping sucess times : {}", connectedCount);
             return connectedCount == pingInfo.getTimes();
         } catch (Exception ex) {
             ex.printStackTrace();    //  出现异常则返回假

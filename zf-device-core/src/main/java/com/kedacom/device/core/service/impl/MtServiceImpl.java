@@ -8,16 +8,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.constant.MtConstants;
 import com.kedacom.device.core.convert.MtConvert;
 import com.kedacom.device.core.entity.MtEntity;
 import com.kedacom.device.core.entity.MtTypeEntity;
 import com.kedacom.device.core.exception.MtException;
-import com.kedacom.device.core.mapper.CuMapper;
 import com.kedacom.device.core.mapper.MtMapper;
 import com.kedacom.device.core.mapper.MtTypeMapper;
+import com.kedacom.device.core.mapper.SvrMapper;
 import com.kedacom.device.core.notify.mt.MtSendMessage;
 import com.kedacom.device.core.ping.DefaultPing;
 import com.kedacom.device.core.ping.PingInfo;
@@ -27,6 +26,7 @@ import com.kedacom.device.core.utils.MtUrlFactory;
 import com.kedacom.device.core.utils.RemoteRestTemplate;
 import com.kedacom.mt.*;
 import com.kedacom.mt.response.GetMtStatusResponseVo;
+import com.kedacom.svr.entity.SvrEntity;
 import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
@@ -52,7 +52,7 @@ public class MtServiceImpl implements MtService {
     MtMapper mtMapper;
 
     @Resource
-    CuMapper cuMapper;
+    SvrMapper svrMapper;
 
     @Resource
     DefaultPing defaultPing;
@@ -693,8 +693,8 @@ public class MtServiceImpl implements MtService {
             MtEntity mtEntity = mtMapper.selectById(value);
             flag = mtEntity == null;
         } else {
-            CuEntity cuEntity = cuMapper.selectById(value);
-            flag = cuEntity == null;
+            SvrEntity svrEntity = svrMapper.selectById(value);
+            flag = svrEntity == null;
         }
 
         return flag;
@@ -727,9 +727,9 @@ public class MtServiceImpl implements MtService {
     public String getIp(String dstId) {
 
         // 对端为svr，对应监控平台ip
-        CuEntity cuEntity = cuMapper.selectById(dstId);
+        SvrEntity svrEntity = svrMapper.selectById(dstId);
 
-        return cuEntity.getIp();
+        return svrEntity.getIp();
     }
 
     public void handleMtNotify(Integer mtId, Integer msgType) {

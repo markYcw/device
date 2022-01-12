@@ -6,7 +6,6 @@ import com.kedacom.device.core.notify.stragegy.NotifyFactory;
 import com.kedacom.device.core.service.CuService;
 import com.kedacom.device.core.utils.CuUrlFactory;
 import com.kedacom.device.core.utils.McuUrlFactory;
-import com.kedacom.device.core.utils.SvrUrlFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -31,9 +30,6 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
     private McuUrlFactory factory;
 
     @Autowired
-    private SvrUrlFactory svrUrlFactory;
-
-    @Autowired
     private CuUrlFactory cuUrlFactory;
 
     @Autowired
@@ -54,8 +50,6 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
         NotifyFactory.init();
         //mcu访问地址初始化
         factory.setMap();
-        //svr访问地址初始化
-        svrUrlFactory.setMap();
         //cu访问地址初始化
         cuUrlFactory.setMap();
         //服务重启时重启监控平台

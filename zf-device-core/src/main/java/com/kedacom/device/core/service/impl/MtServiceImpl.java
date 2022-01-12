@@ -260,15 +260,17 @@ public class MtServiceImpl implements MtService {
 
         log.info("退出登录终端信息请求参数 : {}", dbId);
         MtEntity entity = mtMapper.selectById(dbId);
+
+        Integer mtId = entity.getMtid();
+        Map<String, Long> paramMap = setParamMap(mtId);
+        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
+
         entity.setMtid(null);
         mtMapper.updateById(entity);
         // 将退出登录的终端id从维护终端心跳的缓存中删除
         synHashSet.remove(dbId);
 
-        Map<String, Long> paramMap = setParamMap(entity.getMtid());
-        String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
-
-        log.info("远端退出登录终端请求参数 ssid : {}", entity.getMtid());
+        log.info("远端退出登录终端请求参数 ssid : {}", mtId);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
                 .exchange(mtRequestUrl + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, paramMap);
         log.info("远端退出登录终端响应参数 exchange : {}", exchange);

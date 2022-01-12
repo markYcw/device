@@ -260,7 +260,11 @@ public class MtServiceImpl implements MtService {
 
         log.info("退出登录终端信息请求参数 : {}", dbId);
         MtEntity entity = mtMapper.selectById(dbId);
-//        check(entity);
+        entity.setMtid(null);
+        mtMapper.updateById(entity);
+        // 将退出登录的终端id从维护终端心跳的缓存中删除
+        synHashSet.remove(dbId);
+
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
         String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
 
@@ -272,12 +276,8 @@ public class MtServiceImpl implements MtService {
         String errorMsg = "退出终端登录失败 : {}, {}, {}";
         assert mtResponse != null;
         responseUtil.handleMtRes(errorMsg, DeviceErrorEnum.MT_LOGOUT_FAILED, mtResponse);
-        entity.setMtid(null);
 
-        // 将退出登录的终端id从维护终端心跳的缓存中删除
-        synHashSet.remove(dbId);
-
-        return mtMapper.updateById(entity) > 0;
+        return true;
     }
 
     @Override

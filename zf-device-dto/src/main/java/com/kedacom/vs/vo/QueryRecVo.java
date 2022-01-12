@@ -1,6 +1,5 @@
 package com.kedacom.vs.vo;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

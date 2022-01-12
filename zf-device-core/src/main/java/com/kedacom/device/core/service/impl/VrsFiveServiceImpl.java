@@ -221,7 +221,7 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         handleVrs(errorMsg,DeviceErrorEnum.VS_QUERY_REC_FAILED,response);
 
         VrsRecInfoDecVo vo = JSON.parseObject(s, VrsRecInfoDecVo.class);
-        return BaseResult.succeed("分页查询HTTP录像接口",vo);
+        return BaseResult.succeed("分页查询HTTP录像接口成功",vo);
     }
 
     @Override
@@ -242,7 +242,7 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         handleVrs(errorMsg,DeviceErrorEnum.VS_QUERY_REC_FAILED,response);
 
         VrsRecInfoVo vrsRecInfoVo = JSON.parseObject(s, VrsRecInfoVo.class);
-        return BaseResult.succeed("分页查询HTTP录像接口",vrsRecInfoVo);
+        return BaseResult.succeed("查询录像成功",vrsRecInfoVo);
     }
 
     @Override
@@ -263,7 +263,7 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         handleVrs(errorMsg,DeviceErrorEnum.VS_QUERY_LIVE_FAILED,response);
 
         LiveInfoVo liveInfoVo = JSON.parseObject(s, LiveInfoVo.class);
-        return BaseResult.succeed("分页查询HTTP录像接口",liveInfoVo);
+        return BaseResult.succeed("查询直播成功",liveInfoVo);
     }
 
     public String getUrl() {

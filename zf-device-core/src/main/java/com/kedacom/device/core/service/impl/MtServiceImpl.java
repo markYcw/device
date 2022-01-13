@@ -265,8 +265,10 @@ public class MtServiceImpl implements MtService {
         Map<String, Long> paramMap = setParamMap(mtId);
         String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
 
-        entity.setMtid(null);
-        mtMapper.updateById(entity);
+        LambdaUpdateWrapper<MtEntity> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(MtEntity::getId, dbId)
+                .set(MtEntity::getMtid, null);
+        mtMapper.update(null, updateWrapper);
         // 将退出登录的终端id从维护终端心跳的缓存中删除
         synHashSet.remove(dbId);
 

@@ -78,6 +78,8 @@ public class MtServiceImpl implements MtService {
 
     private static boolean MT_CHECK_SWITCH = true;
 
+    public static boolean MT_MAINTAIN_HEARTBEAT = true;
+
     private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/mt/mtNotify";
 
     /**
@@ -259,8 +261,9 @@ public class MtServiceImpl implements MtService {
                 .set(MtEntity::getMtid, null);
         mtMapper.update(null, updateWrapper);
         // 将退出登录的终端id从维护终端心跳的缓存中删除
-        synHashSet.remove(dbId);
-
+        if (MT_MAINTAIN_HEARTBEAT) {
+            synHashSet.remove(dbId);
+        }
         log.info("远端退出登录终端请求参数 ssid : {}", mtId);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
                 .exchange(mtRequestUrl + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, paramMap);

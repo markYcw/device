@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * VRS录播服务器5.0、5.1设备
+ * VRS录播服务器5.1设备
  *
  * @author ycw
  * @email yucongwang@kedacom.com
@@ -98,6 +98,13 @@ public class VrsFiveController {
     public BaseResult<LiveInfoVo> queryLive(@RequestBody QueryLiveVo vo){
 
         return vrsFiveService.queryLive(vo);
+    }
+
+    @ApiOperation("根据IP查询录像：不许要传数据库ID只需传入设备IP用户名密码就可")
+    @PostMapping("/queryRecByIp")
+    public BaseResult<VrsRecInfoVo> queryRecByIp(@RequestBody QueryRecByIpVo vo){
+
+        return vrsFiveService.queryRecByIp(vo);
     }
 
 

@@ -67,4 +67,6 @@ public interface VrsFiveService extends IService<VsEntity> {
     BaseResult<VrsRecInfoVo> queryRec(QueryRecVo vo);
 
     BaseResult<LiveInfoVo> queryLive(QueryLiveVo vo);
+
+    BaseResult<VrsRecInfoVo> queryRecByIp(QueryRecByIpVo vo);
 }

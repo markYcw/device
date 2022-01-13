@@ -16,7 +16,7 @@ import java.util.List;
 
 
 /**
- * 录播服务器5.0/5.1
+ * 录播服务器5.1
  */
 @FeignClient(value = "device-server", path = "/api-device/ums/vs", contextId = "vrsFiveApi", fallbackFactory = VrsFiveDefaultFallbackFactory.class)
 public interface VrsFiveApi {
@@ -57,5 +57,9 @@ public interface VrsFiveApi {
     @ApiOperation("查询直播 5.1版本才支持")
     @PostMapping("/queryRec")
     public BaseResult<LiveInfoVo> queryLive(@RequestBody QueryLiveVo vo);
+
+    @ApiOperation("根据IP查询录像：不许要传数据库ID只需传入设备IP用户名密码就可")
+    @PostMapping("/queryRecByIp")
+    public BaseResult<VrsRecInfoVo> queryRecByIp(@RequestBody QueryRecByIpVo vo);
 
 }

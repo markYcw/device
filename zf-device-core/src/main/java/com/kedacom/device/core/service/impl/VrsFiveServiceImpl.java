@@ -203,6 +203,38 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         return response.getSsid();
     }
 
+    public Integer loginByIp(String ip, String  user, String passWord) {
+        log.info("根据IP登录Vrs入参信息:Ip{},user:{},passWord:{}", ip,user,passWord);
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+
+        VsLoginRequest request = new VsLoginRequest();
+        request.setVersion(11);
+        request.setIp(ip);
+        request.setUsername(user);
+        request.setPassword(passWord);
+        String ntyUrl = REQUEST_HEAD + svrNtyUrl + NOTIFY_URL;
+        request.setNtyUrl(ntyUrl);
+        String url = getUrl();
+        Map<String, Long> paramMap = new HashMap<>();
+        paramMap.put("ssno", (long) NumGen.getNum());
+
+        log.info("登录Vrs中间件入参信息:{}", JSON.toJSONString(request));
+        String string = null;
+        try {
+            string = template.postForObject(url + "/login/{ssno}", JSON.toJSONString(request), String.class, paramMap);
+        } catch (RestClientException e) {
+            log.error("登录VRS失败{}",e);
+        }
+        log.info("登录Vrs中间件应答:{}", string);
+
+        VsLoginResponse response = JSON.parseObject(string, VsLoginResponse.class);
+        if(response.getCode()!=0){
+            log.error("登录VRS失败请查看中间件");
+            return null;
+        }
+        return response.getSsid();
+    }
+
     @Override
     public BaseResult<VrsRecInfoDecVo> vrsQueryHttpRec(QueryRecListVo queryRecListVo) {
         log.info("==============分页查询HTTP录像接口入参QueryRecListVo：{}",queryRecListVo);
@@ -266,6 +298,25 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         return BaseResult.succeed("查询直播成功",liveInfoVo);
     }
 
+    @Override
+    public BaseResult<VrsRecInfoVo> queryRecByIp(QueryRecByIpVo vo) {
+        log.info("==============根据IP查询录像接口入参QueryRecByIpVo：{}",vo);
+        Integer login = loginByIp(vo.getIp(),vo.getUser(),vo.getPassWord());
+        if(login==null){
+            throw new VrsException(DeviceErrorEnum.VS_LOGIN_FAILED);
+        }
+        VsBasicParam param = getParamBySsid(login);
+        log.info("查询录像中间件入参信息:{}", JSON.toJSONString(vo));
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/queryrec/{ssid}/{ssno}", JSON.toJSONString(vo), String.class, param.getParamMap());
+        log.info("查询录像中间件应答:{}", s);
+        VsResponse response = JSON.parseObject(s, VsResponse.class);
+        String errorMsg = "查询录像失败:{},{},{}";
+        handleVrs(errorMsg,DeviceErrorEnum.VS_QUERY_REC_FAILED,response);
+
+        VrsRecInfoVo vrsRecInfoVo = JSON.parseObject(s, VrsRecInfoVo.class);
+        return BaseResult.succeed("查询录像成功",vrsRecInfoVo);
+    }
+
     public String getUrl() {
         String url = SVR_REQUEST_HEAD + kmProxy + SVR_WTO;
         return url;
@@ -275,6 +326,21 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         VsBasicParam param = new VsBasicParam();
         Map<String, Long> paramMap = new HashMap<>();
         Long s = Long.valueOf(entity.getSsid());
+        Long n = (long) NumGen.getNum();
+        paramMap.put("ssid",s);
+        paramMap.put("ssno",n);
+
+        log.info("==========此次请求ssid为：{},ssno为：{}",s,n);
+        param.setParamMap(paramMap);
+        param.setUrl(getUrl());
+
+        return param;
+    }
+
+    public VsBasicParam getParamBySsid(Integer ssid) {
+        VsBasicParam param = new VsBasicParam();
+        Map<String, Long> paramMap = new HashMap<>();
+        Long s = Long.valueOf(ssid);
         Long n = (long) NumGen.getNum();
         paramMap.put("ssid",s);
         paramMap.put("ssno",n);

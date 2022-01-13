@@ -63,6 +63,11 @@ public class VrsFiveDefaultFallbackFactory implements FallbackFactory<VrsFiveApi
             public BaseResult<LiveInfoVo> queryLive(QueryLiveVo vo) {
                 return BaseResult.failed(throwable.getMessage());
             }
+
+            @Override
+            public BaseResult<VrsRecInfoVo> queryRecByIp(QueryRecByIpVo vo) {
+                return BaseResult.failed(throwable.getMessage());
+            }
         };
     }
 }

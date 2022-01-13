@@ -58,7 +58,7 @@ public interface VrsFiveApi {
     @PostMapping("/queryRec")
     public BaseResult<LiveInfoVo> queryLive(@RequestBody QueryLiveVo vo);
 
-    @ApiOperation("根据IP查询录像：不许要传数据库ID只需传入设备IP用户名密码就可")
+    @ApiOperation("根据IP查询录像：不需要传数据库ID只需传入设备IP用户名密码就可")
     @PostMapping("/queryRecByIp")
     public BaseResult<VrsRecInfoVo> queryRecByIp(@RequestBody QueryRecByIpVo vo);
 

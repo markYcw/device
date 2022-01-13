@@ -82,11 +82,11 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         page.setSize(queryDTO.getPageSize());
 
         LambdaQueryWrapper<VsEntity> queryWrapper = new LambdaQueryWrapper<>();
-        if(!StringUtils.isEmpty(queryDTO.getIp())){
-            queryWrapper.like(VsEntity::getIp,queryDTO.getIp());
+        if (!StringUtils.isEmpty(queryDTO.getIp())) {
+            queryWrapper.like(VsEntity::getIp, queryDTO.getIp());
         }
-        if(!StringUtils.isEmpty(queryDTO.getName())){
-            queryWrapper.like(VsEntity::getName,queryDTO.getName());
+        if (!StringUtils.isEmpty(queryDTO.getName())) {
+            queryWrapper.like(VsEntity::getName, queryDTO.getName());
         }
 
         Page<VsEntity> platformEntityPage = vrsMapper.selectPage(page, queryWrapper);
@@ -103,15 +103,18 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
 
     @Override
     public BaseResult<VrsVo> saveVrs(VrsVo vrsVo) {
-            log.info("============保存VRS入参VrsVo：{}",vrsVo);
-            if(!isRepeat(vrsVo)){
-                throw new VrsException(DeviceErrorEnum.IP_OR_NAME_REPEAT);
-            }
-            VsEntity entity = vrsConvert.convertToVrsEntity(vrsVo);
+        log.info("============保存VRS入参VrsVo：{}", vrsVo);
+        String ip = vrsVo.getIp();
+        VsEntity entity = vrsConvert.convertToVrsEntity(vrsVo);
+        if (StringUtils.isEmpty(ip)) {
             vrsMapper.insert(entity);
             Integer id = entity.getId();
             vrsVo.setId(id);
-            return BaseResult.succeed("新增VRS成功",vrsVo);
+            return BaseResult.succeed("新增VRS成功", vrsVo);
+        } else {
+            vrsMapper.updateById(entity);
+        }
+        return BaseResult.succeed("新增VRS成功", vrsVo);
     }
 
     @Override
@@ -122,9 +125,9 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         Integer id = entity.getId();
         LambdaQueryWrapper<VsEntity> wrapper = new LambdaQueryWrapper<>();
         if (id == null) {
-            wrapper.eq(VsEntity::getIp,ip).or().eq(VsEntity::getName,name);
+            wrapper.eq(VsEntity::getIp, ip).or().eq(VsEntity::getName, name);
             List<VsEntity> insertList = vrsMapper.selectList(wrapper);
-            if(CollectionUtil.isNotEmpty(insertList)){
+            if (CollectionUtil.isNotEmpty(insertList)) {
                 log.info("===============新增VRS时IP或名称重复=================");
                 return false;
             }
@@ -132,9 +135,9 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
             wrapper.eq(VsEntity::getIp, ip).ne(VsEntity::getId, id);
             List<VsEntity> updateList = vrsMapper.selectList(wrapper);
             LambdaQueryWrapper<VsEntity> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(VsEntity::getName,name).ne(VsEntity::getId,id);
+            queryWrapper.eq(VsEntity::getName, name).ne(VsEntity::getId, id);
             List<VsEntity> terminalEntities = vrsMapper.selectList(queryWrapper);
-            if (CollectionUtil.isNotEmpty(updateList)||CollectionUtil.isNotEmpty(terminalEntities)) {
+            if (CollectionUtil.isNotEmpty(updateList) || CollectionUtil.isNotEmpty(terminalEntities)) {
                 log.info("===============修改VRS2100/4100时IP或名称重复=================");
                 return false;
             }
@@ -144,31 +147,31 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
 
     @Override
     public BaseResult delete(List<Integer> ids) {
-        log.info("===========删除VRS2100/4100接口入参ids：{}",ids);
+        log.info("===========删除VRS2100/4100接口入参ids：{}", ids);
         vrsMapper.deleteBatchIds(ids);
-        return BaseResult.succeed("删除VRS成功",true);
+        return BaseResult.succeed("删除VRS成功", true);
     }
 
     @Override
     public BaseResult<VrsVo> updateVrs(VrsVo vrsVo) {
-        log.info("===========修改VRS接口入参VrsVo：{}",vrsVo);
-        if(!isRepeat(vrsVo)){
+        log.info("===========修改VRS接口入参VrsVo：{}", vrsVo);
+        if (!isRepeat(vrsVo)) {
             throw new VrsException(DeviceErrorEnum.IP_OR_NAME_REPEAT);
         }
         VsEntity entity = vrsConvert.convertToVrsEntity(vrsVo);
         vrsMapper.updateById(entity);
-        return BaseResult.succeed("修改VRS信息成功",vrsVo);
+        return BaseResult.succeed("修改VRS信息成功", vrsVo);
     }
 
     @Override
     public BaseResult<VrsVo> vtsInfo(Integer id) {
-        log.info("==========查询VRS接口入参id： {}",id);
+        log.info("==========查询VRS接口入参id： {}", id);
         VsEntity entity = vrsMapper.selectById(id);
-        if(entity==null){
+        if (entity == null) {
             throw new VrsException(DeviceErrorEnum.DEVICE_NOT_FOUND);
         }
         VrsVo vrsVo = vrsConvert.convertToVrsVo(entity);
-        return BaseResult.succeed("查询VRS成功",vrsVo);
+        return BaseResult.succeed("查询VRS成功", vrsVo);
     }
 
 
@@ -176,7 +179,7 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         log.info("登录Vrs入参信息:{}", dbId);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
         VsEntity entity = vrsMapper.selectById(dbId);
-        if(entity == null){
+        if (entity == null) {
             throw new VrsException(DeviceErrorEnum.DEVICE_NOT_FOUND);
         }
         VsLoginRequest request = vrsConvert.convertToVsLogin(entity);
@@ -191,20 +194,20 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         try {
             string = template.postForObject(url + "/login/{ssno}", JSON.toJSONString(request), String.class, paramMap);
         } catch (RestClientException e) {
-            log.error("登录VRS失败{}",e);
+            log.error("登录VRS失败{}", e);
         }
         log.info("登录Vrs中间件应答:{}", string);
 
         VsLoginResponse response = JSON.parseObject(string, VsLoginResponse.class);
-        if(response.getCode()!=0){
+        if (response.getCode() != 0) {
             log.error("登录VRS失败请查看中间件");
             return null;
         }
         return response.getSsid();
     }
 
-    public Integer loginByIp(String ip, String  user, String passWord) {
-        log.info("根据IP登录Vrs入参信息:Ip{},user:{},passWord:{}", ip,user,passWord);
+    public Integer loginByIp(String ip, String user, String passWord) {
+        log.info("根据IP登录Vrs入参信息:Ip{},user:{},passWord:{}", ip, user, passWord);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
 
         VsLoginRequest request = new VsLoginRequest();
@@ -223,12 +226,12 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         try {
             string = template.postForObject(url + "/login/{ssno}", JSON.toJSONString(request), String.class, paramMap);
         } catch (RestClientException e) {
-            log.error("登录VRS失败{}",e);
+            log.error("登录VRS失败{}", e);
         }
         log.info("登录Vrs中间件应答:{}", string);
 
         VsLoginResponse response = JSON.parseObject(string, VsLoginResponse.class);
-        if(response.getCode()!=0){
+        if (response.getCode() != 0) {
             log.error("登录VRS失败请查看中间件");
             return null;
         }
@@ -237,10 +240,10 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
 
     @Override
     public BaseResult<VrsRecInfoDecVo> vrsQueryHttpRec(QueryRecListVo queryRecListVo) {
-        log.info("==============分页查询HTTP录像接口入参QueryRecListVo：{}",queryRecListVo);
+        log.info("==============分页查询HTTP录像接口入参QueryRecListVo：{}", queryRecListVo);
         Integer dbId = queryRecListVo.getDbId();
         Integer login = login(dbId);
-        if(login==null){
+        if (login == null) {
             throw new VrsException(DeviceErrorEnum.VS_LOGIN_FAILED);
         }
         VsEntity entity = vrsMapper.selectById(dbId);
@@ -250,17 +253,17 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/queryrec/{ssid}/{ssno}", JSON.toJSONString(queryRecListVo), String.class, param.getParamMap());
         VsResponse response = JSON.parseObject(s, VsResponse.class);
         String errorMsg = "分页查询HTTP录像失败:{},{},{}";
-        handleVrs(errorMsg,DeviceErrorEnum.VS_QUERY_REC_FAILED,response);
+        handleVrs(errorMsg, DeviceErrorEnum.VS_QUERY_REC_FAILED, response);
 
         VrsRecInfoDecVo vo = JSON.parseObject(s, VrsRecInfoDecVo.class);
-        return BaseResult.succeed("分页查询HTTP录像接口成功",vo);
+        return BaseResult.succeed("分页查询HTTP录像接口成功", vo);
     }
 
     @Override
     public BaseResult<VrsRecInfoVo> queryRec(QueryRecVo vo) {
-        log.info("==============查询录像接口入参QueryRecVo：{}",vo);
+        log.info("==============查询录像接口入参QueryRecVo：{}", vo);
         Integer login = login(vo.getDbId());
-        if(login==null){
+        if (login == null) {
             throw new VrsException(DeviceErrorEnum.VS_LOGIN_FAILED);
         }
         VsEntity entity = vrsMapper.selectById(vo.getDbId());
@@ -271,17 +274,17 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         log.info("查询录像中间件应答:{}", s);
         VsResponse response = JSON.parseObject(s, VsResponse.class);
         String errorMsg = "查询录像失败:{},{},{}";
-        handleVrs(errorMsg,DeviceErrorEnum.VS_QUERY_REC_FAILED,response);
+        handleVrs(errorMsg, DeviceErrorEnum.VS_QUERY_REC_FAILED, response);
 
         VrsRecInfoVo vrsRecInfoVo = JSON.parseObject(s, VrsRecInfoVo.class);
-        return BaseResult.succeed("查询录像成功",vrsRecInfoVo);
+        return BaseResult.succeed("查询录像成功", vrsRecInfoVo);
     }
 
     @Override
     public BaseResult<LiveInfoVo> queryLive(QueryLiveVo vo) {
-        log.info("==============查询直播接口入参QueryRecVo：{}",vo);
+        log.info("==============查询直播接口入参QueryRecVo：{}", vo);
         Integer login = login(vo.getDbId());
-        if(login==null){
+        if (login == null) {
             throw new VrsException(DeviceErrorEnum.VS_LOGIN_FAILED);
         }
         VsEntity entity = vrsMapper.selectById(vo.getDbId());
@@ -292,17 +295,17 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         log.info("查询直播中间件应答:{}", s);
         VsResponse response = JSON.parseObject(s, VsResponse.class);
         String errorMsg = "查询直播失败:{},{},{}";
-        handleVrs(errorMsg,DeviceErrorEnum.VS_QUERY_LIVE_FAILED,response);
+        handleVrs(errorMsg, DeviceErrorEnum.VS_QUERY_LIVE_FAILED, response);
 
         LiveInfoVo liveInfoVo = JSON.parseObject(s, LiveInfoVo.class);
-        return BaseResult.succeed("查询直播成功",liveInfoVo);
+        return BaseResult.succeed("查询直播成功", liveInfoVo);
     }
 
     @Override
     public BaseResult<VrsRecInfoVo> queryRecByIp(QueryRecByIpVo vo) {
-        log.info("==============根据IP查询录像接口入参QueryRecByIpVo：{}",vo);
-        Integer login = loginByIp(vo.getIp(),vo.getUser(),vo.getPassWord());
-        if(login==null){
+        log.info("==============根据IP查询录像接口入参QueryRecByIpVo：{}", vo);
+        Integer login = loginByIp(vo.getIp(), vo.getUser(), vo.getPassWord());
+        if (login == null) {
             throw new VrsException(DeviceErrorEnum.VS_LOGIN_FAILED);
         }
         VsBasicParam param = getParamBySsid(login);
@@ -311,10 +314,10 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         log.info("查询录像中间件应答:{}", s);
         VsResponse response = JSON.parseObject(s, VsResponse.class);
         String errorMsg = "查询录像失败:{},{},{}";
-        handleVrs(errorMsg,DeviceErrorEnum.VS_QUERY_REC_FAILED,response);
+        handleVrs(errorMsg, DeviceErrorEnum.VS_QUERY_REC_FAILED, response);
 
         VrsRecInfoVo vrsRecInfoVo = JSON.parseObject(s, VrsRecInfoVo.class);
-        return BaseResult.succeed("查询录像成功",vrsRecInfoVo);
+        return BaseResult.succeed("查询录像成功", vrsRecInfoVo);
     }
 
     public String getUrl() {
@@ -327,10 +330,10 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         Map<String, Long> paramMap = new HashMap<>();
         Long s = Long.valueOf(entity.getSsid());
         Long n = (long) NumGen.getNum();
-        paramMap.put("ssid",s);
-        paramMap.put("ssno",n);
+        paramMap.put("ssid", s);
+        paramMap.put("ssno", n);
 
-        log.info("==========此次请求ssid为：{},ssno为：{}",s,n);
+        log.info("==========此次请求ssid为：{},ssno为：{}", s, n);
         param.setParamMap(paramMap);
         param.setUrl(getUrl());
 
@@ -342,10 +345,10 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         Map<String, Long> paramMap = new HashMap<>();
         Long s = Long.valueOf(ssid);
         Long n = (long) NumGen.getNum();
-        paramMap.put("ssid",s);
-        paramMap.put("ssno",n);
+        paramMap.put("ssid", s);
+        paramMap.put("ssno", n);
 
-        log.info("==========此次请求ssid为：{},ssno为：{}",s,n);
+        log.info("==========此次请求ssid为：{},ssno为：{}", s, n);
         param.setParamMap(paramMap);
         param.setUrl(getUrl());
 
@@ -354,14 +357,15 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
 
     /**
      * 处理VRS异常
+     *
      * @param str
      * @param errorEnum
      * @param res
      */
     public void handleVrs(String str, DeviceErrorEnum errorEnum, VsResponse res) {
         if (ObjectUtil.notEqual(res.getCode(), DeviceConstants.SUCCESS)) {
-                log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
-                throw new MtException(res.getCode(), errorEnum.getMsg());
+            log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
+            throw new MtException(res.getCode(), errorEnum.getMsg());
         }
     }
 

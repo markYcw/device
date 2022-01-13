@@ -43,7 +43,7 @@ public class MaintainHeartbeatRunning implements Runnable {
         // 只加载一次查询
         if (!FLAG) {
             // 查询mtId不为空的终端id
-            List<Integer> integers = mtService.queryMtIds();
+            List<Integer> integers = mtService.queryIdsByMtId();
             if (CollectionUtil.isEmpty(integers)) {
                 return;
             }

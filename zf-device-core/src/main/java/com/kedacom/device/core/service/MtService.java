@@ -34,13 +34,7 @@ public interface MtService {
      * 查询所有 mtId 不为空的终端 id
      * @return
      */
-    List<Integer> queryMtIds();
-
-    /**
-     * 修改 mtId
-     * @param dbId
-     */
-    void setNullOfMtId(Integer dbId);
+    List<Integer> queryIdsByMtId();
 
     /**
      * 终端IP判重

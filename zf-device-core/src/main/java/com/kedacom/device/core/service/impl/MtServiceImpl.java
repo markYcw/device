@@ -143,7 +143,7 @@ public class MtServiceImpl implements MtService {
     }
 
     @Override
-    public List<Integer> queryMtIds() {
+    public List<Integer> queryIdsByMtId() {
 
         LambdaQueryWrapper<MtEntity> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.isNotNull(MtEntity::getMtid);
@@ -154,17 +154,6 @@ public class MtServiceImpl implements MtService {
         }
 
         return mtEntities.stream().map(MtEntity::getId).collect(Collectors.toList());
-    }
-
-    @Override
-    public void setNullOfMtId(Integer dbId) {
-
-        LambdaUpdateWrapper<MtEntity> updateWrapper = new LambdaUpdateWrapper<>();
-
-        updateWrapper.eq(MtEntity::getId, dbId).set(MtEntity::getMtid, null);
-
-        mtMapper.update(null, updateWrapper);
-
     }
 
     @Override

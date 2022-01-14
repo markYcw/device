@@ -85,6 +85,7 @@ public class MaintainHeartbeatRunning implements Runnable {
         }
         synHashSet.removeAll(synInvalidHashSet);
         MtServiceImpl.MT_MAINTAIN_HEARTBEAT_ADD = false;
+        synInvalidHashSet.clear();
         if (CollectionUtil.isEmpty(synTransitHashSet)) {
             log.info("在线终端中转缓存为空");
             return;

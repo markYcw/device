@@ -90,6 +90,11 @@ public class MtServiceImpl implements MtService {
     public static Set<Integer> synHashSet = Collections.synchronizedSet(new HashSet<Integer>());
 
     /**
+     * 无效的（中间退出，掉线或被抢占）的终端缓存
+     */
+    public static Set<Integer> synInvalidHashSet = Collections.synchronizedSet(new HashSet<Integer>());
+
+    /**
      * 在线终端中转缓存（id），即在维护终端心跳期间，登录的终端id将存入该缓存中，待维护终端心跳结束，再将该缓存添加到在线终端缓存中并清空该缓存
      */
     public static Set<Integer> synTransitHashSet = Collections.synchronizedSet(new HashSet<Integer>());
@@ -743,38 +748,34 @@ public class MtServiceImpl implements MtService {
     public void handleMtNotify(Integer mtId, Integer msgType) {
 
         MT_CHECK_SWITCH = false;
-
         String type = DROP_LINE.equals(msgType) ? "掉线" : "被抢占";
-
         LambdaQueryWrapper<MtEntity> queryWrapper = new LambdaQueryWrapper<>();
-
         queryWrapper.eq(MtEntity::getMtid, mtId);
 
         MtEntity mtEntity = mtMapper.selectOne(queryWrapper);
-
         if (mtEntity == null) {
-
             log.error("该终端离线或不存在");
-
             return;
         }
 
         log.info("终端"+ type + "通知, 终端名称 : {}", mtEntity.getName());
-
-        MtServiceImpl.synHashSet.remove(mtEntity.getId());
-
+        if (MT_MAINTAIN_HEARTBEAT_ADD) {
+            // 在心跳维护期间，如有通知则将终端id添加到无效缓存中，心跳维护结束后将统一从在线终端缓存中删除
+            synInvalidHashSet.add(mtEntity.getId());
+        } else {
+            // 不在心跳维护期间，如有通知则将终端id直接从在线终端缓存中删除
+            synHashSet.remove(mtEntity.getId());
+        }
         try {
             // 登出终端
             logOutById(mtEntity.getId());
         } catch (Exception e) {
             log.error("消费通知后退出终端失败 : {}", e.getMessage());
         }
-
         MT_CHECK_SWITCH = true;
-
         String msg = mtEntity.getName() + " 终端已" + type;
+
         // 向前端发送终端被抢占登录通知
         mtSendMessage.sendMessage(msg);
-
     }
 }

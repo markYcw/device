@@ -31,6 +31,11 @@ public class MaintainHeartbeatRunning implements Runnable {
     public static Set<Integer> synHashSet = MtServiceImpl.synHashSet;
 
     /**
+     * 无效的（中间退出，掉线或被抢占）的终端缓存
+     */
+    public static Set<Integer> synInvalidHashSet = MtServiceImpl.synInvalidHashSet;
+
+    /**
      * 在线终端中转缓存（id）
      */
     public static Set<Integer> synTransitHashSet = MtServiceImpl.synTransitHashSet;
@@ -61,7 +66,6 @@ public class MaintainHeartbeatRunning implements Runnable {
             return;
         }
         log.info("在线终端缓存集合synHashSet : {}", synHashSet);
-        Set<Integer> invalidSet = new HashSet<>();
         MtServiceImpl.MT_MAINTAIN_HEARTBEAT_ADD = true;
         for (Integer integer : synHashSet) {
             try {
@@ -69,7 +73,7 @@ public class MaintainHeartbeatRunning implements Runnable {
                 mtService.heartBeat(integer);
             } catch (Exception e1) {
                 log.error("终端id : {} 发送心跳异常, 异常信息 : {}", integer, e1.getMessage());
-                invalidSet.add(integer);
+                synInvalidHashSet.add(integer);
                 try {
                     MtServiceImpl.MT_MAINTAIN_HEARTBEAT_REMOVE = false;
                     mtService.logOutById(integer);
@@ -79,7 +83,7 @@ public class MaintainHeartbeatRunning implements Runnable {
                 }
             }
         }
-        synHashSet.removeAll(invalidSet);
+        synHashSet.removeAll(synInvalidHashSet);
         MtServiceImpl.MT_MAINTAIN_HEARTBEAT_ADD = false;
         if (CollectionUtil.isEmpty(synTransitHashSet)) {
             log.info("在线终端中转缓存为空");

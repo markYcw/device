@@ -23,7 +23,7 @@ public class DeviceNotifyServiceImpl implements DeviceNotifyService {
     public void handleNotify(String notify) {
         log.info("收到设备通知:{}", notify);
         JSONObject jsonObject = JSONObject.parseObject(notify);
-        Integer type = (Integer) jsonObject.get("type");
+        Integer type = (Integer) jsonObject.get("msgType");
         Integer ssid = (Integer) jsonObject.get("ssid");
         Integer devType = (Integer) jsonObject.get("devType");
          if(ssid !=null){

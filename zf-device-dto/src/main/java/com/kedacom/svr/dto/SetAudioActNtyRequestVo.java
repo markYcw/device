@@ -1,5 +1,6 @@
 package com.kedacom.svr.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class SetAudioActNtyRequestVo extends SvrRequestDto{
 
     @NotNull(message = "type不能为空")
     @ApiModelProperty(value = "0：开启 1：停止",required = true)
-    private Integer type;
+    @JSONField(name ="type")
+    private Integer isNty;
 
 }

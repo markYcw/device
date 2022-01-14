@@ -25,7 +25,7 @@ public class DevicesNotify extends INotify {
         log.info("========测试加载设备开始");
         DeviceNotify deviceNotify = JSON.parseObject(message, DeviceNotify.class);
         CuService service = ContextUtils.getBean(CuService.class);
-        CuEntity entity = service.getBySsid(deviceNotify.getSsid());
+        CuEntity entity = service.getBySsid(ssid);
         if(ObjectUtil.isNull(entity)){
             return;
         }

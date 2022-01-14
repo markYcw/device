@@ -26,7 +26,7 @@ public class DevicesStatusSubscribeNotify extends INotify {
     protected void consumeMessage(Integer ssid, String message) {
         DeviceStatusNotify deviceNotify = JSON.parseObject(message, DeviceStatusNotify.class);
         CuService service = ContextUtils.getBean(CuService.class);
-        CuEntity entity = service.getBySsid(deviceNotify.getSsid());
+        CuEntity entity = service.getBySsid(ssid);
         if(ObjectUtil.isNull(entity)){
             return;
         }

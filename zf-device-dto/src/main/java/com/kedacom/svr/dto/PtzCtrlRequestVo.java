@@ -1,5 +1,6 @@
 package com.kedacom.svr.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -17,7 +18,8 @@ public class PtzCtrlRequestVo extends SvrRequestDto{
 
     @NotNull(message = "通道ID不能为空")
     @ApiModelProperty(value = "通道ID",required = true)
-    private Integer chnId;
+    @JSONField(name = "chnId")
+    private Integer chnid;
 
     @NotNull(message = "控制命令不能为空")
     @ApiModelProperty(value = "控制命令 控制指令解释请参考PtzCmd枚举类",required = true)

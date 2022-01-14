@@ -27,7 +27,7 @@ public class GroupNotify extends INotify {
         GroupsNotify getGroupNotify = JSON.parseObject(message, GroupsNotify.class);
         GetGroupNotify content = getGroupNotify.getContent();
         CuService service = ContextUtils.getBean(CuService.class);
-        CuEntity entity = service.getBySsid(content.getSsid());
+        CuEntity entity = service.getBySsid(ssid);
         if(ObjectUtil.isNull(entity)){
             return;
         }

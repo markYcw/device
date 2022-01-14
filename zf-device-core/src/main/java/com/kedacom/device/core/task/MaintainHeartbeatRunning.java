@@ -26,9 +26,14 @@ public class MaintainHeartbeatRunning implements Runnable {
     private static boolean FLAG = false;
 
     /**
-     * 缓存登录的终端信息
+     * 在线终端缓存（id）
      */
     public static Set<Integer> synHashSet = MtServiceImpl.synHashSet;
+
+    /**
+     * 在线终端中转缓存（id）
+     */
+    public static Set<Integer> synTransitHashSet = MtServiceImpl.synTransitHashSet;
 
     @Override
     public void run() {
@@ -52,11 +57,12 @@ public class MaintainHeartbeatRunning implements Runnable {
             FLAG = true;
         }
         if (CollectionUtil.isEmpty(synHashSet)) {
-            log.info("查询登录的终端id集合为空");
+            log.info("在线终端缓存为空");
             return;
         }
-        log.info("终端登录的缓存集合synHashSet : {}", synHashSet);
+        log.info("在线终端缓存集合synHashSet : {}", synHashSet);
         Set<Integer> invalidSet = new HashSet<>();
+        MtServiceImpl.MT_MAINTAIN_HEARTBEAT_ADD = true;
         for (Integer integer : synHashSet) {
             try {
                 log.info("终端id : {} 发送心跳", integer);
@@ -65,16 +71,22 @@ public class MaintainHeartbeatRunning implements Runnable {
                 log.error("终端id : {} 发送心跳异常, 异常信息 : {}", integer, e1.getMessage());
                 invalidSet.add(integer);
                 try {
-                    MtServiceImpl.MT_MAINTAIN_HEARTBEAT = false;
+                    MtServiceImpl.MT_MAINTAIN_HEARTBEAT_REMOVE = false;
                     mtService.logOutById(integer);
-                    MtServiceImpl.MT_MAINTAIN_HEARTBEAT = true;
+                    MtServiceImpl.MT_MAINTAIN_HEARTBEAT_REMOVE = true;
                 } catch (Exception e2) {
                     log.error("心跳失效，终端id : {} 退出登录异常, 异常信息 : {}", integer, e2.getMessage());
                 }
             }
         }
-
         synHashSet.removeAll(invalidSet);
+        MtServiceImpl.MT_MAINTAIN_HEARTBEAT_ADD = false;
+        if (CollectionUtil.isEmpty(synTransitHashSet)) {
+            log.info("在线终端中转缓存为空");
+            return;
+        }
+
+        synHashSet.addAll(synTransitHashSet);
     }
 
 }

@@ -78,7 +78,9 @@ public class MtServiceImpl implements MtService {
 
     private static boolean MT_CHECK_SWITCH = true;
 
-    public static boolean MT_MAINTAIN_HEARTBEAT = true;
+    public static boolean MT_MAINTAIN_HEARTBEAT_ADD = false;
+
+    public static boolean MT_MAINTAIN_HEARTBEAT_REMOVE = true;
 
     private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/mt/mtNotify";
 
@@ -86,6 +88,11 @@ public class MtServiceImpl implements MtService {
      * 在线终端缓存（id）
      */
     public static Set<Integer> synHashSet = Collections.synchronizedSet(new HashSet<Integer>());
+
+    /**
+     * 在线终端中转缓存（id），即在维护终端心跳期间，登录的终端id将存入该缓存中，待维护终端心跳结束，再将该缓存添加到在线终端缓存中并清空该缓存
+     */
+    public static Set<Integer> synTransitHashSet = Collections.synchronizedSet(new HashSet<Integer>());
 
     @Override
     public Page<TerminalVo> mtPage(TerminalQuery terminalQuery) {
@@ -239,8 +246,13 @@ public class MtServiceImpl implements MtService {
         mtMapper.updateById(entity);
 
         // 将登录的终端id添加到维护终端心跳的缓存中
-        synHashSet.add(dbId);
-        log.info("终端 : {}, 添加到缓存中 synHashSet : {}", dbId, synHashSet);
+        if (MT_MAINTAIN_HEARTBEAT_ADD) {
+            synTransitHashSet.add(dbId);
+            log.info("终端 : {}, 添加到在线终端中转缓存中 synTransitHashSet : {}", dbId, synTransitHashSet);
+        } else {
+            synHashSet.add(dbId);
+            log.info("终端 : {}, 添加到在线终端缓存中 synHashSet : {}", dbId, synHashSet);
+        }
 
         return mtLoginResponse.getSsid();
     }
@@ -261,7 +273,7 @@ public class MtServiceImpl implements MtService {
                 .set(MtEntity::getMtid, null);
         mtMapper.update(null, updateWrapper);
         // 将退出登录的终端id从维护终端心跳的缓存中删除
-        if (MT_MAINTAIN_HEARTBEAT) {
+        if (MT_MAINTAIN_HEARTBEAT_REMOVE) {
             synHashSet.remove(dbId);
         }
         log.info("远端退出登录终端请求参数 ssid : {}", mtId);

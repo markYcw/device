@@ -29,8 +29,8 @@ public class MtMaintainHeartbeatTask implements CommandLineRunner {
 
         ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(3, new BasicThreadFactory.Builder().namingPattern("scheduled-pool-%d").daemon(true).build());
 
-        // 90s定时发送心跳
-        scheduledExecutorService.scheduleAtFixedRate(maintainHeartbeatRunning, 3, 90, TimeUnit.SECONDS);
+        // 100s定时发送心跳
+        scheduledExecutorService.scheduleAtFixedRate(maintainHeartbeatRunning, 3, 100, TimeUnit.SECONDS);
 
     }
 

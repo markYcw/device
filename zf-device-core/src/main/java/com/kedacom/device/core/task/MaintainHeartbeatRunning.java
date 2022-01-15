@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -75,9 +74,9 @@ public class MaintainHeartbeatRunning implements Runnable {
                 log.error("终端id : {} 发送心跳异常, 异常信息 : {}", integer, e1.getMessage());
                 synInvalidHashSet.add(integer);
                 try {
-                    MtServiceImpl.MT_MAINTAIN_HEARTBEAT_REMOVE = false;
-                    mtService.logOutById(integer);
                     MtServiceImpl.MT_MAINTAIN_HEARTBEAT_REMOVE = true;
+                    mtService.logOutById(integer);
+                    MtServiceImpl.MT_MAINTAIN_HEARTBEAT_REMOVE = false;
                 } catch (Exception e2) {
                     log.error("心跳失效，终端id : {} 退出登录异常, 异常信息 : {}", integer, e2.getMessage());
                 }

@@ -65,7 +65,7 @@ public class MaintainHeartbeatRunning implements Runnable {
             return;
         }
         log.info("在线终端缓存集合synHashSet : {}", synHashSet);
-        MtServiceImpl.MT_MAINTAIN_HEARTBEAT_ADD = true;
+        MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD = true;
         for (Integer integer : synHashSet) {
             try {
                 log.info("终端id : {} 发送心跳", integer);
@@ -74,25 +74,24 @@ public class MaintainHeartbeatRunning implements Runnable {
                 log.error("终端id : {} 发送心跳异常, 异常信息 : {}", integer, e1.getMessage());
                 synInvalidHashSet.add(integer);
                 try {
-                    MtServiceImpl.MT_MAINTAIN_HEARTBEAT_REMOVE = true;
+                    MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT = true;
                     mtService.logOutById(integer);
-                    MtServiceImpl.MT_MAINTAIN_HEARTBEAT_REMOVE = false;
+                    MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT = false;
                 } catch (Exception e2) {
                     log.error("心跳失效，终端id : {} 退出登录异常, 异常信息 : {}", integer, e2.getMessage());
                 }
             }
         }
+        MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD = false;
         if (CollectionUtil.isNotEmpty(synInvalidHashSet)) {
             synHashSet.removeAll(synInvalidHashSet);
             synInvalidHashSet.clear();
         }
-        MtServiceImpl.MT_MAINTAIN_HEARTBEAT_ADD = false;
 
         if (CollectionUtil.isEmpty(synTransitHashSet)) {
             log.info("在线终端中转缓存为空");
             return;
         }
-
         synHashSet.addAll(synTransitHashSet);
         synTransitHashSet.clear();
     }

@@ -87,7 +87,6 @@ public class McuServiceImpl implements McuService {
         McuLoginRequest request = convert.login(entity);
         String ntyUrl = REQUEST_HEAD + mcuNtyUrl + NOTIFY_URL;
         request.setNtyUrl(ntyUrl);
-        //设置mcu类型目前只考虑5.0所以暂时 type为1
         request.setDevType(DeviceModelType.MCU5.getCode());
         String url = factory.geturl(entity.getDevtype());
         Map<String, Long> paramMap = new HashMap<>();

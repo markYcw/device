@@ -180,7 +180,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             if(!isRepeat(cuEntity)){
                 throw new CuException(DeviceErrorEnum.IP_OR_NAME_REPEAT);
             }
-            cuEntity.setType(DevTypeConstant.updateRecordKey);
+            cuEntity.setType(DeviceModelType.CU2.getCode());
             cuMapper.insert(cuEntity);
             DevEntityVo vo = convert.convertToDevEntityVo(cuEntity);
             //保存成功后登录平台

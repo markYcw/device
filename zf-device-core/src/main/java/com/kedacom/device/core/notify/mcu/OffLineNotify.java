@@ -39,6 +39,7 @@ public class OffLineNotify extends INotify {
         //将通知发给业务
         DeviceNotifyRequestDTO notifyRequestDTO = new DeviceNotifyRequestDTO();
         notifyRequestDTO.setMcuId(entity.getId());
+        notifyRequestDTO.setMsgType(MsgType.MCU_OFF_LINE.getType());
         List<KmListenerEntity> list = listenerService.getAll(MsgType.MCU_OFF_LINE.getType());
         if(!CollectionUtil.isEmpty(list)){
             for (KmListenerEntity kmListenerEntity : list) {

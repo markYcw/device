@@ -2,12 +2,10 @@ package com.kedacom.device.core.notify.svr;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.device.core.entity.KmListenerEntity;
-import com.kedacom.device.core.mapper.SvrMapper;
 import com.kedacom.device.core.notify.stragegy.INotify;
 import com.kedacom.device.core.service.RegisterListenerService;
+import com.kedacom.device.core.service.SvrService;
 import com.kedacom.device.core.utils.ContextUtils;
 import com.kedacom.device.core.utils.DeviceNotifyUtils;
 import com.kedacom.deviceListener.msgType.MsgType;
@@ -26,16 +24,14 @@ public class DvdStatusNotify extends INotify {
     @Override
     public void consumeMessage(Integer ssid,String message) {
         DvdStatus dvdStatus = JSON.parseObject(message, DvdStatus.class);
-        SvrMapper svrMapper = ContextUtils.getBean(SvrMapper.class);
+        SvrService service = ContextUtils.getBean(SvrService.class);
         RegisterListenerService listenerService = ContextUtils.getBean(RegisterListenerService.class);
         DeviceNotifyUtils notifyUtils = ContextUtils.getBean(DeviceNotifyUtils.class);
-        LambdaQueryWrapper<SvrEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SvrEntity::getSsid,ssid);
-        SvrEntity entity = svrMapper.selectList(wrapper).get(DevTypeConstant.getZero);
+        SvrEntity entity = service.getBySsid(ssid);
         //将通知发给业务
         dvdStatus.setMsgType(MsgType.SVR_DVD_STATE_NTY.getType());
         dvdStatus.setDbId(entity.getId());
-        List<KmListenerEntity> list = listenerService.getAll(MsgType.SVR_DEVICE_STATE_NTY.getType());
+        List<KmListenerEntity> list = listenerService.getAll(MsgType.SVR_DVD_STATE_NTY.getType());
         if(!CollectionUtil.isEmpty(list)){
             for (KmListenerEntity kmListenerEntity : list) {
                 notifyUtils.offLineNty(kmListenerEntity.getUrl(),dvdStatus);

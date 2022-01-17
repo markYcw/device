@@ -1,5 +1,6 @@
 package com.kedacom.svr.stragegy.svr.pojo;
 
+import com.kedacom.deviceListener.notify.DeviceNotifyRequestDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -10,7 +11,7 @@ import lombok.Data;
  * @description 刻录状态
  */
 @Data
-public class BurnStatus {
+public class BurnStatus extends DeviceNotifyRequestDTO {
 
     @ApiModelProperty("300：设备上报通知 301：刻录任务通知 302：DVD状态通知 303：语音激励通知 1:掉线通知")
     private Integer type;

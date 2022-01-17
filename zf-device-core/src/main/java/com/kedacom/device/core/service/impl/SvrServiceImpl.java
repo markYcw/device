@@ -665,6 +665,15 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         return BaseResult.succeed("停用远程点成功");
     }
 
+    @Override
+    public SvrEntity getBySsid(Integer ssid) {
+        log.info("==============根据ssid获取svr入参ssid：{}",ssid);
+        LambdaQueryWrapper<SvrEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SvrEntity::getSsid,ssid);
+        List<SvrEntity> list = svrMapper.selectList(wrapper);
+        return list.get(0);
+    }
+
     /**
      * 对名称和IP做唯一校验
      * @return

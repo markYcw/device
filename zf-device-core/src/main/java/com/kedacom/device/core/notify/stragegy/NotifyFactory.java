@@ -34,7 +34,7 @@ public class NotifyFactory {
             map.put(devType,notifyMap);
         }else {
             detail.put(notifyType,iNotify);
-            map.put(devType,detail);
+            //map.put(devType,detail);
         }
 
     }

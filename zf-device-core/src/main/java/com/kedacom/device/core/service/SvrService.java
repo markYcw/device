@@ -258,4 +258,6 @@ public interface SvrService extends IService<SvrEntity> {
     BaseResult<SvrEntity> saveInfo(SvrEntity entity);
 
     BaseResult<String> remotePointOff(RemotePointOffVo vo);
+
+    SvrEntity getBySsid(Integer ssid);
 }

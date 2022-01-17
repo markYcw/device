@@ -31,6 +31,9 @@ public enum MsgType {
     CU_DEVICE_REC_STATE_NTY(20,"监控平台设备状态订阅通知"),
     CU_QUERY_VIDEO_NTY(21,"监控平台查询录像通知"),
     SVR_DEVICE_STATE_NTY(22,"SVR编解码设备上报通知"),
+    SVR_BURN_STATE_NTY(23,"SVR刻录任务通知"),
+    SVR_DVD_STATE_NTY(24,"SVR的DVD状态通知"),
+    SVR_AUDIO_STATE_NTY(25,"SVR语音激励通知"),
 
     ;
 

@@ -1206,11 +1206,12 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Override
     public BaseResult<DevEntityVo> cuGroup(CuRequestDto requestDto) {
         log.info("==============获取cu分组集合入参CuRequestDto{}",requestDto);
+        CuEntity devEntity = cuMapper.selectById(requestDto.getKmId());
+        check(devEntity);
         if(cuDeviceStatusPoll.get(requestDto.getKmId())==null){
             log.error("获取cu分组集合失败,设备未加载完成{}");
             throw new CuException(DeviceErrorEnum.GET_CU_GROUP_ERROR);
         }
-        CuEntity devEntity = cuMapper.selectById(requestDto.getKmId());
         Integer ssid = devEntity.getSsid();
         //更新设备在线总数分组中设备总数
         cuDeviceLoadThread.updateDeviceStatusCount(ssid);
@@ -1231,11 +1232,12 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Override
     public BaseResult<List<CuDeviceVo>> cuDevice(CuDevicesDto requestDto) {
         log.info("==============获取cu设备集合入参CuDevicesDto{}",requestDto);
+        CuEntity devEntity = cuMapper.selectById(requestDto.getKmId());
+        check(devEntity);
         if(cuDeviceStatusPoll.get(requestDto.getKmId())==null){
             log.error("获取cu设备信息失败,设备未加载完成{}");
             throw new CuException(DeviceErrorEnum.GET_CU_GROUP_ERROR);
         }
-        CuEntity devEntity = cuMapper.selectById(requestDto.getKmId());
         Integer ssid = devEntity.getSsid();
         String groupId = requestDto.getGroupId();
         List<PDevice> deviceList = this.getDeviceList(ssid, groupId);
@@ -1260,6 +1262,10 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
        log.info("==========查询子分组接口入参CuGroupDto:",requestDto);
         CuEntity cuEntity = cuMapper.selectById(requestDto.getKmId());
         check(cuEntity);
+        if(cuDeviceStatusPoll.get(requestDto.getKmId())==null){
+            log.error("获取cu设备信息失败,设备未加载完成{}");
+            throw new CuException(DeviceErrorEnum.GET_CU_GROUP_ERROR);
+        }
         PGroup pGroup = cuDeviceLoadThread.getPGroupById(cuEntity.getSsid(), requestDto.getGroupId());
         List<PGroup> sortChildGroups = pGroup.getSortChildGroups();
         List<CuGroupVo> collect = sortChildGroups.stream().map(a -> convert.covertToCuGroupVo(a)).collect(Collectors.toList());

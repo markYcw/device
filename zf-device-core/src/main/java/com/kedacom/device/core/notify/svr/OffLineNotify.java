@@ -3,14 +3,13 @@ package com.kedacom.device.core.notify.svr;
 import cn.hutool.core.collection.CollectionUtil;
 import com.kedacom.device.core.entity.KmListenerEntity;
 import com.kedacom.device.core.notify.stragegy.INotify;
-import com.kedacom.device.core.service.McuService;
 import com.kedacom.device.core.service.RegisterListenerService;
 import com.kedacom.device.core.service.SvrService;
 import com.kedacom.device.core.utils.ContextUtils;
 import com.kedacom.device.core.utils.DeviceNotifyUtils;
 import com.kedacom.deviceListener.msgType.MsgType;
 import com.kedacom.deviceListener.notify.DeviceNotifyRequestDTO;
-import com.kedacom.mp.mcu.entity.UmsMcuEntity;
+import com.kedacom.pojo.SystemWebSocketMessage;
 import com.kedacom.svr.entity.SvrEntity;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,6 +37,11 @@ public class OffLineNotify extends INotify {
         SvrEntity entity = service.getBySsid(ssid);
         RegisterListenerService listenerService = ContextUtils.getBean(RegisterListenerService.class);
         DeviceNotifyUtils notifyUtils = ContextUtils.getBean(DeviceNotifyUtils.class);
+        SystemWebSocketMessage msg = new SystemWebSocketMessage();
+        msg.setOperationType(10);
+        msg.setServerName("device");
+        msg.setData("IP为："+entity.getIp()+"SVR掉线通知");
+        log.info("===========发送SVR掉线通知给前端");
         //将通知发给业务
         DeviceNotifyRequestDTO notifyRequestDTO = new DeviceNotifyRequestDTO();
         notifyRequestDTO.setDbId(entity.getId());

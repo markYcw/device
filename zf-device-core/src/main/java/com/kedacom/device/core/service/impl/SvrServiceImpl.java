@@ -175,6 +175,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("获取SVR能力集接口入参{}",dbId);
         SvrEntity entity = svrMapper.selectById(dbId);
         check(entity);
+        loginById(dbId);
         SvrBasicParam param = getParam(entity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/svrcap/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
         SvrCapResponse response = JSONObject.parseObject(exchange.getBody(), SvrCapResponse.class);
@@ -189,6 +190,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("获取SVR时间接口入参{}",dbId);
         SvrEntity entity = svrMapper.selectById(dbId);
         check(entity);
+        loginById(dbId);
         SvrBasicParam param = getParam(entity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/svrtime/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
         SvrTimeResponse response = JSONObject.parseObject(exchange.getBody(), SvrTimeResponse.class);
@@ -202,6 +204,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("搜素编解码设备接口入参{}",dbId);
         SvrEntity entity = svrMapper.selectById(dbId);
         check(entity);
+        loginById(dbId);
         SvrBasicParam param = getParam(entity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/searchdev/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
         SvrResponse response = JSONObject.parseObject(exchange.getBody(), SvrResponse.class);
@@ -215,6 +218,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("获取编码通道列表接口入参{}",dbId);
         SvrEntity entity = svrMapper.selectById(dbId);
         check(entity);
+        loginById(dbId);
         SvrBasicParam param = getParam(entity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/encchnlist/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
         log.info("===============获取编码设备回复:{}",exchange.getBody());
@@ -230,6 +234,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("添加/删除编码通道接口入参EnChnDto:{}",enChnDto);
         SvrEntity entity = svrMapper.selectById(enChnDto.getDbId());
         check(entity);
+        loginById(enChnDto.getDbId());
         SvrBasicParam param = getParam(entity);
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/encchn/{ssid}/{ssno}", JSON.toJSONString(enChnDto), String.class, param.getParamMap());
         SvrResponse response = JSONObject.parseObject(s, SvrResponse.class);
@@ -243,6 +248,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("获取编码器的预置位接口入参EnCpResetDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/encpreset/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         CpResetResponse response = JSON.parseObject(s, CpResetResponse.class);
@@ -257,6 +263,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("修改编码器预置位接口入参CpResetDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String jsonObj = JSON.toJSONString(dto);
         HttpEntity httpEntity = new HttpEntity<>(jsonObj, remoteRestTemplate.getHttpHeaders());
@@ -272,6 +279,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("获取解码通道列表接口入参:{}",dbId);
         SvrEntity entity = svrMapper.selectById(dbId);
         check(entity);
+        loginById(dbId);
         SvrBasicParam param = getParam(entity);
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/decchnlist/{ssid}/{ssno}", null, String.class, param.getParamMap());
         DecChnListResponse response = JSON.parseObject(s, DecChnListResponse.class);
@@ -286,6 +294,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("添加/删除解码通道接口入参DeChnDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/decchn/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         SvrResponse response = JSON.parseObject(s, SvrResponse.class);
@@ -299,6 +308,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("获取解码参数接口入参DecParamDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/decparam/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         DecParamResponse response = JSON.parseObject(s, DecParamResponse.class);
@@ -313,6 +323,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("设置解码参数接口入参EnDecParamDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String jsonObj = JSON.toJSONString(dto);
         HttpEntity httpEntity = new HttpEntity<>(jsonObj, remoteRestTemplate.getHttpHeaders());
@@ -328,6 +339,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("ptz控制接口入参PtzDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String jsonObj = JSON.toJSONString(dto);
         HttpEntity httpEntity = new HttpEntity<>(jsonObj, remoteRestTemplate.getHttpHeaders());
@@ -343,6 +355,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("启用远程点接口入参RemotePointOnVo:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         RemotePointDto pointDto = new RemotePointDto();
         pointDto.setType(0);
@@ -362,6 +375,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("获取远程点配置接口入参dbId:{}",dbId);
         SvrEntity entity = svrMapper.selectById(dbId);
         check(entity);
+        loginById(dbId);
         SvrBasicParam param = getParam(entity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/remotecfg/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
         RemoteCfgVoResponse response = JSON.parseObject(exchange.getBody(), RemoteCfgVoResponse.class);
@@ -376,6 +390,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("修改远程点配置接口入参RemotePutCfgDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String obj = JSON.toJSONString(dto);
         HttpEntity<String> httpEntity = new HttpEntity<>(obj, remoteRestTemplate.getHttpHeaders());
@@ -392,6 +407,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         Integer dbId = dto.getDbId();
         SvrEntity entity = svrMapper.selectById(dbId);
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String jsonObj = JSON.toJSONString(dto);
         HttpEntity<String> httpEntity = new HttpEntity<>(jsonObj, remoteRestTemplate.getHttpHeaders());
@@ -407,6 +423,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("刻录控制接口入参BurnDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/burn/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         SvrResponse response = JSON.parseObject(s, SvrResponse.class);
@@ -420,6 +437,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("补刻接口入参ReBurnDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/reburn/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         SvrResponse response = JSON.parseObject(s, SvrResponse.class);
@@ -433,6 +451,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("追加刻录任务接口入参AppendBurnDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/appendburn/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         SvrResponse response = JSON.parseObject(s, SvrResponse.class);
@@ -446,6 +465,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("新建刻录任务接口入参CreateBurnDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/createburn/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         SvrResponse response = JSON.parseObject(s, SvrResponse.class);
@@ -459,6 +479,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("获取刻录任务接口入参BurnTaskListDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/burntasklist/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         BurnTaskResponse response = JSON.parseObject(s, BurnTaskResponse.class);
@@ -473,6 +494,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("DVD仓门控制接口入参DvdDoorDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/dvddoor/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         SvrResponse response = JSON.parseObject(s, SvrResponse.class);
@@ -486,6 +508,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("查询录像接口入参RecListDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/reclist/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         RecListResponse response = JSON.parseObject(s, RecListResponse.class);
@@ -514,6 +537,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("获取画面合成接口入参dbId:{}",dbId);
         SvrEntity entity = svrMapper.selectById(dbId);
         check(entity);
+        loginById(dbId);
         SvrBasicParam param = getParam(entity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/merge/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
         GetMergeResponse response = JSON.parseObject(exchange.getBody(), GetMergeResponse.class);
@@ -539,6 +563,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("设置画面合成接口入参MergeInfoDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String jsonObj = JSON.toJSONString(dto);
         HttpEntity<String> httpEntity = new HttpEntity<>(jsonObj, remoteRestTemplate.getHttpHeaders());
@@ -554,6 +579,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("获取画面叠加接口入参dbId:{}",dbId);
         SvrEntity entity = svrMapper.selectById(dbId);
         check(entity);
+        loginById(dbId);
         SvrBasicParam param = getParam(entity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/osd/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
         GetOsdResponse response = JSON.parseObject(exchange.getBody(), GetOsdResponse.class);
@@ -568,6 +594,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("设置画面叠加接口入参OsdDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String jsonObj = JSON.toJSONString(dto);
         HttpEntity<String> httpEntity = new HttpEntity<>(jsonObj, remoteRestTemplate.getHttpHeaders());
@@ -583,6 +610,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("语音激励控制接口入参AudioActDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
+        loginById(dto.getDbId());
         SvrBasicParam param = getParam(entity);
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/audioact/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         SvrResponse response = JSON.parseObject(s, SvrResponse.class);
@@ -596,6 +624,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("发送心跳接口入参dbId:{}",dbId);
         SvrEntity entity = svrMapper.selectById(dbId);
         check(entity);
+        loginById(dbId);
         SvrBasicParam param = getParam(entity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/hb/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
         SvrResponse response = JSON.parseObject(exchange.getBody(), SvrResponse.class);
@@ -621,6 +650,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("停用远程点接口入参RemotePointOffVo:{}",vo);
         SvrEntity entity = svrMapper.selectById(vo.getDbId());
         check(entity);
+        loginById(vo.getDbId());
         SvrBasicParam param = getParam(entity);
         RemotePointDto pointDto = new RemotePointDto();
         pointDto.setType(1);
@@ -693,9 +723,6 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     private void check(SvrEntity entity){
         if(ObjectUtils.isEmpty(entity)){
             throw new SvrException(DeviceErrorEnum.DEVICE_NOT_FOUND);
-        }
-        if(entity.getSsid()==null){
-            throw new SvrException(DeviceErrorEnum.DEVICE_NOT_LOGIN);
         }
     }
 

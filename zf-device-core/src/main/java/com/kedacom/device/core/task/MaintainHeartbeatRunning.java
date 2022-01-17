@@ -82,14 +82,17 @@ public class MaintainHeartbeatRunning implements Runnable {
                 }
             }
         }
-        synHashSet.removeAll(synInvalidHashSet);
+        if (CollectionUtil.isNotEmpty(synInvalidHashSet)) {
+            synHashSet.removeAll(synInvalidHashSet);
+            synInvalidHashSet.clear();
+        }
         MtServiceImpl.MT_MAINTAIN_HEARTBEAT_ADD = false;
-        synInvalidHashSet.clear();
 
         if (CollectionUtil.isEmpty(synTransitHashSet)) {
             log.info("在线终端中转缓存为空");
             return;
         }
+
         synHashSet.addAll(synTransitHashSet);
         synTransitHashSet.clear();
     }

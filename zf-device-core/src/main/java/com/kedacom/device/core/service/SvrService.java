@@ -260,4 +260,6 @@ public interface SvrService extends IService<SvrEntity> {
     BaseResult<String> remotePointOff(RemotePointOffVo vo);
 
     SvrEntity getBySsid(Integer ssid);
+
+    BaseResult<BurnStatesInfoVo> burnInfo(SvrRequestDto dto);
 }

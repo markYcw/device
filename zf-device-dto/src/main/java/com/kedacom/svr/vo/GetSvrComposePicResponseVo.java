@@ -35,6 +35,6 @@ public class GetSvrComposePicResponseVo {
     @ApiModelProperty("边框颜色B")
     private String borderColorBlue;
 
-    @ApiModelProperty("画面通道ID列表")
-    private List<PicChnVo> picChnList;
+    @ApiModelProperty("画面通道列表")
+    private List<PicChnVo> picChns;
 }

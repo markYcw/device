@@ -145,6 +145,7 @@ public enum DeviceErrorEnum {
     SVR_GET_OSD_FAILED(5028, "获取画面叠加失败"),
     SVR_OSD_FAILED(5029, "设置画面叠加失败"),
     SVR_AUDIO_FAILED(5030, "语音激励控制失败"),
+    SVR_BURN_STATE_INFO_FAILED(5031, "获取当前刻录状态失败"),
 
     //cu相关错误码
     CU_LOGIN_FAILED(6001, "CU登录失败"),

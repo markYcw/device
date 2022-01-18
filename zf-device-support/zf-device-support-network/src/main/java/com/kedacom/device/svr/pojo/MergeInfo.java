@@ -36,7 +36,7 @@ public class MergeInfo {
     private String borderColorBlue;
 
     @ApiModelProperty("画面通道ID列表")
-    private List<PicChn> picChnList;
+    private List<PicChn> picChns;
 
 
 }

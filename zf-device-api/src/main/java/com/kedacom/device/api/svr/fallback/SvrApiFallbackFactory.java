@@ -211,6 +211,11 @@ public class SvrApiFallbackFactory implements FallbackFactory<SvrApi> {
             public BaseResult<String> hb(Integer dbId) {
                 return  BaseResult.failed(throwable.getMessage());
             }
+
+            @Override
+            public BaseResult<BurnStatesInfoVo> burnInfo(SvrRequestDto dto) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
         };
     }
 }

@@ -28,20 +28,20 @@ public class PtzCtrlRequestVo extends SvrRequestDto{
     @ApiModelProperty("控制指令解释PtzCmd枚举类，此字段为上一个字段起解释说明服务，不必传 前端不需要理会这个字段")
     private PtzCmd ptzCmd;
 
-    @NotBlank(message = "param1不能为空")
+    @NotNull(message = "param1不能为空")
     @ApiModelProperty(value = "命令参数 请参考PtzCmd枚举类",required = true)
-    private String param1;
+    private Integer param1;
 
-    @NotBlank(message = "param2不能为空")
+    @NotNull(message = "param2不能为空")
     @ApiModelProperty(value = "命令参数 请参考PtzCmd枚举类",required = true)
-    private String param2;
+    private Integer param2;
 
-    @NotBlank(message = "param3不能为空")
+    @NotNull(message = "param3不能为空")
     @ApiModelProperty(value = "命令参数 请参考PtzCmd枚举类",required = true)
-    private String param3;
+    private Integer param3;
 
-    @NotBlank(message = "param4不能为空")
+    @NotNull(message = "param4不能为空")
     @ApiModelProperty(value = "命令参数 请参考PtzCmd枚举类",required = true)
-    private String param4;
+    private Integer param4;
 
 }

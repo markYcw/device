@@ -1,6 +1,7 @@
 package com.kedacom.device.core.notify.svr;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.kedacom.device.core.entity.KmListenerEntity;
 import com.kedacom.device.core.notify.stragegy.INotify;
@@ -29,12 +30,14 @@ public class DvdStatusNotify extends INotify {
         DeviceNotifyUtils notifyUtils = ContextUtils.getBean(DeviceNotifyUtils.class);
         SvrEntity entity = service.getBySsid(ssid);
         //将通知发给业务
-        dvdStatus.setMsgType(MsgType.SVR_DVD_STATE_NTY.getType());
-        dvdStatus.setDbId(entity.getId());
-        List<KmListenerEntity> list = listenerService.getAll(MsgType.SVR_DVD_STATE_NTY.getType());
-        if(!CollectionUtil.isEmpty(list)){
-            for (KmListenerEntity kmListenerEntity : list) {
-                notifyUtils.offLineNty(kmListenerEntity.getUrl(),dvdStatus);
+        if(ObjectUtil.isNotNull(entity)){
+            dvdStatus.setMsgType(MsgType.SVR_DVD_STATE_NTY.getType());
+            dvdStatus.setDbId(entity.getId());
+            List<KmListenerEntity> list = listenerService.getAll(MsgType.SVR_DVD_STATE_NTY.getType());
+            if(!CollectionUtil.isEmpty(list)){
+                for (KmListenerEntity kmListenerEntity : list) {
+                    notifyUtils.offLineNty(kmListenerEntity.getUrl(),dvdStatus);
+                }
             }
         }
     }

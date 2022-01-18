@@ -193,4 +193,8 @@ public interface SvrApi {
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId", value = "数据库ID")})
     BaseResult<String> hb(@RequestParam Integer dbId);
 
+    @ApiOperation("获取当前刻录状态")
+    @PostMapping("/burnInfo")
+    BaseResult<BurnStatesInfoVo> burnInfo(@RequestBody SvrRequestDto dto);
+
 }

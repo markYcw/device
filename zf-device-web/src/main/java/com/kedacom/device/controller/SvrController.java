@@ -152,8 +152,8 @@ public class SvrController {
 
     @ApiOperation("添加/删除编码通道")
     @PostMapping("/enChn")
-    public BaseResult<String> enChn(@RequestBody EnChnDto enChnDto) {
-
+    public BaseResult<String> enChn(@Valid @RequestBody EnChnDto enChnDto,BindingResult br) {
+        ValidUtils.paramValid(br);
         return svrService.enChn(enChnDto);
     }
 
@@ -278,6 +278,13 @@ public class SvrController {
     public BaseResult<GetBurnTaskResponseVo> getBurnTask(@RequestBody GetBurnTaskRequestVo dto) {
 
         return svrService.burnTaskList(dto);
+    }
+
+    @ApiOperation("获取当前刻录状态")
+    @PostMapping("/burnInfo")
+    public BaseResult<BurnStatesInfoVo> burnInfo(@Valid @RequestBody SvrRequestDto dto,BindingResult br) {
+         ValidUtils.paramValid(br);
+        return svrService.burnInfo(dto);
     }
 
     @ApiOperation("DVD仓门控制")

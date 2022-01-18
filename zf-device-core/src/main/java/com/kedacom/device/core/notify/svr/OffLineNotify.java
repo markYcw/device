@@ -1,6 +1,7 @@
 package com.kedacom.device.core.notify.svr;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.kedacom.device.core.entity.KmListenerEntity;
 import com.kedacom.device.core.notify.stragegy.INotify;
 import com.kedacom.device.core.service.RegisterListenerService;
@@ -35,27 +36,29 @@ public class OffLineNotify extends INotify {
         log.info("======================收到掉线通知ssid{}",ssid);
         SvrService service = ContextUtils.getBean(SvrService.class);
         SvrEntity entity = service.getBySsid(ssid);
-        RegisterListenerService listenerService = ContextUtils.getBean(RegisterListenerService.class);
-        DeviceNotifyUtils notifyUtils = ContextUtils.getBean(DeviceNotifyUtils.class);
-        SystemWebSocketMessage msg = new SystemWebSocketMessage();
-        msg.setOperationType(10);
-        msg.setServerName("device");
-        msg.setData("IP为："+entity.getIp()+"SVR掉线通知");
-        log.info("===========发送SVR掉线通知给前端");
-        //将通知发给业务
-        DeviceNotifyRequestDTO notifyRequestDTO = new DeviceNotifyRequestDTO();
-        notifyRequestDTO.setDbId(entity.getId());
-        notifyRequestDTO.setMsgType(MsgType.SVR_OFF_LINE.getType());
-        List<KmListenerEntity> list = listenerService.getAll(MsgType.SVR_OFF_LINE.getType());
-        if(!CollectionUtil.isEmpty(list)){
-            for (KmListenerEntity kmListenerEntity : list) {
-                try {
-                    CompletableFuture.runAsync(()->notifyUtils.offLineNty(kmListenerEntity.getUrl(),notifyRequestDTO));
-                } catch (Exception e) {
-                    log.error("==========发送SVR掉线通知给业务时失败{}",e);
+        if(ObjectUtil.isNotNull(entity)){
+            service.logoutById(entity.getId());
+            RegisterListenerService listenerService = ContextUtils.getBean(RegisterListenerService.class);
+            DeviceNotifyUtils notifyUtils = ContextUtils.getBean(DeviceNotifyUtils.class);
+            SystemWebSocketMessage msg = new SystemWebSocketMessage();
+            msg.setOperationType(10);
+            msg.setServerName("device");
+            msg.setData("IP为："+entity.getIp()+"SVR掉线通知");
+            log.info("===========发送SVR掉线通知给前端");
+            //将通知发给业务
+            DeviceNotifyRequestDTO notifyRequestDTO = new DeviceNotifyRequestDTO();
+            notifyRequestDTO.setDbId(entity.getId());
+            notifyRequestDTO.setMsgType(MsgType.SVR_OFF_LINE.getType());
+            List<KmListenerEntity> list = listenerService.getAll(MsgType.SVR_OFF_LINE.getType());
+            if(!CollectionUtil.isEmpty(list)){
+                for (KmListenerEntity kmListenerEntity : list) {
+                    try {
+                        CompletableFuture.runAsync(()->notifyUtils.offLineNty(kmListenerEntity.getUrl(),notifyRequestDTO));
+                    } catch (Exception e) {
+                        log.error("==========发送SVR掉线通知给业务时失败{}",e);
+                    }
                 }
             }
         }
-
     }
 }

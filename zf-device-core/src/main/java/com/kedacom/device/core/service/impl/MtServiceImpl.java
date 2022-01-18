@@ -82,7 +82,7 @@ public class MtServiceImpl implements MtService {
 
     public static boolean MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT = false;
 
-    private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/mt/mtNotify";
+    private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/device/notify";
 
     /**
      * 在线终端缓存（id）
@@ -759,7 +759,7 @@ public class MtServiceImpl implements MtService {
             return;
         }
 
-        log.info("终端"+ type + "通知, 终端名称 : {}", mtEntity.getName());
+        log.info("终端" + type + "通知, 终端名称 : {}", mtEntity.getName());
         if (MT_MAINTAIN_HEARTBEAT_PERIOD) {
             // 在心跳维护期间，如有通知则将终端id添加到无效缓存中，心跳维护结束后将统一从在线终端缓存中删除
             synInvalidHashSet.add(mtEntity.getId());

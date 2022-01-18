@@ -2,6 +2,7 @@ package com.kedacom.device.core.notify.stragegy;
 
 import com.kedacom.device.core.notify.cu.CuNotifyFactory;
 import com.kedacom.device.core.notify.mcu.McuNotifyFactory;
+import com.kedacom.device.core.notify.mt.MtNotifyFactory;
 import com.kedacom.device.core.notify.svr.SvrNotifyFactory;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +44,7 @@ public class NotifyFactory {
      * 初始化各种设备通知
      */
    public static void init(){
+       MtNotifyFactory.init();
        SvrNotifyFactory.init();
        CuNotifyFactory.init();
        McuNotifyFactory.init();

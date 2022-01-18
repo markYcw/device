@@ -323,17 +323,17 @@ public class MtController {
         return BaseResult.failed("设置画面显示模式失败");
     }
 
-    @ApiOperation(value = "终端通知")
-    @PostMapping("/mtNotify")
-    public BaseResult<Void> mtNotify(@RequestBody String notify) {
-
-        if (StringUtils.isEmpty(notify)) {
-            return BaseResult.failed("接收终端通知信息为空");
-        }
-        mtService.mtNotify(notify);
-
-        return BaseResult.succeed("终端通知消费成功");
-    }
+//    @ApiOperation(value = "终端通知")
+//    @PostMapping("/mtNotify")
+//    public BaseResult<Void> mtNotify(@RequestBody String notify) {
+//
+//        if (StringUtils.isEmpty(notify)) {
+//            return BaseResult.failed("接收终端通知信息为空");
+//        }
+//        mtService.mtNotify(notify);
+//
+//        return BaseResult.succeed("终端通知消费成功");
+//    }
 
     @ApiOperation(value = "PING")
     @PostMapping("/ping")

@@ -73,13 +73,13 @@ public class MaintainHeartbeatRunning implements Runnable {
             } catch (Exception e1) {
                 log.error("终端id : {} 发送心跳异常, 异常信息 : {}", integer, e1.getMessage());
                 synInvalidHashSet.add(integer);
+                MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT = true;
                 try {
-                    MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT = true;
                     mtService.logOutById(integer);
-                    MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT = false;
                 } catch (Exception e2) {
                     log.error("心跳失效，终端id : {} 退出登录异常, 异常信息 : {}", integer, e2.getMessage());
                 }
+                MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT = false;
             }
         }
         MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD = false;

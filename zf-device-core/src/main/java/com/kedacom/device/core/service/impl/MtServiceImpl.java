@@ -17,7 +17,6 @@ import com.kedacom.device.core.exception.MtException;
 import com.kedacom.device.core.mapper.MtMapper;
 import com.kedacom.device.core.mapper.MtTypeMapper;
 import com.kedacom.device.core.mapper.SvrMapper;
-import com.kedacom.device.core.notify.mt.MtSendMessage;
 import com.kedacom.device.core.ping.DefaultPing;
 import com.kedacom.device.core.ping.PingInfo;
 import com.kedacom.device.core.service.MtService;
@@ -64,19 +63,12 @@ public class MtServiceImpl implements MtService {
     MtUrlFactory mtUrlFactory;
 
     @Resource
-    MtSendMessage mtSendMessage;
-
-    @Resource
     HandleResponseUtil responseUtil;
 
     @Resource
     RemoteRestTemplate remoteRestTemplate;
 
-    private static final Integer SEIZE = 100;
-
-    private static final Integer DROP_LINE = 1;
-
-    private static boolean MT_CHECK_SWITCH = true;
+    public static boolean MT_CHECK_SWITCH = true;
 
     public static boolean MT_MAINTAIN_HEARTBEAT_PERIOD = false;
 
@@ -684,7 +676,7 @@ public class MtServiceImpl implements MtService {
         String content = String.valueOf(jsonObject.get("content"));
         log.info("终端通知消息，ssid : {}, msgType : {}, content : {}", mtId, msgType, content);
 
-        handleMtNotify(mtId, msgType);
+//        handleMtNotify(mtId, msgType);
     }
 
     @Override
@@ -746,37 +738,37 @@ public class MtServiceImpl implements MtService {
         return svrEntity.getIp();
     }
 
-    public void handleMtNotify(Integer mtId, Integer msgType) {
-
-        MT_CHECK_SWITCH = false;
-        String type = DROP_LINE.equals(msgType) ? "掉线" : "被抢占";
-        LambdaQueryWrapper<MtEntity> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(MtEntity::getMtid, mtId);
-
-        MtEntity mtEntity = mtMapper.selectOne(queryWrapper);
-        if (mtEntity == null) {
-            log.error("该终端离线或不存在");
-            return;
-        }
-
-        log.info("终端" + type + "通知, 终端名称 : {}", mtEntity.getName());
-        if (MT_MAINTAIN_HEARTBEAT_PERIOD) {
-            // 在心跳维护期间，如有通知则将终端id添加到无效缓存中，心跳维护结束后将统一从在线终端缓存中删除
-            synInvalidHashSet.add(mtEntity.getId());
-        } else {
-            // 不在心跳维护期间，如有通知则将终端id直接从在线终端缓存中删除
-            synHashSet.remove(mtEntity.getId());
-        }
-        try {
-            // 登出终端
-            logOutById(mtEntity.getId());
-        } catch (Exception e) {
-            log.error("消费通知后退出终端失败 : {}", e.getMessage());
-        }
-        MT_CHECK_SWITCH = true;
-        String msg = mtEntity.getName() + " 终端已" + type;
-
-        // 向前端发送终端被抢占登录通知
-        mtSendMessage.sendMessage(msg);
-    }
+//    public void handleMtNotify(Integer mtId, Integer msgType) {
+//
+//        MT_CHECK_SWITCH = false;
+//        String type = DROP_LINE.equals(msgType) ? "掉线" : "被抢占";
+//        LambdaQueryWrapper<MtEntity> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(MtEntity::getMtid, mtId);
+//
+//        MtEntity mtEntity = mtMapper.selectOne(queryWrapper);
+//        if (mtEntity == null) {
+//            log.error("该终端离线或不存在");
+//            return;
+//        }
+//
+//        log.info("终端" + type + "通知, 终端名称 : {}", mtEntity.getName());
+//        if (MT_MAINTAIN_HEARTBEAT_PERIOD) {
+//            // 在心跳维护期间，如有通知则将终端id添加到无效缓存中，心跳维护结束后将统一从在线终端缓存中删除
+//            synInvalidHashSet.add(mtEntity.getId());
+//        } else {
+//            // 不在心跳维护期间，如有通知则将终端id直接从在线终端缓存中删除
+//            synHashSet.remove(mtEntity.getId());
+//        }
+//        try {
+//            // 登出终端
+//            logOutById(mtEntity.getId());
+//        } catch (Exception e) {
+//            log.error("消费通知后退出终端失败 : {}", e.getMessage());
+//        }
+//        MT_CHECK_SWITCH = true;
+//        String msg = mtEntity.getName() + " 终端已" + type;
+//
+//        // 向前端发送终端被抢占登录通知
+//        mtSendMessage.sendMessage(msg);
+//    }
 }

@@ -36,6 +36,7 @@ import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
@@ -68,13 +69,13 @@ public class MtServiceImpl implements MtService {
     @Resource
     RemoteRestTemplate remoteRestTemplate;
 
-    public static boolean MT_CHECK_SWITCH = true;
+    public static AtomicBoolean MT_CHECK_SWITCH = new AtomicBoolean(true);
 
-    public static boolean MT_MAINTAIN_HEARTBEAT_PERIOD = false;
+    public static AtomicBoolean MT_MAINTAIN_HEARTBEAT_PERIOD = new AtomicBoolean(false);
 
-    public static boolean MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT = false;
+    public static AtomicBoolean MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT = new AtomicBoolean(false);
 
-    private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/device/notify";
+    private final static String NTY_URL = "/api/api-device/ums/device/notify";
 
     /**
      * 在线终端缓存（id）
@@ -228,7 +229,7 @@ public class MtServiceImpl implements MtService {
         }
         String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         LoginParamVo loginParamVo = MtConvert.INSTANCE.convertLoginParamVo(entity);
-        loginParamVo.setNtyUrl(NTY_URL);
+        loginParamVo.setNtyUrl(mtUrlFactory.getMtNtyUrl() + NTY_URL);
         Map<String, Long> paramMap = setParamMap(null);
 
         log.info("远端登录终端请求参数 loginParamVo : {}", loginParamVo);
@@ -243,7 +244,7 @@ public class MtServiceImpl implements MtService {
         mtMapper.updateById(entity);
 
         log.info("终端 : {} 登录时，是否在终端维护心跳期间 : {}", dbId, MT_MAINTAIN_HEARTBEAT_PERIOD);
-        if (MT_MAINTAIN_HEARTBEAT_PERIOD) {
+        if (MT_MAINTAIN_HEARTBEAT_PERIOD.get()) {
             synTransitHashSet.add(dbId);
             log.info("终端 : {}, 添加到在线终端中转缓存中 synTransitHashSet : {}", dbId, synTransitHashSet);
         } else {
@@ -270,7 +271,7 @@ public class MtServiceImpl implements MtService {
                 .set(MtEntity::getMtid, null);
         mtMapper.update(null, updateWrapper);
         log.info("终端退出时，是否在终端维护心跳期间 : {}", MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT);
-        if (!MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT) {
+        if (!MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT.get()) {
             // 若不在终端维护心跳期间，则将退出登录的终端id从维护终端心跳的缓存中删除
             synHashSet.remove(dbId);
         }
@@ -292,7 +293,7 @@ public class MtServiceImpl implements MtService {
         log.info("发送心跳请求参数 : {}", dbId);
         MtEntity entity = mtMapper.selectById(dbId);
         // 当处理终端通知时，维护心跳的过程不做校验终端中的重新登录
-        if (MT_CHECK_SWITCH) {
+        if (MT_CHECK_SWITCH.get()) {
             check(entity);
         }
         Map<String, Long> paramMap = setParamMap(entity.getMtid());

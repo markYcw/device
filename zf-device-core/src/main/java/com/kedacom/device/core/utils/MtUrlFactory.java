@@ -27,9 +27,20 @@ public class MtUrlFactory {
 
         do {
             log.info("mt_server_addr : {}", server_addr);
-            Thread.sleep(200);
+            Thread.sleep(200L);
         } while (StrUtil.isBlank(server_addr));
 
         return mtHttp + server_addr + mtUri;
+    }
+
+    @SneakyThrows
+    public String getMtNtyUrl() {
+
+        do {
+            log.info("mt_server_addr : {}", server_addr);
+            Thread.sleep(300L);
+        } while (StrUtil.isBlank(server_addr));
+
+        return mtHttp + server_addr;
     }
 }

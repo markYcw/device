@@ -29,14 +29,16 @@ public class DvdStatusNotify extends INotify {
         RegisterListenerService listenerService = ContextUtils.getBean(RegisterListenerService.class);
         DeviceNotifyUtils notifyUtils = ContextUtils.getBean(DeviceNotifyUtils.class);
         SvrEntity entity = service.getBySsid(ssid);
-        //将通知发给业务
         if(ObjectUtil.isNotNull(entity)){
-            dvdStatus.setMsgType(MsgType.SVR_DVD_STATE_NTY.getType());
-            dvdStatus.setDbId(entity.getId());
-            List<KmListenerEntity> list = listenerService.getAll(MsgType.SVR_DVD_STATE_NTY.getType());
-            if(!CollectionUtil.isEmpty(list)){
-                for (KmListenerEntity kmListenerEntity : list) {
-                    notifyUtils.offLineNty(kmListenerEntity.getUrl(),dvdStatus);
+            //将通知发给业务
+            if(ObjectUtil.isNotNull(entity)){
+                dvdStatus.setMsgType(MsgType.SVR_DVD_STATE_NTY.getType());
+                dvdStatus.setDbId(entity.getId());
+                List<KmListenerEntity> list = listenerService.getAll(MsgType.SVR_DVD_STATE_NTY.getType());
+                if(!CollectionUtil.isEmpty(list)){
+                    for (KmListenerEntity kmListenerEntity : list) {
+                        notifyUtils.offLineNty(kmListenerEntity.getUrl(),dvdStatus);
+                    }
                 }
             }
         }

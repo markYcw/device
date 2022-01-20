@@ -40,7 +40,7 @@ public class MtNotifyHandle extends INotify {
         JSONObject jsonObject = JSONObject.parseObject(message);
         Integer msgType = (Integer) jsonObject.get("msgType");
 
-        MtServiceImpl.MT_CHECK_SWITCH = false;
+        MtServiceImpl.MT_CHECK_SWITCH.set(false);
         String type = DROP_LINE.equals(msgType) ? "掉线" : "被抢占";
         LambdaQueryWrapper<MtEntity> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(MtEntity::getMtid, ssid);
@@ -52,7 +52,7 @@ public class MtNotifyHandle extends INotify {
         }
 
         log.info("终端" + type + "通知, 终端名称 : {}", mtEntity.getName());
-        if (MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD) {
+        if (MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD.get()) {
             // 在心跳维护期间，如有通知则将终端id添加到无效缓存中，心跳维护结束后将统一从在线终端缓存中删除
             MtServiceImpl.synInvalidHashSet.add(mtEntity.getId());
         } else {
@@ -65,7 +65,7 @@ public class MtNotifyHandle extends INotify {
         } catch (Exception e) {
             log.error("消费通知后退出终端失败 : {}", e.getMessage());
         }
-        MtServiceImpl.MT_CHECK_SWITCH = true;
+        MtServiceImpl.MT_CHECK_SWITCH .set(true);
         String msg = mtEntity.getName() + " 终端已" + type;
 
         // 向前端发送终端被抢占登录通知

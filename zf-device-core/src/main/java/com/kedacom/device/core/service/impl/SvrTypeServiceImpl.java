@@ -9,7 +9,9 @@ import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
+import com.kedacom.device.core.enums.DeviceModelType;
 import com.kedacom.device.core.exception.CuException;
+import com.kedacom.device.core.exception.SvrException;
 import com.kedacom.device.core.mapper.SvrTypeMapper;
 import com.kedacom.device.core.service.SvrTypeService;
 import com.kedacom.svr.entity.SvrEntity;
@@ -43,7 +45,7 @@ public class SvrTypeServiceImpl extends ServiceImpl<SvrTypeMapper, SvrTypeEntity
         page.setSize(queryDTO.getPageSize());
 
         LambdaQueryWrapper<SvrTypeEntity> queryWrapper = new LambdaQueryWrapper<>();
-        if(!ObjectUtil.isNotNull(queryDTO.getType())){
+        if(!StringUtils.isEmpty(queryDTO.getType())){
             queryWrapper.like(SvrTypeEntity::getType,queryDTO.getType());
         }
 
@@ -64,6 +66,10 @@ public class SvrTypeServiceImpl extends ServiceImpl<SvrTypeMapper, SvrTypeEntity
         log.info("=======SVR设备类型保存接口入参：{}",entity);
         if(!isRepeat(entity)){
             throw new CuException(DeviceErrorEnum.IP_OR_NAME_REPEAT);
+        }
+        Integer devType = DeviceModelType.getEnum(entity.getType());
+        if(devType==null){
+            throw new SvrException(DeviceErrorEnum.DEV_TYPE_NAME_ERROR);
         }
         mapper.insert(entity);
         return BaseResult.succeed("保存成功",entity);

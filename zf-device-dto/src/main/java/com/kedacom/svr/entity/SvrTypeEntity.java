@@ -27,7 +27,7 @@ public class SvrTypeEntity implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    @ApiModelProperty(value = "SVR设备类型")
+    @ApiModelProperty(value = "SVR设备类型 如SVR2931")
     private String type;
 
     @ApiModelProperty(value = "创建时间")

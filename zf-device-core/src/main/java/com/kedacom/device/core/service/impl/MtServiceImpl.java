@@ -28,6 +28,7 @@ import com.kedacom.mt.response.GetMtStatusResponseVo;
 import com.kedacom.svr.entity.SvrEntity;
 import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -68,6 +69,9 @@ public class MtServiceImpl implements MtService {
 
     @Resource
     RemoteRestTemplate remoteRestTemplate;
+
+    @Value("${mt.maintain.heartbeat:true}")
+    private boolean heartbeat;
 
     public static AtomicBoolean MT_CHECK_SWITCH = new AtomicBoolean(true);
 
@@ -121,6 +125,11 @@ public class MtServiceImpl implements MtService {
     public List<TerminalVo> queryConnectionStatus(List<MtEntity> records) {
 
         List<TerminalVo> terminalVoList = MtConvert.INSTANCE.convertTerminalVoList(records);
+
+        if (!heartbeat) {
+
+            return terminalVoList;
+        }
 
         if (CollectionUtil.isEmpty(synHashSet)) {
             return terminalVoList;
@@ -243,13 +252,15 @@ public class MtServiceImpl implements MtService {
         entity.setMtid(mtLoginResponse.getSsid());
         mtMapper.updateById(entity);
 
-        log.info("终端 : {} 登录时，是否在终端维护心跳期间 : {}", dbId, MT_MAINTAIN_HEARTBEAT_PERIOD);
-        if (MT_MAINTAIN_HEARTBEAT_PERIOD.get()) {
-            synTransitHashSet.add(dbId);
-            log.info("终端 : {}, 添加到在线终端中转缓存中 synTransitHashSet : {}", dbId, synTransitHashSet);
-        } else {
-            synHashSet.add(dbId);
-            log.info("终端 : {}, 添加到在线终端缓存中 synHashSet : {}", dbId, synHashSet);
+        if (heartbeat) {
+            log.info("终端 : {} 登录时，是否在终端维护心跳期间 : {}", dbId, MT_MAINTAIN_HEARTBEAT_PERIOD);
+            if (MT_MAINTAIN_HEARTBEAT_PERIOD.get()) {
+                synTransitHashSet.add(dbId);
+                log.info("终端 : {}, 添加到在线终端中转缓存中 synTransitHashSet : {}", dbId, synTransitHashSet);
+            } else {
+                synHashSet.add(dbId);
+                log.info("终端 : {}, 添加到在线终端缓存中 synHashSet : {}", dbId, synHashSet);
+            }
         }
 
         return mtLoginResponse.getSsid();
@@ -270,8 +281,9 @@ public class MtServiceImpl implements MtService {
         updateWrapper.eq(MtEntity::getId, dbId)
                 .set(MtEntity::getMtid, null);
         mtMapper.update(null, updateWrapper);
-        log.info("终端退出时，是否在终端维护心跳期间 : {}", MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT);
-        if (!MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT.get()) {
+
+        if (heartbeat && !MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT.get()) {
+            log.info("终端退出时，是否在终端维护心跳期间 : {}", MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT);
             // 若不在终端维护心跳期间，则将退出登录的终端id从维护终端心跳的缓存中删除
             synHashSet.remove(dbId);
         }
@@ -713,7 +725,7 @@ public class MtServiceImpl implements MtService {
             throw new MtException(DeviceErrorEnum.DEVICE_NOT_FOUND);
         }
         // 该终端状态为离线，将重新登录终端
-        if (!synHashSet.contains(entity.getId())) {
+        if (!heartbeat || !synHashSet.contains(entity.getId())) {
             log.info("终端 - {} 状态为离线，现重新登录", entity.getName());
             loginById(entity.getId());
         }

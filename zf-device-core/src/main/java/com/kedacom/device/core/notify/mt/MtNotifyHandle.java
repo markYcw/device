@@ -9,6 +9,7 @@ import com.kedacom.device.core.service.MtService;
 import com.kedacom.device.core.service.impl.MtServiceImpl;
 import com.kedacom.device.core.utils.ContextUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * @author wangxy
@@ -17,6 +18,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MtNotifyHandle extends INotify {
+
+    @Value("${mt.maintain.heartbeat:true}")
+    private boolean heartbeat;
 
     /**
      * 终端被抢占
@@ -52,12 +56,14 @@ public class MtNotifyHandle extends INotify {
         }
 
         log.info("终端" + type + "通知, 终端名称 : {}", mtEntity.getName());
-        if (MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD.get()) {
-            // 在心跳维护期间，如有通知则将终端id添加到无效缓存中，心跳维护结束后将统一从在线终端缓存中删除
-            MtServiceImpl.synInvalidHashSet.add(mtEntity.getId());
-        } else {
-            // 不在心跳维护期间，如有通知则将终端id直接从在线终端缓存中删除
-            MtServiceImpl.synHashSet.remove(mtEntity.getId());
+        if (heartbeat) {
+            if (MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD.get()) {
+                // 在心跳维护期间，如有通知则将终端id添加到无效缓存中，心跳维护结束后将统一从在线终端缓存中删除
+                MtServiceImpl.synInvalidHashSet.add(mtEntity.getId());
+            } else {
+                // 不在心跳维护期间，如有通知则将终端id直接从在线终端缓存中删除
+                MtServiceImpl.synHashSet.remove(mtEntity.getId());
+            }
         }
         try {
             // 登出终端

@@ -1,11 +1,8 @@
 package com.kedacom.svr.vo;
 
-import com.kedacom.svr.dto.SvrRequestDto;
 import com.kedacom.svr.pojo.DevList;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -15,7 +12,7 @@ import java.util.List;
  * @description 查询录像
  */
 @Data
-public class RemoteDevListVo extends SvrRequestDto {
+public class RemoteDevListVo{
 
     @ApiModelProperty(value = "远程点设备列表")
     private List<DevList> devList;

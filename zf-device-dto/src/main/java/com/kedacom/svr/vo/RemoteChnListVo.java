@@ -1,6 +1,5 @@
 package com.kedacom.svr.vo;
 
-import com.kedacom.svr.dto.SvrRequestDto;
 import com.kedacom.svr.pojo.ChnList;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,7 +13,7 @@ import java.util.List;
  * @description 查询录像
  */
 @Data
-public class RemoteChnListVo extends SvrRequestDto {
+public class RemoteChnListVo {
 
     @ApiModelProperty(value = "远程点设备列表")
     private List<ChnList> devList;

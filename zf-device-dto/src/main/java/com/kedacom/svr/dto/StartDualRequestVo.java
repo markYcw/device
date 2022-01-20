@@ -20,6 +20,6 @@ public class StartDualRequestVo extends SvrRequestDto{
 
     @NotNull(message = "远程点名称不能为空")
     @ApiModelProperty(value = "远程点名称",required = true)
-    private Integer name;
+    private String name;
 
 }

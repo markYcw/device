@@ -2,9 +2,6 @@ package com.kedacom.svr.pojo;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import javax.validation.constraints.NotNull;
-
 /**
  * @author ycw
  * @version v1.0
@@ -15,9 +12,9 @@ import javax.validation.constraints.NotNull;
 public class DevList {
 
     @ApiModelProperty(value = "远程点名称",required = true)
-    private Integer name;
+    private String name;
 
     @ApiModelProperty(value = "远程点url",required = true)
-    private Integer url;
+    private String url;
 
 }

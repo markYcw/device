@@ -536,7 +536,13 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
         SvrBasicParam param = getParam(logById(dto.getDbId()));
-        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/reclist/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        QueryRecDto qr = new QueryRecDto();
+        qr.setChnid(dto.getChnid());
+        qr.setQueryIndex(dto.getQueryIndex());
+        qr.setQueryCount(dto.getQueryCount());
+        qr.setStarttime(DateUtils.getDateString(dto.getStarttime()));
+        qr.setEndtime(DateUtils.getDateString(dto.getEndtime()));
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/reclist/{ssid}/{ssno}", JSON.toJSONString(qr), String.class, param.getParamMap());
         RecListResponse response = JSON.parseObject(s, RecListResponse.class);
         log.info("查询录像接口响应{}",response);
         String errorMsg = "查询录像失败:{},{},{}";

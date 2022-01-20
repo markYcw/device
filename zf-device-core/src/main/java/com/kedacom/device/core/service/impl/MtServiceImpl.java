@@ -130,11 +130,16 @@ public class MtServiceImpl implements MtService {
 
             return terminalVoList;
         }
+        // 创建新的临时内存，将维护心跳的三个缓存合并到新的临时缓存，以便查询终端列表时，能及时获取终端的连接状态
+        Set<Integer> synTemporaryHashSet = Collections.synchronizedSet(new HashSet<Integer>());
+        synTemporaryHashSet.addAll(synHashSet);
+        synTemporaryHashSet.addAll(synTransitHashSet);
+        synTemporaryHashSet.removeAll(synInvalidHashSet);
 
-        if (CollectionUtil.isEmpty(synHashSet)) {
+        if (CollectionUtil.isEmpty(synTemporaryHashSet)) {
             return terminalVoList;
         }
-        out : for (Integer dbId : synHashSet) {
+        out : for (Integer dbId : synTemporaryHashSet) {
             for (TerminalVo terminalVo : terminalVoList) {
                 if (dbId.equals(terminalVo.getId())) {
                     terminalVo.setStatus(1);
@@ -142,6 +147,7 @@ public class MtServiceImpl implements MtService {
                 }
             }
         }
+        synTemporaryHashSet.clear();
 
         return terminalVoList;
     }

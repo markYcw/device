@@ -77,7 +77,7 @@ public class MtServiceImpl implements MtService {
 
     public static AtomicBoolean MT_MAINTAIN_HEARTBEAT_PERIOD = new AtomicBoolean(false);
 
-    public static AtomicBoolean MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT = new AtomicBoolean(false);
+//    public static AtomicBoolean MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT = new AtomicBoolean(false);
 
     private final static String NTY_URL = "/api/api-device/ums/device/notify";
 
@@ -288,8 +288,8 @@ public class MtServiceImpl implements MtService {
                 .set(MtEntity::getMtid, null);
         mtMapper.update(null, updateWrapper);
 
-        if (heartbeat && !MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT.get()) {
-            log.info("终端退出时，是否在终端维护心跳期间 : {}", MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT);
+        if (heartbeat && !MT_MAINTAIN_HEARTBEAT_PERIOD.get()) {
+            log.info("终端退出时，是否在终端维护心跳期间 : {}", MT_MAINTAIN_HEARTBEAT_PERIOD);
             // 若不在终端维护心跳期间，则将退出登录的终端id从维护终端心跳的缓存中删除
             synHashSet.remove(dbId);
         }

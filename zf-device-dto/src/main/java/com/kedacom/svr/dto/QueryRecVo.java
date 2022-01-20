@@ -23,12 +23,12 @@ public class QueryRecVo extends SvrRequestDto{
     private Integer chnid;
 
     @NotBlank(message = "开始时间不能为空")
-    @ApiModelProperty(value = "开始时间，如：20200827120000",required = true)
+    @ApiModelProperty(value = "开始时间，例如：2021-09-09T09:30:29.0000",required = true)
     @JSONField(name = "startTime")
     private Date starttime;
 
     @NotBlank(message = "结束时间不能为空")
-    @ApiModelProperty(value = "结束时间，如：20200827130000",required = true)
+    @ApiModelProperty(value = "结束时间，例如：2021-09-09T09:30:29.0000",required = true)
     @JSONField(name = "endTime")
     private Date endtime;
 

@@ -259,7 +259,6 @@ public class MtServiceImpl implements MtService {
         mtMapper.updateById(entity);
 
         if (heartbeat) {
-            log.info("终端 : {} 登录时，是否在终端维护心跳期间 : {}", dbId, MT_MAINTAIN_HEARTBEAT_PERIOD);
             if (MT_MAINTAIN_HEARTBEAT_PERIOD.get()) {
                 synTransitHashSet.add(dbId);
                 log.info("终端 : {}, 添加到在线终端中转缓存中 synTransitHashSet : {}", dbId, synTransitHashSet);
@@ -289,7 +288,6 @@ public class MtServiceImpl implements MtService {
         mtMapper.update(null, updateWrapper);
 
         if (heartbeat && !MT_MAINTAIN_HEARTBEAT_PERIOD.get()) {
-            log.info("终端退出时，是否在终端维护心跳期间 : {}", MT_MAINTAIN_HEARTBEAT_PERIOD);
             // 若不在终端维护心跳期间，则将退出登录的终端id从维护终端心跳的缓存中删除
             synHashSet.remove(dbId);
         }

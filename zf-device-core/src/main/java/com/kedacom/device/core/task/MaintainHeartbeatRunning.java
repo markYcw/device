@@ -81,7 +81,7 @@ public class MaintainHeartbeatRunning implements Runnable {
 
         // 创建线程池
         setThreadPoolParam();
-        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("mt-maintain-heartbeat-pool-%d").build();
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("mt-maintain-heartbeat-pool-%d").setUncaughtExceptionHandler(new MtSyncUncaughtExceptionHandler()).build();
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, KEEP_ALIVE_TIME, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), namedThreadFactory);
 
         // 将MT_MAINTAIN_HEARTBEAT_PERIOD设置为true，即在终端维护心跳期间
@@ -104,6 +104,8 @@ public class MaintainHeartbeatRunning implements Runnable {
                 e.printStackTrace();
             }
         }
+        // 恢复 WHILE_FLAG 为 true
+        WHILE_FLAG = true;
         if (CollectionUtil.isNotEmpty(synInvalidHashSet)) {
             // 将失效缓存中的终端id从在线终端缓存中删除，并清空失效缓存
             synHashSet.removeAll(synInvalidHashSet);
@@ -116,9 +118,6 @@ public class MaintainHeartbeatRunning implements Runnable {
         // 将在线终端中转缓存中的终端id添加到在线终端缓存中，并清空在线终端中转缓存
         synHashSet.addAll(synTransitHashSet);
         synTransitHashSet.clear();
-
-        // 恢复 WHILE_FLAG
-        WHILE_FLAG = true;
     }
 
     class MaintainTask implements Runnable {
@@ -156,13 +155,21 @@ public class MaintainHeartbeatRunning implements Runnable {
 
     }
 
+    static class MtSyncUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler{
+
+        @Override
+        public void uncaughtException(Thread t, Throwable e) {
+            log.error("UncaughtException occur in thread[{}]", t.getName(), e);
+        }
+    }
+
     private void setThreadPoolParam() {
 
         int size = synHashSet.size();
 
         if (size <= 60) {
-            corePoolSize = 1;
-            maximumPoolSize = 2;
+            corePoolSize = 2;
+            maximumPoolSize = 3;
             return;
         }
         if (size <= 360) {

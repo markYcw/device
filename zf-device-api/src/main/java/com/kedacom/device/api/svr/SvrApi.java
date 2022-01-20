@@ -197,4 +197,12 @@ public interface SvrApi {
     @PostMapping("/burnInfo")
     BaseResult<BurnStatesInfoVo> burnInfo(@RequestBody SvrRequestDto dto);
 
+    @ApiOperation("获取远程点设备列表")
+    @PostMapping("/remoteDevList")
+    BaseResult<RemoteDevListVo> remoteDevList(@RequestBody RemoteDevListDto dto);
+
+    @ApiOperation("获取远程点通道列表")
+    @PostMapping("/remoteChnList")
+    BaseResult<RemoteChnListVo> remoteChnList(@RequestBody SvrRequestDto dto);
+
 }

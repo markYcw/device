@@ -408,7 +408,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         String errorMsg = "获取远程点配置失败:{},{},{}";
         log.info("获取远程点配置接口响应{}",exchange.getBody());
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_REMOTE_CFG_FAILED,response);
-        RemoteCfgVo remoteCfgVo = convert.convertToRemoteCfgVo(response);
+        RemoteCfgVo remoteCfgVo = convert.convertToRemoteCfgVo(response.getRemoteCfg());
         return BaseResult.succeed("获取远程点配置成功",remoteCfgVo);
     }
 
@@ -673,6 +673,38 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         BurnStatesInfoVo vo = JSON.parseObject(exchange.getBody(), BurnStatesInfoVo.class);
 
         return BaseResult.succeed(vo);
+    }
+
+    @Override
+    public BaseResult<RemoteDevListVo> remoteDevList(RemoteDevListDto dto) {
+        log.info("获取远程点设备列表接口入参RemotePointOffVo:{}",dto);
+        SvrEntity entity = svrMapper.selectById(dto.getDbId());
+        check(entity);
+        SvrBasicParam param = getParam(logById(dto.getDbId()));
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/remotedevlist/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        SvrResponse response = JSON.parseObject(s, SvrResponse.class);
+        log.info("获取远程点设备列表响应{}",s);
+        String errorMsg = "获取远程点设备列表失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_REMOTE_DEV_LIST_FAILED,response);
+        RemoteDevListVo vo = JSON.parseObject(s, RemoteDevListVo.class);
+
+        return BaseResult.succeed("获取远程点设备列表成功",vo);
+    }
+
+    @Override
+    public BaseResult<RemoteChnListVo> remoteChnList(SvrRequestDto dto) {
+        log.info("获取远程点通道列表接口入参RemotePointOffVo:{}",dto);
+        SvrEntity entity = svrMapper.selectById(dto.getDbId());
+        check(entity);
+        SvrBasicParam param = getParam(logById(dto.getDbId()));
+        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/remotechnlist/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
+        SvrResponse response = JSON.parseObject(exchange.getBody(), SvrResponse.class);
+        log.info("获取远程点通道列表响应{}",exchange.getBody());
+        String errorMsg = "获取远程点通道列表失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_REMOTE_CHN_LIST_FAILED,response);
+        RemoteChnListVo vo = JSON.parseObject(exchange.getBody(), RemoteChnListVo.class);
+
+        return BaseResult.succeed("获取远程点通道列表表成功",vo);
     }
 
     @Override

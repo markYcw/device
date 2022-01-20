@@ -262,4 +262,8 @@ public interface SvrService extends IService<SvrEntity> {
     SvrEntity getBySsid(Integer ssid);
 
     BaseResult<BurnStatesInfoVo> burnInfo(SvrRequestDto dto);
+
+    BaseResult<RemoteDevListVo> remoteDevList(RemoteDevListDto dto);
+
+    BaseResult<RemoteChnListVo> remoteChnList(SvrRequestDto dto);
 }

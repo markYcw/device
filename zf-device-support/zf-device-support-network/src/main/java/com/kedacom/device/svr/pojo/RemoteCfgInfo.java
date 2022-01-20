@@ -1,7 +1,6 @@
-package com.kedacom.device.svr.response;
+package com.kedacom.device.svr.pojo;
 
 import com.kedacom.device.svr.SvrResponse;
-import com.kedacom.device.svr.pojo.RemoteCfgInfo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -12,10 +11,15 @@ import lombok.Data;
  * @description 远程点配置
  */
 @Data
-public class RemoteCfgVoResponse extends SvrResponse {
+public class RemoteCfgInfo extends SvrResponse {
 
+    @ApiModelProperty("远程点输出主流通道")
+    private Integer remotEncChn;
+
+    @ApiModelProperty("远程点输出辅流通道")
+    private Integer remoteSecChn;
 
     @ApiModelProperty("是否将远程点作为合成通道 0：不作为 1:作为")
-    private RemoteCfgInfo remoteCfg;
+    private Integer remoteMerge;
 
 }

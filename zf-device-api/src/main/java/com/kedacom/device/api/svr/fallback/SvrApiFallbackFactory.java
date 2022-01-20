@@ -216,6 +216,16 @@ public class SvrApiFallbackFactory implements FallbackFactory<SvrApi> {
             public BaseResult<BurnStatesInfoVo> burnInfo(SvrRequestDto dto) {
                 return  BaseResult.failed(throwable.getMessage());
             }
+
+            @Override
+            public BaseResult<RemoteDevListVo> remoteDevList(RemoteDevListDto dto) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<RemoteChnListVo> remoteChnList(SvrRequestDto dto) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
         };
     }
 }

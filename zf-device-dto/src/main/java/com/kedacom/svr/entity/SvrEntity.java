@@ -45,7 +45,7 @@ public class SvrEntity {
 	@ApiModelProperty(value = "平台端口 SVR2931端口为80 SVR2930端口为9765 其他型号均为8765",required = true)
 	private Integer port;
 
-	@ApiModelProperty(value = "svr的websocket端口，SVR2931端口为8780 SVR2930端口为9766 其他型号均为8766")
+	@ApiModelProperty(value = "svr的websocket端口，SVR2931端口为8780 SVR2930端口为9766 其他型号均为8766",required = true)
 	private Integer webPort;
 
 	@ApiModelProperty(value = "登录svr账号",required = true)

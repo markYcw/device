@@ -3,6 +3,7 @@ package com.kedacom.device.core.convert;
 import com.kedacom.device.svr.pojo.DeChnList;
 import com.kedacom.device.svr.pojo.EnChnList;
 import com.kedacom.device.svr.pojo.PicChn;
+import com.kedacom.device.svr.pojo.RemoteCfgInfo;
 import com.kedacom.device.svr.request.SvrLoginRequest;
 import com.kedacom.device.svr.response.*;
 import com.kedacom.svr.entity.SvrEntity;
@@ -34,7 +35,7 @@ public interface SvrConvert {
 
     DecParamVo convertToDecParamVo(DecParamResponse response);
 
-    RemoteCfgVo convertToRemoteCfgVo(RemoteCfgVoResponse response);
+    RemoteCfgVo convertToRemoteCfgVo(RemoteCfgInfo info);
 
     GetBurnTaskResponseVo convertTOBurnTaskVo(BurnTaskResponse response);
 

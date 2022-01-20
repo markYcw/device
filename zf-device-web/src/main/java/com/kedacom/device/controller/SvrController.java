@@ -2,7 +2,6 @@ package com.kedacom.device.controller;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.common.model.Result;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.enums.DeviceModelType;
 import com.kedacom.device.core.service.SvrService;
@@ -156,19 +155,22 @@ public class SvrController {
     @PostMapping("/enChn")
     public BaseResult<String> enChn(@Valid @RequestBody EnChnDto enChnDto,BindingResult br) {
         ValidUtils.paramValid(br);
+
         return svrService.enChn(enChnDto);
     }
 
     @ApiOperation("获取编码器的预置位")
     @PostMapping("/getIpcItem")
-    public BaseResult<CpResetVo> getIpcItem(GetIpcItemRequestVo dto) {
+    public BaseResult<CpResetVo> getIpcItem(@Valid @RequestBody GetIpcItemRequestVo dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.enCpReset(dto);
     }
 
     @ApiOperation("修改编码器预置位")
     @PostMapping("/CpReset")
-    public BaseResult<String> CpReset(CpResetDto dto) {
+    public BaseResult<String> CpReset(@Valid @RequestBody CpResetDto dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.CpReset(dto);
     }
@@ -183,28 +185,32 @@ public class SvrController {
 
     @ApiOperation("添加/删除解码通道")
     @PostMapping("/deChn")
-    public BaseResult<String> deChn(@RequestBody DeChnDto dto) {
+    public BaseResult<String> deChn(@Valid @RequestBody DeChnDto dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.deChn(dto);
     }
 
     @ApiOperation("获取解码参数")
     @PostMapping("/decParam")
-    public BaseResult<DecParamVo> decParam(@RequestBody DecParamDto dto) {
+    public BaseResult<DecParamVo> decParam(@Valid @RequestBody DecParamDto dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.decParam(dto);
     }
 
     @ApiOperation("设置解码参数")
     @PostMapping("/enDeParam")
-    public BaseResult<String> enDeParam(@RequestBody EnDecParamDto dto) {
+    public BaseResult<String> enDeParam(@Valid @RequestBody EnDecParamDto dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.enDeParam(dto);
     }
 
     @ApiOperation("PTZ控制")
     @PostMapping("/ptzCtrl")
-    public BaseResult<String> ptzCtrl(@Valid @RequestBody PtzCtrlRequestVo dto) {
+    public BaseResult<String> ptzCtrl(@Valid @RequestBody PtzCtrlRequestVo dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.ptz(dto);
     }
@@ -235,50 +241,56 @@ public class SvrController {
 
     @ApiOperation("修改远程点配置")
     @PostMapping("/remotePutCfg")
-    public BaseResult<String> remotePutCfg(@RequestBody RemotePutCfgDto dto) {
+    public BaseResult<String> remotePutCfg(@Valid @RequestBody RemotePutCfgDto dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.remotePutCfg(dto);
     }
 
     @ApiOperation("发送双流")
     @PostMapping("/startDual")
-    public BaseResult<String> startDual(@RequestBody StartDualRequestVo dto) {
+    public BaseResult<String> startDual(@Valid @RequestBody StartDualRequestVo dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.dual(dto);
     }
 
     @ApiOperation("刻录控制")
     @PostMapping("/burn")
-    public BaseResult<String> burn(@RequestBody BurnDto dto) {
+    public BaseResult<String> burn(@Valid @RequestBody BurnDto dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.burn(dto);
     }
 
     @ApiOperation("根据时间补刻 如果有刻录任务ID请选择刻录控制接口")
     @PostMapping("/supplementBurn")
-    public BaseResult<String> supplementBurn(@RequestBody SupplementBurnVo dto) {
+    public BaseResult<String> supplementBurn(@Valid @RequestBody SupplementBurnVo dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.reBurn(dto);
     }
 
     @ApiOperation("追加刻录任务")
     @PostMapping("/appendBurn")
-    public BaseResult<String> appendBurn(@RequestBody AppendBurnDto dto) {
+    public BaseResult<String> appendBurn(@Valid @RequestBody AppendBurnDto dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.appendBurn(dto);
     }
 
     @ApiOperation("新建刻录任务")
     @PostMapping("/createBurn")
-    public BaseResult<String> createBurn(@RequestBody CreateBurnRequestVo dto) {
+    public BaseResult<String> createBurn(@Valid @RequestBody CreateBurnRequestVo dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.createBurn(dto);
     }
 
     @ApiOperation("获取刻录任务")
     @PostMapping("/burnTaskList")
-    public BaseResult<GetBurnTaskResponseVo> getBurnTask(@RequestBody GetBurnTaskRequestVo dto) {
-
+    public BaseResult<GetBurnTaskResponseVo> getBurnTask(@Valid @RequestBody GetBurnTaskRequestVo dto,BindingResult br) {
+        ValidUtils.paramValid(br);
         return svrService.burnTaskList(dto);
     }
 
@@ -286,12 +298,14 @@ public class SvrController {
     @PostMapping("/burnInfo")
     public BaseResult<BurnStatesInfoVo> burnInfo(@Valid @RequestBody SvrRequestDto dto,BindingResult br) {
          ValidUtils.paramValid(br);
+
         return svrService.burnInfo(dto);
     }
 
     @ApiOperation("DVD仓门控制")
     @PostMapping("/ctrlDvdDoor")
-    public BaseResult<String> ctrlDvdDoor(@RequestBody DvdDoorCtrlVo dto) {
+    public BaseResult<String> ctrlDvdDoor(@Valid @RequestBody DvdDoorCtrlVo dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.dvdDoor(dto);
     }
@@ -337,9 +351,26 @@ public class SvrController {
 
     @ApiOperation("语音激励控制 3.0协议暂不支持")
     @PostMapping("/setAudioActNty")
-    public BaseResult<String> setAudioActNty(@RequestBody SetAudioActNtyRequestVo dto) {
+    public BaseResult<String> setAudioActNty(@Valid @RequestBody SetAudioActNtyRequestVo dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.audioAct(dto);
+    }
+
+    @ApiOperation("获取远程点设备列表")
+    @PostMapping("/remoteDevList")
+    public BaseResult<RemoteDevListVo> remoteDevList(@Valid @RequestBody RemoteDevListDto dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return svrService.remoteDevList(dto);
+    }
+
+    @ApiOperation("获取远程点通道列表")
+    @PostMapping("/remoteChnList")
+    public BaseResult<RemoteChnListVo> remoteChnList(@Valid @RequestBody SvrRequestDto dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return svrService.remoteChnList(dto);
     }
 
 

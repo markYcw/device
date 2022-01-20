@@ -35,7 +35,7 @@ public class MaintainHeartbeatRunning implements Runnable {
 
     private static int maximumPoolSize = 0;
 
-    private static final int keepAliveTime = 3;
+    private static final int KEEP_ALIVE_TIME = 3;
 
     /**
      * 在线终端缓存（id）
@@ -82,7 +82,7 @@ public class MaintainHeartbeatRunning implements Runnable {
         // 创建线程池
         setThreadPoolParam();
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("mt-maintain-heartbeat-pool-%d").build();
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), namedThreadFactory);
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, KEEP_ALIVE_TIME, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), namedThreadFactory);
 
         // 将MT_MAINTAIN_HEARTBEAT_PERIOD设置为true，即在终端维护心跳期间
         MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD.set(true);

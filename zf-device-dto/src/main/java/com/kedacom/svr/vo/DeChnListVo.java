@@ -17,6 +17,6 @@ import java.util.List;
 public class DeChnListVo implements Serializable {
 
     @ApiModelProperty("解码器通道列表")
-   private List<DeChnList> chnList;
+    private List<DeChnList> chnList;
 
 }

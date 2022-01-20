@@ -312,7 +312,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("获取解码通道列表接口响应{}",exchange.getBody());
         String errorMsg = "获取解码通道列表失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_DE_CHN_LIST_FAILED,response);
-        DeChnListVo deChnListVo = convert.convertToDeChnListVo(response.getChnList());
+        DeChnListVo deChnListVo = convert.convertToDeChnListVo(response);
         return BaseResult.succeed("获取解码通道列表成功",deChnListVo);
     }
 

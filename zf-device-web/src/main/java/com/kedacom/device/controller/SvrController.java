@@ -4,6 +4,7 @@ import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.common.model.Result;
 import com.kedacom.device.common.utils.ValidUtils;
+import com.kedacom.device.core.enums.DeviceModelType;
 import com.kedacom.device.core.service.SvrService;
 import com.kedacom.svr.entity.SvrEntity;
 import com.kedacom.svr.pojo.SvrPageQueryDTO;
@@ -78,6 +79,7 @@ public class SvrController {
     @ApiOperation(value = "修改svr")
     public BaseResult<SvrEntity> update(@RequestBody SvrEntity entity) {
         log.info("修改svr:{}", entity);
+        entity.setDevType(DeviceModelType.getEnum(entity.getModelType()));
         svrService.updateById(entity);
 
         return BaseResult.succeed(entity);

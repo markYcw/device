@@ -5,6 +5,8 @@ import com.kedacom.device.svr.pojo.DeChnList;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author ycw
  * @version v1.0
@@ -15,6 +17,6 @@ import lombok.Data;
 public class DecChnListResponse extends SvrResponse {
 
     @ApiModelProperty("解码器通道列表")
-    private DeChnList chnList;
+    private List<DeChnList>  chnList;
 
 }

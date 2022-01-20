@@ -30,7 +30,7 @@ public interface SvrConvert {
 
     CpResetVo convertToCpResetVo(CpResetResponse response);
 
-    DeChnListVo convertToDeChnListVo(DeChnList deChnList);
+    DeChnListVo convertToDeChnListVo(DecChnListResponse response);
 
     DecParamVo convertToDecParamVo(DecParamResponse response);
 

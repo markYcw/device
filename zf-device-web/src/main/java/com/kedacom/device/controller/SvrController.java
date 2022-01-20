@@ -333,7 +333,7 @@ public class SvrController {
         return svrService.osd(dto);
     }
 
-    @ApiOperation("语音激励控制")
+    @ApiOperation("语音激励控制 3.0协议暂不支持")
     @PostMapping("/setAudioActNty")
     public BaseResult<String> setAudioActNty(@RequestBody SetAudioActNtyRequestVo dto) {
 

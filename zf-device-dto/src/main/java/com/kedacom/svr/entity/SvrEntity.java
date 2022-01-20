@@ -58,7 +58,7 @@ public class SvrEntity {
 	private String password;
 
 
-	@ApiModelProperty(value = "SVR版本:1:2.0版本; 2:3.0版本", example = "1：2", required = true)
+	@ApiModelProperty(value = "SVR版本:5:2.0版本; 6:3.0版本", example = "1：2")
 	private Integer devType;
 
 	@NotBlank(message = "svr型号类型不能为空")

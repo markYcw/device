@@ -22,7 +22,7 @@ public class Subtitle {
     private Integer yPos;
 
     @ApiModelProperty("自定义内容")
-    private Integer content;
+    private String content;
 
 
 }

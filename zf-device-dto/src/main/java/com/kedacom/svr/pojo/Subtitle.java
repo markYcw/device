@@ -3,6 +3,7 @@ package com.kedacom.svr.pojo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -26,9 +27,9 @@ public class Subtitle {
     @ApiModelProperty(value = "叠加位置y",required = true)
     private Integer yPos;
 
-    @NotNull(message = "字幕叠加内容 最大64字符，2816 1.0最大32字符")
+    @NotBlank(message = "字幕叠加内容 最大64字符，2816 1.0最大32字符")
     @ApiModelProperty(value = "自定义内容",required = true)
-    private Integer content;
+    private String content;
 
 
 }

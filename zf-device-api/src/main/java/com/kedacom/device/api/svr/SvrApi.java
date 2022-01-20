@@ -185,7 +185,7 @@ public interface SvrApi {
     BaseResult<String> setOsd(@RequestBody OsdSetVo dto);
 
     @ApiOperation("语音激励控制")
-    @PostMapping("/setAudioActNty")
+    @PostMapping("/setAudioActNty 3.0暂不支持")
     BaseResult<String> setAudioActNty(@RequestBody SetAudioActNtyRequestVo dto);
 
     @PostMapping("/hb")

@@ -26,13 +26,13 @@ public class Hum {
     @ApiModelProperty(value = "叠加位置y",required = true)
     private Integer yPos;
 
-    @ApiModelProperty("源通道ID")
+    @ApiModelProperty("源通道ID 3.0暂不支持")
     private Integer srcChnId;
 
-    @ApiModelProperty("是否显示整数")
+    @ApiModelProperty("是否显示整数 3.0暂不支持")
     private Integer displayInt;
 
-    @ApiModelProperty("更新频率")
+    @ApiModelProperty("更新频率 3.0暂不支持")
     private Integer updateInterval;
 
 }

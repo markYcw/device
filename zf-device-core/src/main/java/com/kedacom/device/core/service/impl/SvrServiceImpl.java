@@ -306,9 +306,10 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         SvrEntity entity = svrMapper.selectById(dbId);
         check(entity);
         SvrBasicParam param = getParam(logById(dbId));
-        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/decchnlist/{ssid}/{ssno}", null, String.class, param.getParamMap());
-        DecChnListResponse response = JSON.parseObject(s, DecChnListResponse.class);
-        log.info("获取解码通道列表接口响应{}",response);
+        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/decchnlist/{ssid}/{ssno}",  HttpMethod.GET, null,String.class, param.getParamMap());
+        log.info("获取解码通道列表接口响应{}",exchange.getBody());
+        DecChnListResponse response = JSON.parseObject(exchange.getBody(), DecChnListResponse.class);
+        log.info("获取解码通道列表接口响应{}",exchange.getBody());
         String errorMsg = "获取解码通道列表失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_DE_CHN_LIST_FAILED,response);
         DeChnListVo deChnListVo = convert.convertToDeChnListVo(response.getChnList());
@@ -607,8 +608,8 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         check(entity);
         SvrBasicParam param = getParam(logById(dbId));
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/osd/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
-        GetOsdResponse response = JSON.parseObject(exchange.getBody(), GetOsdResponse.class);
         log.info("获取画面叠加响应{}",exchange.getBody());
+        GetOsdResponse response = JSON.parseObject(exchange.getBody(), GetOsdResponse.class);
         String errorMsg = "获取画面叠加失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_GET_OSD_FAILED,response);
         GetOsdVo vo = convert.convertToGetOsdVo(response);

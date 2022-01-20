@@ -46,11 +46,11 @@ public class SetSvrComposePicVo extends SvrRequestDto {
     @ApiModelProperty(value = "边框颜色G",required = true)
     private Integer borderColorGreen;
 
-    @NotBlank(message = "边框颜色B不能为空")
+    @NotNull(message = "边框颜色B不能为空")
     @ApiModelProperty(value = "边框颜色B",required = true)
-    private String borderColorBlue;
+    private Integer borderColorBlue;
 
     @ApiModelProperty(value = "画面通道ID列表",required = true)
-    private List<PicChnVo> picChnList;
+    private List<PicChnVo> picChns;
 
 }

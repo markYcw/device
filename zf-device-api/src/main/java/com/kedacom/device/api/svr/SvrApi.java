@@ -164,7 +164,7 @@ public interface SvrApi {
 
     @ApiOperation("查询录像")
     @PostMapping("/queryRec")
-    BaseResult<List<RecInfoVo>> queryRec(@RequestBody QueryRecVo dto);
+    BaseResult<RecListResponse> queryRec(@RequestBody QueryRecVo dto);
 
     @ApiOperation("获取画面合成")
     @PostMapping("/getSvrComposePic")

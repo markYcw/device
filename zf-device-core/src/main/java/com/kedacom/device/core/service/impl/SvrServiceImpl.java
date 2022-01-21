@@ -531,7 +531,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     }
 
     @Override
-    public BaseResult<List<RecInfoVo>> recList(QueryRecVo dto) {
+    public BaseResult<RecListResponse> recList(QueryRecVo dto) {
         log.info("查询录像接口入参RecListDto:{}",dto);
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
@@ -543,28 +543,12 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         qr.setStarttime(DateUtils.getDateString(dto.getStarttime()));
         qr.setEndtime(DateUtils.getDateString(dto.getEndtime()));
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/reclist/{ssid}/{ssno}", JSON.toJSONString(qr), String.class, param.getParamMap());
-        RecListResponse response = JSON.parseObject(s, RecListResponse.class);
+        SvrResponse response = JSON.parseObject(s, SvrResponse.class);
         log.info("查询录像接口响应{}",response);
         String errorMsg = "查询录像失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_REC_LIST_FAILED,response);
-        List<RecVo> recList = response.getRecList();
-        ArrayList<RecInfoVo> recListVos = new ArrayList<>();
-        if(CollectionUtil.isNotEmpty(recList)){
-            for (RecVo recVo : recList) {
-                RecInfoVo recInfoVo = new RecInfoVo();
-                recInfoVo.setId(recVo.getRecId());
-                recInfoVo.setSize(recVo.getSize());
-                recInfoVo.setResolution(Integer.valueOf(recVo.getRes()));
-                recInfoVo.setChn(recVo.getChnId());
-                recInfoVo.setStarttime(recVo.getStartTime());
-                recInfoVo.setEndtime(recVo.getEndTime());
-                recInfoVo.setMd5(recVo.getMd5());
-                recListVos.add(recInfoVo);
-            }
-        }
-        int total = response.getTotal();
-        recListVos.stream().forEach(a->{a.setTotal(total);});
-        return BaseResult.succeed("查询录像成功",recListVos);
+        RecListResponse recListResponse = JSON.parseObject(s, RecListResponse.class);
+        return BaseResult.succeed("查询录像成功",recListResponse);
     }
 
     @Override

@@ -178,7 +178,7 @@ public class SvrApiFallbackFactory implements FallbackFactory<SvrApi> {
             }
 
             @Override
-            public BaseResult<List<RecInfoVo>> queryRec(QueryRecVo dto) {
+            public BaseResult<RecListResponse> queryRec(QueryRecVo dto) {
                 return  BaseResult.failed(throwable.getMessage());
             }
 

@@ -1,8 +1,5 @@
-package com.kedacom.device.svr.response;
+package com.kedacom.svr.vo;
 
-import com.kedacom.device.svr.SvrResponse;
-
-import com.kedacom.device.svr.pojo.RecVo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -15,7 +12,7 @@ import java.util.List;
  * @description
  */
 @Data
-public class RecListResponse extends SvrResponse {
+public class RecListResponse {
 
     @ApiModelProperty("本次查询总数")
     private int total;

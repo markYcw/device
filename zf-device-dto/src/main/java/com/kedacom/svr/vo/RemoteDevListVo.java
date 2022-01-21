@@ -14,6 +14,9 @@ import java.util.List;
 @Data
 public class RemoteDevListVo{
 
+    @ApiModelProperty("总数")
+    private Integer total;
+
     @ApiModelProperty(value = "远程点设备列表")
     private List<DevList> devList;
 

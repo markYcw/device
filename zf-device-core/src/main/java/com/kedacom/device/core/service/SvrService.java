@@ -206,7 +206,7 @@ public interface SvrService extends IService<SvrEntity> {
      * @param dto
      * @return
      */
-    BaseResult<List<RecInfoVo>> recList(QueryRecVo dto);
+    BaseResult<RecListResponse> recList(QueryRecVo dto);
 
     /**
      * 获取画面合成

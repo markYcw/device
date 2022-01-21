@@ -312,7 +312,7 @@ public class SvrController {
 
     @ApiOperation("查询录像")
     @PostMapping("/queryRec")
-    public BaseResult<List<RecInfoVo>> queryRec(@Valid @RequestBody QueryRecVo dto,BindingResult br) {
+    public BaseResult<RecListResponse> queryRec(@Valid @RequestBody QueryRecVo dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return svrService.recList(dto);

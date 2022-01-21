@@ -77,9 +77,7 @@ public class MtServiceImpl implements MtService {
 
     public static AtomicBoolean MT_MAINTAIN_HEARTBEAT_PERIOD = new AtomicBoolean(false);
 
-//    public static AtomicBoolean MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT = new AtomicBoolean(false);
-
-    private final static String NTY_URL = "/api/api-device/ums/device/notify";
+    private final static String NTY_URL = "http://127.0.0.1:9000/api/api-device/ums/device/notify";
 
     /**
      * 在线终端缓存（id）
@@ -244,7 +242,7 @@ public class MtServiceImpl implements MtService {
         }
         String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         LoginParamVo loginParamVo = MtConvert.INSTANCE.convertLoginParamVo(entity);
-        loginParamVo.setNtyUrl(mtUrlFactory.getMtNtyUrl() + NTY_URL);
+        loginParamVo.setNtyUrl(NTY_URL);
         Map<String, Long> paramMap = setParamMap(null);
 
         log.info("远端登录终端请求参数 loginParamVo : {}", loginParamVo);

@@ -90,8 +90,9 @@ public class MaintainHeartbeatRunning implements Runnable {
             //分发维护心跳任务
             threadPoolExecutor.execute(new MaintainTask(dbId));
         }
+        // 关闭线程池
         threadPoolExecutor.shutdown();
-        // 等待分发任务完成
+        // 等待分发任务的完成
         while (WHILE_FLAG) {
             if (threadPoolExecutor.isTerminated()) {
                 // 分发任务完成， 将MT_MAINTAIN_HEARTBEAT_PERIOD设置为true，即不在终端维护心跳期间
@@ -142,14 +143,11 @@ public class MaintainHeartbeatRunning implements Runnable {
             } catch (Exception e1) {
                 log.error("终端id : {} 发送心跳异常, 异常信息 : {}", dbId, e1.getMessage());
                 synInvalidHashSet.add(dbId);
-//                MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT.set(true);
                 try {
                     mtService.logOutById(dbId);
                 } catch (Exception e2) {
                     log.error("心跳失效，终端id : {} 退出登录异常, 异常信息 : {}", dbId, e2.getMessage());
                 }
-
-//                MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD_LOGOUT.set(false);
             }
         }
 
@@ -168,8 +166,8 @@ public class MaintainHeartbeatRunning implements Runnable {
         int size = synHashSet.size();
 
         if (size <= 60) {
-            corePoolSize = 2;
-            maximumPoolSize = 3;
+            corePoolSize = 4;
+            maximumPoolSize = 6;
             return;
         }
         if (size <= 360) {
@@ -183,7 +181,7 @@ public class MaintainHeartbeatRunning implements Runnable {
             return;
         }
 
-        corePoolSize = 16;
+        corePoolSize = 18;
         maximumPoolSize = 20;
     }
 

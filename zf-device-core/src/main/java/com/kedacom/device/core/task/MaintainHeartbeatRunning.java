@@ -52,6 +52,12 @@ public class MaintainHeartbeatRunning implements Runnable {
      */
     public static Set<Integer> synTransitHashSet = MtServiceImpl.synTransitHashSet;
 
+    /**
+     * 创建线程池
+     */
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, KEEP_ALIVE_TIME, TimeUnit.SECONDS, new LinkedBlockingQueue<>(),
+            new ThreadFactoryBuilder().setNameFormat("mt-maintain-heartbeat-pool-%d").setUncaughtExceptionHandler(new MtSyncUncaughtExceptionHandler()).build());
+
     @Override
     public void run() {
 
@@ -79,10 +85,10 @@ public class MaintainHeartbeatRunning implements Runnable {
         }
         log.info("在线终端缓存集合synHashSet : {}", synHashSet);
 
-        // 创建线程池
+        // 设置线程池核心线程数，最大线程数
         setThreadPoolParam();
-        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("mt-maintain-heartbeat-pool-%d").setUncaughtExceptionHandler(new MtSyncUncaughtExceptionHandler()).build();
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, KEEP_ALIVE_TIME, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), namedThreadFactory);
+        threadPoolExecutor.setCorePoolSize(corePoolSize);
+        threadPoolExecutor.setMaximumPoolSize(maximumPoolSize);
 
         // 将MT_MAINTAIN_HEARTBEAT_PERIOD设置为true，即在终端维护心跳期间
         MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD.set(true);

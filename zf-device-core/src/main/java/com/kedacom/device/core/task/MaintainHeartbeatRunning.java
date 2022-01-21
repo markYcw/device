@@ -31,9 +31,9 @@ public class MaintainHeartbeatRunning implements Runnable {
 
     private static boolean WHILE_FLAG = true;
 
-    private static int corePoolSize = 0;
+    private static int corePoolSize = 1;
 
-    private static int maximumPoolSize = 0;
+    private static int maximumPoolSize = 2;
 
     private static final int KEEP_ALIVE_TIME = 3;
 

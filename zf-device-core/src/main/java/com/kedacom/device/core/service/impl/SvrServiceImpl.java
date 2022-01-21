@@ -266,7 +266,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("添加/删除编码通道接口响应{}",response);
         String errorMsg = "添加/删除编码通道失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_EN_CHN_FAILED,response);
-        return BaseResult.succeed("添加/删除编码通道成功");
+        return BaseResult.succeed("操作成功");
     }
 
     @Override
@@ -327,7 +327,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         log.info("添加/删除解码通道接口响应{}",response);
         String errorMsg = "添加/删除解码通道失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_DE_CHN_FAILED,response);
-        return BaseResult.succeed("添加/删除解码通道成功");
+        return BaseResult.succeed("操作成功");
     }
 
     @Override

@@ -17,6 +17,9 @@ import java.util.List;
 @Data
 public class RecListResponse extends SvrResponse {
 
+    @ApiModelProperty("本次查询总数")
+    private int total;
+
     @ApiModelProperty("录像列表")
     private List<RecVo> recList;
 }

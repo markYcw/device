@@ -562,6 +562,8 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
                 recListVos.add(recInfoVo);
             }
         }
+        int total = response.getTotal();
+        recListVos.stream().forEach(a->{a.setTotal(total);});
         return BaseResult.succeed("查询录像成功",recListVos);
     }
 

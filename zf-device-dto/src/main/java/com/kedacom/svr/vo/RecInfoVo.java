@@ -11,6 +11,8 @@ import lombok.Data;
 @Data
 public class RecInfoVo {
 
+    @ApiModelProperty("本次查询总数")
+    private int total;
 
     @ApiModelProperty("录像记录ID，唯一")
     private int id;

@@ -18,6 +18,11 @@ public class StartP2P implements Serializable {
     private Integer rate;
 
     /**
+     * 0：终端，1：SVR
+     */
+    private Integer devType;
+
+    /**
      * 终端
      */
     private RemoteMt remoteMt;

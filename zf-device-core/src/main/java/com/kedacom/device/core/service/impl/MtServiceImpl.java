@@ -409,8 +409,10 @@ public class MtServiceImpl implements MtService {
             remotemt.setAlias(h323);
         }
         remotemt.setType(addrType);
+        Integer callType = startMeetingMtVo.getCallType();
         StartP2P startP2P = new StartP2P();
         startP2P.setRemoteMt(remotemt);
+        startP2P.setDevType(callType == 0 ? 1 : 0);
         startP2P.setRate(startMeetingMtVo.getBitrate());
 
         return startP2P;

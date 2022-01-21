@@ -11,7 +11,6 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -52,11 +51,6 @@ public class MaintainHeartbeatRunning implements Runnable {
      */
     public static Set<Integer> synTransitHashSet = MtServiceImpl.synTransitHashSet;
 
-    /**
-     * 创建线程池
-     */
-    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, KEEP_ALIVE_TIME, TimeUnit.SECONDS, new LinkedBlockingQueue<>(),
-            new ThreadFactoryBuilder().setNameFormat("mt-maintain-heartbeat-pool-%d").setUncaughtExceptionHandler(new MtSyncUncaughtExceptionHandler()).build());
 
     @Override
     public void run() {
@@ -85,10 +79,10 @@ public class MaintainHeartbeatRunning implements Runnable {
         }
         log.info("在线终端缓存集合synHashSet : {}", synHashSet);
 
-        // 设置线程池核心线程数，最大线程数
+        // 创建线程池
         setThreadPoolParam();
-        threadPoolExecutor.setCorePoolSize(corePoolSize);
-        threadPoolExecutor.setMaximumPoolSize(maximumPoolSize);
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, KEEP_ALIVE_TIME, TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat("mt-maintain-heartbeat-pool-%d").setUncaughtExceptionHandler(new MtSyncUncaughtExceptionHandler()).build());
 
         // 将MT_MAINTAIN_HEARTBEAT_PERIOD设置为true，即在终端维护心跳期间
         MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD.set(true);
@@ -101,6 +95,7 @@ public class MaintainHeartbeatRunning implements Runnable {
         // 等待分发任务的完成
         while (WHILE_FLAG) {
             if (threadPoolExecutor.isTerminated()) {
+                log.info("------------ 分发任务完成 ------------");
                 // 分发任务完成， 将MT_MAINTAIN_HEARTBEAT_PERIOD设置为true，即不在终端维护心跳期间
                 MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD.set(false);
                 WHILE_FLAG = false;
@@ -113,13 +108,14 @@ public class MaintainHeartbeatRunning implements Runnable {
         }
         // 恢复 WHILE_FLAG 为 true
         WHILE_FLAG = true;
+        // 处理失效缓存
         if (CollectionUtil.isNotEmpty(synInvalidHashSet)) {
             // 将失效缓存中的终端id从在线终端缓存中删除，并清空失效缓存
             synHashSet.removeAll(synInvalidHashSet);
             synInvalidHashSet.clear();
         }
+        // 处理在线终端中转缓存
         if (CollectionUtil.isEmpty(synTransitHashSet)) {
-            log.info("在线终端中转缓存为空");
             return;
         }
         // 将在线终端中转缓存中的终端id添加到在线终端缓存中，并清空在线终端中转缓存

@@ -37,6 +37,11 @@ public class MaintainHeartbeatRunning implements Runnable {
     private static final int KEEP_ALIVE_TIME = 3;
 
     /**
+     * 记录上次执行任务的核心线程数
+     */
+    private static int lastTimeCorePooleSize = 0;
+
+    /**
      * 在线终端缓存（id）
      */
     public static Set<Integer> synHashSet = MtServiceImpl.synHashSet;
@@ -51,6 +56,11 @@ public class MaintainHeartbeatRunning implements Runnable {
      */
     public static Set<Integer> synTransitHashSet = MtServiceImpl.synTransitHashSet;
 
+    /**
+     * 创建线程池
+     */
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, KEEP_ALIVE_TIME, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat("mt-maintain-heartbeat-pool-%d").setUncaughtExceptionHandler(new MtSyncUncaughtExceptionHandler()).build());
 
     @Override
     public void run() {
@@ -79,23 +89,19 @@ public class MaintainHeartbeatRunning implements Runnable {
         }
         log.info("在线终端缓存集合synHashSet : {}", synHashSet);
 
-        // 创建线程池
+        // 设置线程池核心线程数
         setThreadPoolParam();
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, KEEP_ALIVE_TIME, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat("mt-maintain-heartbeat-pool-%d").setUncaughtExceptionHandler(new MtSyncUncaughtExceptionHandler()).build());
 
         // 将MT_MAINTAIN_HEARTBEAT_PERIOD设置为true，即在终端维护心跳期间
         MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD.set(true);
         for (Integer dbId : synHashSet) {
-            //分发维护心跳任务
+            //分发维护终端心跳任务
             threadPoolExecutor.execute(new MaintainTask(dbId));
         }
-        // 关闭线程池
-        threadPoolExecutor.shutdown();
         // 等待分发任务的完成
         while (WHILE_FLAG) {
-            if (threadPoolExecutor.isTerminated()) {
-                log.info("------------ 分发任务完成 ------------");
+            if (threadPoolExecutor.getActiveCount() == 0 && threadPoolExecutor.getQueue().size() == 0) {
+                log.info("------------ 维护终端心跳分发任务完成 ------------");
                 // 分发任务完成， 将MT_MAINTAIN_HEARTBEAT_PERIOD设置为true，即不在终端维护心跳期间
                 MtServiceImpl.MT_MAINTAIN_HEARTBEAT_PERIOD.set(false);
                 WHILE_FLAG = false;
@@ -125,7 +131,7 @@ public class MaintainHeartbeatRunning implements Runnable {
 
     class MaintainTask implements Runnable {
 
-        private Integer dbId;
+        private final Integer dbId;
 
         public MaintainTask(Integer dbId) {
             this.dbId = dbId;
@@ -163,28 +169,37 @@ public class MaintainHeartbeatRunning implements Runnable {
         }
     }
 
+    /**
+     * 设置线程池的核心线程数
+     */
     private void setThreadPoolParam() {
 
         int size = synHashSet.size();
 
-        if (size <= 60) {
+        if (size > 10 && size <= 60) {
             corePoolSize = 4;
             maximumPoolSize = 6;
-            return;
         }
-        if (size <= 360) {
+        if (size > 60 && size <= 360) {
             corePoolSize = 6;
             maximumPoolSize = 8;
-            return;
         }
-        if (size <= 720) {
+        if (size > 360 && size <= 720) {
             corePoolSize = 10;
             maximumPoolSize = 12;
+        }
+        if (size > 720) {
+            corePoolSize = 18;
+            maximumPoolSize = 20;
+        }
+        log.info("执行任务的核心线程数 : {}", corePoolSize);
+        if (corePoolSize == lastTimeCorePooleSize) {
             return;
         }
 
-        corePoolSize = 18;
-        maximumPoolSize = 20;
+        threadPoolExecutor.setCorePoolSize(corePoolSize);
+        threadPoolExecutor.setMaximumPoolSize(maximumPoolSize);
+        lastTimeCorePooleSize = corePoolSize;
     }
 
 }

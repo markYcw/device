@@ -2,6 +2,8 @@ package com.kedacom.device.core.notify.svr;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
+import com.kedacom.api.WebsocketFeign;
 import com.kedacom.device.core.entity.KmListenerEntity;
 import com.kedacom.device.core.notify.stragegy.INotify;
 import com.kedacom.device.core.service.RegisterListenerService;
@@ -13,6 +15,7 @@ import com.kedacom.deviceListener.notify.DeviceNotifyRequestDTO;
 import com.kedacom.pojo.SystemWebSocketMessage;
 import com.kedacom.svr.entity.SvrEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -34,6 +37,7 @@ public class OffLineNotify extends INotify {
     @Override
     public void consumeMessage(Integer ssid, String message) {
         log.info("======================收到掉线通知ssid{}",ssid);
+        WebsocketFeign websocketFeign = ContextUtils.getBean(WebsocketFeign.class);
         SvrService service = ContextUtils.getBean(SvrService.class);
         SvrEntity entity = service.getBySsid(ssid);
         if(ObjectUtil.isNotNull(entity)){
@@ -44,7 +48,8 @@ public class OffLineNotify extends INotify {
             msg.setOperationType(10);
             msg.setServerName("device");
             msg.setData("IP为："+entity.getIp()+"SVR掉线通知");
-            log.info("===========发送SVR掉线通知给前端");
+            websocketFeign.sendInfo(JSON.toJSONString(msg));
+            log.info("===========发送SVR掉线通知给前端{}",JSON.toJSONString(msg));
             //将通知发给业务
             DeviceNotifyRequestDTO notifyRequestDTO = new DeviceNotifyRequestDTO();
             notifyRequestDTO.setDbId(entity.getId());

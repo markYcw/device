@@ -17,5 +17,5 @@ public class AudioAct extends DeviceNotifyRequestDTO {
     private Integer type;
 
     @ApiModelProperty("通知内容")
-    private BurnContent content;
+    private AudioActInfo content;
 }

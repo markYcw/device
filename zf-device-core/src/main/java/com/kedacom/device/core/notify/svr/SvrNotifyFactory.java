@@ -18,12 +18,12 @@ public class SvrNotifyFactory {
         factory.register(5,300,new DeviceStatusNotify());
         factory.register(5,301,new BurnTaskStatusNotify());
         factory.register(5,302,new DvdStatusNotify());
-        factory.register(5,303,new AudioActNotify());
+        //factory.register(5,303,new AudioActNotify());
         factory.register(5,1,new OffLineNotify());
         factory.register(6,300,new DeviceStatusNotify());
         factory.register(6,301,new BurnTaskStatusNotify());
         factory.register(6,302,new DvdStatusNotify());
-        factory.register(6,303,new AudioActNotify());
+        //factory.register(6,303,new AudioActNotify());
         factory.register(6,1,new OffLineNotify());
     }
 

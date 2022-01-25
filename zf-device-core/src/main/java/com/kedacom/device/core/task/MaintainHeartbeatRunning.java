@@ -176,7 +176,7 @@ public class MaintainHeartbeatRunning implements Runnable {
 
         int size = synHashSet.size();
 
-        if (size <= 60) {
+        if (size > 6 && size <= 60) {
             corePoolSize = 4;
             maximumPoolSize = 6;
         }

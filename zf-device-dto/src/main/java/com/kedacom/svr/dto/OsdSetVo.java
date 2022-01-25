@@ -33,7 +33,7 @@ public class OsdSetVo extends SvrRequestDto{
     private Time time;
 
     @Valid
-    @ApiModelProperty(value = "时间叠加",required = true)
+    @ApiModelProperty(value = "自定义叠加",required = true)
     private Subtitle subtitle;
 
 }

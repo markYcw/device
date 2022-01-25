@@ -16,6 +16,9 @@ import java.util.List;
 @Data
 public class BurnTaskResponse extends SvrResponse {
 
+    @ApiModelProperty("总数")
+    private Integer total;
+
     @ApiModelProperty("刻录任务列表")
     private List<BurnTask> burnTaskList;
 

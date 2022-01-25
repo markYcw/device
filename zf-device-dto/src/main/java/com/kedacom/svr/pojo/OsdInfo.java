@@ -23,7 +23,7 @@ public class OsdInfo {
     @ApiModelProperty("时间叠加")
     private Time time;
 
-    @ApiModelProperty("时间叠加")
+    @ApiModelProperty("自定义叠加")
     private Subtitle subtitle;
 
 

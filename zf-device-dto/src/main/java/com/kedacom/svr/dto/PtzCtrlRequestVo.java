@@ -29,19 +29,19 @@ public class PtzCtrlRequestVo extends SvrRequestDto{
     private PtzCmd ptzCmd;
 
     @NotNull(message = "param1不能为空")
-    @ApiModelProperty(value = "命令参数 请参考PtzCmd枚举类",required = true)
+    @ApiModelProperty(value = "命令参数 请参考PtzCmd枚举类")
     private Integer param1;
 
     @NotNull(message = "param2不能为空")
-    @ApiModelProperty(value = "命令参数 请参考PtzCmd枚举类",required = true)
+    @ApiModelProperty(value = "命令参数 请参考PtzCmd枚举类")
     private Integer param2;
 
     @NotNull(message = "param3不能为空")
-    @ApiModelProperty(value = "命令参数 请参考PtzCmd枚举类",required = true)
+    @ApiModelProperty(value = "命令参数 请参考PtzCmd枚举类")
     private Integer param3;
 
     @NotNull(message = "param4不能为空")
-    @ApiModelProperty(value = "命令参数 请参考PtzCmd枚举类",required = true)
+    @ApiModelProperty(value = "命令参数 请参考PtzCmd枚举类")
     private Integer param4;
 
 }

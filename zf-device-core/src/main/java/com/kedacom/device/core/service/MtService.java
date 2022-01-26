@@ -188,13 +188,6 @@ public interface MtService {
     boolean setPipMode(Integer dbId, Integer mode);
 
     /**
-     * 终端通知
-     * @param notify
-     * @return
-     */
-    void mtNotify(String notify);
-
-    /**
      * ping
      * @param dbId
      * @return

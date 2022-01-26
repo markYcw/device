@@ -22,7 +22,7 @@ import com.kedacom.device.core.ping.PingInfo;
 import com.kedacom.device.core.service.MtService;
 import com.kedacom.device.core.utils.HandleResponseUtil;
 import com.kedacom.device.core.utils.MtUrlFactory;
-import com.kedacom.device.core.utils.RemoteRestTemplate;
+import com.kedacom.device.core.utils.RestTemplateConfigure;
 import com.kedacom.mt.*;
 import com.kedacom.mt.response.GetMtStatusResponseVo;
 import com.kedacom.svr.entity.SvrEntity;
@@ -68,7 +68,7 @@ public class MtServiceImpl implements MtService {
     HandleResponseUtil responseUtil;
 
     @Resource
-    RemoteRestTemplate remoteRestTemplate;
+    RestTemplateConfigure restTemplateConfigure;
 
     @Value("${mt.maintain.heartbeat:true}")
     private boolean heartbeat;
@@ -246,7 +246,7 @@ public class MtServiceImpl implements MtService {
         Map<String, Long> paramMap = setParamMap(null);
 
         log.info("远端登录终端请求参数 loginParamVo : {}", loginParamVo);
-        String response = remoteRestTemplate.getRestTemplate()
+        String response = restTemplateConfigure.getRestTemplate()
                 .postForObject(mtRequestUrl + "/login/{ssno}", JSON.toJSONString(loginParamVo), String.class, paramMap);
         log.info("远端登录终端响应参数 response : {}", response);
         MtLoginResponse mtLoginResponse = JSON.parseObject(response, MtLoginResponse.class);
@@ -290,7 +290,7 @@ public class MtServiceImpl implements MtService {
             synHashSet.remove(dbId);
         }
         log.info("远端退出登录终端请求参数 ssid : {}", mtId);
-        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
+        ResponseEntity<String> exchange = restTemplateConfigure.getRestTemplate()
                 .exchange(mtRequestUrl + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, paramMap);
         log.info("远端退出登录终端响应参数 exchange : {}", exchange);
         MtResponse mtResponse = JSONObject.parseObject(exchange.getBody(), MtResponse.class);
@@ -313,7 +313,7 @@ public class MtServiceImpl implements MtService {
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
         String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
 
-        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
+        ResponseEntity<String> exchange = restTemplateConfigure.getRestTemplate()
                 .exchange(mtRequestUrl + "/hb/{ssid}/{ssno}", HttpMethod.GET, null, String.class, paramMap);
         log.info("发送心跳响应参数 exchange : {}", exchange);
         MtResponse mtResponse = JSONObject.parseObject(exchange.getBody(), MtResponse.class);
@@ -356,7 +356,7 @@ public class MtServiceImpl implements MtService {
             throw new MtException(null, "对端为五代终端，不可通过终端别名呼叫");
         }
         log.info("开启点对点会议-请求中间件参数 : {}", startP2P.toString());
-        String response = remoteRestTemplate.getRestTemplate()
+        String response = restTemplateConfigure.getRestTemplate()
                 .postForObject(mtRequestUrl + "/p2p/{ssid}/{ssno}", JSON.toJSONString(startP2P), String.class, paramMap);
         log.info("开启点对点会议响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
@@ -428,7 +428,7 @@ public class MtServiceImpl implements MtService {
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
 
         log.info("停止点对点会议请求参数 ssid : {}", entity.getMtid());
-        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
+        ResponseEntity<String> exchange = restTemplateConfigure.getRestTemplate()
                 .exchange(mtRequestUrl + "/p2p/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, paramMap);
         log.info("停止点对点会议响应参数 exchange : {}", exchange);
         MtResponse mtResponse = JSONObject.parseObject(exchange.getBody(), MtResponse.class);
@@ -448,7 +448,7 @@ public class MtServiceImpl implements MtService {
         String mtRequestUrl = mtUrlFactory.getMtRequestUrl();
         Map<String, Long> paramMap = setParamMap(entity.getMtid());
 
-        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
+        ResponseEntity<String> exchange = restTemplateConfigure.getRestTemplate()
                 .exchange(mtRequestUrl + "/status/{ssid}/{ssno}", HttpMethod.GET, null, String.class, paramMap);
         log.info("获取终端状态响应参数 exchange : {}", exchange);
         MtResponse mtResponse = JSONObject.parseObject(exchange.getBody(), MtResponse.class);
@@ -477,7 +477,7 @@ public class MtServiceImpl implements MtService {
     public boolean setMute(Map<String, Long> paramMap, String mtRequestUrl, SetDumbOrMuteVo dumbOrMuteVo) {
 
         // 设置静音
-        String response = remoteRestTemplate.getRestTemplate()
+        String response = restTemplateConfigure.getRestTemplate()
                 .postForObject(mtRequestUrl + "/silence/{ssid}/{ssno}", JSON.toJSONString(dumbOrMuteVo), String.class, paramMap);
         log.info("设置静音响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
@@ -491,7 +491,7 @@ public class MtServiceImpl implements MtService {
     public boolean setDumb(Map<String, Long> paramMap, String mtRequestUrl, SetDumbOrMuteVo dumbOrMuteVo) {
 
         // 设置哑音
-        String response = remoteRestTemplate.getRestTemplate()
+        String response = restTemplateConfigure.getRestTemplate()
                 .postForObject(mtRequestUrl + "/mute/{ssid}/{ssno}", JSON.toJSONString(dumbOrMuteVo), String.class, paramMap);
         log.info("设置哑音响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
@@ -520,7 +520,7 @@ public class MtServiceImpl implements MtService {
     public String getMute(Map<String, Long> paramMap, String mtRequestUrl) {
 
         // 获取静音
-        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
+        ResponseEntity<String> exchange = restTemplateConfigure.getRestTemplate()
                 .exchange(mtRequestUrl + "/silence/{ssid}/{ssno}", HttpMethod.GET, null, String.class, paramMap);
         log.info("获取静音响应参数 exchange : {}", exchange);
         MtResponse mtResponse = JSONObject.parseObject(exchange.getBody(), MtResponse.class);
@@ -535,7 +535,7 @@ public class MtServiceImpl implements MtService {
     public String getDumb(Map<String, Long> paramMap, String mtRequestUrl) {
 
         // 获取哑音
-        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate()
+        ResponseEntity<String> exchange = restTemplateConfigure.getRestTemplate()
                 .exchange(mtRequestUrl + "/mute/{ssid}/{ssno}", HttpMethod.GET, null, String.class, paramMap);
         log.info("获取哑音响应参数 exchange : {}", exchange);
         MtResponse mtResponse = JSONObject.parseObject(exchange.getBody(), MtResponse.class);
@@ -559,7 +559,7 @@ public class MtServiceImpl implements MtService {
         setVolumeVo.setType(type);
         setVolumeVo.setVolume(volume);
 
-        String response = remoteRestTemplate.getRestTemplate()
+        String response = restTemplateConfigure.getRestTemplate()
                 .postForObject(mtRequestUrl + "/volume/{ssid}/{ssno}", JSON.toJSONString(setVolumeVo), String.class, paramMap);
         log.info("设置音量响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
@@ -581,7 +581,7 @@ public class MtServiceImpl implements MtService {
         GetVolumeVo getVolumeVo = new GetVolumeVo();
         getVolumeVo.setType(type);
 
-        String response = remoteRestTemplate.getRestTemplate()
+        String response = restTemplateConfigure.getRestTemplate()
                 .postForObject(mtRequestUrl + "/volumes/{ssid}/{ssno}", JSON.toJSONString(getVolumeVo), String.class, paramMap);
         log.info("音量获取响应参数 response : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
@@ -604,7 +604,7 @@ public class MtServiceImpl implements MtService {
         KeyframeVo keyframeVo = new KeyframeVo();
         keyframeVo.setStreamType(streamType);
 
-        String response = remoteRestTemplate.getRestTemplate()
+        String response = restTemplateConfigure.getRestTemplate()
                 .postForObject(mtRequestUrl + "/keyframe/{ssid}/{ssno}", JSON.toJSONString(keyframeVo), String.class, paramMap);
         log.info("请求关键帧响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
@@ -627,7 +627,7 @@ public class MtServiceImpl implements MtService {
         mtStartDualVo.setType(type ? 1 : 0);
         mtStartDualVo.setIsLocal(isLocal ? 1 : 0);
 
-        String response = remoteRestTemplate.getRestTemplate()
+        String response = restTemplateConfigure.getRestTemplate()
                 .postForObject(mtRequestUrl + "/dual/{ssid}/{ssno}", JSON.toJSONString(mtStartDualVo), String.class, paramMap);
         log.info("双流控制响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
@@ -650,7 +650,7 @@ public class MtServiceImpl implements MtService {
         ptzCtrlVo.setType(type);
         ptzCtrlVo.setPtzCmd(ptzCmd);
 
-        String response = remoteRestTemplate.getRestTemplate()
+        String response = restTemplateConfigure.getRestTemplate()
                 .postForObject(mtRequestUrl + "/ptz/{ssid}/{ssno}", JSON.toJSONString(ptzCtrlVo), String.class, paramMap);
         log.info("ptz控制响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
@@ -672,7 +672,7 @@ public class MtServiceImpl implements MtService {
         SetPipModeVo setPipModeVo = new SetPipModeVo();
         setPipModeVo.setMode(mode);
 
-        String response = remoteRestTemplate.getRestTemplate()
+        String response = restTemplateConfigure.getRestTemplate()
                 .postForObject(mtRequestUrl + "/pip/{ssid}/{ssno}", JSON.toJSONString(setPipModeVo), String.class, paramMap);
         log.info("设置画面显示模式响应参数 : {}", response);
         MtResponse mtResponse = JSONObject.parseObject(response, MtResponse.class);
@@ -681,19 +681,6 @@ public class MtServiceImpl implements MtService {
         responseUtil.handleMtRes(errorMsg, DeviceErrorEnum.MT_SET_PIP_MODE_FAILED, mtResponse);
 
         return true;
-    }
-
-    @Override
-    public void mtNotify(String notify) {
-
-        log.info("终端通知信息 : {}", notify);
-        JSONObject jsonObject = JSONObject.parseObject(notify);
-        Integer mtId = (Integer) jsonObject.get("ssid");
-        Integer msgType = (Integer) jsonObject.get("msgType");
-        String content = String.valueOf(jsonObject.get("content"));
-        log.info("终端通知消息，ssid : {}, msgType : {}, content : {}", mtId, msgType, content);
-
-//        handleMtNotify(mtId, msgType);
     }
 
     @Override
@@ -755,37 +742,4 @@ public class MtServiceImpl implements MtService {
         return svrEntity.getIp();
     }
 
-//    public void handleMtNotify(Integer mtId, Integer msgType) {
-//
-//        MT_CHECK_SWITCH = false;
-//        String type = DROP_LINE.equals(msgType) ? "掉线" : "被抢占";
-//        LambdaQueryWrapper<MtEntity> queryWrapper = new LambdaQueryWrapper<>();
-//        queryWrapper.eq(MtEntity::getMtid, mtId);
-//
-//        MtEntity mtEntity = mtMapper.selectOne(queryWrapper);
-//        if (mtEntity == null) {
-//            log.error("该终端离线或不存在");
-//            return;
-//        }
-//
-//        log.info("终端" + type + "通知, 终端名称 : {}", mtEntity.getName());
-//        if (MT_MAINTAIN_HEARTBEAT_PERIOD) {
-//            // 在心跳维护期间，如有通知则将终端id添加到无效缓存中，心跳维护结束后将统一从在线终端缓存中删除
-//            synInvalidHashSet.add(mtEntity.getId());
-//        } else {
-//            // 不在心跳维护期间，如有通知则将终端id直接从在线终端缓存中删除
-//            synHashSet.remove(mtEntity.getId());
-//        }
-//        try {
-//            // 登出终端
-//            logOutById(mtEntity.getId());
-//        } catch (Exception e) {
-//            log.error("消费通知后退出终端失败 : {}", e.getMessage());
-//        }
-//        MT_CHECK_SWITCH = true;
-//        String msg = mtEntity.getName() + " 终端已" + type;
-//
-//        // 向前端发送终端被抢占登录通知
-//        mtSendMessage.sendMessage(msg);
-//    }
 }

@@ -344,7 +344,8 @@ public class SvrController {
 
     @ApiOperation("设置画面叠加")
     @PostMapping("/setOsd")
-    public BaseResult<String> setOsd(@RequestBody OsdSetVo dto) {
+    public BaseResult<String> setOsd(@Valid @RequestBody OsdSetVo dto,BindingResult br) {
+        ValidUtils.paramValid(br);
 
         return svrService.osd(dto);
     }

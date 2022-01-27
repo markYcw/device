@@ -19,7 +19,7 @@ public class RecVo {
     private Integer size;
 
     @ApiModelProperty("通道号")
-    private String chnId;
+    private Integer chnId;
 
     @ApiModelProperty("开始时间")
     private String startTime;

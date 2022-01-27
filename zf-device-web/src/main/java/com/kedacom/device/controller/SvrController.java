@@ -151,7 +151,7 @@ public class SvrController {
         return svrService.enChnList(dbId);
     }
 
-    @ApiOperation("添加/删除编码通道")
+    @ApiOperation("添加/删除编码通道 注意删除编码通道不会删除通道号，只会把这个通道状态置为无效")
     @PostMapping("/enChn")
     public BaseResult<String> enChn(@Valid @RequestBody EnChnDto enChnDto,BindingResult br) {
         ValidUtils.paramValid(br);
@@ -183,7 +183,7 @@ public class SvrController {
         return svrService.deChnList(dbId);
     }
 
-    @ApiOperation("添加/删除解码通道")
+    @ApiOperation("添加/删除解码通道 注意删除解码通道不会删除通道号，只会把这个通道状态置为无效")
     @PostMapping("/deChn")
     public BaseResult<String> deChn(@Valid @RequestBody DeChnDto dto,BindingResult br) {
         ValidUtils.paramValid(br);

@@ -82,7 +82,7 @@ public interface SvrApi {
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId",value = "数据库ID")})
     BaseResult<EnChnListVo> enChnList(@RequestParam Integer dbId);
 
-    @ApiOperation("添加/删除编码通道")
+    @ApiOperation("添加/删除编码通道 注意删除编码通道不会删除通道号，只会把这个通道状态置为无效")
     @PostMapping("/enChn")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId",value = "数据库ID")})
     BaseResult<String> enChn(@RequestBody EnChnDto enChnDto);
@@ -101,7 +101,7 @@ public interface SvrApi {
     BaseResult<DeChnListVo> deChnList(@RequestParam Integer dbId);
 
 
-    @ApiOperation("添加/删除解码通道")
+    @ApiOperation("添加/删除解码通道 注意删除解码通道不会删除通道号，只会把这个通道状态置为无效")
     @PostMapping("/enChn")
     BaseResult<String> deChn(@RequestBody DeChnDto dto);
 

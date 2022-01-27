@@ -14,7 +14,8 @@ import java.util.List;
  */
 @Data
 public class GetSvrComposePicResponseVo {
-    @ApiModelProperty(value = "分辨率")
+    @ApiModelProperty(value = "分辨率 0:无效 1:自动 2:176x144 3:352x288 4:704x288 5:720x576 6:88x72 7:640x480 8:320x240 9:1280x720" +
+            "10: 1920x1080 11:704x400 12:800x600 13:1024x768 14:1280x1024 15:1600x1200 16:1280x960 17:720*576 18：2560*1440 19：3840*2160")
     private Integer videoresolution;
 
     @ApiModelProperty(value = "边框宽度")

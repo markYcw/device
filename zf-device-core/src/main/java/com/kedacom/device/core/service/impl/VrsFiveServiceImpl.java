@@ -104,16 +104,12 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
     @Override
     public BaseResult<VrsVo> saveVrs(VrsVo vrsVo) {
         log.info("============保存VRS入参VrsVo：{}", vrsVo);
-        String ip = vrsVo.getIp();
-        VsEntity entity = vrsConvert.convertToVrsEntity(vrsVo);
-        if (StringUtils.isEmpty(ip)) {
-            vrsMapper.insert(entity);
-            Integer id = entity.getId();
-            vrsVo.setId(id);
-            return BaseResult.succeed("新增VRS成功", vrsVo);
-        } else {
-            vrsMapper.updateById(entity);
+        if(!isRepeat(vrsVo)){
+            throw new VrsException(DeviceErrorEnum.IP_OR_NAME_REPEAT);
         }
+        VsEntity entity = vrsConvert.convertToVrsEntity(vrsVo);
+        vrsMapper.insert(entity);
+        vrsVo.setId(entity.getId());
         return BaseResult.succeed("新增VRS成功", vrsVo);
     }
 

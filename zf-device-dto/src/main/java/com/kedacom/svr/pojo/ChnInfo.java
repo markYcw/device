@@ -24,9 +24,12 @@ public class ChnInfo {
     @ApiModelProperty(value = "设备类型名称",required = true)
     private String typeName;
 
-    @NotBlank(message = "通道别名不能为空")
-    @ApiModelProperty(value = "通道别名",required = true)
+    @NotBlank(message = "通道名称不能为空")
+    @ApiModelProperty(value = "通道名称",required = true)
     private String name;
+
+    @ApiModelProperty(value = "通道别名")
+    private String alias;
 
     @NotNull(message = "协议类型不能为空")
     @ApiModelProperty(value = "协议类型:0：VSIP 1：ONVIF 2：RTSP 3：MT（会议）4：SDI 5：平台通道 6：GB（国标）",required = true)

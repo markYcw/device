@@ -18,9 +18,12 @@ public class DeChnInfo {
     @ApiModelProperty(value = "设备guid",required = true)
     private String guid;
 
-    @NotBlank(message = "通道别名不能为空")
-    @ApiModelProperty(value = "通道别名",required = true)
+    @NotBlank(message = "通道名称不能为空")
+    @ApiModelProperty(value = "通道名称",required = true)
     private String name;
+
+    @ApiModelProperty(value = "通道别名")
+    private String alias;
 
     @NotBlank(message = "设备类型名称不能为空")
     @ApiModelProperty(value = "设备类型名称",required = true)

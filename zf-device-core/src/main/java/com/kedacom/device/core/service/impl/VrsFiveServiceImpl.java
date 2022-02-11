@@ -199,6 +199,8 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
             log.error("登录VRS失败请查看中间件");
             return null;
         }
+        entity.setSsid(response.getSsid());
+        vrsMapper.updateById(entity);
         return response.getSsid();
     }
 
@@ -314,6 +316,31 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
 
         VrsRecInfoVo vrsRecInfoVo = JSON.parseObject(s, VrsRecInfoVo.class);
         return BaseResult.succeed("查询录像成功", vrsRecInfoVo);
+    }
+
+    @Override
+    public VsEntity getBySsid(Integer ssid) {
+        log.info("=======根据ssid查找录播服务器5.1入参：{}",ssid);
+        LambdaQueryWrapper<VsEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(VsEntity::getSsid, ssid);
+        List<VsEntity> list = vrsMapper.selectList(wrapper);
+        return list.get(0);
+    }
+
+    @Override
+    public void logoutSsid(Integer ssid) {
+        log.info("=======登出录播服务器5.1入参：dbId：{}",ssid);
+        VsEntity entity = this.getBySsid(ssid);
+        VsBasicParam param = getParamBySsid(ssid);
+        ResponseEntity<String> exchange = null;
+        try {
+            exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null,String.class, param.getParamMap());
+        } catch (RestClientException e) {
+            log.error("=========登出录播服务器失败，数据库ID为：{}",entity.getId());
+        }
+        log.info("============登出录播服务器5.1响应{}",exchange.getBody());
+        entity.setSsid(null);
+        vrsMapper.updateById(entity);
     }
 
     public String getUrl() {

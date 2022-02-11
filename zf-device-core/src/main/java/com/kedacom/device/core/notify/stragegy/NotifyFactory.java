@@ -4,6 +4,7 @@ import com.kedacom.device.core.notify.cu.CuNotifyFactory;
 import com.kedacom.device.core.notify.mcu.McuNotifyFactory;
 import com.kedacom.device.core.notify.mt.MtNotifyFactory;
 import com.kedacom.device.core.notify.svr.SvrNotifyFactory;
+import com.kedacom.device.core.notify.vs.VsNotifyFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -48,6 +49,7 @@ public class NotifyFactory {
        SvrNotifyFactory.init();
        CuNotifyFactory.init();
        McuNotifyFactory.init();
+       VsNotifyFactory.init();
    }
 
     /**

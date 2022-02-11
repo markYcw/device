@@ -1,10 +1,6 @@
 package com.kedacom.device.core.notify.vs;
 
 import com.kedacom.device.core.notify.stragegy.NotifyFactory;
-import com.kedacom.device.core.notify.svr.BurnTaskStatusNotify;
-import com.kedacom.device.core.notify.svr.DeviceStatusNotify;
-import com.kedacom.device.core.notify.svr.DvdStatusNotify;
-import com.kedacom.device.core.notify.svr.OffLineNotify;
 import com.kedacom.device.core.utils.ContextUtils;
 import org.springframework.stereotype.Component;
 

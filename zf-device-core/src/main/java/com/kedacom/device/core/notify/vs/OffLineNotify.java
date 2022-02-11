@@ -2,19 +2,14 @@ package com.kedacom.device.core.notify.vs;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.alibaba.fastjson.JSON;
-import com.kedacom.api.WebsocketFeign;
 import com.kedacom.device.core.entity.KmListenerEntity;
 import com.kedacom.device.core.notify.stragegy.INotify;
 import com.kedacom.device.core.service.RegisterListenerService;
-import com.kedacom.device.core.service.SvrService;
 import com.kedacom.device.core.service.VrsFiveService;
 import com.kedacom.device.core.utils.ContextUtils;
 import com.kedacom.device.core.utils.DeviceNotifyUtils;
 import com.kedacom.deviceListener.msgType.MsgType;
 import com.kedacom.deviceListener.notify.DeviceNotifyRequestDTO;
-import com.kedacom.pojo.SystemWebSocketMessage;
-import com.kedacom.svr.entity.SvrEntity;
 import com.kedacom.vs.entity.VsEntity;
 import lombok.extern.slf4j.Slf4j;
 

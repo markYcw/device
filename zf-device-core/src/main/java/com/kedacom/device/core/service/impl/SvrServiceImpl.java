@@ -659,7 +659,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         SvrBasicParam param = getParam(logById(dto.getDbId()));
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/curburninfo/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
         SvrResponse response = JSON.parseObject(exchange.getBody(), SvrResponse.class);
-        log.info("获取当前刻录状态响应{}",response);
+        log.info("获取当前刻录状态响应{}",exchange.getBody());
         String errorMsg = "获取当前刻录状态失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_BURN_STATE_INFO_FAILED,response);
         BurnStatesInfoVo vo = JSON.parseObject(exchange.getBody(), BurnStatesInfoVo.class);

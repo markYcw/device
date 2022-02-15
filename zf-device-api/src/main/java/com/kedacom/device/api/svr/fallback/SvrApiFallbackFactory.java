@@ -226,6 +226,11 @@ public class SvrApiFallbackFactory implements FallbackFactory<SvrApi> {
             public BaseResult<RemoteChnListVo> remoteChnList(SvrRequestDto dto) {
                 return  BaseResult.failed(throwable.getMessage());
             }
+
+            @Override
+            public BaseResult<String> remoteDev(RemoteDevDto dto) {
+                return  BaseResult.failed(throwable.getMessage());
+            }
         };
     }
 }

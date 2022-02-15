@@ -149,6 +149,7 @@ public enum DeviceErrorEnum {
     SVR_BURN_STATE_INFO_FAILED(5031, "获取当前刻录状态失败"),
     SVR_REMOTE_DEV_LIST_FAILED(5032, "获取远程点设备列表失败"),
     SVR_REMOTE_CHN_LIST_FAILED(5033, "获取远程点通道列表失败"),
+    SVR_REMOTE_DEV_FAILED(5034, "添加或删除远程点失败"),
 
     //cu相关错误码
     CU_LOGIN_FAILED(6001, "CU登录失败"),

@@ -11,7 +11,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -204,5 +203,9 @@ public interface SvrApi {
     @ApiOperation("获取远程点通道列表")
     @PostMapping("/remoteChnList")
     BaseResult<RemoteChnListVo> remoteChnList(@RequestBody SvrRequestDto dto);
+
+    @ApiOperation("增加/删除远程点")
+    @PostMapping("/remoteDev")
+    BaseResult<String> remoteDev(@RequestBody RemoteDevDto dto);
 
 }

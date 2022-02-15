@@ -3,6 +3,7 @@ package com.kedacom.device.core.notify.svr;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
+import com.kedacom.api.WebsocketFeign;
 import com.kedacom.device.core.entity.KmListenerEntity;
 import com.kedacom.device.core.notify.stragegy.INotify;
 import com.kedacom.device.core.service.RegisterListenerService;
@@ -10,8 +11,10 @@ import com.kedacom.device.core.service.SvrService;
 import com.kedacom.device.core.utils.ContextUtils;
 import com.kedacom.device.core.utils.DeviceNotifyUtils;
 import com.kedacom.deviceListener.msgType.MsgType;
+import com.kedacom.pojo.SystemWebSocketMessage;
 import com.kedacom.svr.entity.SvrEntity;
 import com.kedacom.svr.stragegy.svr.pojo.SvrDeviceStatus;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -21,15 +24,24 @@ import java.util.List;
  * @date 2021/9/17 14:32
  * @description 编解码设备上报通知
  */
+@Slf4j
 public class DeviceStatusNotify extends INotify {
     @Override
     public void consumeMessage(Integer ssid, String message) {
         SvrDeviceStatus status = JSON.parseObject(message, SvrDeviceStatus.class);
+        WebsocketFeign websocketFeign = ContextUtils.getBean(WebsocketFeign.class);
         SvrService service = ContextUtils.getBean(SvrService.class);
         RegisterListenerService listenerService = ContextUtils.getBean(RegisterListenerService.class);
         DeviceNotifyUtils notifyUtils = ContextUtils.getBean(DeviceNotifyUtils.class);
         SvrEntity entity = service.getBySsid(ssid);
         if(ObjectUtil.isNotNull(entity)){
+
+            SystemWebSocketMessage msg = new SystemWebSocketMessage();
+            msg.setOperationType(11);
+            msg.setServerName("device");
+            msg.setData(status.getContent());
+            websocketFeign.sendInfo(JSON.toJSONString(msg));
+            log.info("===========发送编解码设备上报通知给前端{}",JSON.toJSONString(msg));
             //将通知发给业务
             status.setMsgType(MsgType.SVR_DEVICE_STATE_NTY.getType());
             status.setDbId(entity.getId());

@@ -266,4 +266,6 @@ public interface SvrService extends IService<SvrEntity> {
     BaseResult<RemoteDevListVo> remoteDevList(RemoteDevListDto dto);
 
     BaseResult<RemoteChnListVo> remoteChnList(SvrRequestDto dto);
+
+    BaseResult<String> remoteDev(RemoteDevDto dto);
 }

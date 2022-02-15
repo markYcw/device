@@ -700,6 +700,21 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
     }
 
     @Override
+    public BaseResult<String> remoteDev(RemoteDevDto dto) {
+        log.info("添加/删除远程点接口入参RemoteDevDto:{}",dto);
+        SvrEntity entity = svrMapper.selectById(dto.getDbId());
+        check(entity);
+        SvrBasicParam param = getParam(logById(dto.getDbId()));
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/remotedev/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        SvrResponse response = JSON.parseObject(s, SvrResponse.class);
+        log.info("添加/删除远程点响应{}",s);
+        String errorMsg = "添加/删除远程点失败:{},{},{}";
+        responseUtil.handleSvrRes(errorMsg,DeviceErrorEnum.SVR_REMOTE_DEV_FAILED,response);
+
+        return BaseResult.succeed("操作成功");
+    }
+
+    @Override
     public BaseResult<SvrEntity> saveInfo(SvrEntity entity) {
         log.info("==========保存SVR接口入参：{}",entity);
         if(!isRepeat(entity)){

@@ -366,6 +366,14 @@ public class SvrController {
         return svrService.remoteDevList(dto);
     }
 
+    @ApiOperation("增加/删除远程点")
+    @PostMapping("/remoteDev")
+    public BaseResult<String> remoteDev(@Valid @RequestBody RemoteDevDto dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        return svrService.remoteDev(dto);
+    }
+
     @ApiOperation("获取远程点通道列表")
     @PostMapping("/remoteChnList")
     public BaseResult<RemoteChnListVo> remoteChnList(@Valid @RequestBody SvrRequestDto dto, BindingResult br) {

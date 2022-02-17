@@ -1241,7 +1241,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         Integer ssid = devEntity.getSsid();
         String groupId = requestDto.getGroupId();
         List<PDevice> deviceList = this.getDeviceList(ssid, groupId);
-        log.info("=======获取到设备集合结果：{}",deviceList);
+        log.debug("获取到的设备信息为：{}",deviceList);
         List<CuDeviceVo> collect = new ArrayList<>();
        /* for (PDevice pDevice : deviceList) {
             log.info("开始转化设备{}",pDevice);

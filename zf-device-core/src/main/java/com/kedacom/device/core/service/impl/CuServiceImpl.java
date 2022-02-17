@@ -89,7 +89,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Autowired
     private CuBasicTool tool;
 
-    @Value("${zf.cuNtyUrl.server_addr:127.0.0.1:9000}")
+    @Value("${zf.cuNtyUrl.server_addr:172.16.128.105:9000}")
     private String cuNtyUrl;
 
     @Autowired
@@ -1243,9 +1243,25 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         List<PDevice> deviceList = this.getDeviceList(ssid, groupId);
         log.info("=======获取到设备集合结果：{}",deviceList);
         List<CuDeviceVo> collect = new ArrayList<>();
-        for (PDevice pDevice : deviceList) {
+       /* for (PDevice pDevice : deviceList) {
+            log.info("开始转化设备{}",pDevice);
             CuDeviceVo cuDeviceVo = convert.covertToCuDeviceVo(pDevice);
+            log.info("转化设备VO完成{}",cuDeviceVo);
             List<SrcChn> srcChns = pDevice.getSrcChns();
+            log.info("获取通道集合{}",srcChns);
+            if(srcChns.size()>0){
+                log.info("开始遍历转化通道集合{}",srcChns);
+                List<CuChannelVo> chnCollect = srcChns.stream().map(a -> convert.convertToCuChannelVo(a)).collect(Collectors.toList());
+                log.info("转化通道集合完成{}",srcChns);
+                cuDeviceVo.setChildList(chnCollect);
+            }
+            collect.add(cuDeviceVo);
+        }*/
+        Iterator<PDevice> iterator = deviceList.iterator();
+        if(iterator.hasNext()){
+            PDevice next = iterator.next();
+            CuDeviceVo cuDeviceVo = convert.covertToCuDeviceVo(next);
+            List<SrcChn> srcChns = next.getSrcChns();
             if(CollectionUtil.isNotEmpty(srcChns)){
                 List<CuChannelVo> chnCollect = srcChns.stream().map(a -> convert.convertToCuChannelVo(a)).collect(Collectors.toList());
                 cuDeviceVo.setChildList(chnCollect);

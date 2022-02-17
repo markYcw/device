@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class SvrRequestDto implements Serializable {
 
     @NotNull(message = "数据库ID不能为空")
-    @ApiModelProperty("数据库ID")
+    @ApiModelProperty(value = "数据库ID",required = true)
     private Integer dbId;
 
 }

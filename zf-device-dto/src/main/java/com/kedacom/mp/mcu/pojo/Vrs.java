@@ -22,7 +22,7 @@ public class Vrs implements Serializable {
     private String ip;
 
     @ApiModelProperty(value = "运营商")
-    private Integer operator;
+    private String operator;
 
     @ApiModelProperty(value = "vrs端口")
     private Integer port;

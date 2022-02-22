@@ -4,7 +4,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 
 /**
  * @author ycw
@@ -13,7 +12,7 @@ import java.util.Date;
  * @description 获取刻录任务
  */
 @Data
-public class GetBurnTaskRequestDto extends SvrRequestDto{
+public class GetBurnTaskRequestDto{
 
     @ApiModelProperty(value = "开始时间，如：例如：2021-09-09T09:30:29.0000",required = true)
     private String startTime;

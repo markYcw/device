@@ -16,6 +16,6 @@ import java.util.List;
 public class RemoteChnListVo {
 
     @ApiModelProperty(value = "远程点设备列表")
-    private List<ChnList> devList;
+    private List<ChnList> chnList;
 
 }

@@ -3,7 +3,6 @@ package com.kedacom.svr.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -14,13 +13,13 @@ import java.util.Date;
  * @description 获取刻录任务
  */
 @Data
-public class GetBurnTaskRequestVo extends SvrRequestDto{
+public class GetBurnTaskRequestDto extends SvrRequestDto{
 
     @ApiModelProperty(value = "开始时间，如：例如：2021-09-09T09:30:29.0000",required = true)
-    private Date startTime;
+    private String startTime;
 
     @ApiModelProperty(value = "结束时间，如：例如：2021-09-09T09:30:29.0000",required = true)
-    private Date endTime;
+    private String endTime;
 
     @NotNull(message = "查询起始索引不能为空")
     @ApiModelProperty(value = "查询起始索引",required = true)

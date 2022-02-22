@@ -84,7 +84,7 @@ public class UmsMcuEntity implements Serializable {
     /**
      * 会议平台版本
      */
-    @ApiModelProperty(value = "会议平台版本:1、mcu4.7;4、mcu5.0", example = "1、mcu4.7;4、mcu5.0", required = true)
+    @ApiModelProperty(value = "会议平台版本:2、mcu4.7;3、mcu5.0", example = "2、mcu4.7;3、mcu5.0", required = true)
     @TableField(value = "mcu_type")
     private Integer devtype;
     /**

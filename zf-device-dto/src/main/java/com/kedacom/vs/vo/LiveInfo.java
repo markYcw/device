@@ -14,6 +14,6 @@ public class LiveInfo {
     private String name;
 
     @ApiModelProperty("hls的播放url")
-    private String rtspUrl;
+    private String url;
 
 }

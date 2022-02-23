@@ -493,7 +493,10 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         SvrEntity entity = svrMapper.selectById(dto.getDbId());
         check(entity);
         SvrBasicParam param = getParam(logById(dto.getDbId()));
-        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/createburn/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        CreateBurnRequestDto create = new CreateBurnRequestDto();
+        create.setStartTime(DateUtils.getDateString(dto.getStartTime()));
+        create.setEndTime(DateUtils.getDateString(dto.getEndTime()));
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/createburn/{ssid}/{ssno}", JSON.toJSONString(create), String.class, param.getParamMap());
         SvrResponse response = JSON.parseObject(s, SvrResponse.class);
         log.info("新建刻录任务响应{}",response);
         String errorMsg = "新建刻录任务失败:{},{},{}";

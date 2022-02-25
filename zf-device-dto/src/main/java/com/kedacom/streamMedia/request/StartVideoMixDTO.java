@@ -1,5 +1,6 @@
 package com.kedacom.streamMedia.request;
 
+import com.kedacom.streamMedia.info.DrawBorder;
 import com.kedacom.streamMedia.info.DrawText;
 import com.kedacom.streamMedia.info.VideoMixer;
 import io.swagger.annotations.ApiModel;
@@ -52,5 +53,8 @@ public class StartVideoMixDTO implements Serializable {
 
     @ApiModelProperty("参与画面合成的终端ID(最大数目为 25路，实际路数依赖硬件性能)")
     private List<VideoMixer> mixer_list;
+
+    @ApiModelProperty(value = "绘制边框")
+    private DrawBorder draw_border;
 
 }

@@ -170,7 +170,7 @@ public class UmsDeviceTask implements Runnable {
 
 //        monitor(executorService);
 
-        for (int i = 0; i <= totalPage + 1; i++) {
+        for (int i = 0; i < totalPage + 1; i++) {
 
             try {
                 executorService.execute(new UpdateDetailTask(umsDeviceId, i, pageSize));

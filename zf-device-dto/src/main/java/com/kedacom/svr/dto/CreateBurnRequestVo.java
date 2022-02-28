@@ -15,11 +15,9 @@ import java.util.Date;
 @Data
 public class CreateBurnRequestVo extends SvrRequestDto{
 
-    @NotBlank(message = "开始时间不能为空")
     @ApiModelProperty(value = "开始时间，如：例如：2021-09-09T09:30:29.0000",required = true)
     private Date startTime;
 
-    @NotBlank(message = "结束时间不能为空")
     @ApiModelProperty(value = "结束时间，如：例如：2021-09-09T09:30:29.0000",required = true)
     private Date endTime;
 

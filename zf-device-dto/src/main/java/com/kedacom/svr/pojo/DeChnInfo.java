@@ -14,8 +14,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class DeChnInfo {
 
-    @NotBlank(message = "设备guid不能为空")
-    @ApiModelProperty(value = "设备guid",required = true)
+    @ApiModelProperty(value = "设备guid 2.0必填")
     private String guid;
 
     @NotBlank(message = "通道名称不能为空")
@@ -40,5 +39,8 @@ public class DeChnInfo {
 
     @ApiModelProperty("通信端口 3.0必填")
     private String port;
+
+    @ApiModelProperty("解码通道数 3.0必填")
+    private Integer encNum;
 
 }

@@ -29,7 +29,9 @@ import com.kedacom.device.vs.request.VsLoginRequest;
 import com.kedacom.device.vs.response.VsLoginResponse;
 import com.kedacom.device.vs.response.VsResponse;
 import com.kedacom.mt.MtResponse;
+import com.kedacom.svr.dto.FindByIpOrNameDto;
 import com.kedacom.svr.entity.SvrEntity;
+import com.kedacom.svr.vo.RemoteChnListVo;
 import com.kedacom.svr.vo.SvrCapVo;
 import com.kedacom.svr.vo.SvrLoginVO;
 import com.kedacom.util.NumGen;
@@ -341,6 +343,20 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         log.info("============登出录播服务器5.1响应{}",exchange.getBody());
         entity.setSsid(null);
         vrsMapper.updateById(entity);
+    }
+
+    @Override
+    public BaseResult<VrsVo> findByIpOrName(FindByIpOrNameDto dto) {
+        log.info("==============根据IP或名称返回记录接口入参FindByIpOrNameDto：{}", dto);
+        LambdaQueryWrapper<VsEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(VsEntity::getIp,dto.getIp()).or().eq(VsEntity::getName,dto.getName());
+        List<VsEntity> vsList = vrsMapper.selectList(wrapper);
+        if(vsList.size()<0){
+            throw new VrsException(DeviceErrorEnum.DEVICE_NOT_FOUND_ERROR);
+        }else {
+            VrsVo vrsVo = vrsConvert.convertToVrsVo(vsList.get(0));
+            return BaseResult.succeed("查询成功",vrsVo);
+        }
     }
 
     public String getUrl() {

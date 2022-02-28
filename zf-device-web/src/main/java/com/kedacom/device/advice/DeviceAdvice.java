@@ -122,7 +122,7 @@ public class DeviceAdvice {
     @ExceptionHandler({MpException.class})
     public BaseResult handleException(MpException e) {
         log.error("mcu异常捕获:{}", e.getMessage());
-        return BaseResult.failed(e.getMessage());
+        return BaseResult.failed(e.getCode(),e.getMessage());
     }
 
     /**
@@ -135,7 +135,7 @@ public class DeviceAdvice {
     @ExceptionHandler({SvrException.class})
     public BaseResult handleException(SvrException e) {
         log.error("svr异常捕获:{}", e.getMessage());
-        return BaseResult.failed(e.getMessage());
+        return BaseResult.failed(e.getCode(),e.getMessage());
     }
 
     /**
@@ -148,7 +148,7 @@ public class DeviceAdvice {
     @ExceptionHandler({VrsException.class})
     public BaseResult handleException(VrsException e) {
         log.error("vrs异常捕获:{}", e.getMessage());
-        return BaseResult.failed(e.getMessage());
+        return BaseResult.failed(e.getCode(),e.getMessage());
     }
 
 
@@ -169,7 +169,7 @@ public class DeviceAdvice {
     @ExceptionHandler({CuException.class})
     public BaseResult handleException(CuException e) {
         log.error("cu异常捕获:{}", e.getMessage());
-        return BaseResult.failed(e.getMessage());
+        return BaseResult.failed(e.getCode(),e.getMessage());
     }
 
     /**

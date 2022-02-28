@@ -3,6 +3,7 @@ package com.kedacom.device.api.vs.fallback;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.device.api.vs.VrsFiveApi;
+import com.kedacom.svr.dto.FindByIpOrNameDto;
 import com.kedacom.vs.entity.VsEntity;
 import com.kedacom.vs.vo.*;
 import feign.hystrix.FallbackFactory;
@@ -66,6 +67,11 @@ public class VrsFiveDefaultFallbackFactory implements FallbackFactory<VrsFiveApi
 
             @Override
             public BaseResult<VrsRecInfoVo> queryRecByIp(QueryRecByIpVo vo) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<VrsVo> findByIpOrName(FindByIpOrNameDto dto) {
                 return BaseResult.failed(throwable.getMessage());
             }
         };

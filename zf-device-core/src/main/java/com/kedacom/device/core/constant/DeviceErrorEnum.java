@@ -16,6 +16,7 @@ public enum DeviceErrorEnum {
     DEVICE_HEART_BEAT_FAILED(1005,"发送心跳失败"),
     IP_OR_NAME_REPEAT(1006,"IP或名称重复"),
     DEV_TYPE_NAME_ERROR(1007,"设备类型填写错误请输入正确的设备类型"),
+    DEVICE_NOT_FOUND_ERROR(1008,"根据IP或名称未找到相应设备"),
 
     UMS_SERVICE_ERROR(2000, "统一设备服务失败"),
 

@@ -3,6 +3,8 @@ package com.kedacom.device.core.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
+import com.kedacom.svr.dto.FindByIpOrNameDto;
+import com.kedacom.svr.vo.RemoteChnListVo;
 import com.kedacom.vs.entity.VsEntity;
 import com.kedacom.vs.vo.*;
 
@@ -73,4 +75,6 @@ public interface VrsFiveService extends IService<VsEntity> {
     VsEntity getBySsid(Integer ssid);
 
     void logoutSsid(Integer ssid);
+
+    BaseResult<VrsVo> findByIpOrName(FindByIpOrNameDto dto);
 }

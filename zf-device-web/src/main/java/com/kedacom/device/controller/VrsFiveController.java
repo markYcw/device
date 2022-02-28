@@ -4,6 +4,8 @@ import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.device.core.convert.VrsConvert;
 import com.kedacom.device.core.service.VrsFiveService;
+import com.kedacom.svr.dto.FindByIpOrNameDto;
+import com.kedacom.svr.vo.RemoteChnListVo;
 import com.kedacom.vs.entity.VsEntity;
 import com.kedacom.vs.vo.*;
 import io.swagger.annotations.Api;
@@ -105,6 +107,13 @@ public class VrsFiveController {
     public BaseResult<VrsRecInfoVo> queryRecByIp(@RequestBody QueryRecByIpVo vo){
 
         return vrsFiveService.queryRecByIp(vo);
+    }
+
+    @ApiOperation("根据IP或名称返回记录")
+    @PostMapping("/findByIpOrName")
+    public BaseResult<VrsVo> findByIpOrName(@RequestBody FindByIpOrNameDto dto) {
+
+        return vrsFiveService.findByIpOrName(dto);
     }
 
 

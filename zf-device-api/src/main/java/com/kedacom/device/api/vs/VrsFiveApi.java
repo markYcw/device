@@ -2,6 +2,7 @@ package com.kedacom.device.api.vs;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.device.api.vs.fallback.VrsFiveDefaultFallbackFactory;
+import com.kedacom.svr.dto.FindByIpOrNameDto;
 import com.kedacom.vs.entity.VsEntity;
 import com.kedacom.vs.vo.*;
 import io.swagger.annotations.ApiImplicitParam;
@@ -61,5 +62,9 @@ public interface VrsFiveApi {
     @ApiOperation("根据IP查询录像：不需要传数据库ID只需传入设备IP用户名密码就可")
     @PostMapping("/queryRecByIp")
     public BaseResult<VrsRecInfoVo> queryRecByIp(@RequestBody QueryRecByIpVo vo);
+
+    @ApiOperation("根据IP或名称返回记录")
+    @PostMapping("/findByIpOrName")
+    public BaseResult<VrsVo> findByIpOrName(@RequestBody FindByIpOrNameDto dto);
 
 }

@@ -1,7 +1,6 @@
 package com.kedacom.svr.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -10,7 +9,6 @@ import lombok.Data;
  * @date 2022/2/28 16:43
  * @description
  */
-@AllArgsConstructor
 @Data
 public class FindByIpOrNameDto {
 

@@ -16,8 +16,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class ChnInfo {
 
-    @NotBlank(message = "设备guid不能为空")
-    @ApiModelProperty(value = "设备guid",required = true)
+    @ApiModelProperty(value = "设备guid")
     private String guid;
 
     @NotBlank(message = "设备类型名称不能为空")

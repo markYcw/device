@@ -26,4 +26,10 @@ public class EnChnListVo implements Serializable {
     @ApiModelProperty("通道别名")
     private String alias;
 
+    @ApiModelProperty("ip")
+    private String ip;
+
+    @ApiModelProperty("协议类型 0：VSIP 1：ONVIF 2：RTSP 3：MT（会议） 4：SDI 5：平台通道 6：GB（国标）")
+    private Integer protoType;
+
 }

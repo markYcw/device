@@ -35,6 +35,7 @@ public enum MsgType {
     SVR_DVD_STATE_NTY(24,"SVR的DVD状态通知"),
     SVR_AUDIO_STATE_NTY(25,"SVR语音激励通知"),
     VS_OFF_LINE(26,"VS录播服务器5.1掉线通知"),
+    SVR_AUDIO_ACT_STATE_NTY(27,"SVR语音激励状态通知"),
 
     ;
 

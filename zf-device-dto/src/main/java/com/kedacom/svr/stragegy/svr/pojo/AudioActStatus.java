@@ -11,11 +11,11 @@ import lombok.Data;
  * @description 语音激励通知
  */
 @Data
-public class AudioAct extends DeviceNotifyRequestDTO {
+public class AudioActStatus extends DeviceNotifyRequestDTO {
 
     @ApiModelProperty("300：设备上报通知 301：刻录任务通知 302：DVD状态通知 303：语音激励通知 304:语音激励状态通知")
     private Integer msgType;
 
     @ApiModelProperty("通知内容")
-    private AudioActInfo content;
+    private AudioActStatusInfo content;
 }

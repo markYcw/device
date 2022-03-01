@@ -32,13 +32,13 @@ public class DeChnInfo {
     private String ip;
 
     @ApiModelProperty("传输协议 0：tcp 1：udp 3.0必填")
-    private String transMode;
+    private Integer transMode;
 
     @ApiModelProperty("连接模式: 0：被动 1：主动 3.0必填 ")
-    private String connectMode;
+    private Integer connectMode;
 
     @ApiModelProperty("通信端口 3.0必填")
-    private String port;
+    private Integer port;
 
     @ApiModelProperty("解码通道数 3.0必填")
     private Integer encNum;

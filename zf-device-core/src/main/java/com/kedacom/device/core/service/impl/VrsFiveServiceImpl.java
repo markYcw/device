@@ -48,6 +48,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service("vrsFiveService")
@@ -255,7 +256,12 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
         String errorMsg = "分页查询HTTP录像失败:{},{},{}";
         handleVrs(errorMsg, DeviceErrorEnum.VS_QUERY_REC_FAILED, response);
 
-        VrsRecInfoDecVo vo = JSON.parseObject(s, VrsRecInfoDecVo.class);
+        VrsRecInfoVo vrsRecInfoVo = JSON.parseObject(s, VrsRecInfoVo.class);
+        VrsRecInfoDecVo vo = new VrsRecInfoDecVo();
+        vo.setTotal(vrsRecInfoVo.getTotal());
+        List<RecInfoVo> recs = vrsRecInfoVo.getRecs();
+        List<RecInfoHttpVo> collect = recs.stream().map(recInfoVo -> vrsConvert.convertToRecInfoHttpVo(recInfoVo)).collect(Collectors.toList());
+        vo.setRecs(collect);
         return BaseResult.succeed("分页查询HTTP录像接口成功", vo);
     }
 

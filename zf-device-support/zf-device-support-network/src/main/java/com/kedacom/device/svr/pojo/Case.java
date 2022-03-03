@@ -24,5 +24,8 @@ public class Case {
     @ApiModelProperty("持续时间")
     private Integer duration;
 
+    @ApiModelProperty("自定义内容 最大512个字符")
+    private String content;
+
 
 }

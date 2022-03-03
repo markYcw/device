@@ -24,7 +24,7 @@ public class SetSvrComposePicVo extends SvrRequestDto {
     private Integer mergestyle;
 
     @NotNull(message = "拉伸方式不能为空")
-    @ApiModelProperty(value = "拉伸方式 ,当自定义画面为标准风格时候有效 0：铺满所在区域 1：按原比例缩放 2：自适应 3:铺满所在区域（仅3.0支持）",required = true)
+    @ApiModelProperty(value = "拉伸方式 ,当自定义画面为标准风格时候有效 0：无效 1：按原比例缩放 2：自适应 3:铺满所在区域（仅3.0支持）",required = true)
     private Integer stretchStyle;
 
     @NotNull(message = "边框宽度不能为空")

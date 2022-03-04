@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class FindCuByConditionVo {
 
-    @ApiModelProperty("监控平台数据库ID")
+    @ApiModelProperty(value = "监控平台数据库ID",required = true)
     private Integer kmId;
 
     @ApiModelProperty("设备名称")

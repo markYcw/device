@@ -182,6 +182,11 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
             public BaseResult<PuIdTwoVo> puIdTwo(PuIdTwoDto requestDto) {
                 return BaseResult.failed(throwable.getMessage());
             }
+
+            @Override
+            public BaseResult<PuIdOneVo> puIdOne(PuIdOneDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
         };
     }
 }

@@ -351,4 +351,13 @@ public class CuController {
         return cuService.puIdTwo(requestDto);
     }
 
+    @ApiOperation("获取平台1.0puId")
+    @PostMapping("/puIdOne")
+    public BaseResult<PuIdOneVo> puIdOne(@Valid @RequestBody PuIdOneDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.puIdOne(requestDto);
+    }
+
 }

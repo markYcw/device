@@ -161,5 +161,9 @@ public interface DevApi {
     @PostMapping("/puIdTwo")
     BaseResult<PuIdTwoVo> puIdTwo(@RequestBody PuIdTwoDto requestDto);
 
+    @ApiOperation("获取平台1.0puId")
+    @PostMapping("/puIdOne")
+    BaseResult<PuIdOneVo> puIdOne(@RequestBody PuIdOneDto requestDto);
+
 
 }

@@ -688,6 +688,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         return cuEntities.get(DevTypeConstant.getZero);
     }
 
+
     /**
      * cu维护心跳定时任务 每1分钟发一次心跳
      * @param dbId
@@ -1188,7 +1189,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Override
     public BaseResult<PuIdTwoVo> puIdTwo(PuIdTwoDto requestDto) {
-        log.info("=============获取平台2.0puId接口入参CuChnListDto{}",requestDto);
+        log.info("=============获取平台2.0puId接口入参PuIdTwoDto{}",requestDto);
         CuEntity entity = cuMapper.selectById(requestDto.getKmId());
         check(entity);
         CuBasicParam param = tool.getParam(entity);
@@ -1201,6 +1202,21 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         //记录操作日志
         logUtil.operateLog(modelName,"获取平台2.0puId成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("获取平台2.0puId成功",vo);
+    }
+
+    @Override
+    public BaseResult<PuIdOneVo> puIdOne(PuIdOneDto requestDto) {
+        log.info("=============获取平台1.0puId接口入参PuIdOneDto{}",requestDto);
+        CuEntity entity = cuMapper.selectById(requestDto.getKmId());
+        check(entity);
+        CuBasicParam param = tool.getParam(entity);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/puid10/{ssid}/{ssno}", JSON.toJSONString(requestDto), String.class, param.getParamMap());
+        log.info("获取平台1.0puId接口中间件响应{}",s);
+        CuResponse response = JSONObject.parseObject(s, CuResponse.class);
+        String errorMsg = "获取平台1.0puId失败:{},{},{}";
+        responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_Pu_ID_ONE_ERROR,response);
+        PuIdOneVo vo = JSON.parseObject(s, PuIdOneVo.class);
+        return BaseResult.succeed("获取平台1.0puId成功",vo);
     }
 
     @Override

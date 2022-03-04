@@ -168,4 +168,6 @@ public interface CuService extends IService<CuEntity> {
     void subscribe(DeviceSubscribe deviceSubscribe);
 
     CuEntity getBySsid(Integer ssid);
+
+    BaseResult<PuIdOneVo> puIdOne(PuIdOneDto requestDto);
 }

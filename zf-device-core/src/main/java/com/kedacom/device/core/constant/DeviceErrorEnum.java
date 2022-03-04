@@ -180,6 +180,7 @@ public enum DeviceErrorEnum {
     CU_GB_ID_ERROR(6025,"获取国标id失败"),
     CU_Pu_ID_TWO_ERROR(6026,"获取平台2.0puId失败"),
     CU_SUBSCRIBE_ERROR(6027,"单个设备状态订阅失败"),
+    CU_Pu_ID_ONE_ERROR(6028,"获取平台1.0puId失败"),
 
     // 终端相关错误码
     MT_LOGIN_FAILED(7000, "终端登录失败"),

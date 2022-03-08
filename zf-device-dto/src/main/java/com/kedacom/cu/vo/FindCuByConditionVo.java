@@ -17,7 +17,7 @@ public class FindCuByConditionVo {
     @ApiModelProperty("设备名称")
     private String name;
 
-    @ApiModelProperty("设备状态 0:全部设备 1：所有在线设备 2：离线设备")
+    @ApiModelProperty(value = "设备状态 0:全部设备 1：所有在线设备 2：离线设备",required = true)
     private Integer status;
 
     @ApiModelProperty("设备类型1: 编码器 2：解码器 4电视墙（2.0） 5 NVR（2.0） 6：SVR 7: 告警主机")

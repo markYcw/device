@@ -31,7 +31,7 @@ public class ChnInfo {
     private String alias;
 
     @NotNull(message = "协议类型不能为空")
-    @ApiModelProperty(value = "协议类型:0：VSIP 1：ONVIF 2：RTSP 3：MT（会议）4：SDI 5：平台通道 6：GB（国标）",required = true)
+    @ApiModelProperty(value = "协议类型:0：VSIP 1：ONVIF 2：RTSP 3：MT（会议）4：SDI 5：平台通道 6：GB（国标）7：RTMP",required = true)
     private Integer protoType;
 
     @NotBlank(message = "设备IP不能为空")

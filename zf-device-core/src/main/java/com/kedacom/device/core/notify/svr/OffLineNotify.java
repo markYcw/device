@@ -24,13 +24,13 @@ import java.util.concurrent.CompletableFuture;
  * @author ycw
  * @version v1.0
  * @date 2021/10/29 16:56
- * @description mcu 掉线通知
+ * @description svr 掉线通知
  */
 @Slf4j
 public class OffLineNotify extends INotify {
 
     /**
-     * cu掉线以后状态置为离线并发送通知给业务
+     * scr掉线以后状态置为离线并发送通知给业务
      * @param ssid
      * @param message
      */
@@ -41,7 +41,11 @@ public class OffLineNotify extends INotify {
         SvrService service = ContextUtils.getBean(SvrService.class);
         SvrEntity entity = service.getBySsid(ssid);
         if(ObjectUtil.isNotNull(entity)){
-            service.logoutById(entity.getId());
+            try {
+                service.logoutById(entity.getId());
+            } catch (Exception e) {
+               log.error("收到掉线通知后登出svr失败");
+            }
             RegisterListenerService listenerService = ContextUtils.getBean(RegisterListenerService.class);
             DeviceNotifyUtils notifyUtils = ContextUtils.getBean(DeviceNotifyUtils.class);
             SystemWebSocketMessage msg = new SystemWebSocketMessage();

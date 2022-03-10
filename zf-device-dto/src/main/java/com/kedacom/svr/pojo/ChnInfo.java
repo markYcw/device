@@ -46,4 +46,8 @@ public class ChnInfo {
     @ApiModelProperty("rtsp信息，protoType为2时生效")
     private RtspInfo rtspInfo;
 
+    @Valid
+    @ApiModelProperty("rtmp信息，protoType为7时生效")
+    private RtmpInfo rtmpInfo;
+
 }

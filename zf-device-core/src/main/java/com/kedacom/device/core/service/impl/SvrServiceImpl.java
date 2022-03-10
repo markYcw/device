@@ -186,6 +186,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper,SvrEntity> implements 
         SvrBasicParam param = getParam(logById(id));
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, param.getParamMap());
         SvrResponse response = JSONObject.parseObject(exchange.getBody(), SvrResponse.class);
+        log.info("登出svr响应{}",response);
         String errorMsg = "登出SVR失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg, DeviceErrorEnum.SVR_LOGOUT_FAILED, response);
         LambdaUpdateWrapper<SvrEntity> wrapper = new LambdaUpdateWrapper();

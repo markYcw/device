@@ -36,7 +36,7 @@ public class OffLineNotify extends INotify {
      */
     @Override
     public void consumeMessage(Integer ssid, String message) {
-        log.info("======================收到掉线通知ssid{}",ssid);
+        log.info("======================收到SVR掉线通知ssid{}",ssid);
         WebsocketFeign websocketFeign = ContextUtils.getBean(WebsocketFeign.class);
         SvrService service = ContextUtils.getBean(SvrService.class);
         SvrEntity entity = service.getBySsid(ssid);

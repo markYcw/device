@@ -47,7 +47,7 @@ public class ChnInfo {
     private RtspInfo rtspInfo;
 
     @Valid
-    @ApiModelProperty("rtmp信息，protoType为7时生效")
+    @ApiModelProperty("rtmp信息，protoType为7时生效 仅2832和2931SJ支持")
     private RtmpInfo rtmpInfo;
 
 }

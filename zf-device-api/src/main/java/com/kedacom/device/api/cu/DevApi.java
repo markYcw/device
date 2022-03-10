@@ -126,7 +126,7 @@ public interface DevApi {
     @GetMapping("/queryDisk")
     BaseResult<QueryDiskResponseVo> queryDisk(@RequestBody QueryDiskRequestDto requestDto);
 
-    @ApiOperation("获取设备详细信息")
+   /* @ApiOperation("获取设备详细信息")
     @PostMapping("getCuDeviceInfo")
     @ApiImplicitParams({@ApiImplicitParam(name = "kmId",  value = "数据库ID",required = true), @ApiImplicitParam(name = "puId", value = "设备号",required = true)})
     BaseResult<CuDeviceVo> getCuDeviceInfo(@RequestParam("kmId") Integer kmId,@RequestParam("puId") String puId);
@@ -135,7 +135,7 @@ public interface DevApi {
     @PostMapping("getCuChannelInfo")
     @ApiImplicitParams({@ApiImplicitParam(name = "kmId",  value = "数据库ID",required = true), @ApiImplicitParam(name = "puId", value = "设备号",required = true),
             @ApiImplicitParam(name = "sn", value = "通道号",required = true)})
-    BaseResult<CuChannelVo> getCuChannelInfo(@RequestParam("kmId") Integer kmId, @RequestParam("puId") String puId, @RequestParam("sn") Integer sn);
+    BaseResult<CuChannelVo> getCuChannelInfo(@RequestParam("kmId") Integer kmId, @RequestParam("puId") String puId, @RequestParam("sn") Integer sn);*/
 
     @ApiOperation("获取监控平台分组信息")
     @PostMapping("/cuGroup")
@@ -164,6 +164,10 @@ public interface DevApi {
     @ApiOperation("获取平台1.0puId")
     @PostMapping("/puIdOne")
     BaseResult<PuIdOneVo> puIdOne(@RequestBody PuIdOneDto requestDto);
+
+    @ApiOperation("根据平台1.0PuId获取平台2.0puId")
+    @PostMapping("/puIdByOne")
+    BaseResult<PuIdByOneVo> puIdByOne(@Valid @RequestBody PuIdByOneDto requestDto);
 
 
 }

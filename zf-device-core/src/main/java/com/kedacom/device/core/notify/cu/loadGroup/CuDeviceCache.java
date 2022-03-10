@@ -1,8 +1,14 @@
 package com.kedacom.device.core.notify.cu.loadGroup;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.kedacom.BaseResult;
+import com.kedacom.cu.dto.PuIdOneDto;
+import com.kedacom.cu.vo.PuIdOneVo;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
+import com.kedacom.device.core.service.CuService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.text.Collator;
 import java.util.*;
@@ -14,7 +20,11 @@ import java.util.*;
  * @date 2021/11/24
  */
 @Slf4j
+@Component
 public class CuDeviceCache {
+
+    @Autowired
+    private CuService cuService;
 
     /**
      * 监控平台内置根分组的ID。
@@ -164,11 +174,24 @@ public class CuDeviceCache {
     }
 
     /**
+     * 加载设备平台1.0对应PuId
+     *
+     * @param device
+     */
+    public void loadPuIdOne(PDevice device) {
+        PuIdOneDto dto = new PuIdOneDto();
+        dto.setPuId(device.getPuId());
+        BaseResult<PuIdOneVo> one = cuService.puIdOne(dto);
+        device.setPuIdOne(one.getData().getPuId());
+    }
+
+    /**
      * 增加设备
      *
      * @param device
      */
     public void addDevice(PDevice device) {
+        loadPuIdOne(device); //加载设备平台1.0对应PuId
         String puid = device.getPuId();
         //根据puid判断设备是否已经存在，如果存在就忽略掉，避免重复
         PDevice pDevice = this.devices.get(puid);

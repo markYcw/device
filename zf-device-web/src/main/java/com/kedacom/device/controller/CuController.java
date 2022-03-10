@@ -263,7 +263,7 @@ public class CuController {
         return cuService.queryDisk(requestDto);
     }
 
-    @PostMapping("/findByCondition")
+   /* @PostMapping("/findByCondition")
     public BaseResult<DevEntityVo> findByCondition(@RequestBody FindCuByConditionVo findCuByConditionVo){
 
         return cuService.findByCondition(findCuByConditionVo);
@@ -295,7 +295,7 @@ public class CuController {
 
         return cuService.getCuChannelInfo(kmId,puId,sn);
 
-    }
+    }*/
 
     @ApiOperation("获取设备通道集合")
     @PostMapping("getCuChannelList")
@@ -358,6 +358,15 @@ public class CuController {
         ValidUtils.paramValid(br);
 
         return cuService.puIdOne(requestDto);
+    }
+
+    @ApiOperation("根据平台1.0PuId获取平台2.0puId")
+    @PostMapping("/puIdByOne")
+    public BaseResult<PuIdByOneVo> puIdByOne(@Valid @RequestBody PuIdByOneDto requestDto, BindingResult br) {
+
+        ValidUtils.paramValid(br);
+
+        return cuService.puIdByOne(requestDto);
     }
 
 }

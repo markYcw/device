@@ -143,7 +143,7 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
                 return BaseResult.failed(throwable.getMessage());
             }
 
-            @Override
+          /*  @Override
             public BaseResult<CuDeviceVo> getCuDeviceInfo(Integer kmId, String puId) {
                 return BaseResult.failed(throwable.getMessage());
             }
@@ -151,7 +151,7 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
             @Override
             public BaseResult<CuChannelVo> getCuChannelInfo(Integer kmId, String puId, Integer sn) {
                 return BaseResult.failed(throwable.getMessage());
-            }
+            }*/
 
             @Override
             public BaseResult<DevEntityVo> cuGroup(CuRequestDto requestDto) {
@@ -185,6 +185,11 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
 
             @Override
             public BaseResult<PuIdOneVo> puIdOne(PuIdOneDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
+
+            @Override
+            public BaseResult<PuIdByOneVo> puIdByOne(@Valid PuIdByOneDto requestDto) {
                 return BaseResult.failed(throwable.getMessage());
             }
         };

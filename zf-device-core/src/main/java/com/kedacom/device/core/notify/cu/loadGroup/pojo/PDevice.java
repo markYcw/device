@@ -31,6 +31,9 @@ public class PDevice {
 	@ApiModelProperty("设备号")
 	private String puId;
 
+	@ApiModelProperty("平台1.0对应puId")
+	private String puIdOne;
+
 	@ApiModelProperty("设备名称")
 	private String name;
 

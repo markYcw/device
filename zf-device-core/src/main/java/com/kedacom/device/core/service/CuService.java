@@ -170,4 +170,6 @@ public interface CuService extends IService<CuEntity> {
     CuEntity getBySsid(Integer ssid);
 
     BaseResult<PuIdOneVo> puIdOne(PuIdOneDto requestDto);
+
+    BaseResult<PuIdByOneVo> puIdByOne(PuIdByOneDto requestDto);
 }

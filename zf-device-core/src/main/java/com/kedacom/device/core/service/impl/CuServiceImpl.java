@@ -1220,6 +1220,23 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     }
 
     @Override
+    public BaseResult<PuIdByOneVo> puIdByOne(PuIdByOneDto requestDto) {
+        log.info("=============根据平台1.0PuId获取平台2.0puId接口入参PuIdByOneDto{}",requestDto);
+        CuEntity devEntity = cuMapper.selectById(requestDto.getKmId());
+        check(devEntity);
+        Integer ssid = devEntity.getSsid();
+        CuSession cuSession = cuDeviceLoadThread.getCuClient().getSessionManager().getSessionBySSID(ssid);
+        PDevice device = cuSession.getDeviceCache().getDevice(requestDto.getPuId());
+        if(ObjectUtils.isEmpty(device)){
+            log.error("根据平台puId查询不到设备，请检查参数是否正确");
+            throw new CuException(DeviceErrorEnum.GET_CU_DEVICE_INFO_ERROR);
+        }
+        PuIdByOneVo vo = new PuIdByOneVo();
+        vo.setPuId(device.getPuId());
+        return BaseResult.succeed( "根据平台1.0PuId获取平台2.0puId成功",vo);
+    }
+
+    @Override
     public BaseResult<DevEntityVo> cuGroup(CuRequestDto requestDto) {
         log.info("==============获取cu分组集合入参CuRequestDto{}",requestDto);
         CuEntity devEntity = cuMapper.selectById(requestDto.getKmId());

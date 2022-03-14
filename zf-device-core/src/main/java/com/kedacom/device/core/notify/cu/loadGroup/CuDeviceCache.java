@@ -6,6 +6,7 @@ import com.kedacom.cu.dto.PuIdOneDto;
 import com.kedacom.cu.vo.PuIdOneVo;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 import com.kedacom.device.core.service.CuService;
+import com.kedacom.device.core.utils.ContextUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,11 +21,8 @@ import java.util.*;
  * @date 2021/11/24
  */
 @Slf4j
-@Component
 public class CuDeviceCache {
 
-    @Autowired
-    private CuService cuService;
 
     /**
      * 监控平台内置根分组的ID。
@@ -60,6 +58,12 @@ public class CuDeviceCache {
 
     /**
      * 设备
+     * key:1.0平台对应puId, value：设备信息
+     */
+    private Hashtable<String, PDevice> devicesOne = new Hashtable<String, PDevice>(100);
+
+    /**
+     * 设备
      * key:分组ID, value：分组下的设备，根据名称排序。
      */
     private Hashtable<String, ArrayList<PDevice>> devicesByGroup = new Hashtable<String, ArrayList<PDevice>>(20);
@@ -84,6 +88,7 @@ public class CuDeviceCache {
         this.groups.clear();
         this.sortGroups.clear();
         this.devices.clear();
+        this.devicesOne.clear();
         this.devicesByGroup.clear();
         this.status_map.clear();
     }
@@ -181,8 +186,15 @@ public class CuDeviceCache {
     public void loadPuIdOne(PDevice device) {
         PuIdOneDto dto = new PuIdOneDto();
         dto.setPuId(device.getPuId());
-        BaseResult<PuIdOneVo> one = cuService.puIdOne(dto);
-        device.setPuIdOne(one.getData().getPuId());
+        BaseResult<PuIdOneVo> one = null;
+        try {
+            CuService cuService = ContextUtils.getBean(CuService.class);
+            dto.setKmId(device.getDbId());
+            one = cuService.puIdOne(dto);
+            device.setPuIdOne(one.getData().getPuId());
+        } catch (Exception e) {
+            log.info("加载设备1.0PuId失败,设备信息：{}",device);
+        }
     }
 
     /**
@@ -207,8 +219,11 @@ public class CuDeviceCache {
             pDbk.setPuId(pDevice.getPuId());
             pDbk.setSrcChns(pDevice.getSrcChns());
             this.devices.put(puid, pDbk);
+            //把平台1.0puId和对应设备存储在容器里
+            this.devicesOne.put(device.getPuIdOne(),pDbk);
         } else {
             this.devices.put(puid, device);
+            this.devicesOne.put(device.getPuIdOne(),device);
         }
 
         String groupId = device.getGroupId();
@@ -245,8 +260,22 @@ public class CuDeviceCache {
         }
     }
 
-    public PDevice getDevice(String puid) {
-        return this.devices.get(puid);
+    /**
+     * 根据2.0平台puId获取设备
+     * @param puId
+     * @return
+     */
+    public PDevice getDevice(String puId) {
+        return this.devices.get(puId);
+    }
+
+    /**
+     * 根据1.0平台puId获取设备
+     * @param puId
+     * @return
+     */
+    public PDevice getDeviceByOne(String puId) {
+        return this.devicesOne.get(puId);
     }
 
     /**

@@ -235,8 +235,11 @@ public class CuDeviceLoadThread {
      */
     public void onDeviceNotify(GetDeviceNotify notify) {
         int ssid = notify.getSsid();
+        CuEntity cuEntity = cuService.getBySsid(ssid);
         Integer isSend = notify.getIsEnd();
         List<PDevice> devices = notify.getDeviceList();
+        //给每一个设备设置其所在监控平台的数据库ID为了添加设备时获取1.0puId用
+        devices.stream().forEach(pDevice -> pDevice.setDbId(cuEntity.getId()));
         //给设备下每一个通道设置设备PuId
         devices.stream().forEach(pDevice -> setSnPuId(pDevice));
         CuSession session = client.getSessionManager().getSessionBySSID(ssid);

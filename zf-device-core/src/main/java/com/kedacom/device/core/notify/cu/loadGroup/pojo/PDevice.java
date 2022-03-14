@@ -22,6 +22,9 @@ import java.util.List;
 @Slf4j
 public class PDevice {
 
+	@ApiModelProperty("设备所在的平台的数据库ID")
+	private Integer dbId;
+
 	@ApiModelProperty("设备所在的平台域的域编号")
 	private String domain;
 

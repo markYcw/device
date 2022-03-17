@@ -28,20 +28,12 @@ import java.util.List;
 public class AudioActNotify extends INotify {
     @Override
     public void consumeMessage(Integer ssid,String message) {
-        WebsocketFeign websocketFeign = ContextUtils.getBean(WebsocketFeign.class);
         AudioAct audioAct = JSON.parseObject(message, AudioAct.class);
         SvrService service = ContextUtils.getBean(SvrService.class);
         RegisterListenerService listenerService = ContextUtils.getBean(RegisterListenerService.class);
         DeviceNotifyUtils notifyUtils = ContextUtils.getBean(DeviceNotifyUtils.class);
         SvrEntity entity = service.getBySsid(ssid);
         if(ObjectUtil.isNotNull(entity)){
-            //发送webSocket给前端
-            SystemWebSocketMessage msg = new SystemWebSocketMessage();
-            msg.setOperationType(9);
-            msg.setServerName("device");
-            msg.setData(audioAct);
-            websocketFeign.sendInfo(JSON.toJSONString(msg));
-            log.info("===============发送语音激励通知webSocket给前端{}", JSON.toJSONString(msg));
             //将通知发给业务
             audioAct.setMsgType(MsgType.SVR_AUDIO_STATE_NTY.getType());
             audioAct.setDbId(entity.getId());

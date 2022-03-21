@@ -1,6 +1,7 @@
 package com.kedacom.device.core.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.core.pojo.BaseResponse;
@@ -17,7 +18,6 @@ import com.kedacom.device.stream.response.*;
 import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -247,9 +247,11 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         }
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
 
-        String groupId = UUID.randomUUID().toString().replace("-", "");
         StartVideoMixRequest startVideoMixRequest = streamMediaConvert.convertStartVideoMixRequest(request);
-        startVideoMixRequest.setGroupID(groupId);
+        if (StrUtil.isBlank(request.getGroupID())) {
+            String groupId = UUID.randomUUID().toString().replace("-", "");
+            startVideoMixRequest.setGroupID(groupId);
+        }
         startVideoMixRequest.setSsid(ssid);
         log.info("开始画面合成交互参数:{}", startVideoMixRequest);
         StartVideoMixResponse res = client.startVideoMix(startVideoMixRequest);
@@ -257,7 +259,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         responseUtil.handleSMSRes(error, DeviceErrorEnum.START_VIDEO_MIX_FAILED, res);
         StartVideoMixResponseVO response = new StartVideoMixResponseVO();
         response.setMixID(res.getMixID());
-        response.setGroupID(groupId);
+        response.setGroupID(startVideoMixRequest.getGroupID());
         return response;
     }
 
@@ -267,7 +269,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("停止画面合成入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
-        if (ObjectUtil.isNull(deviceInfoEntity)){
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
             throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         }
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
@@ -287,7 +289,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("更新画面合成入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
-        if (ObjectUtil.isNull(deviceInfoEntity)){
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
             throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
         }
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
@@ -476,7 +478,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     }
 
     @Override
-    public  Boolean ctrlAudioAct(CtrlAudioActDTO request) {
+    public Boolean ctrlAudioAct(CtrlAudioActDTO request) {
         String error = "控制音频功率上报失败:{},{},{}";
         log.info("控制音频功率上报入参信息:{}", request);
 
@@ -538,9 +540,9 @@ public class StreamMediaServiceImpl implements StreamMediaService {
 
     @Override
     public DeviceInfoEntity getBySsid(Integer ssid) {
-        log.info( "根据ssid查询流媒体实体接口入参:{}",ssid);
+        log.info("根据ssid查询流媒体实体接口入参:{}", ssid);
         LambdaQueryWrapper<DeviceInfoEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(DeviceInfoEntity::getSessionId,ssid);
+        wrapper.eq(DeviceInfoEntity::getSessionId, ssid);
         List<DeviceInfoEntity> list = deviceMapper.selectList(wrapper);
         return list.get(DevTypeConstant.getZero);
     }
@@ -556,7 +558,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         }
         Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
         GetSvrAudioActStateRequest request = new GetSvrAudioActStateRequest();
-        BeanUtils.copyProperties(dto,request);
+        BeanUtils.copyProperties(dto, request);
         request.setSsid(ssid);
         log.info("获取当前语音激励状态交互参数:{}", request);
         GetSvrAudioActStateResponse res = client.getSvrAudioActState(request);

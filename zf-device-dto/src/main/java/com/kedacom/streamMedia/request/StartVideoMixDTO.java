@@ -23,6 +23,9 @@ public class StartVideoMixDTO implements Serializable {
     @ApiModelProperty(value = "平台id")
     private String umsId;
 
+    @ApiModelProperty("画面合成设备分组id-使用32位UUID(无横线)")
+    private String groupID;
+
     @ApiModelProperty("画面合成风格")
     private Integer layout;
 

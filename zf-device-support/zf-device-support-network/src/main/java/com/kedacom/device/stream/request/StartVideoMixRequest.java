@@ -23,7 +23,7 @@ public class StartVideoMixRequest extends BaseRequest {
 
     private static final String COMMAND = "startvideomix";
 
-    @ApiModelProperty("画面合成设备分组id")
+    @ApiModelProperty("画面合成设备分组id-使用32位UUID(无横线)")
     @JSONField(name = "GroupID")
     private String groupID;
 

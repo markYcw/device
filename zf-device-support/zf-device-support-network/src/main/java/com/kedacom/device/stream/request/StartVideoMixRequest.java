@@ -61,6 +61,9 @@ public class StartVideoMixRequest extends BaseRequest {
     @ApiModelProperty(value = "绘制边框")
     private DrawBorder draw_border;
 
+    @ApiModelProperty(value = "会话管控，0-不管控，1-管控", required = false)
+    private Integer session_control;
+
     @Override
     public String name() {
         return COMMAND;

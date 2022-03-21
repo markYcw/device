@@ -59,4 +59,5 @@ public class StartVideoMixDTO implements Serializable {
 
     @ApiModelProperty(value = "会话管控，0-不管控，1-管控", required = false)
     private Integer session_control;
+
 }

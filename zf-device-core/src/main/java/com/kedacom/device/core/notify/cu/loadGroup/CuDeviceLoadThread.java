@@ -117,12 +117,12 @@ public class CuDeviceLoadThread {
 
         String groupId = null;
         LinkedList<String> list = unKownDeviceGroup.get(ssid);
-        log.info("==============开始获取分组设备未获取设备分组List:{}",list);
+        log.info("==============开始获取分组设备未获取设备分组List:{}", list);
         if (list != null) {
             synchronized (list) {
                 if (list.size() > 0) {
                     groupId = list.poll();
-                    log.info("==============开始获取对应分组下设备组ID为{}",groupId);
+                    log.info("==============开始获取对应分组下设备组ID为{}", groupId);
                 }
             }
         }
@@ -215,15 +215,17 @@ public class CuDeviceLoadThread {
 
     }
 
-    /**+
+    /**
+     * +
      * 根据分组ID获取分组
+     *
      * @param ssid
      * @return
      */
-    public PGroup getPGroupById(Integer ssid,String groupId){
+    public PGroup getPGroupById(Integer ssid, String groupId) {
         CuSession session = client.getSessionManager().getSessionBySSID(ssid);
         if (session != null) {
-           return session.getDeviceCache().getPGroupById(groupId);
+            return session.getDeviceCache().getPGroupById(groupId);
         }
         return null;
     }
@@ -234,6 +236,7 @@ public class CuDeviceLoadThread {
      * @param notify
      */
     public void onDeviceNotify(GetDeviceNotify notify) {
+        log.info(" 收到通知：onDeviceNotify设备:{}", notify);
         int ssid = notify.getSsid();
         CuEntity cuEntity = cuService.getBySsid(ssid);
         Integer isSend = notify.getIsEnd();
@@ -253,21 +256,22 @@ public class CuDeviceLoadThread {
         }
     }
 
-	/**
-	 * 给设备下每一个通道设置设备PuId
-	 * @param pDevice
-	 */
-	public void setSnPuId(PDevice pDevice){
-		List<SrcChn> srcChns = pDevice.getSrcChns();
-		if(CollectionUtil.isNotEmpty(srcChns)){
+    /**
+     * 给设备下每一个通道设置设备PuId
+     *
+     * @param pDevice
+     */
+    public void setSnPuId(PDevice pDevice) {
+        List<SrcChn> srcChns = pDevice.getSrcChns();
+        if (CollectionUtil.isNotEmpty(srcChns)) {
             Iterator<SrcChn> iterator = srcChns.iterator();
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 SrcChn next = iterator.next();
                 next.setPuId(pDevice.getPuId());
             }
         }
 
-	}
+    }
 
     /**
      * 收到设备状态
@@ -280,35 +284,35 @@ public class CuDeviceLoadThread {
         int type = notify.getStateType();
         switch (type) {
             case GetDeviceStatusNotify.TYPE_DEVICE_STATUS:
-                log.info("===========加载设备上线状态开始{}",notify.getSsno());
+                log.info("===========加载设备上线状态开始{}", notify.getSsno());
                 //设备上下线
                 Integer online = notify.getOnline();
                 if (online != null) {
                     this.onDeviceStatus(ssid, puid, online);
                 }
-                log.info("===========加载设备上线状态结束{}",notify.getSsno());
+                log.info("===========加载设备上线状态结束{}", notify.getSsno());
                 break;
 
             case GetDeviceStatusNotify.TYPE_Channel:
                 //视频源（通道）上下线
-                log.info("===========加载设备通道状态开始{}",notify.getSsno());
-				List<SrcChns> srcChns = notify.getSrcChns();
-				this.onDeviceChnStatus(ssid, puid, srcChns);
-                log.info("===========加载设备通道状态结束{}",notify.getSsno());
+                log.info("===========加载设备通道状态开始{}", notify.getSsno());
+                List<SrcChns> srcChns = notify.getSrcChns();
+                this.onDeviceChnStatus(ssid, puid, srcChns);
+                log.info("===========加载设备通道状态结束{}", notify.getSsno());
                 break;
 
             case GetDeviceStatusNotify.TYPE_ALARM:
-                log.info("===========加载设备告警状态开始{}",notify.getSsno());
+                log.info("===========加载设备告警状态开始{}", notify.getSsno());
                 //报警（告警）收到报警通知以后给前端以及业务发通知内容
                 this.onDeviceChnAlarm(notify);
-                log.info("===========加载设备告警状态结束{}",notify.getSsno());
+                log.info("===========加载设备告警状态结束{}", notify.getSsno());
                 break;
             case GetDeviceStatusNotify.TYPE_REC:
                 //录像状态
-                log.info("===========加载设备录像状态开始{}",notify.getSsno());
+                log.info("===========加载设备录像状态开始{}", notify.getSsno());
                 List<Rec> recs = notify.getRecs();
                 this.onDeviceChnRecStatus(ssid, puid, recs);
-                log.info("===========加载设备录像状态结束{}",notify.getSsno());
+                log.info("===========加载设备录像状态结束{}", notify.getSsno());
                 break;
 
             case GetDeviceStatusNotify.TYPE_GPS:
@@ -342,9 +346,10 @@ public class CuDeviceLoadThread {
 
     /**
      * 获取数据库ID
+     *
      * @param ssid
      */
-    private Integer getDbId(Integer ssid){
+    private Integer getDbId(Integer ssid) {
         LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(CuEntity::getSsid, ssid);
         List<CuEntity> cuEntities = cuMapper.selectList(wrapper);
@@ -385,7 +390,7 @@ public class CuDeviceLoadThread {
         CuSession session = client.getSessionManager().getSessionBySSID(ssid);
         if (session != null) {
             CuDeviceCache deviceCache = session.getDeviceCache();
-            deviceCache.updateDeviceChnStatus(puid,srcChns);
+            deviceCache.updateDeviceChnStatus(puid, srcChns);
             //发送设备通道状态通知给业务方
             CuChnStatusDTO dto = new CuChnStatusDTO();
             dto.setMsgType(MsgType.CU_CHN_STATE_NTY.getType());
@@ -437,7 +442,7 @@ public class CuDeviceLoadThread {
         CuSession session = client.getSessionManager().getSessionBySSID(ssid);
         if (session != null) {
             CuDeviceCache deviceCache = session.getDeviceCache();
-            deviceCache.updateDeviceChnRecStatus(puid,recs);
+            deviceCache.updateDeviceChnRecStatus(puid, recs);
             CuChnRecStatusDTO dto = new CuChnRecStatusDTO();
             dto.setPuId(puid);
             List<RecVo> collect = recs.stream().map(a -> convert.convertToRecVo(a)).collect(Collectors.toList());
@@ -484,7 +489,7 @@ public class CuDeviceLoadThread {
         //入网后给设备设置PuID
         String puId = device.getPuId();
         List<SrcChn> channels = device.getChannels();
-        channels.stream().forEach(a->a.setPuId(puId));
+        channels.stream().forEach(a -> a.setPuId(puId));
 
         // 添加新入会设备信息
         deviceCache.addDevice(device);
@@ -501,12 +506,12 @@ public class CuDeviceLoadThread {
         CuEntity entity = cuService.getBySsid(ssid);
         subscribe.setDbId(entity.getId());
         //收到入网通知后需要重新订阅设备状态
-        CompletableFuture.runAsync(()->cuService.subscribe(subscribe));
+        CompletableFuture.runAsync(() -> cuService.subscribe(subscribe));
     }
 
     //设备更新
     private void onDeviceUpdate(int ssid, GetDeviceStatusNotify notify) {
-        log.info("===> onDeviceUpdate ssid={},Notify:{}",ssid,notify);
+        log.info("===> onDeviceUpdate ssid={},Notify:{}", ssid, notify);
         SrcName srcName = notify.getSrcChnName();
         if (srcName == null)
             return;
@@ -525,9 +530,9 @@ public class CuDeviceLoadThread {
         //设置视频源名称
         List<SrcChn> srcChns = oldDevice.getSrcChns();
         Iterator<SrcChn> iterator = srcChns.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             SrcChn next = iterator.next();
-            if(next.getSn().equals(srcName.getChnSn())){
+            if (next.getSn().equals(srcName.getChnSn())) {
                 next.setName(srcName.getChnName());
             }
         }
@@ -558,25 +563,26 @@ public class CuDeviceLoadThread {
         CuSession cuSession = client.getSessionManager().getSessionBySSID(ssid);
         CuDeviceCache deviceCache = cuSession.getDeviceCache();
         PGroup rootGroup = deviceCache.getPGroupById(deviceCache.getRootGroupId());
-        CompletableFuture.runAsync(()->deviceCache.deviceCount(rootGroup));
+        CompletableFuture.runAsync(() -> deviceCache.deviceCount(rootGroup));
         LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(CuEntity::getSsid, ssid);
         List<CuEntity> cuEntities = cuMapper.selectList(wrapper);
         CuEntity cuEntity = cuEntities.get(DevTypeConstant.getZero);
         log.info("============================监控平台IP为{}登录完成", cuEntity.getIp());
-        CuServiceImpl.cuDeviceStatusPoll.put(cuEntity.getId(),DevTypeConstant.updateRecordKey);
+        CuServiceImpl.cuDeviceStatusPoll.put(cuEntity.getId(), DevTypeConstant.updateRecordKey);
     }
 
     /**
      * 更新设备在线总数分组中设备总数
+     *
      * @param ssid
      */
-    public void updateDeviceStatusCount(Integer ssid){
+    public void updateDeviceStatusCount(Integer ssid) {
         CuSession session = client.getSessionManager().getSessionBySSID(ssid);
-        if(session!=null){
+        if (session != null) {
             CuDeviceCache deviceCache = session.getDeviceCache();
             PGroup pGroupById = deviceCache.getPGroupById(deviceCache.getRootGroupId());
-            CompletableFuture.runAsync(()->deviceCache.deviceCount(pGroupById));
+            CompletableFuture.runAsync(() -> deviceCache.deviceCount(pGroupById));
         }
     }
 

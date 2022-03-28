@@ -193,7 +193,7 @@ public class CuDeviceCache {
             one = cuService.puIdOne(dto);
             device.setPuIdOne(one.getData().getPuId());
         } catch (Exception e) {
-            log.info("加载设备1.0PuId失败,设备信息：{}",device);
+            log.error("加载设备1.0PuId失败,设备信息：{}", device);
         }
     }
 
@@ -220,10 +220,10 @@ public class CuDeviceCache {
             pDbk.setSrcChns(pDevice.getSrcChns());
             this.devices.put(puid, pDbk);
             //把平台1.0puId和对应设备存储在容器里
-            this.devicesOne.put(device.getPuIdOne(),pDbk);
+            this.devicesOne.put(device.getPuIdOne(), pDbk);
         } else {
             this.devices.put(puid, device);
-            this.devicesOne.put(device.getPuIdOne(),device);
+            this.devicesOne.put(device.getPuIdOne(), device);
         }
 
         String groupId = device.getGroupId();
@@ -255,6 +255,7 @@ public class CuDeviceCache {
     }
 
     public void addDevices(Collection<PDevice> devices) {
+        log.info("addDevices:{}", devices);
         for (PDevice device : devices) {
             this.addDevice(device);
         }
@@ -262,6 +263,7 @@ public class CuDeviceCache {
 
     /**
      * 根据2.0平台puId获取设备
+     *
      * @param puId
      * @return
      */
@@ -271,6 +273,7 @@ public class CuDeviceCache {
 
     /**
      * 根据1.0平台puId获取设备
+     *
      * @param puId
      * @return
      */

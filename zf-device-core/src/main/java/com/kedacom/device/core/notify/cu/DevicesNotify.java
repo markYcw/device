@@ -22,7 +22,6 @@ public class DevicesNotify extends INotify {
 
     @Override
     protected void consumeMessage(Integer ssid, String message) {
-        log.info("========测试加载设备开始");
         DeviceNotify deviceNotify = JSON.parseObject(message, DeviceNotify.class);
         CuService service = ContextUtils.getBean(CuService.class);
         CuEntity entity = service.getBySsid(ssid);
@@ -33,6 +32,5 @@ public class DevicesNotify extends INotify {
         content.setSsid(deviceNotify.getSsid());
         CuDeviceLoadThread cuDeviceLoadThread = ContextUtils.getBean(CuDeviceLoadThread.class);
         cuDeviceLoadThread.onDeviceNotify(content);
-        log.info("========测试加载设备结束");
     }
 }

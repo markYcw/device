@@ -27,6 +27,7 @@ public enum DeviceErrorEnum {
     STREAM_MEDIA_FAILED(2020, "流媒体服务失败"),
     START_REC_FAILED(2021, "开启录像失败"),
     STOP_REC_FAILED(2021, "停止录像失败"),
+    UPDATE_REC_FAILED(2021, "更新录像失败"),
     QUERY_REC__FAILED(2021, "查询录像失败"),
     START_AUDIO_MIX_FAILED(2022, "开启音频混音失败"),
     STOP_AUDIO_MIX_FAILED(2022, "停止音频混音失败"),

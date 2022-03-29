@@ -14,6 +14,8 @@ public interface StreamMediaService {
 
     Boolean stopRec(StopRecDTO request);
 
+    Boolean updateRec(UpdateRecDTO updateRecDTO);
+
     QueryRecResponseVO queryRec(QueryRecDTO request);
 
     StartAudioMixResponseVO startAudioMix(StartAudioMixDTO request);
@@ -67,4 +69,7 @@ public interface StreamMediaService {
     DeviceInfoEntity getBySsid(Integer ssid);
 
     GetSvrAudioActStateVo getSvrAudioActState(GetSvrAudioActStateDTO dto);
+
+
+
 }

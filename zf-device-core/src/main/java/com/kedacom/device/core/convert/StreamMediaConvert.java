@@ -24,6 +24,8 @@ public interface StreamMediaConvert {
 
     StopRecRequest convertStopRecRequest(StopRecDTO request);
 
+    UpdateRecRequest convertUpdateRecRequest(UpdateRecDTO request);
+
     QueryRecRequest convertQueryRecRequest(QueryRecDTO request);
 
     StartAudioMixRequest convertStartAudioMixRequest(StartAudioMixDTO request);

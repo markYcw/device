@@ -184,6 +184,7 @@ public class CuDeviceCache {
      * @param device
      */
     public void loadPuIdOne(PDevice device) {
+        log.info("加载1.0PuId{}",device);
         PuIdOneDto dto = new PuIdOneDto();
         dto.setPuId(device.getPuId());
         BaseResult<PuIdOneVo> one = null;
@@ -192,6 +193,8 @@ public class CuDeviceCache {
             dto.setKmId(device.getDbId());
             one = cuService.puIdOne(dto);
             device.setPuIdOne(one.getData().getPuId());
+            //查询成功后往1.0PuId池里放入设备
+            devicesOne.put(device.getPuIdOne(),device);
         } catch (Exception e) {
             log.error("加载设备1.0PuId失败,设备信息：{}", device);
         }
@@ -203,7 +206,8 @@ public class CuDeviceCache {
      * @param device
      */
     public void addDevice(PDevice device) {
-        loadPuIdOne(device); //加载设备平台1.0对应PuId
+        log.info("==加载单个设备{}",device);
+        //loadPuIdOne(device); //加载设备平台1.0对应PuId
         String puid = device.getPuId();
         //根据puid判断设备是否已经存在，如果存在就忽略掉，避免重复
         PDevice pDevice = this.devices.get(puid);
@@ -220,10 +224,10 @@ public class CuDeviceCache {
             pDbk.setSrcChns(pDevice.getSrcChns());
             this.devices.put(puid, pDbk);
             //把平台1.0puId和对应设备存储在容器里
-            this.devicesOne.put(device.getPuIdOne(), pDbk);
+            //this.devicesOne.put(device.getPuIdOne(), pDbk);
         } else {
             this.devices.put(puid, device);
-            this.devicesOne.put(device.getPuIdOne(), device);
+            //this.devicesOne.put(device.getPuIdOne(), device);
         }
 
         String groupId = device.getGroupId();

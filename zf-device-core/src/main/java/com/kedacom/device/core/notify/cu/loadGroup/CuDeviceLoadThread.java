@@ -236,7 +236,6 @@ public class CuDeviceLoadThread {
      * @param notify
      */
     public void onDeviceNotify(GetDeviceNotify notify) {
-        log.info(" 收到通知：onDeviceNotify设备:{}", notify);
         int ssid = notify.getSsid();
         CuEntity cuEntity = cuService.getBySsid(ssid);
         Integer isSend = notify.getIsEnd();
@@ -563,13 +562,26 @@ public class CuDeviceLoadThread {
         CuSession cuSession = client.getSessionManager().getSessionBySSID(ssid);
         CuDeviceCache deviceCache = cuSession.getDeviceCache();
         PGroup rootGroup = deviceCache.getPGroupById(deviceCache.getRootGroupId());
+        //统计设备数
         CompletableFuture.runAsync(() -> deviceCache.deviceCount(rootGroup));
+        //加载1.0PuId
+        CompletableFuture.runAsync(()->loadPuIdOneAll(deviceCache));
         LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(CuEntity::getSsid, ssid);
         List<CuEntity> cuEntities = cuMapper.selectList(wrapper);
         CuEntity cuEntity = cuEntities.get(DevTypeConstant.getZero);
         log.info("============================监控平台IP为{}登录完成", cuEntity.getIp());
         CuServiceImpl.cuDeviceStatusPoll.put(cuEntity.getId(), DevTypeConstant.updateRecordKey);
+    }
+
+    private void loadPuIdOneAll(CuDeviceCache cache){
+        log.info("开始加载1.0PuId============");
+        List<PDevice> devices = cache.getDevices();
+        Iterator<PDevice> iterator = devices.iterator();
+        while (iterator.hasNext()){
+            PDevice next = iterator.next();
+            cache.loadPuIdOne(next);
+        }
     }
 
     /**

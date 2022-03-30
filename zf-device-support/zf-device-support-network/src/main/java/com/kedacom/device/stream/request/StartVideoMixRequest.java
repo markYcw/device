@@ -2,6 +2,7 @@ package com.kedacom.device.stream.request;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.kedacom.core.pojo.BaseRequest;
+import com.kedacom.streamMedia.info.DrawBorder;
 import com.kedacom.streamMedia.info.DrawText;
 import com.kedacom.streamMedia.info.VideoMixer;
 import io.swagger.annotations.ApiModel;
@@ -22,7 +23,7 @@ public class StartVideoMixRequest extends BaseRequest {
 
     private static final String COMMAND = "startvideomix";
 
-    @ApiModelProperty("画面合成设备分组id")
+    @ApiModelProperty("画面合成设备分组id-使用32位UUID(无横线)")
     @JSONField(name = "GroupID")
     private String groupID;
 
@@ -41,7 +42,7 @@ public class StartVideoMixRequest extends BaseRequest {
             "保活时间大于600秒时，实际生效600秒；\n" +
             "不设置保活时，需要客户端主动去结束该合成任务。")
     private Integer keepalive;
-    
+
     @ApiModelProperty("是否支持非语音激励场景下，画面合成第一个通道克隆某一其他通道资源:0、不克隆;1、克隆1通道的通道资源;2、克隆2通道的通道资源")
     private Integer clone_window;
 
@@ -56,6 +57,12 @@ public class StartVideoMixRequest extends BaseRequest {
 
     @ApiModelProperty("参与画面合成的终端ID(最大数目为 25路，实际路数依赖硬件性能)")
     private List<VideoMixer> mixer_list;
+
+    @ApiModelProperty(value = "绘制边框")
+    private DrawBorder draw_border;
+
+    @ApiModelProperty(value = "会话管控，0-不管控，1-管控", required = false)
+    private Integer session_control;
 
     @Override
     public String name() {

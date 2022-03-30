@@ -23,8 +23,7 @@ public class UpdateRecDTO implements Serializable {
     @ApiModelProperty(value = "录像ID", required = true)
     private String record_id;
 
-    @NotBlank(message = "设备ID不能为空")
-    @ApiModelProperty(value = "监控设备填国标id、会议或者虚拟终端填设备id(此时background_pic_param里面需要填设备类型)、其余填资源id", required = true)
+    @ApiModelProperty(value = "设备ID")
     private String device_id;
 
 }

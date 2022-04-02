@@ -73,6 +73,13 @@ public class VrsFiveController {
         return vrsFiveService.updateVrs(vrsVo);
     }
 
+    @ApiOperation("同步KM服务所有VRS录播服务器")
+    @PostMapping("/asyList")
+    public BaseResult<String> asyList() {
+
+       return   vrsFiveService.asyList();
+    }
+
     @ApiOperation("查询VRS信息")
     @PostMapping("/vtsInfo")
     @ApiImplicitParams({@ApiImplicitParam(name = "id", value = "数据库ID")})

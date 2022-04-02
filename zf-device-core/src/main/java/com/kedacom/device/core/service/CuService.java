@@ -172,4 +172,6 @@ public interface CuService extends IService<CuEntity> {
     BaseResult<PuIdOneVo> puIdOne(PuIdOneDto requestDto);
 
     BaseResult<PuIdByOneVo> puIdByOne(PuIdByOneDto requestDto);
+
+    BaseResult<String> asyList();
 }

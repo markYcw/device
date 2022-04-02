@@ -19,6 +19,13 @@
             <artifactId>zf-system-api</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.kedacom.zf</groupId>
+            <artifactId>zf-km-api</artifactId>
+            <version>4.1.6</version>
+        </dependency>
+
         <dependency>
             <groupId>com.kedacom</groupId>
             <artifactId>zf-device-support-mock</artifactId>

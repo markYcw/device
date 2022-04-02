@@ -369,4 +369,11 @@ public class CuController {
         return cuService.puIdByOne(requestDto);
     }
 
+    @ApiOperation("同步KM服务所有监控平台")
+    @PostMapping("/asyList")
+    public BaseResult<String> asyList() {
+
+       return cuService.asyList();
+    }
+
 }

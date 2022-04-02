@@ -3,15 +3,11 @@ package com.kedacom.device.core.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
-import com.kedacom.common.model.Result;
-import com.kedacom.device.core.basicParam.SvrBasicParam;
 import com.kedacom.device.core.basicParam.VsBasicParam;
 import com.kedacom.device.core.constant.DeviceConstants;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
@@ -21,19 +17,11 @@ import com.kedacom.device.core.exception.VrsException;
 import com.kedacom.device.core.mapper.VsMapper;
 import com.kedacom.device.core.service.VrsFiveService;
 import com.kedacom.device.core.utils.RemoteRestTemplate;
-import com.kedacom.device.svr.SvrResponse;
-import com.kedacom.device.svr.response.CpResetResponse;
-import com.kedacom.device.svr.response.SvrCapResponse;
-import com.kedacom.device.svr.response.SvrLoginResponse;
 import com.kedacom.device.vs.request.VsLoginRequest;
 import com.kedacom.device.vs.response.VsLoginResponse;
 import com.kedacom.device.vs.response.VsResponse;
-import com.kedacom.mt.MtResponse;
+import com.kedacom.km.api.VrsFiveApi;
 import com.kedacom.svr.dto.FindByIpOrNameDto;
-import com.kedacom.svr.entity.SvrEntity;
-import com.kedacom.svr.vo.RemoteChnListVo;
-import com.kedacom.svr.vo.SvrCapVo;
-import com.kedacom.svr.vo.SvrLoginVO;
 import com.kedacom.util.NumGen;
 import com.kedacom.vs.entity.VsEntity;
 import com.kedacom.vs.vo.*;
@@ -46,7 +34,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,6 +49,9 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
 
     @Autowired
     private RemoteRestTemplate remoteRestTemplate;
+
+    @Autowired
+    private VrsFiveApi vrsFiveApi;
 
     @Value("${zf.svrNtyUrl.server_addr:127.0.0.1:9000}")
     private String svrNtyUrl;
@@ -363,6 +353,24 @@ public class VrsFiveServiceImpl extends ServiceImpl<VsMapper, VsEntity> implemen
             VrsVo vrsVo = vrsConvert.convertToVrsVo(vsList.get(0));
             return BaseResult.succeed("查询成功",vrsVo);
         }
+    }
+
+    @Override
+    public BaseResult<String> asyList() {
+        List<com.kedacom.km.vo.VrsVo> list = vrsFiveApi.vrsFiveList().getData();
+        Iterator<com.kedacom.km.vo.VrsVo> iterator = list.iterator();
+        while (iterator.hasNext()){
+            com.kedacom.km.vo.VrsVo next = iterator.next();
+            VsEntity entity = new VsEntity();
+            entity.setName(next.getName());
+            entity.setIp(next.getIp());
+            entity.setUsername(next.getUsername());
+            entity.setPassword(next.getPassword());
+            entity.setVersion(11);
+            entity.setVrsname(next.getVrsname());
+            vrsMapper.insert(entity);
+        }
+       return BaseResult.succeed("同步数据成功");
     }
 
     public String getUrl() {

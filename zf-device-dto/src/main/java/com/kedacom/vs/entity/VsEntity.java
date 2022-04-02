@@ -17,44 +17,44 @@ public class VsEntity {
     /**
      * VRS标识
      */
-    @ApiModelProperty("终端标识")
+    @ApiModelProperty("VRS标识")
     @TableId(value = "id" , type = IdType.AUTO)
     private Integer id;
 
     /**
      * VRS名称
      */
-    @ApiModelProperty("终端名称")
+    @ApiModelProperty("VRS名称")
     private String name;
 
     /**
      * VRS的IP
      */
-    @ApiModelProperty("终端IP")
+    @ApiModelProperty("VRSIP")
     private String ip;
 
     /**
      * VRS登录账号
      */
-    @ApiModelProperty("终端登录账号")
+    @ApiModelProperty("VRS登录账号")
     private String username;
 
     /**
      * VRS登录密码
      */
-    @ApiModelProperty("终端登录密码")
+    @ApiModelProperty("VRS登录密码")
     private String password;
 
     /**
      * 注册VRS返回id
      */
-    @ApiModelProperty("注册终端返回id")
+    @ApiModelProperty("注册VRS返回id")
     private Integer ssid;
 
     /**
      * VRS版本
      */
-    @ApiModelProperty("终端版本")
+    @ApiModelProperty("VRS版本")
     @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Integer version;
 

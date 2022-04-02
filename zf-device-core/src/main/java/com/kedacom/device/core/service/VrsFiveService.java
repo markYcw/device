@@ -77,4 +77,6 @@ public interface VrsFiveService extends IService<VsEntity> {
     void logoutSsid(Integer ssid);
 
     BaseResult<VrsVo> findByIpOrName(FindByIpOrNameDto dto);
+
+    BaseResult<String> asyList();
 }

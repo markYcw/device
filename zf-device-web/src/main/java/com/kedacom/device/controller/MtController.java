@@ -45,7 +45,7 @@ public class MtController {
     }
 
     @ApiOperation("查询终端信息")
-    @PostMapping("/queryMt")
+    @PostMapping(value = "/queryMt")
     public BaseResult<TerminalVo> queryMt(@RequestParam Integer dbId) {
 
         if (dbId == null) {
@@ -79,7 +79,7 @@ public class MtController {
     public BaseResult<TerminalVo> saveMtFeign(@RequestBody TerminalVo terminalVo) {
 
         if (mtService.isRepeatName(terminalVo)) {
-            return BaseResult.failed("终端名称重复看，请重新填写");
+            return BaseResult.failed("终端名称重复，请重新填写");
         }
         if (mtService.isRepeatIp(terminalVo)) {
             return BaseResult.failed("终端IP重复，请重新填写");
@@ -97,7 +97,7 @@ public class MtController {
             return BaseResult.failed("终端IP重复，请重新填写");
         }
         if (mtService.isRepeatName(terminalVo)) {
-            return BaseResult.failed("终端名称重复看，请重新填写");
+            return BaseResult.failed("终端名称重复，请重新填写");
         }
         if (mtService.updateMt(terminalVo)) {
             return BaseResult.succeed("修改成功");
@@ -111,7 +111,7 @@ public class MtController {
     public BaseResult<String> updateMtFeign(@RequestBody TerminalVo terminalVo) {
 
         if (mtService.isRepeatName(terminalVo)) {
-            return BaseResult.failed("终端名称重复看，请重新填写");
+            return BaseResult.failed("终端名称重复，请重新填写");
         }
         if (mtService.isRepeatIp(terminalVo)) {
             return BaseResult.failed("终端IP重复，请重新填写");
@@ -138,21 +138,21 @@ public class MtController {
     }
 
     @ApiOperation("根据数据库ID登录设备")
-    @PostMapping("/loginById")
+    @PostMapping(value = "/loginById")
     public BaseResult<Integer> loginById(@RequestParam Integer dbId) {
 
         return BaseResult.succeed("终端登录成功", mtService.loginById(dbId));
     }
 
     @ApiOperation("根据数据库ID登出设备")
-    @PostMapping("/logOutById")
+    @PostMapping(value = "/logOutById")
     public BaseResult<Boolean> logOutById(@RequestParam Integer dbId) {
 
         return BaseResult.succeed("终端登录成功", mtService.logOutById(dbId));
     }
 
     @ApiOperation("发送心跳")
-    @PostMapping("/heartBeat")
+    @PostMapping(value = "/heartBeat")
     public BaseResult<String> heartBeat(@RequestParam Integer dbId) {
 
         if (mtService.heartBeat(dbId)) {
@@ -163,7 +163,7 @@ public class MtController {
     }
 
     @ApiOperation("获取终端类型")
-    @PostMapping("/getMTType")
+    @PostMapping(value = "/getMTType")
     public BaseResult<Integer> getMTType(@RequestParam Integer dbId) {
 
         Integer mtType = mtService.getMtType(dbId);
@@ -190,7 +190,7 @@ public class MtController {
     }
 
     @ApiOperation("停止点对点会议")
-    @PostMapping("/stopP2P")
+    @PostMapping(value = "/stopP2P")
     public BaseResult<Boolean> stopP2P(@RequestParam Integer dbId) {
 
         if (mtService.stopP2P(dbId)) {
@@ -201,7 +201,7 @@ public class MtController {
     }
 
     @ApiOperation("获取终端状态(不支持五代终端)")
-    @PostMapping("/getMtStatus")
+    @PostMapping(value = "/getMtStatus")
     public BaseResult<GetMtStatusResponseVo> getMtStatus(@RequestParam Integer dbId) {
 
         GetMtStatusResponseVo mtStatus = mtService.getMtStatus(dbId);
@@ -213,7 +213,7 @@ public class MtController {
     }
 
     @ApiOperation("静音/哑音设置")
-    @PostMapping("/setDumbMute")
+    @PostMapping(value = "/setDumbMute")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
             @ApiImplicitParam(name = "mute", value = "true:静音控制,false:哑音控制", required = true),
             @ApiImplicitParam(name = "open", value = "静音/哑音开关：true开启 false关闭", required = true)})
@@ -228,7 +228,7 @@ public class MtController {
     }
 
     @ApiOperation("静音/哑音状态获取")
-    @PostMapping("/getDumbMute")
+    @PostMapping(value = "/getDumbMute")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
             @ApiImplicitParam(name = "mute", value = "true:静音控制,false:哑音控制", required = true)})
     public BaseResult<GetDumbMuteVo> getDumbMute(@RequestParam Integer dbId, @RequestParam String mute) {
@@ -243,7 +243,7 @@ public class MtController {
     }
 
     @ApiOperation("音量控制(不支持五代终端)")
-    @PostMapping("/volumeCtrl")
+    @PostMapping(value = "/volumeCtrl")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
             @ApiImplicitParam(name = "type", value = "1:扬声器 2:麦克", required = true),
             @ApiImplicitParam(name = "volume", value = "音量大小，最大31", required = true)})
@@ -257,7 +257,7 @@ public class MtController {
     }
 
     @ApiOperation("音量获取(不支持五代终端)")
-    @PostMapping("/getVolume")
+    @PostMapping(value = "/getVolume")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
             @ApiImplicitParam(name = "type", value = "1:扬声器 2:麦克", required = true)})
     public BaseResult<String> getVolume(@RequestParam Integer dbId, @RequestParam Integer type) {
@@ -268,7 +268,7 @@ public class MtController {
     }
 
     @ApiOperation("请求关键帧")
-    @PostMapping("/keyframe")
+    @PostMapping(value = "/keyframe")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
             @ApiImplicitParam(name = "streamType", value = "码流类型, 0: 本地(不支持), 1：远端(不支持), 2:本地视频到任意地址, " +
                     "3:远端视频到任意地址, 4:本地音频到任意地址, 5:远端音频到任意地址, 6:本地双流到任意地址, 7:远端双流到任意地址", required = true)})
@@ -282,7 +282,7 @@ public class MtController {
     }
 
     @ApiOperation("双流控制")
-    @PostMapping("/mtStarteDual")
+    @PostMapping(value = "/mtStarteDual")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
             @ApiImplicitParam(name = "start", value = "开始发送还是停止:true开始发送 false停止发送", required = true),
             @ApiImplicitParam(name = "isLocal", value = "true: 本地终端 false: 远端终端(远端暂不支持)", required = true)})
@@ -296,7 +296,7 @@ public class MtController {
     }
 
     @ApiOperation("ptz控制")
-    @PostMapping("/ptzCtrl")
+    @PostMapping(value = "/ptzCtrl")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
             @ApiImplicitParam(name = "type", value = "0:开始，1:停止", required = true),
             @ApiImplicitParam(name = "ptzCmd", value = "控制命令1:上 2:下 3:左 4:右 5:自动聚焦 6:焦距大 7:焦距小 8:zoomin  9:zoomout 10：亮 11：暗", required = true)})
@@ -310,7 +310,7 @@ public class MtController {
     }
 
     @ApiOperation("设置画面显示模式(不支持五代终端)")
-    @PostMapping("/setPipMode")
+    @PostMapping(value = "/setPipMode")
     @ApiImplicitParams({@ApiImplicitParam(name = "dbId",  value = "数据库ID", required = true),
             @ApiImplicitParam(name = "mode", value = "0：单屏双显 1：双屏双显 2：单屏三显", required = true)})
     public BaseResult<Boolean> setPipMode(@RequestParam Integer dbId, @RequestParam Integer mode) {
@@ -323,7 +323,7 @@ public class MtController {
     }
 
     @ApiOperation(value = "PING")
-    @PostMapping("/ping")
+    @PostMapping(value = "/ping")
     public BaseResult<Boolean> ping(@RequestParam Integer dbId) {
 
         if (mtService.ping(dbId)) {

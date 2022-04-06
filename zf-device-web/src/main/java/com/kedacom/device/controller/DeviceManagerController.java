@@ -1,6 +1,7 @@
 package com.kedacom.device.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
@@ -10,13 +11,11 @@ import com.kedacom.ums.responsedto.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -31,8 +30,19 @@ import java.util.List;
 @Api(value = "统一设备管理接口", tags = "统一设备管理接口")
 public class DeviceManagerController {
 
-    @Autowired
+    @Resource
     DeviceManagerService deviceManagerService;
+
+    @ApiOperation("查看同步分组和设备的状态（是否在同步中）")
+    @GetMapping("/getSyncState")
+    public BaseResult<Boolean> getSyncState(@Param("umsId") String umsId) {
+
+        if (StrUtil.isBlank(umsId)) {
+            return BaseResult.failed("平台id不能为空！");
+        }
+
+        return BaseResult.succeed("查询成功", deviceManagerService.getSyncState(umsId));
+    }
 
     @ApiOperation("手动同步设备数据")
     @PostMapping("/syncDeviceData")

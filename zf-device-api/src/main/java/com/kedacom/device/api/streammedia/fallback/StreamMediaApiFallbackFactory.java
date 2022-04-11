@@ -6,6 +6,8 @@ import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
 import feign.hystrix.FallbackFactory;
 
+import javax.validation.Valid;
+
 /**
  * @Auther: hxj
  * @Date: 2021/5/10 10:24
@@ -21,6 +23,11 @@ public class StreamMediaApiFallbackFactory implements FallbackFactory<StreamMedi
 
             @Override
             public BaseResult<Boolean> stopRec(StopRecDTO stoprecDTO) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<Boolean> updateRec(@Valid UpdateRecDTO updateRecDTO) {
                 return BaseResult.failed("服务出错，请稍后重试");
             }
 

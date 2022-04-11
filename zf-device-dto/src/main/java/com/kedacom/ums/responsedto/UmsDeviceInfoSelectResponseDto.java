@@ -61,4 +61,10 @@ public class UmsDeviceInfoSelectResponseDto implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
+    @ApiModelProperty(value = "拼控服务账号")
+    private String mspAccount;
+
+    @ApiModelProperty(value = "拼控服务密码")
+    private String mspPassword;
+
 }

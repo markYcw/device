@@ -48,6 +48,15 @@ public class StreamMediaController {
         return BaseResult.succeed("停止成功", stopRec);
     }
 
+    @ApiOperation("更新录像")
+    @PostMapping("/updateRec")
+    public BaseResult<Boolean> updateRec(@Valid @RequestBody UpdateRecDTO updateRecDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean updateRec = streamMediaService.updateRec(updateRecDTO);
+        return BaseResult.succeed("更新成功", updateRec);
+    }
+
     @ApiOperation("查询录像记录")
     @PostMapping("/queryRec")
     public BaseResult<QueryRecResponseVO> queryRec(@Valid @RequestBody QueryRecDTO queryrecDTO, BindingResult br) {
@@ -269,7 +278,7 @@ public class StreamMediaController {
     public BaseResult<GetBurnStateVO> getBurnState(@Valid @RequestBody GetBurnStateDTO getBurnStateDTO, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        GetBurnStateVO getBurnStateVO  =streamMediaService.getBurnState(getBurnStateDTO);
+        GetBurnStateVO getBurnStateVO = streamMediaService.getBurnState(getBurnStateDTO);
         return BaseResult.succeed("刻录状态请求成功", getBurnStateVO);
     }
 
@@ -278,10 +287,9 @@ public class StreamMediaController {
     public BaseResult<GetSvrAudioActStateVo> getSvrAudioActState(@Valid @RequestBody GetSvrAudioActStateDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        GetSvrAudioActStateVo vo  =streamMediaService.getSvrAudioActState(dto);
+        GetSvrAudioActStateVo vo = streamMediaService.getSvrAudioActState(dto);
         return BaseResult.succeed("获取当前语音激励状态成功", vo);
     }
-
 
 
 }

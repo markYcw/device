@@ -1,5 +1,6 @@
 package com.kedacom.streamMedia.request;
 
+import com.kedacom.streamMedia.info.DrawBorder;
 import com.kedacom.streamMedia.info.DrawText;
 import com.kedacom.streamMedia.info.VideoMixer;
 import io.swagger.annotations.ApiModel;
@@ -21,6 +22,9 @@ public class StartVideoMixDTO implements Serializable {
     @NotBlank(message = "umsId不能为空")
     @ApiModelProperty(value = "平台id")
     private String umsId;
+
+    @ApiModelProperty("画面合成设备分组id-使用32位UUID(无横线)")
+    private String groupID;
 
     @ApiModelProperty("画面合成风格")
     private Integer layout;
@@ -52,5 +56,11 @@ public class StartVideoMixDTO implements Serializable {
 
     @ApiModelProperty("参与画面合成的终端ID(最大数目为 25路，实际路数依赖硬件性能)")
     private List<VideoMixer> mixer_list;
+
+    @ApiModelProperty(value = "绘制边框")
+    private DrawBorder draw_border;
+
+    @ApiModelProperty(value = "会话管控，0-不管控，1-管控", required = false)
+    private Integer session_control;
 
 }

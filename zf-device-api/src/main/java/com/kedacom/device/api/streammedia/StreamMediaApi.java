@@ -6,11 +6,8 @@ import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import javax.validation.Valid;
 
 /**
  * @Auther: hxj
@@ -37,6 +34,15 @@ public interface StreamMediaApi {
      */
     @PostMapping("/stopRec")
     BaseResult<Boolean> stopRec(@RequestBody StopRecDTO stoprecDTO);
+
+    /**
+     * 更新录像
+     *
+     * @param updateRecDTO
+     * @return
+     */
+    @PostMapping("/updateRec")
+    BaseResult<Boolean> updateRec(@RequestBody UpdateRecDTO updateRecDTO);
 
     /**
      * 查询录像记录

@@ -19,12 +19,12 @@ import java.util.List;
 public class QueryRecResponse extends BaseResponse {
 
     @ApiModelProperty("查询到的录像总数")
-   private Integer sum_number;
+    private Integer sum_number;
 
     @ApiModelProperty("当前显示的录像信息数量(分页信息)")
-   private Integer number;
+    private Integer number;
 
     @ApiModelProperty("录像信息")
-   private List<RecordInfo> record_info;
+    private List<RecordInfo> record_info;
 
 }

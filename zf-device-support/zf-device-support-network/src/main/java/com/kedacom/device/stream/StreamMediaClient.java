@@ -32,6 +32,15 @@ public interface StreamMediaClient {
     BaseResponse stopRec(StopRecRequest stoprecRequest);
 
     /**
+     * 更新录像
+     *
+     * @param updateRecRequest
+     * @return
+     */
+    UpdateRecResponse updateRec(UpdateRecRequest updateRecRequest);
+
+
+    /**
      * 查询录像记录
      *
      * @param queryrecRequest
@@ -177,6 +186,7 @@ public interface StreamMediaClient {
 
     /**
      * 合成画面保活
+     *
      * @param keepVideoMixAlive
      * @return
      */
@@ -184,6 +194,7 @@ public interface StreamMediaClient {
 
     /**
      * 录像任务保活
+     *
      * @param recKeepAliveRequest
      * @return
      */
@@ -207,6 +218,7 @@ public interface StreamMediaClient {
 
     /**
      * 控制音频功率上报
+     *
      * @param ctrlAudioActRequest
      * @return
      */
@@ -214,6 +226,7 @@ public interface StreamMediaClient {
 
     /**
      * 设置音频功率上报间隔
+     *
      * @param setAudioActIntervalRequest
      * @return
      */
@@ -221,6 +234,7 @@ public interface StreamMediaClient {
 
     /**
      * 刻录状态请求
+     *
      * @param getBurnStateRequest
      * @return
      */
@@ -228,6 +242,7 @@ public interface StreamMediaClient {
 
     /**
      * 获取当前语音激励状态
+     *
      * @param request
      * @return
      */

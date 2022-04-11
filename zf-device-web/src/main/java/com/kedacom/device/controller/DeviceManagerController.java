@@ -33,16 +33,16 @@ public class DeviceManagerController {
     @Resource
     DeviceManagerService deviceManagerService;
 
-    @ApiOperation("查看同步分组和设备的状态（是否在同步中）")
-    @GetMapping("/getSyncState")
-    public BaseResult<Boolean> getSyncState(@Param("umsId") String umsId) {
-
-        if (StrUtil.isBlank(umsId)) {
-            return BaseResult.failed("平台id不能为空！");
-        }
-
-        return BaseResult.succeed("查询成功", deviceManagerService.getSyncState(umsId));
-    }
+//    @ApiOperation("查看同步分组和设备的状态（是否在同步中）")
+//    @GetMapping("/getSyncState")
+//    public BaseResult<Boolean> getSyncState(@Param("umsId") String umsId) {
+//
+//        if (StrUtil.isBlank(umsId)) {
+//            return BaseResult.failed("平台id不能为空！");
+//        }
+//
+//        return BaseResult.succeed("查询成功", deviceManagerService.getSyncState(umsId));
+//    }
 
     @ApiOperation("手动同步设备数据")
     @PostMapping("/syncDeviceData")

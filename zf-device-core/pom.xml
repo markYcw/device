@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>zf-device-core</artifactId>
+    <version>1.0.6</version>
     <description>设备核心业务模块</description>
 
     <dependencies>
@@ -22,12 +23,12 @@
         <dependency>
             <groupId>com.kedacom</groupId>
             <artifactId>zf-device-support-mock</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.6</version>
         </dependency>
         <dependency>
             <groupId>com.kedacom</groupId>
             <artifactId>zf-device-support-network</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.6</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

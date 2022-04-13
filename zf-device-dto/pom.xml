@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <artifactId>zf-device-dto</artifactId>
     <description>数据对象传输模块</description>
 

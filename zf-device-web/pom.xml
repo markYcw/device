@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <version>1.0.2</version>
+    <version>1.0.6</version>
     <artifactId>zf-device-web</artifactId>
     <description>项目web统一访问模块</description>
 
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>com.kedacom</groupId>
             <artifactId>zf-device-core</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.6</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>

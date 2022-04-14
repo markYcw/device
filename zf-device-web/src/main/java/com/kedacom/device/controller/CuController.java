@@ -263,13 +263,14 @@ public class CuController {
         return cuService.queryDisk(requestDto);
     }
 
-   /* @PostMapping("/findByCondition")
-    public BaseResult<DevEntityVo> findByCondition(@RequestBody FindCuByConditionVo findCuByConditionVo){
+    @ApiOperation("根据设备名称返回cu")
+    @PostMapping("/findByName")
+    public BaseResult<DevEntityVo> findByName(@RequestBody CuByNameDto dto){
 
-        return cuService.findByCondition(findCuByConditionVo);
+        return cuService.findName(dto);
     }
 
-
+   /*
     @PostMapping("/queryMonitor")
     @ApiImplicitParams({@ApiImplicitParam(name = "kmId", value = "数据库ID")})
     public BaseResult<DevEntityVo> queryMonitor(@RequestParam("kmId") Integer kmId){

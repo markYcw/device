@@ -91,7 +91,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     @Autowired
     private CuBasicTool tool;
 
-    @Value("${zf.cuNtyUrl.server_addr:127.0.0.1:9000}")
+    @Value("${zf.cuNtyUrl.server_addr:172.16.128.105:9000}")
     private String cuNtyUrl;
 
     @Autowired
@@ -434,7 +434,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     public BaseResult logoutById(CuRequestDto dto) {
         synchronized (this){
             CuEntity entity = cuMapper.selectById(dto.getKmId());
-            check(entity);
             //去除底层session
             CuSessionManager manager = cuDeviceLoadThread.getCuClient().getSessionManager();
             manager.removeSession(entity.getSsid());
@@ -1261,6 +1260,14 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     }
 
     @Override
+    public BaseResult<DevEntityVo> findName(CuByNameDto dto) {
+        log.info("===============跟据名称搜索CU接口入参CuByNameDto:{}",dto);
+        DevEntityVo vo = getDevEntityVoByName(dto.getKmId(), dto.getName());
+        vo = this.removeEmptySortGroup(vo);
+        return BaseResult.succeed("根据名称查询成功",vo);
+    }
+
+    @Override
     public BaseResult<DevEntityVo> cuGroup(CuRequestDto requestDto) {
         log.info("==============获取cu分组集合入参CuRequestDto{}",requestDto);
         CuEntity devEntity = cuMapper.selectById(requestDto.getKmId());
@@ -1441,14 +1448,12 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      */
     private DevEntityVo getDevEntityVoByName(Integer id, String name) throws KMException {
         CuEntity devEntity = cuMapper.selectById(id);
-        if (devEntity == null) {
-            return null;
-        }
+        check(devEntity);
         Integer ssid = devEntity.getSsid();
         List<PGroup> groupList = this.getGroupList(ssid);
         List<CuGroupVo> cuGroupVoList = new ArrayList<>();
         groupList.stream().forEach(cuGroup -> cuGroupVoList.add(convert.covertToCuGroupVo(cuGroup)));
-        cuGroupVoList.forEach(cuGroupVo -> cuGroupVo.setUuid(UUID.randomUUID().toString()));
+        //cuGroupVoList.forEach(cuGroupVo -> cuGroupVo.setUuid(UUID.randomUUID().toString()));
         DevEntityVo devEntityVo = convert.convertToDevEntityVo(devEntity);
         //递归得到过滤分组集合
         List<CuGroupVo> groupVoList = getGroupVoListByName(name, cuGroupVoList, ssid);
@@ -1825,15 +1830,15 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         List<PDevice> deviceList = this.getDeviceList(ssid, cuGroupVo.getId());
         ArrayList<CuDeviceVo> cuDeviceVos = new ArrayList<>();
         deviceList.stream().forEach(cuDevice -> cuDeviceVos.add(convert.covertToCuDeviceVo(cuDevice)));
-        cuDeviceVos.stream().forEach(cuDeviceVo -> cuDeviceVo.setUuid(UUID.randomUUID().toString()));
+        //cuDeviceVos.stream().forEach(cuDeviceVo -> cuDeviceVo.setUuid(UUID.randomUUID().toString()));
         Iterator<CuDeviceVo> iterator = cuDeviceVos.iterator();
         Integer cuGroupOnLine = 0;
         while (iterator.hasNext()) {
             Integer cuDeviceOnLine = 0;
             CuDeviceVo next = iterator.next();
             List<CuChannelVo> childList = next.getChildList();
-            childList.stream().forEach(cuChannelVo -> cuChannelVo.setUuid(UUID.randomUUID().toString()));
-            childList.stream().forEach(cuChannelVo -> cuChannelVo.setRid(ssid));
+            //childList.stream().forEach(cuChannelVo -> cuChannelVo.setUuid(UUID.randomUUID().toString()));
+            //childList.stream().forEach(cuChannelVo -> cuChannelVo.setRid(ssid));
             if (CollectionUtil.isNotEmpty(childList)) {
                 Iterator<CuChannelVo> iterator1 = childList.iterator();
                 while (iterator1.hasNext()) {

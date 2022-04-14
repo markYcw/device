@@ -23,6 +23,11 @@
             <artifactId>zf-device-dto</artifactId>
             <version>1.0.6</version>
         </dependency>
+        <dependency>
+            <groupId>com.kedacom.zf</groupId>
+            <artifactId>zf-commons</artifactId>
+            <version>1.2</version>
+        </dependency>
     </dependencies>
 
     <!-- Source attach plugin -->

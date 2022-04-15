@@ -1829,7 +1829,15 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     private void setDeviceListByName(String name, Integer ssid, CuGroupVo cuGroupVo) {
         List<PDevice> deviceList = this.getDeviceList(ssid, cuGroupVo.getId());
         ArrayList<CuDeviceVo> cuDeviceVos = new ArrayList<>();
-        deviceList.stream().forEach(cuDevice -> cuDeviceVos.add(convert.covertToCuDeviceVo(cuDevice)));
+        Iterator<PDevice> ite = deviceList.iterator();
+        while (ite.hasNext()){
+            PDevice next = ite.next();
+            List<SrcChn> srcChns = next.getSrcChns();
+            List<CuChannelVo> collect = srcChns.stream().map(srcChn -> convert.convertToCuChannelVo(srcChn)).collect(Collectors.toList());
+            CuDeviceVo cuDeviceVo = convert.covertToCuDeviceVo(next);
+            cuDeviceVo.setChildList(collect);
+            cuDeviceVos.add(cuDeviceVo);
+        }
         //cuDeviceVos.stream().forEach(cuDeviceVo -> cuDeviceVo.setUuid(UUID.randomUUID().toString()));
         Iterator<CuDeviceVo> iterator = cuDeviceVos.iterator();
         Integer cuGroupOnLine = 0;

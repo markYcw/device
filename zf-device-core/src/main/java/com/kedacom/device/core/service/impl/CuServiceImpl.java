@@ -149,7 +149,12 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         while (iterator.hasNext()){
             CuEntity cuEntity = iterator.next();
             if(cuEntity.getModelType()==null||cuEntity.getModelType().equals("")){
-                String  domainId = this.getDomainSingle(cuEntity.getId());
+                String  domainId = null;
+                try {
+                    domainId = this.getDomainSingle(cuEntity.getId());
+                } catch (Exception e) {
+                    log.info("========CU分页接口查询平台域ID失败{}",e);
+                }
                 cuEntity.setModelType(domainId);
                 cuMapper.updateById(cuEntity);
             }

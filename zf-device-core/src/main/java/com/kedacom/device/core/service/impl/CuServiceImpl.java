@@ -143,9 +143,17 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         Page<CuEntity> platformEntityPage = cuMapper.selectPage(page, queryWrapper);
         List<CuEntity> records = platformEntityPage.getRecords();
         //查询监控平台连接状态
-        log.info("分页查询监控平台链接状态开始");
         List<CuEntity> cuEntities = queryCuStatus(records);
-        log.info("分页查询监控平台链接状态结束");
+        //查询平台域ID
+        Iterator<CuEntity> iterator = cuEntities.iterator();
+        while (iterator.hasNext()){
+            CuEntity cuEntity = iterator.next();
+            if(cuEntity.getModelType()==null||cuEntity.getModelType().equals("")){
+                String  domainId = this.getDomainSingle(cuEntity.getId());
+                cuEntity.setModelType(domainId);
+                cuMapper.updateById(cuEntity);
+            }
+        }
         //转化为DevEntityVo
         List<DevEntityVo> vos = cuEntities.stream().map(cuEntity -> convert.convertToDevEntityVo(cuEntity)).collect(Collectors.toList());
         BasePage<DevEntityVo> basePage = new BasePage<>();

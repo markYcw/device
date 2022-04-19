@@ -36,7 +36,7 @@ public class PowerDeviceListVo extends PageReqVo implements Serializable {
     /**
      * 使用状态（0：关；1：开）
      */
-    @ApiModelProperty(value = "使用状态（0：关；1：开）")
+    @ApiModelProperty(value = "使用状态（0：关；1：开）", required = false)
     private Integer state;
 
 }

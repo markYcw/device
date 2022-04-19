@@ -1,5 +1,6 @@
 package com.kedacom.device.core.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -368,6 +369,9 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         }
         if (StringUtils.isNotBlank(powerDeviceListVo.getName())) {
             wrapper.like(PowerDeviceEntity::getName, powerDeviceListVo.getName());
+        }
+        if (ObjectUtil.isNotNull(powerDeviceListVo.getState())) {
+            wrapper.eq(PowerDeviceEntity::getState, powerDeviceListVo.getState());
         }
         Page<PowerDeviceEntity> powerDeviceEntityPage = powerDeviceMapper.selectPage(page, wrapper);
         List<PowerDeviceListRspVo> powerDeviceListRspVos = powerPortConvert.convertToPowerDeviceListRspVo(powerDeviceEntityPage.getRecords());

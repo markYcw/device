@@ -33,4 +33,10 @@ public class PowerDeviceListVo extends PageReqVo implements Serializable {
     @ApiModelProperty(value = "设备IP地址", required = false)
     private String ip;
 
+    /**
+     * 使用状态（0：关；1：开）
+     */
+    @ApiModelProperty(value = "使用状态（0：关；1：开）")
+    private Integer state;
+
 }

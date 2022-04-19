@@ -17,7 +17,7 @@ public abstract class PageReqVo {
 
     @ApiModelProperty(value = "每页多少")
     @Min(value = 1, message = "每页条数不合法")
-    private Integer pageSize = 25;
+    private Integer pageSize = 10;
 
     @ApiModelProperty(value = "开始时间")
     private String startTime;

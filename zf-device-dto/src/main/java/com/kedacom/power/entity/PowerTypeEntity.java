@@ -1,13 +1,12 @@
 package com.kedacom.power.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -30,6 +29,20 @@ public class PowerTypeEntity implements Serializable {
 
     @ApiModelProperty(value = "电源设备类型")
     private String devType;
+
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty(value = "创建时间")
+    @TableField(fill = FieldFill.INSERT, updateStrategy = FieldStrategy.NOT_NULL)
+    private Date createTime;
+
+    /**
+     * 修改时间
+     */
+    @ApiModelProperty(value = "修改时间")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Date updateTime;
 
 
 }

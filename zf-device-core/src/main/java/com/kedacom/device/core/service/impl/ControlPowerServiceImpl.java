@@ -211,6 +211,9 @@ public class ControlPowerServiceImpl implements ControlPowerService {
                     .filter(a -> powerDeviceAddVo.getIp().equals(a.getIpAddr())).findAny();
             if (deviceVoOptional.isPresent()) {
                 entity.setMac(deviceVoOptional.get().getMacAddr());
+                if (ObjectUtil.isNotNull(deviceVoOptional.get().getChannels())) {
+                    entity.setChannels(deviceVoOptional.get().getChannels());
+                }
             }
         }
         AssertBiz.OBJECT_NONE_NULL.notNull(entity.getMac(), KmResultCodeEnum.ERROR_OF_DEVICE_MAC_NOT_FOUND);
@@ -281,8 +284,8 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         return Result.succeed(powerDeviceEntity.getId());
     }
 
-    /*
-    修改BWANT_IPM_08类型的电源设备
+    /**
+     * 修改BWANT_IPM_08类型的电源设备
      */
     private void dealUpdateBwant(PowerDeviceEntity powerDeviceEntity, PowerDeviceUpdateVo powerDeviceUpdateVo) {
         if (StringUtils.isNotBlank(powerDeviceUpdateVo.getName())) {
@@ -298,6 +301,9 @@ public class ControlPowerServiceImpl implements ControlPowerService {
             if (deviceVoOptional.isPresent()) {
                 powerDeviceEntity.setMac(deviceVoOptional.get().getMacAddr());
                 powerDeviceEntity.setState(DevTypeConstant.updateRecordKey);
+                if (ObjectUtil.isNotNull(deviceVoOptional.get().getChannels())) {
+                    powerDeviceEntity.setChannels(deviceVoOptional.get().getChannels());
+                }
             } else {
                 powerDeviceEntity.setMac(null);
             }
@@ -310,8 +316,8 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         AssertBiz.OBJECT_NONE_NULL.isNull(powerDeviceMapper.selectOne(wrapper), KmResultCodeEnum.ERROR_OF_DEVICE_ALREADY_INUSE);
     }
 
-    /*
-    修改Rk100类型的电源设备
+    /**
+     * 修改Rk100类型的电源设备
      */
     private void dealUpdateRK100(PowerDeviceEntity powerDeviceEntity, PowerDeviceUpdateVo powerDeviceUpdateVo) {
         //AssertBiz.OBJECT_IS_TRUE.isTrue(mapEntity.contains(powerDeviceEntity.getId()), KmResultCodeEnum.ERROR_OF_RK100_ALREADY_LOGIN_IN); // 已登录RK100设备的不允许修改
@@ -440,6 +446,9 @@ public class ControlPowerServiceImpl implements ControlPowerService {
             powerDeviceVo.setDeviceName(device.getDeviceName());
             powerDeviceVo.setIpAddr(device.getIpAddr());
             powerDeviceVo.setMacAddr(device.getMacAddr());
+            if (ObjectUtil.isNotNull(device.getChannels())) {
+                powerDeviceVo.setChannels(device.getChannels());
+            }
             powerDeviceVos.add(powerDeviceVo);
         }
 

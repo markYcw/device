@@ -28,4 +28,7 @@ public class PowerDeviceVo implements Serializable {
 
     @ApiModelProperty(value = "设备ip地址")
     private String ipAddr;
+
+    @ApiModelProperty(value = "电源通道数量")
+    private int channels;
 }

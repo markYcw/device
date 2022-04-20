@@ -17,9 +17,10 @@ import java.io.IOException;
 import java.util.List;
 
 /**
+ *
  * @ClassName ControlPowerController
  * @Description 电源配置相关接口
- * @Author zlf
+ * @Aauthor zlf
  * @Date 2021/5/25 9:13
  */
 @Api(description = "电源配置业务API", tags = {"电源配置业务controller"})

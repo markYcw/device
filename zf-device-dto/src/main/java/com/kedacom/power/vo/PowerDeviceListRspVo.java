@@ -63,6 +63,12 @@ public class PowerDeviceListRspVo implements Serializable {
     private Integer state;
 
     /**
+     * 电源通道数量
+     */
+    @ApiModelProperty(value = "电源通道数量")
+    private Integer channels;
+
+    /**
      * RK100设备序列号
      */
     @ApiModelProperty(value = "RK100设备序列号")

@@ -1,11 +1,16 @@
 package com.kedacom.power.entity;
 
+import io.swagger.annotations.ApiModel;
+import lombok.Data;
+
 /**
  * @author gaoteng
  * @version v1.0
  * @date 2021/8/12 14:45
  * @description
  */
+@Data
+@ApiModel(value = "返回给查询方参数")
 public class Device {
 
     /**
@@ -23,36 +28,9 @@ public class Device {
      */
     private String ipAddr;
 
-    public String getDeviceName() {
-        return deviceName;
-    }
+    /**
+     * 通道数量
+     */
+    private int channels;
 
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
-    }
-
-    public String getMacAddr() {
-        return macAddr;
-    }
-
-    public void setMacAddr(String macAddr) {
-        this.macAddr = macAddr;
-    }
-
-    public String getIpAddr() {
-        return ipAddr;
-    }
-
-    public void setIpAddr(String ipAddr) {
-        this.ipAddr = ipAddr;
-    }
-
-    @Override
-    public String toString() {
-        return "Device{" +
-                "deviceName='" + deviceName + '\'' +
-                ", macAddr='" + macAddr + '\'' +
-                ", ipAddr='" + ipAddr + '\'' +
-                '}';
-    }
 }

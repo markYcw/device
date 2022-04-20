@@ -1,5 +1,6 @@
 package com.kedacom.power;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.kedacom.power.callback.Callback;
 import com.kedacom.power.entity.Device;
 import com.kedacom.power.entity.DeviceInfo;
@@ -280,6 +281,9 @@ public class ControlPower {
             device.setDeviceName(deviceInfo.getDeviceName());
             device.setIpAddr(deviceInfo.getIpAddr());
             device.setMacAddr(deviceInfo.getMacAddr());
+            if (ObjectUtil.isNotNull(deviceInfo.getChannels())) {
+                device.setChannels(deviceInfo.getChannels());
+            }
             map.put(deviceInfo.getMacAddr(), device);
         }
         return map;

@@ -1,13 +1,13 @@
 package com.kedacom.power.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -57,6 +57,12 @@ public class PowerDeviceEntity implements Serializable {
     private String mac;
 
     /**
+     * 电源通道数量
+     */
+    @ApiModelProperty(value = "电源通道数量")
+    private Integer channels;
+
+    /**
      * 使用状态（0：关；1：开）
      */
     private Integer state;
@@ -65,6 +71,20 @@ public class PowerDeviceEntity implements Serializable {
      * RK100设备序列号
      */
     private String deviceSn;
+
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty(value = "创建时间")
+    @TableField(fill = FieldFill.INSERT, updateStrategy = FieldStrategy.NOT_NULL)
+    private Date createTime;
+
+    /**
+     * 修改时间
+     */
+    @ApiModelProperty(value = "修改时间")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Date updateTime;
 
 
 }

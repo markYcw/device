@@ -6,6 +6,8 @@
     <resultMap id="BaseResultMap" type="com.kedacom.power.entity.PowerConfigEntity">
         <id column="id" property="id" />
         <result column="port" property="port" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->

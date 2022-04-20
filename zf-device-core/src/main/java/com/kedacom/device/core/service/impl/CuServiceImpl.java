@@ -447,6 +447,10 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     public BaseResult logoutById(CuRequestDto dto) {
         synchronized (this){
             CuEntity entity = cuMapper.selectById(dto.getKmId());
+            if(entity.getSsid()==null){
+                log.error("CU登出时ssid为NULL登出失败");
+                return BaseResult.succeed("登出成功");
+            }
             //去除底层session
             CuSessionManager manager = cuDeviceLoadThread.getCuClient().getSessionManager();
             manager.removeSession(entity.getSsid());

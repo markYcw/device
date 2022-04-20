@@ -53,6 +53,8 @@ public interface SvrService extends IService<SvrEntity> {
      */
     BaseResult<SvrCapVo> svrCap(Integer dbId);
 
+    void synData();
+
     /**
      * 获取SVR时间
      * @param dbId

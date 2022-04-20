@@ -26,4 +26,7 @@ public class SvrCapResponse extends SvrResponse {
     @ApiModelProperty("远程通道起始id")
     private Integer remChnIdStart;
 
+    @ApiModelProperty("svr设备型号")
+    private String svrModel;
+
 }

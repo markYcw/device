@@ -27,5 +27,8 @@ public class SvrCapVo implements Serializable {
     @ApiModelProperty("远程通道起始id")
     private Integer remChnIdStart;
 
+    @ApiModelProperty("svr设备型号")
+    private String svrModel;
+
 
 }

@@ -78,6 +78,9 @@ public class SvrEntity {
 	@TableField(fill = FieldFill.INSERT_UPDATE)
 	private Date modifyTime;
 
+	@ApiModelProperty(value = "SVR数据迁移标识")
+	private Integer dc;
+
 
 
 

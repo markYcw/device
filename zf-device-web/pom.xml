@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <artifactId>zf-device-web</artifactId>
     <description>项目web统一访问模块</description>
 

@@ -178,6 +178,10 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
         log.info("登录SVR中间件应答:{}", string);
 
         SvrLoginResponse response = JSON.parseObject(string, SvrLoginResponse.class);
+        if (response.getCode()==7){
+            log.info("=======登录svr失败code=7");
+            return 0;
+        }
         String errorMsg = "SVR登录失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg, DeviceErrorEnum.SVR_LOGIN_FAILED, response);
         entity.setSsid(response.getSsid());

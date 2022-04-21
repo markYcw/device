@@ -1847,13 +1847,20 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         List<PDevice> deviceList = this.getDeviceList(ssid, cuGroupVo.getId());
         ArrayList<CuDeviceVo> cuDeviceVos = new ArrayList<>();
         Iterator<PDevice> ite = deviceList.iterator();
-        while (ite.hasNext()){
-            PDevice next = ite.next();
-            List<SrcChn> srcChns = next.getSrcChns();
-            List<CuChannelVo> collect = srcChns.stream().map(srcChn -> convert.convertToCuChannelVo(srcChn)).collect(Collectors.toList());
-            CuDeviceVo cuDeviceVo = convert.covertToCuDeviceVo(next);
-            cuDeviceVo.setChildList(collect);
-            cuDeviceVos.add(cuDeviceVo);
+        try {
+            while (ite.hasNext()){
+                PDevice next = ite.next();
+                List<SrcChn> srcChns = next.getSrcChns();
+                if(CollectionUtil.isNotEmpty(srcChns)){
+                    List<CuChannelVo> collect = srcChns.stream().map(srcChn -> convert.convertToCuChannelVo(srcChn)).collect(Collectors.toList());
+                    CuDeviceVo cuDeviceVo = convert.covertToCuDeviceVo(next);
+                    cuDeviceVo.setChildList(collect);
+                    cuDeviceVos.add(cuDeviceVo);
+                }
+            }
+        } catch (Exception e) {
+            log.error("======根据名称查找设备设置设备信息出错{}",e);
+            e.printStackTrace();
         }
         //cuDeviceVos.stream().forEach(cuDeviceVo -> cuDeviceVo.setUuid(UUID.randomUUID().toString()));
         Iterator<CuDeviceVo> iterator = cuDeviceVos.iterator();

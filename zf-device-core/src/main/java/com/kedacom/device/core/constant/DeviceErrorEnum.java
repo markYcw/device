@@ -217,6 +217,9 @@ public enum DeviceErrorEnum {
     SCHEDULE_SET_MEDIA_FAILED(9008, "设置调度组媒体源失败"),
     SCHEDULE_PTZ_CONTROLLER(9009, "调度组PTZ控制失败"),
 
+    //新媒体相关错误码
+    NM_LOGOUT_FAILED(10000, "登出新媒体失败"),
+
 
     ;
 

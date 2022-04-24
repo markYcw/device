@@ -13,6 +13,7 @@ import com.kedacom.device.mp.MpResponse;
 import com.kedacom.device.svr.SvrResponse;
 import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import com.kedacom.mt.MtResponse;
+import com.kedacom.newMedia.resopnse.NewMediaResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -150,6 +151,20 @@ public class HandleResponseUtil {
         if (ObjectUtil.notEqual(res.getCode(), DeviceConstants.SUCCESS)) {
                 log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
                 throw new SvrException(res.getCode(), errorEnum.getMsg());
+        }
+    }
+
+    /**
+     * 处理新媒体异常
+     *
+     * @param str
+     * @param errorEnum
+     * @param res
+     */
+    public void handleNewMediaRes(String str, DeviceErrorEnum errorEnum, NewMediaResponse res) {
+        if (ObjectUtil.notEqual(res.getCode(), DeviceConstants.SUCCESS)) {
+            log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
+            throw new NewMediaException(res.getCode(), errorEnum.getMsg());
         }
     }
 

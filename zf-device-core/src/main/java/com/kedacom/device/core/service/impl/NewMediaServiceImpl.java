@@ -1,0 +1,554 @@
+package com.kedacom.device.core.service.impl;
+
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.kedacom.BasePage;
+import com.kedacom.BaseResult;
+import com.kedacom.common.constants.DevTypeConstant;
+import com.kedacom.device.core.basicParam.*;
+import com.kedacom.device.core.constant.DeviceErrorEnum;
+import com.kedacom.device.core.convert.NewMediaConvert;
+import com.kedacom.device.core.enums.DeviceModelType;
+import com.kedacom.device.core.exception.NewMediaException;
+import com.kedacom.device.core.mapper.NewMediaMapper;
+import com.kedacom.device.core.notify.nm.NewMediaDeviceCache;
+import com.kedacom.device.core.notify.nm.NewMediaDeviceLoadThread;
+import com.kedacom.device.core.service.NewMediaService;
+import com.kedacom.device.core.utils.ContextUtils;
+import com.kedacom.device.core.utils.HandleResponseUtil;
+import com.kedacom.device.core.utils.RemoteRestTemplate;
+import com.kedacom.newMedia.dto.NMDeviceListDto;
+import com.kedacom.newMedia.dto.NewMediaLoginDto;
+import com.kedacom.newMedia.entity.NewMediaEntity;
+import com.kedacom.newMedia.resopnse.NMDeviceListResponse;
+import com.kedacom.newMedia.resopnse.NewMediaLoginResponse;
+import com.kedacom.newMedia.resopnse.NewMediaResponse;
+import com.kedacom.ums.requestdto.*;
+import com.kedacom.ums.responsedto.UmsDeviceInfoSelectByIdResponseDto;
+import com.kedacom.ums.responsedto.UmsDeviceInfoSelectResponseDto;
+import com.kedacom.util.NumGen;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
+
+import javax.annotation.Resource;
+import java.util.*;
+import java.util.concurrent.*;
+
+/**
+ * @author ycw
+ * @describe
+ * @date 2022/04/02
+ */
+@Slf4j
+@Service
+public class NewMediaServiceImpl implements NewMediaService {
+
+    @Resource
+    private NewMediaMapper mapper;
+
+    @Resource
+    private NewMediaConvert convert;
+
+    @Resource
+    private HandleResponseUtil responseUtil;
+
+    @Resource
+    private RemoteRestTemplate remoteRestTemplate;
+
+    private String newMediaNtyUrl = "127.0.0.1:9000";
+
+    private final static String REQUEST_HEAD = "http://";
+
+    private final static String NOTIFY_URL = "/api/api-device/ums/device/notify";
+
+    @Value("${zf.kmProxy.server_addr}")
+    private String kmProxy;
+
+    //新媒体访问地址
+    private final static String NEW_MEDIA = "/mid/v2/unit";
+
+
+    //newMedia状态池 若成功登录则把数据库ID和登录状态放入此池中1为已登录，若登出或者删除则从此状态池中移除
+    public static ConcurrentHashMap<Integer, Integer> newMediaStatusPoll = new ConcurrentHashMap<>();
+
+    //新媒体设备状态池 若设备加载完则把数据库ID和状态放入此池中1为已加载完所以设备，若登出则从此状态池中移除
+    public static ConcurrentHashMap<Integer, Integer> nmDeviceStatusPoll = new ConcurrentHashMap<>();
+
+    //新媒体心跳状态池 若登出或者掉线则从此状态池中移除
+    public static ConcurrentHashMap<Integer, ScheduledThreadPoolExecutor> hbStatusPoll = new ConcurrentHashMap<>();
+
+    /**
+     * 对名称和IP做唯一校验
+     *
+     * @return
+     */
+    public boolean isAddRepeat(UmsDeviceInfoAddRequestDto dto) {
+        String ip = dto.getDeviceIp();
+        String name = dto.getName();
+        LambdaQueryWrapper<NewMediaEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(NewMediaEntity::getDevIp, ip).or().eq(NewMediaEntity::getName, name);
+        List<NewMediaEntity> devEntitiesInsert = mapper.selectList(wrapper);
+        if (CollectionUtil.isNotEmpty(devEntitiesInsert)) {
+            log.info("=============添加新媒体时IP或名称重复===============");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 对名称和IP做唯一校验
+     *
+     * @return
+     */
+    public boolean isUpdateRepeat(UmsDeviceInfoUpdateRequestDto dto) {
+        String ip = dto.getDeviceIp();
+        String name = dto.getName();
+        LambdaQueryWrapper<NewMediaEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(NewMediaEntity::getDevIp, ip).ne(NewMediaEntity::getId, Integer.valueOf(dto.getId()));
+        List<NewMediaEntity> devEntitiesUpdate = mapper.selectList(wrapper);
+        LambdaQueryWrapper<NewMediaEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(NewMediaEntity::getName, name).ne(NewMediaEntity::getId, Integer.valueOf(dto.getId()));
+        List<NewMediaEntity> devEntities = mapper.selectList(queryWrapper);
+        if (CollectionUtil.isNotEmpty(devEntitiesUpdate) || CollectionUtil.isNotEmpty(devEntities)) {
+            log.info("==================修改新媒体平台时IP或名称重复========================");
+            return false;
+        }
+        return true;
+    }
+
+    public String getUrl() {
+        String url = REQUEST_HEAD + kmProxy + NEW_MEDIA;
+        return url;
+    }
+
+    public NewMediaBasicParam getParam(Integer ssid) {
+        NewMediaBasicParam param = new NewMediaBasicParam();
+        Map<String, Long> paramMap = new HashMap<>();
+        Long s = Long.valueOf(ssid);
+        Long n = (long) NumGen.getNum();
+        paramMap.put("ssid", s);
+        paramMap.put("ssno", n);
+        param.setParamMap(paramMap);
+        param.setUrl(getUrl());
+
+        return param;
+    }
+
+
+    @Override
+    public BaseResult<String> insertUmsDevice(UmsDeviceInfoAddRequestDto requestDto){
+
+        log.info("新增新媒体平台信息参数 ： requestDto {}", requestDto);
+        if (!isAddRepeat(requestDto)) {
+            throw new NewMediaException(DeviceErrorEnum.IP_OR_NAME_REPEAT);
+        }
+        NewMediaEntity entity = new NewMediaEntity();
+        entity.setName(requestDto.getName());
+        entity.setDevType(DeviceModelType.NM.getCode());
+        entity.setDevIp(requestDto.getDeviceIp());
+        entity.setDevPort(requestDto.getDevicePort());
+        entity.setNotifyIp(requestDto.getDeviceNotifyIp());
+        entity.setMediaScheduleIp(requestDto.getMediaIp());
+        entity.setMediaSchedulePort(requestDto.getMediaPort());
+        entity.setNmediaIp(requestDto.getStreamingMediaIp());
+        entity.setNmediaPort(requestDto.getStreamingMediaPort());
+        entity.setRecPort(requestDto.getStreamingMediaRecPort());
+        mapper.insert(entity);
+        try {
+            this.loginById(entity.getId());
+        } catch (ExecutionException e) {
+            log.error("============新增时登录新媒体失败{}",e);
+        } catch (InterruptedException e) {
+            log.error("============新增时登录新媒体失败{}",e);
+        }
+        return BaseResult.succeed("新增新媒体平台成功");
+    }
+
+    public Integer loginById(Integer id) throws ExecutionException, InterruptedException {
+        synchronized (this) {
+            log.info("登录新媒体平台入参信息:{}", id);
+            //登录之前先判断改平台是否已经登录，如果已经登录则无需登录
+            if (newMediaStatusPoll.get(id) != null) {
+                return DevTypeConstant.updateRecordKey;
+            }
+            RestTemplate template = remoteRestTemplate.getRestTemplate();
+            NewMediaEntity entity = mapper.selectById(id);
+            if (entity == null) {
+                throw new NewMediaException(DeviceErrorEnum.DEVICE_NOT_FOUND);
+            }
+            NewMediaLoginDto request = convert.convertToNewMediaLoginDto(entity);
+            String ntyUrl = REQUEST_HEAD + newMediaNtyUrl + NOTIFY_URL;
+            request.setNtyUrl(ntyUrl);
+            String url = getUrl();
+            Map<String, Long> paramMap = new HashMap<>();
+            paramMap.put("ssno", (long) NumGen.getNum());
+
+            log.info("登录新媒体中间件入参信息:{},登录的ssno为：{}", JSON.toJSONString(request), paramMap);
+            String string = template.postForObject(url + "/login/{ssno}", JSON.toJSONString(request), String.class, paramMap);
+            log.info("登录新媒体中间件应答:{}", string);
+
+            NewMediaLoginResponse response = JSON.parseObject(string, NewMediaLoginResponse.class);
+            //如果是密码错误或者是用户不存在首先去除定时任务不进行无限重连
+            if (response.getCode() != 0) {
+                log.error("=============登录新媒体失败错误码为：{}", response.getCode());
+                return DevTypeConstant.updateRecordKey;
+            }
+            //如果登录成功再把ssid保存进数据库
+            entity.setSsid(response.getSsid());
+            entity.setModifyTime(new Date());
+            mapper.updateById(entity);
+            //登录成功以后加载分组和设备信息
+            getGroup(entity);
+            CompletableFuture<Integer> code = CompletableFuture.supplyAsync(() -> getDevice(entity));
+            if(code.get() != 1){
+                NewMediaDeviceCache.getInstance().clearDevice();
+                log.error("=============第一次加载新媒体设备失败尝试第二次加载");
+                CompletableFuture.runAsync(() -> getDevice(entity));
+            }
+            //往新媒体状态池放入当前状态 1已登录
+            newMediaStatusPoll.put(entity.getId(), DevTypeConstant.updateRecordKey);
+            //发送心跳
+            hbTask(entity.getId());
+            return DevTypeConstant.getZero;
+        }
+    }
+
+    private void getGroup(NewMediaEntity entity) {
+        log.info("==========获取分组=========");
+        NewMediaBasicParam param = getParam(entity.getSsid());
+        log.info("获取新媒体分组ssid/ssno{}", param);
+        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/devgrouplist/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
+        log.info("获取新媒体分组中间件响应:{}", exchange.getBody());
+    }
+
+    public Integer getDevice(NewMediaEntity entity) {
+        log.info("======开始获取新媒体设备");
+        int queryIndex = 0;
+        int queryCount = 100;
+        int countNum = 0;
+        NMDeviceListDto listDto = new NMDeviceListDto();
+        listDto.setQueryCount(queryCount);
+        for (int i = 0; i <= countNum; i++) {
+            listDto.setQueryIndex(queryIndex);
+            NMDeviceListResponse response = getDeviceList(entity.getSsid(),listDto);
+            if (response.getCode() != 0) {
+                log.error("从获取第 {} 页设备信息失败", queryIndex);
+                NewMediaDeviceCache.getInstance().clearDevice();
+                return 0;
+            }
+            Integer resultCount = response.getTotal();
+            if (resultCount < queryCount) {
+                if (queryIndex == 1) {
+                    NewMediaDeviceCache.getInstance().clearDevice();
+                    return 0;
+                }
+                //把设备存入cache
+                NewMediaDeviceLoadThread.getInstance().onDevice(response.getDevList());
+            }
+            countNum++;
+            queryIndex++;
+        }
+        //设备加载完往设备状态池中放入设备ID
+        nmDeviceStatusPoll.put(entity.getId(),1);
+        return 1;
+
+
+    }
+
+    public NMDeviceListResponse getDeviceList(Integer ssid, NMDeviceListDto dto) {
+        log.info("======开始获取第{}页设备",dto.getQueryIndex());
+        NewMediaBasicParam param = getParam(ssid);
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl()  + "/devlist/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        log.info("=======获取设备中间件应答{}", s);
+        NMDeviceListResponse response = JSONObject.parseObject(s, NMDeviceListResponse.class);
+        return response;
+    }
+
+
+
+    public void logoutById(Integer id) {
+        synchronized (this) {
+            log.info("======根据ID登出新媒体平台{}", id);
+            NewMediaEntity entity = mapper.selectById(id);
+            //去除底层cache
+            NewMediaDeviceCache.getInstance().clear();
+            //去除心跳定时任务
+            ScheduledThreadPoolExecutor Executor = hbStatusPoll.get(entity.getId());
+            if (ObjectUtil.isNotNull(Executor)) {
+                Executor.shutdownNow();
+                hbStatusPoll.remove(entity.getId());
+            }
+            //往新媒体状态池移除当前新媒体的id
+            newMediaStatusPoll.remove(id);
+            //从新媒体设备状态池中去除当前新媒体的ID
+            nmDeviceStatusPoll.remove(id);
+            NewMediaBasicParam param = getParam(entity.getSsid());
+            log.info("根据ID登出新媒体接口入参Id：{},ssid/ssno{}", id, param);
+            ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, param.getParamMap());
+            log.info("=======登出新媒体应答{}", exchange.getBody());
+            NewMediaResponse response = JSONObject.parseObject(exchange.getBody(), NewMediaResponse.class);
+            String errorMsg = "登出新媒体失败:{},{},{}";
+            responseUtil.handleNewMediaRes(errorMsg, DeviceErrorEnum.CU_LOGOUT_FAILED, response);
+            entity.setSsid(null);
+            mapper.updateById(entity);
+        }
+
+    }
+
+    /**
+     * 新媒体维护心跳定时任务 每1分钟发一次心跳
+     *
+     * @param dbId
+     */
+    public void hbTask(Integer dbId) {
+        ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(1,
+                new ThreadFactoryBuilder().setNameFormat("hbTask-pool-%d").build());
+        // 创建定时任务，每1分钟发送一次心跳
+        scheduled.scheduleAtFixedRate(() -> {
+            hb(dbId);
+        }, 1, 60, TimeUnit.SECONDS);//延迟1秒每1分钟发一次心跳
+        //往心跳状态池放入当前执行任务的scheduled
+        hbStatusPoll.put(dbId, scheduled);
+    }
+
+    /**
+     * 发送心跳 发送失败以后重试3次 三次都失败则不再发送
+     *
+     * @param dbId
+     * @return
+     */
+    public BaseResult<String> hb(Integer dbId) {
+        log.info("新媒体发送心跳接口入参{}", dbId);
+        NewMediaEntity entity = mapper.selectById(dbId);
+        check(entity);
+        NewMediaBasicParam param = getParam(entity.getSsid());
+        log.info("发送新媒体心跳中间件入参ssno/ssid{}", param.getParamMap());
+        ResponseEntity<String> exchange = null;
+        try {
+            exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/hb/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
+            log.info("发送新媒体心跳中间件响应{}", exchange.getBody());
+            NewMediaResponse response = JSONObject.parseObject(exchange.getBody(), NewMediaResponse.class);
+            if (response.getCode() != 0) {
+                NewMediaReLoginParam p = new NewMediaReLoginParam();
+                p.setDbId(dbId);
+                this.reTryLogin(p);
+                log.error("===============发送新媒体心跳时发生返回错误码不是0，即将进行自动重连，数据库ID为：{},返回的错误码为{}", dbId, response.getCode());
+                removeHbTask(dbId);
+                return BaseResult.failed("发送新媒体心跳失败");
+            }
+        } catch (Exception e) {
+            log.error("===============发送新媒体心跳时发生异常，即将进行自动重连，数据库ID为：{},错误原因为{}", dbId, e);
+            //中间件挂了以后先去除心跳任务
+            removeHbTask(dbId);
+            //进行重连
+            CuReLoginParam paramLogin = new CuReLoginParam();
+            paramLogin.setDbId(dbId);
+            CompletableFuture.runAsync(() -> ContextUtils.publishReLogin(paramLogin));
+            return BaseResult.failed("发送新媒体心跳失败");
+        }
+
+        return BaseResult.succeed("发送新媒体心跳成功");
+    }
+
+    /**
+     * 根据数据库ID自动重连每一分钟重连一次
+     *
+     * @param paramLogin
+     */
+    @EventListener
+    public void reTryLogin(NewMediaReLoginParam paramLogin) {
+        log.info("==================观察者收到新媒体发送心跳失败，即将进行自动重连，数据库ID为：{}", paramLogin.getDbId());
+        try {
+            this.logoutById(paramLogin.getDbId());
+        } catch (Exception e) {
+            log.error("===============发送心跳时失败尝试重启新媒体平台的时候先做登出，但登出失败");
+        }
+        reTryLoginNow(paramLogin.getDbId());
+    }
+
+    /**
+     * 根据数据库ID自动重连每一分钟重连一次
+     *
+     * @param dbId
+     */
+    public void reTryLoginNow(Integer dbId) {
+        log.info("=====================新媒体即将进行自动重连数据库ID为：{}", dbId);
+        ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(1,
+                new ThreadFactoryBuilder().setNameFormat("reTryLogin-pool-%d").build());
+        scheduled.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Integer baseResult = loginById(dbId);
+                    if (baseResult == 0) {
+                        scheduled.shutdownNow();
+                    }
+                } catch (Exception e) {
+                    log.error("=======定时任务重连新媒体平台失败");
+                }
+
+            }
+        }, 60, 60, TimeUnit.SECONDS);
+
+    }
+
+    /**
+     * 去除心跳任务并且状态置为离线
+     *
+     * @param dbId
+     */
+    public void removeHbTask(Integer dbId) {
+        log.info("==========去除心跳任务");
+        ScheduledThreadPoolExecutor scheduled = hbStatusPoll.get(dbId);
+        if (ObjectUtil.isNotNull(scheduled)) {
+            scheduled.shutdownNow();
+        }
+        if (newMediaStatusPoll.get(dbId) != null) {
+            newMediaStatusPoll.remove(dbId);
+        }
+    }
+
+    /**
+     * 新媒体非空校验以及是否登录校验
+     *
+     * @param entity
+     */
+    private void check(NewMediaEntity entity) {
+        if (ObjectUtils.isEmpty(entity)) {
+            throw new NewMediaException(DeviceErrorEnum.DEVICE_NOT_FOUND);
+        }
+        if (newMediaStatusPoll.get(entity.getId()) == null) {
+            throw new NewMediaException(DeviceErrorEnum.DEVICE_NOT_LOGIN);
+        }
+    }
+
+    @Override
+    public BaseResult<String> updateUmsDevice(UmsDeviceInfoUpdateRequestDto requestDto) {
+        log.info("更新统一平台信息参数 ： requestDto {}", requestDto);
+        if (!isUpdateRepeat(requestDto)) {
+            throw new NewMediaException(DeviceErrorEnum.IP_OR_NAME_REPEAT);
+        }
+        //更新之前先登出
+        try {
+            this.logoutById(Integer.valueOf(requestDto.getId()));
+        } catch (Exception e) {
+            log.error("=====更新新媒体时登出失败{}", e);
+        }
+        NewMediaEntity entity = mapper.selectById(Integer.valueOf(requestDto.getId()));
+        entity.setName(requestDto.getName());
+        entity.setDevIp(requestDto.getDeviceIp());
+        entity.setDevPort(requestDto.getDevicePort());
+        entity.setNotifyIp(requestDto.getDeviceNotifyIp());
+        entity.setMediaScheduleIp(requestDto.getMediaIp());
+        entity.setMediaSchedulePort(requestDto.getMediaPort());
+        entity.setNmediaIp(requestDto.getStreamingMediaIp());
+        entity.setNmediaPort(requestDto.getStreamingMediaPort());
+        entity.setRecPort(requestDto.getStreamingMediaRecPort());
+        mapper.updateById(entity);
+        try {
+            this.loginById(entity.getId());
+        } catch (ExecutionException e) {
+            log.error("============更新新媒体时登录新媒体失败{}",e);
+        } catch (InterruptedException e) {
+            log.error("============更新新媒体时登录新媒体失败{}",e);
+        }
+        return BaseResult.succeed("修改新媒体平台成功");
+
+    }
+
+
+    @Override
+    public BaseResult<String> deleteUmsDevice(UmsDeviceInfoDeleteRequestDto requestDto) {
+
+        String umsId = requestDto.getUmsId();
+        log.info("删除新媒体平台信息参数 ： requestDto [{}]", umsId);
+        //删除之前先登出
+        try {
+            logoutById(Integer.valueOf(requestDto.getUmsId()));
+        } catch (Exception e) {
+            log.error("========删除新媒体时登出失败");
+        }
+        mapper.deleteById(Integer.valueOf(requestDto.getUmsId()));
+        return BaseResult.succeed("删除成功");
+    }
+
+    @Override
+    public BasePage<UmsDeviceInfoSelectResponseDto> selectUmsDeviceList(UmsDeviceInfoSelectRequestDto requestDto) {
+
+        log.info("==========新媒体分页查询{}", requestDto);
+        Page<NewMediaEntity> page = new Page<>();
+        page.setCurrent(requestDto.getCurPage());
+        page.setSize(requestDto.getPageSize());
+        //条件查询
+        LambdaQueryWrapper<NewMediaEntity> queryWrapper = new LambdaQueryWrapper<>();
+        if (!StringUtils.isEmpty(requestDto.getName())) {
+            queryWrapper.like(NewMediaEntity::getName, requestDto.getName());
+        }
+        Page<NewMediaEntity> platformEntityPage = mapper.selectPage(page, queryWrapper);
+        List<NewMediaEntity> records = platformEntityPage.getRecords();
+        //转化为UmsDeviceInfoSelectResponseDto
+        ArrayList<UmsDeviceInfoSelectResponseDto> dtos = new ArrayList<>();
+        Iterator<NewMediaEntity> iterator = records.iterator();
+        while (iterator.hasNext()) {
+            NewMediaEntity next = iterator.next();
+            UmsDeviceInfoSelectResponseDto dto = new UmsDeviceInfoSelectResponseDto();
+            dto.setId(String.valueOf(next.getId()));
+            dto.setName(next.getName());
+            dto.setDeviceType(String.valueOf(7));
+            dto.setDeviceIp(next.getDevIp());
+            dto.setDevicePort(next.getDevPort());
+            dto.setDeviceNotifyIp(next.getNotifyIp());
+            dto.setMediaIp(next.getMediaScheduleIp());
+            dto.setMediaPort(next.getMediaSchedulePort());
+            dto.setStreamingMediaIp(next.getNmediaIp());
+            dto.setStreamingMediaPort(next.getNmediaPort());
+            dto.setStreamingMediaRecPort(next.getRecPort());
+            dtos.add(dto);
+        }
+        BasePage<UmsDeviceInfoSelectResponseDto> basePage = new BasePage<>();
+        basePage.setTotal(platformEntityPage.getTotal());
+        basePage.setTotalPage(platformEntityPage.getPages());
+        basePage.setCurPage(requestDto.getCurPage());
+        basePage.setPageSize(requestDto.getPageSize());
+        basePage.setData(dtos);
+        return basePage;
+    }
+
+    @Override
+    public UmsDeviceInfoSelectByIdResponseDto getDeviceInfoById(UmsDeviceInfoSelectByIdRequestDto requestDto) {
+
+        String umsId = requestDto.getUmsId();
+        log.info("根据id查询新媒体平台信息参数 ： requestDto [{}]", umsId);
+        NewMediaEntity next = mapper.selectById(Integer.valueOf(umsId));
+        if (next == null) {
+            log.error("根据id查询新媒体平台信息不存在");
+            return null;
+        }
+        UmsDeviceInfoSelectByIdResponseDto dto = new UmsDeviceInfoSelectByIdResponseDto();
+        dto.setId(requestDto.getUmsId());
+        dto.setName(next.getName());
+        dto.setDeviceType(String.valueOf(7));
+        dto.setDeviceIp(next.getDevIp());
+        dto.setDevicePort(next.getDevPort());
+        dto.setDeviceNotifyIp(next.getNotifyIp());
+        dto.setMediaIp(next.getMediaScheduleIp());
+        dto.setMediaPort(next.getMediaSchedulePort());
+        dto.setStreamingMediaIp(next.getNmediaIp());
+        dto.setStreamingMediaPort(next.getNmediaPort());
+        dto.setStreamingMediaRecPort(next.getRecPort());
+        return dto;
+    }
+
+}

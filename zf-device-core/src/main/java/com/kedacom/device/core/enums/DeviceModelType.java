@@ -38,6 +38,11 @@ public enum DeviceModelType {
     CU2(9,"CU2"),
 
     /**
+     * 新媒体平台
+     */
+    NM(7,"NM"),
+
+    /**
      * 存储柜
      */
     CUPBOARD(8,"CUPBOARD"),

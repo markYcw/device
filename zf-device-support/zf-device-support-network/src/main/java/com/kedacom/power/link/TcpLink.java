@@ -102,7 +102,7 @@ public class TcpLink extends Thread {
                         //发送心跳之前先把清除缓存
                         MessageCache.getInstance().clearMac(hostAddress);
                         sender.sendMessage(param);
-                        new GetMac(hostAddress).start();
+                        new GetMac(hostAddress,callback).start();
 
                     }
                     if (key.isReadable()) {
@@ -136,12 +136,17 @@ public class TcpLink extends Thread {
 
         private String ip;
 
-        public GetMac(String ip) {
+        private Callback callback;
+
+        public GetMac(String ip,Callback callback) {
             this.ip = ip;
+            this.callback = callback;
         }
+
 
         @Override
         public void run() {
+            log.info("==========ip为:{}GetMac线程启动,callback:{}",ip,callback);
             int time = 0;
             String mac = null;
             while (time < 10 && null == mac) {

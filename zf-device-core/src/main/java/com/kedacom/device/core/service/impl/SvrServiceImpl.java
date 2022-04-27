@@ -227,7 +227,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
     public void synData() {
         log.info("=========服务启动同步svr定时任务开始");
         LambdaQueryWrapper<SvrEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SvrEntity::getDc, 1);
+        wrapper.eq(SvrEntity::getModelType,"SVR28系列");
         List<SvrEntity> list = svrMapper.selectList(wrapper);
         if (CollectionUtil.isNotEmpty(list)) {
             Iterator<SvrEntity> iterator = list.iterator();
@@ -238,12 +238,9 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
                     BaseResult<SvrCapVo> result = this.svrCap(next.getId());
                     String modelType = result.getData().getSvrModel().substring(0, 7);
                     next.setModelType(modelType);
-                    next.setDc(0);
-                    svrMapper.updateById(next);
                 }else {
                     next.setPort(9765);
                     next.setWebPort(9766);
-                    next.setDc(2);
                     svrMapper.updateById(next);
                     Integer rid =  this.logById(next.getId());
                     if(rid>0){
@@ -253,8 +250,8 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
                     }else {
                         next.setModelType("其他");
                     }
-                    svrMapper.updateById(next);
                 }
+                svrMapper.updateById(next);
             }
         }
     }

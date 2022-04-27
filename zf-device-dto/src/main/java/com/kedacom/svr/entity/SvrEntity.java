@@ -78,6 +78,8 @@ public class SvrEntity {
 	@TableField(fill = FieldFill.INSERT_UPDATE)
 	private Date modifyTime;
 
+	//实体与表字段忽略映射
+	@TableField(exist = false)
 	@ApiModelProperty(value = "SVR数据迁移标识")
 	private Integer dc;
 

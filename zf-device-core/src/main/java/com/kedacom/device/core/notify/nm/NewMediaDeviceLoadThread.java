@@ -114,7 +114,9 @@ public class NewMediaDeviceLoadThread {
     public void onDeviceGroupChangeNotify(NmGroupDeviceChangeNotify notify) {
         Integer type = notify.getOperateType();
         if(type == 7){
+            log.info("============收到分组设备关系变更通知");
             List<NmGroupDeviceIds> groupList = notify.getGroupList();
+            NewMediaDeviceCache.getInstance().deviceGroupChange(groupList);
         }
     }
 
@@ -165,20 +167,27 @@ public class NewMediaDeviceLoadThread {
         Integer type = notify.getOperateType();
         switch (type) {
             case TYPE_DEVICE_STATUS:
+                log.info("===========新媒体设备上下线通知",notify);
                 //设备上下线
                 NewMediaDeviceCache.getInstance().updateDeviceStatus(notify.getDevList());
                 break;
 
             case TYPE_DEVICE_IN:
+                log.info("===========新媒体设备新增通知",notify);
                 //设备新增
+                NewMediaDeviceCache.getInstance().addDevices(notify.getDevList());
                 break;
 
             case TYPE_DEVICE_UPDATE:
+                log.info("===========新媒体设备修改通知",notify);
                 //设备修改
+                NewMediaDeviceCache.getInstance().updateDevices(notify.getDevList());
                 break;
 
             case TYPE_DEVICE_OUT:
+                log.info("===========新媒体设备删除通知",notify);
                 //设备删除
+                NewMediaDeviceCache.getInstance().removeDevices(notify.getDevList());
                 break;
 
             default:

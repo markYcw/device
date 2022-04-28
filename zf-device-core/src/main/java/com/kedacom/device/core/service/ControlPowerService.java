@@ -152,6 +152,8 @@ public interface ControlPowerService {
      */
     Result<List<PowerChannelStateVo>> deviceChannelState(PowerDeviceMessageReqVo powerDeviceMessageReqVo) throws IOException;
 
+    Result<Boolean> deviceTurn(PowerDeviceTurnVO vo);
+
     /**
      * @Description 多个通道开关
      * @param:
@@ -205,5 +207,6 @@ public interface ControlPowerService {
      * @date:
      */
     Result<List<PowerDeviceTypeResponseVo>> getDevType();
+
 
 }

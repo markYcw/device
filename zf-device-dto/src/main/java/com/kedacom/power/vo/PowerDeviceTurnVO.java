@@ -10,18 +10,20 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * @ClassName PowerDeviceChannelTurnsVo
- * @Description 电源配置多个通道具体开关操作参数类
- * @Author zlf
- * @Date 2021/5/25 13:15
+ * @author hxj
+ * @date 2022/4/28 14:11
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Builder
-@ApiModel(description = "电源配置多个通道具体开关操作参数类")
-public class PowerDeviceChannelTurnsVo implements Serializable {
+@ApiModel(description = "电源配置单个通道开关操作参数类")
+public class PowerDeviceTurnVO implements Serializable {
+
+    @NotNull(message = "电源设备数据库Id不能为空")
+    @ApiModelProperty(value = "电源设备数据库Id", required = true)
+    private Integer id;
 
     @NotNull
     @Min(value = 1, message = "通道编号不合法")

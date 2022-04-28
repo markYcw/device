@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @author hxj
+ * @author hxjf
  * @date 2022/4/13 14:17
  */
 @FeignClient(value = "device-server", contextId = "controlPowerApi", path = "/api-device/power",
@@ -93,7 +93,7 @@ public interface ControlPowerApi {
 
     @ApiOperation(value = "单个通道开关（针对Bwant-IPM-08）")
     @PostMapping(value = "/device/turn")
-    Result<Boolean> deviceTurn(@Valid @RequestBody PowerDeviceTurnsVo powerDeviceTurnsVo) throws IOException;
+    Result<Boolean> deviceTurn(@Valid @RequestBody PowerDeviceTurnVO powerDeviceTurnsVo) throws IOException;
 
     @ApiOperation(value = "多个通道开关（针对Bwant-IPM-08）")
     @PostMapping(value = "/device/turns")

@@ -533,6 +533,20 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         return Result.succeed(powerChannelStateVos);
     }
 
+    @Override
+    public Result<Boolean> deviceTurn(PowerDeviceTurnVO vo) {
+        PowerDeviceEntity powerDeviceEntity = powerDeviceMapper.selectById(vo.getId());
+        AssertBiz.OBJECT_NONE_NULL.notNull(powerDeviceEntity, KmResultCodeEnum.ERROR_OF_DATA_NONE);
+        String mac = powerDeviceEntity.getMac();
+        if (ObjectUtil.isNull(vo.getFlag())) {
+            log.info("通道对应开关状态为空，操作失败！");
+            return Result.failed(KmResultCodeEnum.ERROR.getMessage());
+        }
+        boolean flag = Objects.equals(1, vo.getFlag());
+        log.info("单个通道开关请求参数：mac: {}, flag: {}", mac, vo.getFlag());
+        return Result.succeed(ControlPower.getInstance().turn(mac, vo.getChannel(), flag));
+    }
+
     /**
      * @param powerDeviceTurnsVo
      * @Description 多个通道开关

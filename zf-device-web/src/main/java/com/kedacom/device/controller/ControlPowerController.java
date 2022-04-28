@@ -130,8 +130,8 @@ public class ControlPowerController {
 
     @ApiOperation(value = "单个通道开关（针对Bwant-IPM-08）")
     @PostMapping(value = "/device/turn")
-    public Result<Boolean> deviceTurn(@Valid @RequestBody PowerDeviceTurnsVo powerDeviceTurnsVo) throws IOException {
-        return controlPowerService.deviceTurns(powerDeviceTurnsVo);
+    public Result<Boolean> deviceTurn(@Valid @RequestBody PowerDeviceTurnVO powerDeviceTurnsVo) throws IOException {
+        return controlPowerService.deviceTurn(powerDeviceTurnsVo);
     }
 
     @ApiOperation(value = "多个通道开关（针对Bwant-IPM-08）")

@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- *
  * @ClassName ControlPowerController
  * @Description 电源配置相关接口
  * @Aauthor zlf
@@ -130,11 +129,11 @@ public class ControlPowerController {
 
     @ApiOperation(value = "单个通道开关（针对Bwant-IPM-08）")
     @PostMapping(value = "/device/turn")
-    public Result<Boolean> deviceTurn(@Valid @RequestBody PowerDeviceTurnVO powerDeviceTurnsVo) throws IOException {
-        return controlPowerService.deviceTurn(powerDeviceTurnsVo);
+    public Result<Boolean> deviceTurn(@Valid @RequestBody PowerDeviceTurnVO vo) throws IOException {
+        return controlPowerService.deviceTurn(vo);
     }
 
-    @ApiOperation(value = "多个通道开关（针对Bwant-IPM-08）")
+    @ApiOperation(value = "单个电源多个通道开关（针对Bwant-IPM-08）")
     @PostMapping(value = "/device/turns")
     public Result<Boolean> deviceTurns(@Valid @RequestBody PowerDeviceTurnsVo powerDeviceTurnsVo) throws IOException {
         return controlPowerService.deviceTurns(powerDeviceTurnsVo);

@@ -2,7 +2,9 @@ package com.kedacom.device.core.notify.cu.loadGroup;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.kedacom.BaseResult;
+import com.kedacom.cu.dto.GbIdDto;
 import com.kedacom.cu.dto.PuIdOneDto;
+import com.kedacom.cu.vo.GbIdVo;
 import com.kedacom.cu.vo.PuIdOneVo;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 import com.kedacom.device.core.service.CuService;
@@ -193,10 +195,26 @@ public class CuDeviceCache {
             dto.setKmId(device.getDbId());
             one = cuService.puIdOne(dto);
             device.setPuIdOne(one.getData().getPuId());
+            //接下来是查询国标ID
+            List<SrcChn> srcChns = device.getChannels();
+            if(CollectionUtil.isNotEmpty(srcChns)){
+                Iterator<SrcChn> ite = srcChns.iterator();
+                GbIdDto gbIdDto = new GbIdDto();
+                gbIdDto.setKmId(device.getDbId());
+                gbIdDto.setChn(0);
+                gbIdDto.setDomain(device.getDomain());
+                gbIdDto.setPuId(device.getPuId());
+                while (ite.hasNext()){
+                    SrcChn next = ite.next();
+                    gbIdDto.setSrc(next.getSn());
+                    BaseResult<GbIdVo> result = cuService.gbId(gbIdDto);
+                    next.setGbId(result.getData().getGbId());
+                }
+            }
             //查询成功后往1.0PuId池里放入设备
             devicesOne.put(device.getPuIdOne(),device);
         } catch (Exception e) {
-            log.error("加载设备1.0PuId失败,设备信息：{}", device);
+            log.error("加载设备1.0PuId失败,设备信息：{}，失败原因为：{}", device,e);
         }
     }
 

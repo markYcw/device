@@ -23,6 +23,9 @@ public class CuChannelVo {
     @ApiModelProperty("平台2.0叫“视频源编号”，平台1.0叫“设备通道号")
     private Integer sn;
 
+    @ApiModelProperty("国标ID")
+    private String gbId;
+
     /**
      * 视频源名称/通道名称
      */

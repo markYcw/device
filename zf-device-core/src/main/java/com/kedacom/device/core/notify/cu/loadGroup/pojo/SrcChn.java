@@ -17,6 +17,9 @@ public class SrcChn {
     @ApiModelProperty("设备编号")
     private String puId;
 
+    @ApiModelProperty("国标ID")
+    private String gbId;
+
     @ApiModelProperty("视频源编号")
     private Integer sn;
 

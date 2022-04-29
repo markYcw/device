@@ -229,29 +229,34 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
         LambdaQueryWrapper<SvrEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SvrEntity::getModelType,"SVR28系列");
         List<SvrEntity> list = svrMapper.selectList(wrapper);
+        log.info("获取到的svr28系列集合为:{}",list);
         if (CollectionUtil.isNotEmpty(list)) {
             Iterator<SvrEntity> iterator = list.iterator();
-            while (iterator.hasNext()) {
-                SvrEntity next = iterator.next();
-                Integer ssid = this.logById(next.getId());
-                if(ssid>0){
-                    BaseResult<SvrCapVo> result = this.svrCap(next.getId());
-                    String modelType = result.getData().getSvrModel().substring(0, 7);
-                    next.setModelType(modelType);
-                }else {
-                    next.setPort(9765);
-                    next.setWebPort(9766);
-                    svrMapper.updateById(next);
-                    Integer rid =  this.logById(next.getId());
-                    if(rid>0){
+            try {
+                while (iterator.hasNext()) {
+                    SvrEntity next = iterator.next();
+                    Integer ssid = this.logById(next.getId());
+                    if(ssid>0){
                         BaseResult<SvrCapVo> result = this.svrCap(next.getId());
                         String modelType = result.getData().getSvrModel().substring(0, 7);
                         next.setModelType(modelType);
                     }else {
-                        next.setModelType("其他");
+                        next.setPort(9765);
+                        next.setWebPort(9766);
+                        svrMapper.updateById(next);
+                        Integer rid =  this.logById(next.getId());
+                        if(rid>0){
+                            BaseResult<SvrCapVo> result = this.svrCap(next.getId());
+                            String modelType = result.getData().getSvrModel().substring(0, 7);
+                            next.setModelType(modelType);
+                        }else {
+                            next.setModelType("其他");
+                        }
                     }
+                    svrMapper.updateById(next);
                 }
-                svrMapper.updateById(next);
+            } catch (Exception e) {
+                log.error("数据迁移时登录svr失败{}",e);
             }
         }
     }

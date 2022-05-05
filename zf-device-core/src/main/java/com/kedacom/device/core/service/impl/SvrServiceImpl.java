@@ -18,6 +18,8 @@ import com.kedacom.device.core.exception.SvrException;
 import com.kedacom.device.core.mapper.SvrMapper;
 import com.kedacom.device.core.notify.stragegy.DeviceType;
 import com.kedacom.device.core.notify.stragegy.NotifyHandler;
+import com.kedacom.device.core.ping.DefaultPing;
+import com.kedacom.device.core.ping.PingInfo;
 import com.kedacom.device.core.service.SvrService;
 import com.kedacom.device.core.utils.*;
 import com.kedacom.device.svr.SvrResponse;
@@ -43,6 +45,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,6 +70,9 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
 
     @Autowired
     private HandleResponseUtil responseUtil;
+
+    @Resource
+    DefaultPing defaultPing;
 
     @Value("${zf.svrNtyUrl.server_addr:127.0.0.1:9000}")
     private String svrNtyUrl;
@@ -235,6 +241,10 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
             try {
                 while (iterator.hasNext()) {
                     SvrEntity next = iterator.next();
+                    boolean alive = defaultPing.isAlive(new PingInfo(next.getIp()));
+                    if(!alive){
+                        continue;
+                    }
                     Integer ssid = this.logById(next.getId());
                     if(ssid>0){
                         BaseResult<SvrCapVo> result = this.svrCap(next.getId());

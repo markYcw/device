@@ -68,7 +68,7 @@ public class CuDeviceCache {
      * 设备
      * key:分组ID, value：分组下的设备，根据名称排序。
      */
-    private Hashtable<String, ArrayList<PDevice>> devicesByGroup = new Hashtable<String, ArrayList<PDevice>>(20);
+    private Hashtable<String, ArrayList<PDevice>> devicesByGroup = new Hashtable<String, ArrayList<PDevice>>(100);
 
     public void setRootGroupId(String rootGroupId) {
         this.rootGroupId = rootGroupId;
@@ -178,6 +178,23 @@ public class CuDeviceCache {
      */
     public PGroup getPGroupById(String groupId) {
         return groups.get(groupId);
+    }
+
+    /**
+     * 加载1.0PuID
+     */
+    public void loadPuIdOneAll(){
+        Collection<ArrayList<PDevice>> values = devicesByGroup.values();
+        log.info("开始加载1.0puId{}",values);
+        Iterator<ArrayList<PDevice>> iterator = values.iterator();
+        while (iterator.hasNext()){
+            ArrayList<PDevice> next = iterator.next();
+            Iterator<PDevice> ite = next.iterator();
+            while (ite.hasNext()){
+                PDevice ne = ite.next();
+                this.loadPuIdOne(ne);
+            }
+        }
     }
 
     /**
@@ -424,8 +441,14 @@ public class CuDeviceCache {
      */
     public List<PDevice> getDevices() {
         List<PDevice> list = new ArrayList<PDevice>(20);
-        for (ArrayList<PDevice> devices : devicesByGroup.values()) {
+        /*for (ArrayList<PDevice> devices : devicesByGroup.values()) {
             list.addAll(devices);
+        }*/
+        Collection<ArrayList<PDevice>> values = devicesByGroup.values();
+        Iterator<ArrayList<PDevice>> iterator = values.iterator();
+        while (iterator.hasNext()){
+            ArrayList<PDevice> next = iterator.next();
+            list.addAll(next);
         }
         return list;
     }

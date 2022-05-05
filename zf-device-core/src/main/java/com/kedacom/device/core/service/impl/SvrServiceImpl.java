@@ -242,6 +242,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
                 while (iterator.hasNext()) {
                     SvrEntity next = iterator.next();
                     boolean alive = defaultPing.isAlive(new PingInfo(next.getIp()));
+                    log.info("=======此次ping设备结果为{},设备IP为{}",alive,next.getIp());
                     if(!alive){
                         continue;
                     }

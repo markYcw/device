@@ -265,9 +265,10 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
                             String modelType = result.getData().getSvrModel().substring(0, 7);
                             next.setModelType(modelType);
                             svrMapper.updateById(next);
+                        }else {
+                            continue;
                         }
                     }
-
                 }
             } catch (Exception e) {
                 log.error("数据迁移时登录svr失败{}",e);

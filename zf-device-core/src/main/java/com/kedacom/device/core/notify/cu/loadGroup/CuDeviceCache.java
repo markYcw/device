@@ -212,6 +212,8 @@ public class CuDeviceCache {
             dto.setKmId(device.getDbId());
             one = cuService.puIdOne(dto);
             device.setPuIdOne(one.getData().getPuId());
+            //查询成功后往1.0PuId池里放入设备
+            devicesOne.put(device.getPuIdOne(),device);
             //接下来是查询国标ID
             List<SrcChn> srcChns = device.getChannels();
             if(CollectionUtil.isNotEmpty(srcChns)){
@@ -228,8 +230,6 @@ public class CuDeviceCache {
                     next.setGbId(result.getData().getGbId());
                 }
             }
-            //查询成功后往1.0PuId池里放入设备
-            devicesOne.put(device.getPuIdOne(),device);
         } catch (Exception e) {
             log.error("加载设备1.0PuId失败,设备信息：{}，失败原因为：{}", device,e);
         }
@@ -317,6 +317,7 @@ public class CuDeviceCache {
      * @return
      */
     public PDevice getDeviceByOne(String puId) {
+        log.info("1.0puID和设备容器情况{}",devicesOne);
         return this.devicesOne.get(puId);
     }
 

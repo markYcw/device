@@ -179,7 +179,7 @@ public enum DeviceErrorEnum {
     GET_CU_GROUP_ERROR(6023,"获取监控平台（分组/设备）信息失败，设备未加载完成请稍后重试"),
     GET_CU_CHANNEL_LIST_ERROR(6024,"获取设备通道集合信息失败"),
     CU_GB_ID_ERROR(6025,"获取国标id失败"),
-    CU_Pu_ID_TWO_ERROR(6026,"获取平台2.0puId失败"),
+    CU_Pu_ID_TWO_ERROR(6026,"根据平台1.0puId查询不到设备，获取平台2.0puId失败"),
     CU_SUBSCRIBE_ERROR(6027,"单个设备状态订阅失败"),
     CU_Pu_ID_ONE_ERROR(6028,"获取平台1.0puId失败"),
 

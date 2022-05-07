@@ -566,7 +566,8 @@ public class CuDeviceLoadThread {
         PGroup rootGroup = deviceCache.getPGroupById(deviceCache.getRootGroupId());
         //统计设备数
         CompletableFuture.runAsync(() -> deviceCache.deviceCount(rootGroup));
-        //解决No thread-bound request found: Are you referring to request attributes outside
+        //2.在开启新线程之前，将servletRequestAttributes设置为子线程共享
+        //解决No thread-bound request found: Are you referring to request attributes outside 在其中使用RequestContextHolder来获取request信息，发现异步调用时，主线程结束后，子线程就获取不到request，会报以上错误信息。
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         RequestContextHolder.setRequestAttributes(servletRequestAttributes,true);//设置子线程共享
         //加载1.0PuId

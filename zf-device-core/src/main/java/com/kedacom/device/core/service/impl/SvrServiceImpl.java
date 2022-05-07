@@ -254,6 +254,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
                         BaseResult<SvrCapVo> result = this.svrCap(next.getId());
                         String modelType = result.getData().getSvrModel().substring(0, 7);
                         next.setModelType(modelType);
+                        svrMapper.updateById(next);
                     }else {
                         next.setPort(9765);
                         next.setWebPort(9766);
@@ -263,9 +264,10 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
                             BaseResult<SvrCapVo> result = this.svrCap(next.getId());
                             String modelType = result.getData().getSvrModel().substring(0, 7);
                             next.setModelType(modelType);
+                            svrMapper.updateById(next);
                         }
                     }
-                    svrMapper.updateById(next);
+
                 }
             } catch (Exception e) {
                 log.error("数据迁移时登录svr失败{}",e);

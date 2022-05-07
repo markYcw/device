@@ -95,9 +95,8 @@ public class ControlPowerApiFallBackFactory implements FallbackFactory<ControlPo
             }
 
             @Override
-            public Result<Boolean> deviceTurn(@Valid PowerDeviceTurnsVo powerDeviceTurnsVo) throws IOException {
-                return Result.failed(throwable.getMessage());
-
+            public Result<Boolean> deviceTurn(@Valid PowerDeviceTurnVO powerDeviceTurnsVo) throws IOException {
+                return null;
             }
 
             @Override

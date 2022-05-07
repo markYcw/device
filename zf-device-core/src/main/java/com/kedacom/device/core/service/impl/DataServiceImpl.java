@@ -18,8 +18,8 @@ import java.io.File;
 
 /**
  * @author ycw
- * @deprecated 数据迁移
  * @date 2022/04/28
+ * @deprecated 数据迁移
  */
 @Slf4j
 @Service("dataService")
@@ -31,7 +31,7 @@ public class DataServiceImpl extends ServiceImpl<DataMapper, DataEntity> impleme
     @Autowired
     private DataSource dataSource;
 
-    private static final String sqlPath="/opt/kedacom/web/config/databases/movedata.sql";
+    private static final String sqlPath = "/opt/kedacom/web/config/databases/movedata.sql";
 
 
     @Override
@@ -50,10 +50,12 @@ public class DataServiceImpl extends ServiceImpl<DataMapper, DataEntity> impleme
     @Override
     public void dcOne() {
         File file = new File(sqlPath);
-        if(file.exists()){
+        if (file.exists()) {
             try {
-                PathResource resource = new PathResource(sqlPath);
-                ScriptUtils.executeSqlScript(dataSource.getConnection(), resource);
+                if (!check(1) || getResult(1) != 1) {
+                    PathResource resource = new PathResource(sqlPath);
+                    ScriptUtils.executeSqlScript(dataSource.getConnection(), resource);
+                }
             } catch (Exception e) {
                 log.error("========执行数据迁移时出错", e);
                 if (!check(1)) {
@@ -66,8 +68,21 @@ public class DataServiceImpl extends ServiceImpl<DataMapper, DataEntity> impleme
                 DataEntity entity = new DataEntity();
                 entity.setDc(1);
                 dataMapper.insert(entity);
+            }else {
+                updateResult(1);
             }
         }
+    }
+
+    public void updateResult(Integer id){
+        DataEntity entity = dataMapper.selectById(id);
+        entity.setDc(1);
+        dataMapper.updateById(entity);
+    }
+
+    public Integer getResult(Integer id) {
+        DataEntity entity = dataMapper.selectById(id);
+        return entity.getDc();
     }
 
     public boolean check(Integer id) {

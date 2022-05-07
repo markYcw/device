@@ -241,6 +241,9 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
             try {
                 while (iterator.hasNext()) {
                     SvrEntity next = iterator.next();
+                    next.setPort(8765);
+                    next.setWebPort(8766);
+                    svrMapper.updateById(next);
                     boolean alive = defaultPing.isAlive(new PingInfo(next.getIp()));
                     log.info("=======此次ping设备结果为{},设备IP为{}",alive,next.getIp());
                     if(!alive){
@@ -260,8 +263,6 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
                             BaseResult<SvrCapVo> result = this.svrCap(next.getId());
                             String modelType = result.getData().getSvrModel().substring(0, 7);
                             next.setModelType(modelType);
-                        }else {
-                            next.setModelType("其他");
                         }
                     }
                     svrMapper.updateById(next);

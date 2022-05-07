@@ -1,10 +1,9 @@
 package com.kedacom.power.common;
 
+
 /**
- * @author gaoteng
- * @version v1.0
- * @date 2021/4/7 16:50
- * @description
+ * @author hxj
+ * @date 2022/5/7 14:16:01
  */
 public class DataPack {
 

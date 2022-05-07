@@ -5,10 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * @author gaoteng
- * @version v1.0
- * @date 2021/8/10 14:14
- * @description
+ * @author hxj
+ * @date 2022/5/7 14:16:01
  */
 @Slf4j
 public class MessageConsumer implements Runnable {

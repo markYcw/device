@@ -4,10 +4,8 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 /**
- * @author gaoteng
- * @version v1.0
- * @date 2021/8/12 14:45
- * @description
+ * @author hxj
+ * @date 2022/5/7 14:16:01
  */
 @Data
 @ApiModel(value = "返回给查询方参数")

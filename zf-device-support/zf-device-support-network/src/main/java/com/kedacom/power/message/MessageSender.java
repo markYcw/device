@@ -15,10 +15,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * @author gaoteng
- * @version v1.0
- * @date 2021/8/9 17:01
- * @description
+ * @author hxj
+ * @date 2022/5/7 14:16:01
  */
 @Slf4j
 public class MessageSender {

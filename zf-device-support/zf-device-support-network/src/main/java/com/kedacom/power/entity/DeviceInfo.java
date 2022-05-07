@@ -3,10 +3,8 @@ package com.kedacom.power.entity;
 import java.util.Map;
 
 /**
- * @author gaoteng
- * @version v1.0
- * @date 2021/8/5 16:09
- * @description
+ * @author hxj
+ * @date 2022/5/7 14:16:01
  */
 public class DeviceInfo extends Device {
 

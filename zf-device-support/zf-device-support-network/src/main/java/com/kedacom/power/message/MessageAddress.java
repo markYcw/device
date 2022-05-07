@@ -1,10 +1,8 @@
 package com.kedacom.power.message;
 
 /**
- * @author gaoteng
- * @version v1.0
- * @date 2021/8/13 10:20
- * @description
+ * @author hxj
+ * @date 2022/5/7 14:16:01
  */
 public class MessageAddress {
 

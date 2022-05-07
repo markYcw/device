@@ -5,10 +5,8 @@ import com.kedacom.power.entity.Device;
 import java.util.List;
 
 /**
- * @author gaoteng
- * @version v1.0
- * @date 2021/8/14 9:39
- * @description
+ * @author hxj
+ * @date 2022/5/7 14:16:01
  */
 public interface Callback {
     /**

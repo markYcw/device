@@ -1,10 +1,8 @@
 package com.kedacom.power.message;
 
 /**
- * @author gaoteng
- * @version v1.0
- * @date 2021/8/9 10:10
- * @description
+ * @author hxj
+ * @date 2022/5/7 14:16:01
  */
 public class MessageType {
     public static final int VOLTAGE = 1;

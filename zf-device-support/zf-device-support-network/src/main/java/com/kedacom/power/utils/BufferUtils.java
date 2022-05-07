@@ -1,13 +1,10 @@
 package com.kedacom.power.utils;
 
-
 import java.nio.ByteBuffer;
 
 /**
- * @author gaoteng
- * @version v1.0
- * @date 2021/8/6 16:50
- * @description
+ * @author hxj
+ * @date 2022/5/7 14:16:01
  */
 public class BufferUtils {
 

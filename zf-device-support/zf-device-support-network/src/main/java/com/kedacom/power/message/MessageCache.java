@@ -7,10 +7,8 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * @author gaoteng
- * @version v1.0
- * @date 2021/8/12 15:53
- * @description
+ * @author hxj
+ * @date 2022/5/7 14:16:01
  */
 public class MessageCache {
 

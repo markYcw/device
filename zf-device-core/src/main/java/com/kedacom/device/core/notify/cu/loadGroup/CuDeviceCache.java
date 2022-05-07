@@ -12,6 +12,8 @@ import com.kedacom.device.core.utils.ContextUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.text.Collator;
 import java.util.*;
@@ -184,6 +186,10 @@ public class CuDeviceCache {
      * 加载1.0PuID
      */
     public void loadPuIdOneAll(){
+        //2.在开启新线程之前，将servletRequestAttributes设置为子线程共享
+        //解决No thread-bound request found: Are you referring to request attributes outside 在其中使用RequestContextHolder来获取request信息，发现异步调用时，主线程结束后，子线程就获取不到request，会报以上错误信息。
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        RequestContextHolder.setRequestAttributes(servletRequestAttributes,true);//设置子线程共享
         Collection<ArrayList<PDevice>> values = devicesByGroup.values();
         log.info("开始加载1.0puId{}",values);
         Iterator<ArrayList<PDevice>> iterator = values.iterator();

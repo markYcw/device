@@ -24,6 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -564,6 +566,9 @@ public class CuDeviceLoadThread {
         PGroup rootGroup = deviceCache.getPGroupById(deviceCache.getRootGroupId());
         //统计设备数
         CompletableFuture.runAsync(() -> deviceCache.deviceCount(rootGroup));
+        //解决No thread-bound request found: Are you referring to request attributes outside
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        RequestContextHolder.setRequestAttributes(servletRequestAttributes,true);//设置子线程共享
         //加载1.0PuId
         CompletableFuture.runAsync(()->deviceCache.loadPuIdOneAll());
         LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();

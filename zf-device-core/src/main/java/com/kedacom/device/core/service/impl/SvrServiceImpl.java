@@ -241,6 +241,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
             try {
                 while (iterator.hasNext()) {
                     SvrEntity next = iterator.next();
+                    log.info("====开始处理svr28系列IP：{}",next.getIp());
                     next.setPort(8765);
                     next.setWebPort(8766);
                     svrMapper.updateById(next);

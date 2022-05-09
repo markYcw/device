@@ -66,7 +66,7 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
         poolExecutor.schedule(()->cuService.logoutCu(),1,TimeUnit.SECONDS);
         poolExecutor.schedule(()->cuService.initCu(),2, TimeUnit.MINUTES);
         //执行svr数据迁移功能
-        poolExecutor.scheduleAtFixedRate(()->svrService.synData(),1,600,TimeUnit.SECONDS);
+        poolExecutor.scheduleAtFixedRate(()->svrService.synData(),1,60,TimeUnit.SECONDS);
 
         if (kmProxy.contains(DEVICE_PORT)) {
             ConnectorListenerManager.getInstance().register(connectorListener);

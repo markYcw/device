@@ -184,14 +184,10 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
         log.info("登录SVR中间件应答:{}", string);
 
         SvrLoginResponse response = JSON.parseObject(string, SvrLoginResponse.class);
-        if (response.getCode()==7){
-            log.info("=======登录svr失败code=7");
+        if (response.getCode()!=0){
+            log.info("=======登录svr失败code!=0");
             return 0;
         }
-        String errorMsg = "SVR登录失败:{},{},{}";
-        responseUtil.handleSvrRes(errorMsg, DeviceErrorEnum.SVR_LOGIN_FAILED, response);
-        entity.setSsid(response.getSsid());
-        svrMapper.updateById(entity);
         return response.getSsid();
     }
 
@@ -266,8 +262,6 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
                             String modelType = result.getData().getSvrModel().substring(0, 7);
                             next.setModelType(modelType);
                             svrMapper.updateById(next);
-                        }else {
-                            continue;
                         }
                     }
                 }

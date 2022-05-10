@@ -568,6 +568,9 @@ public class CuDeviceLoadThread {
         CompletableFuture.runAsync(() -> deviceCache.deviceCount(rootGroup));
         //加载1.0PuId
         CompletableFuture.runAsync(()->deviceCache.loadPuIdOneAll());
+        //deviceCache.loadPuIdOneAll();
+        CompletableFuture.runAsync(()->deviceCache.loadGbId());
+        //deviceCache.loadGbId();
         LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(CuEntity::getSsid, ssid);
         List<CuEntity> cuEntities = cuMapper.selectList(wrapper);

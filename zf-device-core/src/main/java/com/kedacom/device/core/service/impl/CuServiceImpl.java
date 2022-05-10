@@ -508,7 +508,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_DOMAINS_FAILED,response);
         DomainsVo vo = JSON.parseObject(exchange.getBody(), DomainsVo.class);
         //记录操作日志
-        logUtil.operateLog(modelName,"获取域链表成功",HttpServletRequest.getHeader("Authorization"));
+        //logUtil.operateLog(modelName,"获取域链表成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("获取域链表成功",vo);
     }
 
@@ -526,7 +526,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         TimeVo vo = JSON.parseObject(exchange.getBody(), TimeVo.class);
         Long cuTime = Long.valueOf(vo.getTime());
         //记录操作日志
-        logUtil.operateLog(modelName,"获取平台时间成功",HttpServletRequest.getHeader("Authorization"));
+        //logUtil.operateLog(modelName,"获取平台时间成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("获取平台时间成功",cuTime);
     }
 
@@ -738,7 +738,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_VIEW_TREES_FAILED,response);
         ViewTreesVo vo = JSON.parseObject(exchange.getBody(), ViewTreesVo.class);
         //记录操作日志
-        logUtil.operateLog(modelName,"获取多视图设备树成功",HttpServletRequest.getHeader("Authorization"));
+        //logUtil.operateLog(modelName,"获取多视图设备树成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("获取多视图设备树成功",vo);
     }
 
@@ -754,7 +754,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         String errorMsg = "选择当前操作的设备树失败:{},{},{}";
         responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_SELECT_TREE_FAILED,response);
         //记录操作日志
-        logUtil.operateLog(modelName,"选择当前操作的设备树成功",HttpServletRequest.getHeader("Authorization"));
+        //logUtil.operateLog(modelName,"选择当前操作的设备树成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("选择当前操作的设备树成功");
     }
 
@@ -816,7 +816,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         assert response != null;
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_CONTROL_PTZ_FAILED, response);
         //记录操作日志
-        logUtil.operateLog(modelName,"PTZ控制操作成功",HttpServletRequest.getHeader("Authorization"));
+       // logUtil.operateLog(modelName,"PTZ控制操作成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed(null, "PTZ控制操作成功");
     }
 
@@ -838,7 +838,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         assert response != null;
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_START_REC_FAILED, response);
         //记录操作日志
-        logUtil.operateLog(modelName,"开启平台录像成功",HttpServletRequest.getHeader("Authorization"));
+        //logUtil.operateLog(modelName,"开启平台录像成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed(null, true);
     }
 
@@ -860,7 +860,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         assert response != null;
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_STOP_REC_FAILED, response);
         //记录操作日志
-        logUtil.operateLog(modelName,"关闭平台录像成功",HttpServletRequest.getHeader("Authorization"));
+        //logUtil.operateLog(modelName,"关闭平台录像成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed(null, true);
     }
 
@@ -881,8 +881,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         String errorMsg = "开启前端录像操作失败 : {}, {}, {}";
         assert response != null;
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_START_PU_REC_FAILED, response);
-        //记录操作日志
-        logUtil.operateLog(modelName,"开启前端录像成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed(null, true);
     }
 
@@ -903,8 +901,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         String errorMsg = "关闭前端录像操作失败 : {}, {}, {}";
         assert response != null;
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_STOP_PU_REC_FAILED, response);
-        //记录操作日志
-        logUtil.operateLog(modelName,"关闭前端录像成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed(null, true);
     }
 
@@ -930,8 +926,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         String errorMsg = "打开录像锁定操作失败 : {}, {}, {}";
         assert response != null;
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_OPEN_LOCKING_REC_FAILED, response);
-        //记录操作日志
-        logUtil.operateLog(modelName,"打开录像锁定成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed(null, true);
     }
 
@@ -957,8 +951,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         String errorMsg = "取消录像锁定操作失败 : {}, {}, {}";
         assert response != null;
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_CANCEL_LOCKING_REC_FAILED, response);
-        //记录操作日志
-        logUtil.operateLog(modelName,"取消录像锁定成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed(null, true);
     }
 
@@ -984,8 +976,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         assert response != null;
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_QUERY_VIDEO_FAILED, response);
         QueryVideoResponseVo responseVo = JSONObject.parseObject(responseStr, QueryVideoResponseVo.class);
-        //记录操作日志
-        logUtil.operateLog(modelName,"查询录像成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed(null, responseVo);
     }
 
@@ -1011,8 +1001,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         assert response != null;
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_QUERY_VIDEO_DAYS_FAILED, response);
         QueryVideoCalendarResponseVo responseVo = JSON.parseObject(responseStr, QueryVideoCalendarResponseVo.class);
-        //记录操作日志
-        logUtil.operateLog(modelName,"查询录像日历成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed(null, responseVo);
     }
 
@@ -1032,8 +1020,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         assert response != null;
         responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_QUERY_DISK_FAILED, response);
         QueryDiskResponseVo responseVo = JSON.parseObject(exchange.getBody(), QueryDiskResponseVo.class);
-        //记录操作日志
-        logUtil.operateLog(modelName,"查询磁阵(磁盘)信息成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed(null, responseVo);
     }
 
@@ -1158,8 +1144,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 SrcChn pChannel = optionalCuChannel.get();
                 cuChannelVo = convert.convertToCuChannelVo(pChannel);
             }
-            //记录操作日志
-            logUtil.operateLog(modelName,"获取设备具体通道信息成功",HttpServletRequest.getHeader("Authorization"));
             return BaseResult.succeed("获取设备具体通道信息成功",cuChannelVo);
         } catch (Exception e) {
             log.error("获取设备通道具体通道信息失败{}", e.getMessage());
@@ -1203,8 +1187,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         String errorMsg = "获取国标id接口失败:{},{},{}";
         responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_GB_ID_ERROR,response);
         GbIdVo vo = JSON.parseObject(s, GbIdVo.class);
-        //记录操作日志
-        logUtil.operateLog(modelName,"获取国标id接口成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("获取国标id接口成功",vo);
     }
 
@@ -1220,8 +1202,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         String errorMsg = "获取平台2.0puId失败:{},{},{}";
         responseUtil.handleCuRes(errorMsg,DeviceErrorEnum.CU_Pu_ID_TWO_ERROR,response);
         PuIdTwoVo vo = JSON.parseObject(s, PuIdTwoVo.class);
-        //记录操作日志
-        logUtil.operateLog(modelName,"获取平台2.0puId成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("获取平台2.0puId成功",vo);
     }
 
@@ -1305,8 +1285,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         List<CuGroupVo> collect = groupList.stream().map(pGroup -> convert.covertToCuGroupVo(pGroup)).collect(Collectors.toList());
         DevEntityVo devEntityVo = convert.convertToDevEntityVo(devEntity);
         devEntityVo.setChildList(collect);
-        //记录操作日志
-        logUtil.operateLog(modelName,"获取监控平台根分组信息成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("获取分组信息成功",devEntityVo);
     }
 
@@ -1337,8 +1315,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 collect.add(cuDeviceVo);
             }
         }
-        //记录操作日志
-        logUtil.operateLog(modelName,"根据组ID获取设备信息成功成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("获取设备信息成功",collect);
     }
 
@@ -1354,8 +1330,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         PGroup pGroup = cuDeviceLoadThread.getPGroupById(cuEntity.getSsid(), requestDto.getGroupId());
         List<PGroup> sortChildGroups = pGroup.getSortChildGroups();
         List<CuGroupVo> collect = sortChildGroups.stream().map(a -> convert.covertToCuGroupVo(a)).collect(Collectors.toList());
-        //记录操作日志
-        logUtil.operateLog(modelName,"获取子分组成功",HttpServletRequest.getHeader("Authorization"));
         return BaseResult.succeed("获取子分组成功", collect);
     }
 

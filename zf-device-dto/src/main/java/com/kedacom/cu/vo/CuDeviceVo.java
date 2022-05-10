@@ -44,6 +44,9 @@ public class CuDeviceVo {
     @ApiModelProperty("设备号")
     private String puId;
 
+    @ApiModelProperty("国标ID")
+    private String gbId;
+
     /**
      * 设备名称
      */

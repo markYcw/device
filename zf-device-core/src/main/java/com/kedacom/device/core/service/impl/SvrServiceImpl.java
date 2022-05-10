@@ -253,6 +253,7 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
                         next.setModelType(modelType);
                         svrMapper.updateById(next);
                     }else {
+                        log.info("======端口8765没登录成功，尝试9765ip{}",next.getIp());
                         next.setPort(9765);
                         next.setWebPort(9766);
                         svrMapper.updateById(next);

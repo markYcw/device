@@ -34,6 +34,9 @@ public class PDevice {
 	@ApiModelProperty("设备号")
 	private String puId;
 
+	@ApiModelProperty("国标ID")
+	private String gbId;
+
 	@ApiModelProperty("平台1.0对应puId")
 	private String puIdOne;
 

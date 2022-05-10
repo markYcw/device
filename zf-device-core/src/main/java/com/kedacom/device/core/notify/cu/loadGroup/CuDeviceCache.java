@@ -186,10 +186,6 @@ public class CuDeviceCache {
      * 加载1.0PuID
      */
     public void loadPuIdOneAll(){
-        //2.在开启新线程之前，将servletRequestAttributes设置为子线程共享
-        //解决No thread-bound request found: Are you referring to request attributes outside 在其中使用RequestContextHolder来获取request信息，发现异步调用时，主线程结束后，子线程就获取不到request，会报以上错误信息。
-        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        RequestContextHolder.setRequestAttributes(servletRequestAttributes,true);//设置子线程共享
         Collection<ArrayList<PDevice>> values = devicesByGroup.values();
         log.info("开始加载1.0puId{}",values);
         Iterator<ArrayList<PDevice>> iterator = values.iterator();
@@ -199,6 +195,23 @@ public class CuDeviceCache {
             while (ite.hasNext()){
                 PDevice ne = ite.next();
                 this.loadPuIdOne(ne);
+            }
+        }
+    }
+
+    /**
+     * 加载设备国标ID
+     */
+    public void loadGbId(){
+        Collection<ArrayList<PDevice>> values = devicesByGroup.values();
+        log.info("开始加载国标ID{}",values);
+        Iterator<ArrayList<PDevice>> iterator = values.iterator();
+        while (iterator.hasNext()){
+            ArrayList<PDevice> next = iterator.next();
+            Iterator<PDevice> ite = next.iterator();
+            while (ite.hasNext()){
+                PDevice ne = ite.next();
+                this.loadGbId(ne);
             }
         }
     }
@@ -220,6 +233,28 @@ public class CuDeviceCache {
             device.setPuIdOne(one.getData().getPuId());
             //查询成功后往1.0PuId池里放入设备
             devicesOne.put(device.getPuIdOne(),device);
+        } catch (Exception e) {
+            log.error("加载设备1.0PuId失败,设备信息：{}，失败原因为：{}", device,e);
+        }
+    }
+
+    /**
+     * 加载设备平台1.0对应国标ID
+     *
+     * @param device
+     */
+    public void loadGbId(PDevice device) {
+        log.info("加载设备国标ID{}",device);
+        try {
+            CuService cuService = ContextUtils.getBean(CuService.class);
+            GbIdDto dto= new GbIdDto();
+            dto.setKmId(device.getDbId());
+            dto.setChn(0);
+            dto.setDomain(device.getDomain());
+            dto.setPuId(device.getPuId());
+            dto.setSrc(0);
+            BaseResult<GbIdVo> res = cuService.gbId(dto);
+            device.setGbId(res.getData().getGbId());
             //接下来是查询国标ID
             List<SrcChn> srcChns = device.getChannels();
             if(CollectionUtil.isNotEmpty(srcChns)){
@@ -237,7 +272,7 @@ public class CuDeviceCache {
                 }
             }
         } catch (Exception e) {
-            log.error("加载设备1.0PuId失败,设备信息：{}，失败原因为：{}", device,e);
+            log.error("加载设备国标ID失败,设备信息：{}，失败原因为：{}", device,e);
         }
     }
 

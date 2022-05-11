@@ -285,35 +285,31 @@ public class CuDeviceLoadThread {
         int type = notify.getStateType();
         switch (type) {
             case GetDeviceStatusNotify.TYPE_DEVICE_STATUS:
-                log.info("===========加载设备上线状态开始{}", notify.getSsno());
+                log.info("===========加载设备上线状态开始SSNo为：{}，puId为：{}", notify.getSsno(),puid);
                 //设备上下线
                 Integer online = notify.getOnline();
                 if (online != null) {
                     this.onDeviceStatus(ssid, puid, online);
                 }
-                log.info("===========加载设备上线状态结束{}", notify.getSsno());
                 break;
 
             case GetDeviceStatusNotify.TYPE_Channel:
                 //视频源（通道）上下线
-                log.info("===========加载设备通道状态开始{}", notify.getSsno());
+                log.info("===========加载设备通道状态开始SSNo为：{}，puId为：{}", notify.getSsno(),puid);
                 List<SrcChns> srcChns = notify.getSrcChns();
                 this.onDeviceChnStatus(ssid, puid, srcChns);
-                log.info("===========加载设备通道状态结束{}", notify.getSsno());
                 break;
 
             case GetDeviceStatusNotify.TYPE_ALARM:
                 log.info("===========加载设备告警状态开始{}", notify.getSsno());
                 //报警（告警）收到报警通知以后给前端以及业务发通知内容
                 this.onDeviceChnAlarm(notify);
-                log.info("===========加载设备告警状态结束{}", notify.getSsno());
                 break;
             case GetDeviceStatusNotify.TYPE_REC:
                 //录像状态
                 log.info("===========加载设备录像状态开始{}", notify.getSsno());
                 List<Rec> recs = notify.getRecs();
                 this.onDeviceChnRecStatus(ssid, puid, recs);
-                log.info("===========加载设备录像状态结束{}", notify.getSsno());
                 break;
 
             case GetDeviceStatusNotify.TYPE_GPS:
@@ -359,7 +355,7 @@ public class CuDeviceLoadThread {
 
 
     //设备状态
-    private void onDeviceStatus(int ssid, String puid, Integer online) {
+    private synchronized void onDeviceStatus(int ssid, String puid, Integer online) {
         if (online == null) {
             return;
         }
@@ -387,7 +383,7 @@ public class CuDeviceLoadThread {
     }
 
     //设备通道状态
-    private void onDeviceChnStatus(int ssid, String puid, List<SrcChns> srcChns) {
+    private synchronized void onDeviceChnStatus(int ssid, String puid, List<SrcChns> srcChns) {
         CuSession session = client.getSessionManager().getSessionBySSID(ssid);
         if (session != null) {
             CuDeviceCache deviceCache = session.getDeviceCache();

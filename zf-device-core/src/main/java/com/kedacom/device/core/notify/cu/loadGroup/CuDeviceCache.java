@@ -10,11 +10,6 @@ import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 import com.kedacom.device.core.service.CuService;
 import com.kedacom.device.core.utils.ContextUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
 import java.text.Collator;
 import java.util.*;
 
@@ -187,7 +182,6 @@ public class CuDeviceCache {
      */
     public void loadPuIdOneAll(){
         Collection<ArrayList<PDevice>> values = devicesByGroup.values();
-        log.info("开始加载1.0puId{}",values);
         Iterator<ArrayList<PDevice>> iterator = values.iterator();
         while (iterator.hasNext()){
             ArrayList<PDevice> next = iterator.next();
@@ -204,7 +198,6 @@ public class CuDeviceCache {
      */
     public void loadGbId(){
         Collection<ArrayList<PDevice>> values = devicesByGroup.values();
-        log.info("开始加载国标ID{}",values);
         Iterator<ArrayList<PDevice>> iterator = values.iterator();
         while (iterator.hasNext()){
             ArrayList<PDevice> next = iterator.next();

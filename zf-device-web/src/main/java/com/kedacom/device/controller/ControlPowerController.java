@@ -1,7 +1,9 @@
 package com.kedacom.device.controller;
 
 import com.kedacom.common.model.Result;
+import com.kedacom.device.core.power.ConfigPower;
 import com.kedacom.device.core.service.ControlPowerService;
+import com.kedacom.power.entity.Device;
 import com.kedacom.power.model.PageRespVo;
 import com.kedacom.power.vo.*;
 import io.swagger.annotations.Api;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author hxj
@@ -28,6 +31,9 @@ public class ControlPowerController {
 
     @Autowired
     private ControlPowerService controlPowerService;
+
+    @Autowired
+    private ConfigPower configPower;
 
     @ApiOperation("获取电源支持的类型")
     @GetMapping("getDevType")
@@ -72,6 +78,28 @@ public class ControlPowerController {
         return controlPowerService.getDeviceById(id);
     }
 
+    @ApiOperation(value = "局域网配置")
+    @GetMapping(value = "/device/lanConfig")
+    @ApiImplicitParams({@ApiImplicitParam(name = "ip", required = false, value = "广播搜索的服务器ip")
+            , @ApiImplicitParam(name = "timeout", required = false, value = "超时时间")
+            , @ApiImplicitParam(name = "searchTime", required = false, value = "广播搜索时间")})
+    public void lanConfig(@RequestParam("ip") String ip,
+                          @RequestParam("timeout") Long timeout,
+                          @RequestParam("searchTime") Long searchTime) {
+        configPower.init(ip, timeout, searchTime);
+    }
+
+    @ApiOperation(value = "局域网搜索")
+    @GetMapping(value = "/device/lanSearch")
+    public Result<Set<Device>> lanSearch() {
+        try {
+            final Set<Device> devices = configPower.searchDevices();
+            return Result.succeed(devices);
+        } catch (Exception e) {
+            log.error("局域网搜索失败：{}", e.getMessage());
+            return Result.failed("局域网搜索失败：" + e.getMessage());
+        }
+    }
     /*
      * ================================================Bwant-IPM-08操作==============================================================
      */

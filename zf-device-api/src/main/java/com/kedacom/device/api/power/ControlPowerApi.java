@@ -2,6 +2,7 @@ package com.kedacom.device.api.power;
 
 import com.kedacom.common.model.Result;
 import com.kedacom.device.api.power.fallback.ControlPowerApiFallBackFactory;
+import com.kedacom.power.entity.Device;
 import com.kedacom.power.model.PageRespVo;
 import com.kedacom.power.vo.*;
 import io.swagger.annotations.ApiImplicitParam;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author hxjf
@@ -54,6 +56,15 @@ public interface ControlPowerApi {
     @ApiImplicitParams({@ApiImplicitParam(name = "id", required = true, value = "设备数据库Id")})
     Result<PowerDeviceListRspVo> getDeviceById(@RequestParam(value = "id") int id);
 
+    @ApiOperation(value = "局域网配置")
+    @GetMapping(value = "/device/lanConfig")
+    void lanConfig(@RequestParam("ip") String ip,
+                   @RequestParam("timeout") Long timeout,
+                   @RequestParam("searchTime") Long searchTime);
+
+    @ApiOperation(value = "局域网搜索")
+    @GetMapping(value = "/device/lanSearch")
+    Result<Set<Device>> lanSearch();
     /*
      * ================================================Bwant-IPM-08操作==============================================================
      */

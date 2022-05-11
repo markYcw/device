@@ -2,6 +2,7 @@ package com.kedacom.device.api.power.fallback;
 
 import com.kedacom.common.model.Result;
 import com.kedacom.device.api.power.ControlPowerApi;
+import com.kedacom.power.entity.Device;
 import com.kedacom.power.model.PageRespVo;
 import com.kedacom.power.vo.*;
 import feign.hystrix.FallbackFactory;
@@ -9,6 +10,7 @@ import feign.hystrix.FallbackFactory;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author hxj
@@ -50,6 +52,16 @@ public class ControlPowerApiFallBackFactory implements FallbackFactory<ControlPo
 
             @Override
             public Result<PowerDeviceListRspVo> getDeviceById(int id) {
+                return Result.failed(throwable.getMessage());
+            }
+
+            @Override
+            public void lanConfig(String ip, Long timeout, Long searchTime) {
+
+            }
+
+            @Override
+            public Result<Set<Device>> lanSearch() {
                 return Result.failed(throwable.getMessage());
             }
 

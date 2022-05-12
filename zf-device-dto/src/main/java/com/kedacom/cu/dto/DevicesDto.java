@@ -26,4 +26,10 @@ public class DevicesDto extends CuRequestDto {
     @Valid
     private Subscribe subscribe;
 
+    @ApiModelProperty("设备组id")
+    private Integer needPuId10;
+
+    @ApiModelProperty("设备组id")
+    private Integer needGbId;
+
 }

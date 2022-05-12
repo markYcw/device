@@ -22,6 +22,7 @@ import com.kedacom.deviceListener.notify.cu.*;
 import com.kedacom.pojo.SystemWebSocketMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -58,6 +59,8 @@ public class CuDeviceLoadThread {
     @Autowired
     private CuConvert convert;
 
+    @Value("${zf.cu.need_gn:0}")
+    private Integer gn;
 
     /**
      * 当前正在加载的ssid
@@ -168,6 +171,13 @@ public class CuDeviceLoadThread {
         devicesDto.setSubscribe(subscribe);
         devicesDto.setKmId(cuEntity.getId());
         devicesDto.setGroupId(groupId);
+        if(gn==0){
+            devicesDto.setNeedPuId10(1);
+            devicesDto.setNeedGbId(1);
+        }else {
+            devicesDto.setNeedPuId10(1);
+            devicesDto.setNeedGbId(1);
+        }
         cuService.devices(devicesDto);
     }
 
@@ -562,11 +572,6 @@ public class CuDeviceLoadThread {
         PGroup rootGroup = deviceCache.getPGroupById(deviceCache.getRootGroupId());
         //统计设备数
         CompletableFuture.runAsync(() -> deviceCache.deviceCount(rootGroup));
-        //加载1.0PuId
-        CompletableFuture.runAsync(()->deviceCache.loadPuIdOneAll());
-        //deviceCache.loadPuIdOneAll();
-        CompletableFuture.runAsync(()->deviceCache.loadGbId());
-        //deviceCache.loadGbId();
         LambdaQueryWrapper<CuEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(CuEntity::getSsid, ssid);
         List<CuEntity> cuEntities = cuMapper.selectList(wrapper);

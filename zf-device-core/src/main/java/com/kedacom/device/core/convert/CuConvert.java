@@ -67,4 +67,6 @@ public interface CuConvert {
     RecVo convertToRecVo(Rec rec);
 
     QueryCuVideoVo convertToQueryCuVideoVo(QueryVideoInsideNotify notify);
+
+    EnChnVo convertToEnChnVo(EnChn enChn);
 }

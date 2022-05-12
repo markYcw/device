@@ -44,6 +44,9 @@ public class CuDeviceVo {
     @ApiModelProperty("设备号")
     private String puId;
 
+    @ApiModelProperty("平台1.0对应puId")
+    private String puId10;
+
     @ApiModelProperty("国标ID")
     private String gbId;
 
@@ -81,11 +84,20 @@ public class CuDeviceVo {
     @ApiModelProperty("设备厂商")
     private String manufact;
 
+    @ApiModelProperty("编码通道数")
+    private Integer encoderChnNum;
+
+    @ApiModelProperty("视频源数")
+    private Integer devSrcNum;
+
     /**
-     * 通道列表
+     * 视频源列表
      */
-    @ApiModelProperty("通道列表")
+    @ApiModelProperty("视频源列表")
     private List<CuChannelVo> childList = new ArrayList<>();
+
+    @ApiModelProperty("编码通道列表")
+    private List<EnChnVo> enChnVos;
 
     /**
      * 设备是否在线

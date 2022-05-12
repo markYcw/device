@@ -28,10 +28,7 @@ import com.kedacom.device.core.notify.cu.loadGroup.CuClient;
 import com.kedacom.device.core.notify.cu.loadGroup.CuDeviceLoadThread;
 import com.kedacom.device.core.notify.cu.loadGroup.CuSession;
 import com.kedacom.device.core.notify.cu.loadGroup.CuSessionManager;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.CuSessionStatus;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.PDevice;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.PGroup;
-import com.kedacom.device.core.notify.cu.loadGroup.pojo.SrcChn;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 import com.kedacom.device.core.notify.stragegy.DeviceType;
 import com.kedacom.device.core.notify.stragegy.NotifyHandler;
 import com.kedacom.device.core.service.CuService;
@@ -1300,7 +1297,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         Integer ssid = devEntity.getSsid();
         String groupId = requestDto.getGroupId();
         List<PDevice> deviceList = this.getDeviceList(ssid, groupId);
-        log.debug("获取到的设备信息为：{}",deviceList);
         List<CuDeviceVo> collect = new ArrayList<>();
         Iterator<PDevice> iterator = deviceList.iterator();
         while (iterator.hasNext()){
@@ -1311,6 +1307,11 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 if(CollectionUtil.isNotEmpty(srcChns)){
                     List<CuChannelVo> chnCollect = srcChns.stream().map(a -> convert.convertToCuChannelVo(a)).collect(Collectors.toList());
                     cuDeviceVo.setChildList(chnCollect);
+                    List<EnChn> chn = next.getEncoderChns();
+                    if(CollectionUtil.isNotEmpty(chn)){
+                        List<EnChnVo> col = chn.stream().map(a -> convert.convertToEnChnVo(a)).collect(Collectors.toList());
+                        cuDeviceVo.setEnChnVos(col);
+                    }
                 }
                 collect.add(cuDeviceVo);
             }
@@ -1829,6 +1830,11 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                     List<CuChannelVo> collect = srcChns.stream().map(srcChn -> convert.convertToCuChannelVo(srcChn)).collect(Collectors.toList());
                     CuDeviceVo cuDeviceVo = convert.covertToCuDeviceVo(next);
                     cuDeviceVo.setChildList(collect);
+                    List<EnChn> chn = next.getEncoderChns();
+                    if(CollectionUtil.isNotEmpty(chn)){
+                        List<EnChnVo> col = chn.stream().map(a -> convert.convertToEnChnVo(a)).collect(Collectors.toList());
+                        cuDeviceVo.setEnChnVos(col);
+                    }
                     cuDeviceVos.add(cuDeviceVo);
                 }
             }

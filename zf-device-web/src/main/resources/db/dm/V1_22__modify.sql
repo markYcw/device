@@ -12,5 +12,5 @@ INSERT INTO km_svr_type(id, type) VALUES (5, 'SVR2916');
 
 INSERT INTO km_svr_type(id, type) VALUES (6, 'SVR2930');
 
-SET IDENTITY_INSERT km_vrs_name off;
+SET IDENTITY_INSERT km_svr_type off;
 

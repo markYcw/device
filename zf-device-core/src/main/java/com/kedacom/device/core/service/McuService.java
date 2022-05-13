@@ -14,6 +14,8 @@ import com.kedacom.mp.mcu.response.*;
  */
 public interface McuService {
 
+    Integer hbTest(McuRequestDTO dto);
+
     BaseResult<McuLoginVO> login(McuRequestDTO dto);
 
     BaseResult logout(McuRequestDTO dto);

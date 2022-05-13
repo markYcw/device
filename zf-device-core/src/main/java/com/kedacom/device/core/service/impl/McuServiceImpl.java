@@ -19,6 +19,7 @@ import com.kedacom.device.mp.MpResponse;
 import com.kedacom.device.mp.mcu.request.*;
 import com.kedacom.device.mp.mcu.response.*;
 import com.kedacom.mp.mcu.McuRequestDTO;
+import com.kedacom.mp.mcu.entity.McuEntity;
 import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import com.kedacom.mp.mcu.pojo.*;
 import com.kedacom.mp.mcu.request.*;
@@ -38,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * @author ycw
@@ -80,11 +82,12 @@ public class McuServiceImpl implements McuService {
     public BaseResult<McuLoginVO> login(McuRequestDTO dto) {
         log.info("mcu登录平台入参信息:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
+        McuEntity entity = mapper.selectById(dto.getMcuId());
         if (ObjectUtil.isNull(entity)) {
             throw new MpException(DeviceErrorEnum.DEVICE_NOT_FOUND);
         }
-        McuLoginRequest request = convert.login(entity);
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        McuLoginRequest request = convert.login(umsMcuEntity);
         String ntyUrl = REQUEST_HEAD + mcuNtyUrl + NOTIFY_URL;
         request.setNtyUrl(ntyUrl);
         request.setDevType(DeviceModelType.MCU5.getCode());
@@ -114,9 +117,10 @@ public class McuServiceImpl implements McuService {
     public BaseResult logout(McuRequestDTO dto) {
         log.info("mcu登出平台入参信息:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
-        McuBasicParam param = tool.getParam(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         ResponseEntity<String> responseEntity = template.exchange(param.getUrl() + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, param.getParamMap());
         String string = responseEntity.getBody();
@@ -126,10 +130,10 @@ public class McuServiceImpl implements McuService {
         String errorMsg = "mcu登出平台失败:{},{},{}";
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_LOGOUT_FAILED, response);
 
-        LambdaUpdateWrapper<UmsMcuEntity> wrapper = new LambdaUpdateWrapper();
-        wrapper.set(UmsMcuEntity::getSsid, null)
-                .set(UmsMcuEntity::getModifyTime, new Date())
-                .eq(UmsMcuEntity::getId, dto.getMcuId());
+        LambdaUpdateWrapper<McuEntity> wrapper = new LambdaUpdateWrapper();
+        wrapper.set(McuEntity::getSsid, null)
+                .set(McuEntity::getModifyTime, new Date())
+                .eq(McuEntity::getId, dto.getMcuId());
         mapper.update(null, wrapper);
         //往mcu状态池移除当前mcu的id
         mcuStatusPoll.remove(dto.getMcuId());
@@ -151,10 +155,11 @@ public class McuServiceImpl implements McuService {
             }
         }
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuAccountRequest request = convert.account(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu创建/删除账户中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/account/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -171,10 +176,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult<McuConfsVO> confs(McuConfsDTO dto) {
         log.info("mcu获取会议列表:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuConfsRequest request = convert.confs(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu获取会议列表中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/confs/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -191,10 +197,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult<McuConfTemplateVO> templates(McuTemplatesDTO dto) {
         log.info("mcu获取会议模板列表:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuTemplatesRequest request = convert.templates(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu获取会议模板列表中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/templates/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -211,10 +218,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult<McuConfInfoVO> confinfo(McuConfInfoDTO dto) {
         log.info("mcu获取会议信息:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuConfInfoRequest request = convert.confinfo(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu获取会议信息中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/confinfo/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -244,10 +252,11 @@ public class McuServiceImpl implements McuService {
             }
         }
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuConfRequest request = convert.conf(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu创建/删除会议中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/conf/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -264,10 +273,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult confTemplate(McuConfTemplateDTO dto) {
         log.info("mcu开启会议模板:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuConfTemplateRequest request = convert.confTemplate(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu开启会议模板中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/conftemplate/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -283,10 +293,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult<McuMtmembersVO> mtMembers(McuMtMembersDTO dto) {
         log.info("mcu获取与会成员:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuMtMembersRequest request = convert.mtMembers(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu获取与会成员中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/mtmembers/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -304,10 +315,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult<McuMtVO> mt(McuMtDTO dto) {
         log.info("mcu添加/删除终端:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuMtRequest request = convert.mt(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu添加/删除终端中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/mt/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -324,10 +336,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult mtCall(McuMtCallDTO dto) {
         log.info("mcu呼叫/挂断终端:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuMtCallRequest request = convert.mtCall(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu呼叫/挂断终端中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/mtcall/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -343,10 +356,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult speaker(McuSpeakerDTO dto) {
         log.info("mcu设置/取消发言人:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuSpeakerRequest request = convert.speaker(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu设置/取消发言人中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/speaker/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -362,10 +376,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult chairman(McuChairmanDTO dto) {
         log.info("mcu设置/取消主席:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuChairmanRequest request = convert.chairman(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu设置/取消主席中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/chairman/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -382,10 +397,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult silence(McuSilenceDTO dto) {
         log.info("mcu静音:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuSilenceRequest request = convert.silence(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu静音中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/silence/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -402,10 +418,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult mute(McuMuteDTO dto) {
         log.info("mcu哑音:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuMuteRequest request = convert.mute(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu哑音中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/mute/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -421,10 +438,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult volume(McuVolumeDTO dto) {
         log.info("mcu调节音量:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuVolumeRequest request = convert.volume(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu调节音量中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/volume/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -440,10 +458,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult dual(McuDualDTO dto) {
         log.info("mcu终端双流控制:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuDualRequest request = convert.dual(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu终端双流控制中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/dual/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -459,10 +478,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult videoMix(McuVideoMixDTO dto) {
         log.info("mcu开始/停止画面合成:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuVideoMixRequest request = convert.videoMix(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu开始/停止画面合成中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/videomix/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -483,10 +503,11 @@ public class McuServiceImpl implements McuService {
             }
         }
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuAudioMixRequest request = convert.audioMix(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu开始/停止混音中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/audiomix/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -502,10 +523,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult<String> audioMixMember(McuAudioMixMemberDTO dto) {
         log.info("mcu添加/删除混音成员:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuAudioMixMemberRequest request = convert.audioMixMember(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu添加/删除混音成员中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/audiomixmember/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -529,10 +551,11 @@ public class McuServiceImpl implements McuService {
             dto.setRecParam(null);
         }
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuRecRequest request = convert.rec(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu开始/暂停/恢复/停止录像中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/rec/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -550,9 +573,10 @@ public class McuServiceImpl implements McuService {
     public BaseResult<McuTvWallsVO> tvWalls(McuRequestDTO dto) {
         log.info("mcu获取电视墙列表:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
-        McuBasicParam param = tool.getParam(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         String string = template.getForObject(param.getUrl() + "/hdus/{ssid}/{ssno}", String.class, param.getParamMap());
         log.info("mcu获取电视墙列表中间件应答:{}", string);
@@ -568,10 +592,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult tvwall(McuTvWallDTO dto) {
         log.info("mcu开始/停止上电视墙:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuTvWallRequest request = convert.convertTvWall(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu开始/停止上电视墙中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/hdu/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -587,10 +612,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult exchange(McuExchangeDTO dto) {
         log.info("mcu开始/停止码流交换:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuExchangeRequest request = convert.exchange(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu开始/停止码流交换中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/exchange/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -606,10 +632,11 @@ public class McuServiceImpl implements McuService {
     public BaseResult message(McuMessageDTO dto) {
         log.info("mcu发送短消息:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
         McuMessageRequest request = convert.message(dto);
-        McuBasicParam param = tool.getParam(entity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         log.info("mcu发送短消息中间件入参信息:{}", JSON.toJSONString(request));
         String string = template.postForObject(param.getUrl() + "/message/{ssid}/{ssno}", JSON.toJSONString(request), String.class, param.getParamMap());
@@ -624,15 +651,29 @@ public class McuServiceImpl implements McuService {
     @Override
     public BaseResult<Integer> hb(McuRequestDTO dto) {
         log.info("mcu发送心跳:{}", dto);
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
-        McuBasicParam param = tool.getParam(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/hb/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
         log.info("mcu发送心跳响应:{}", exchange.getBody());
         String errorMsg = "mcu发送心跳失败:{},{},{}";
         MpResponse response = JSON.parseObject(exchange.getBody(), MpResponse.class);
         responseUtil.handleMpRes(errorMsg, DeviceErrorEnum.MCU_HB_FAILED, response);
         return BaseResult.succeed(response.getCode());
+    }
+
+    @Override
+    public Integer hbTest(McuRequestDTO dto) {
+        log.info("mcu发送心跳hbTest:{}", dto);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
+        ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/hb/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
+        log.info("mcu发送心跳响应:{}", exchange.getBody());
+        MpResponse response = JSON.parseObject(exchange.getBody(), MpResponse.class);
+        return response.getCode();
     }
 
     @Override
@@ -644,9 +685,10 @@ public class McuServiceImpl implements McuService {
                 return BaseResult.failed("主视频格式不能为空");
             }
         }
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
-        McuBasicParam param = tool.getParam(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
         log.info("mcu创建/删除会议模板中间件入参:{}",JSON.toJSONString(dto));
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/template/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         log.info("mcu创建/删除会议模板响应:{}", s);
@@ -660,9 +702,10 @@ public class McuServiceImpl implements McuService {
     @Override
     public BaseResult<ConfTemplateInfoVo> templateInfo(GetConfTemplateDTO dto) {
         log.info("mcu4.8获取会议模板信息:{}", dto);
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
-        McuBasicParam param = tool.getParam(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
         log.info("mcu获取会议模板信息中间件入参:{}",JSON.toJSONString(dto));
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/templateinfo/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         log.info("mcu获取会议模板信息响应:{}", s);
@@ -676,9 +719,10 @@ public class McuServiceImpl implements McuService {
     @Override
     public BaseResult<AccountsVo> accounts(AccountsDto dto) {
         log.info("4.4查询所有账户:{}", dto);
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
-        McuBasicParam param = tool.getParam(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
         log.info("mcu查询所有账户中间件入参:{}",JSON.toJSONString(dto));
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/accounts/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         log.info("mcu查询所有账户响应:{}", s);
@@ -697,9 +741,10 @@ public class McuServiceImpl implements McuService {
     @Override
     public BaseResult<McuRecStatusVO> recState(McuRecStatusDTO dto) {
         log.info("获取录像状态接口入参:{}", dto);
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
-        McuBasicParam param = tool.getParam(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
         log.info("mcu获取录像状态中间件入参:{}",JSON.toJSONString(dto));
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/recstate/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         log.info("mcu获取录像状态响应:{}", s);
@@ -714,9 +759,10 @@ public class McuServiceImpl implements McuService {
     public BaseResult<DepartmentsVO> departments(McuRequestDTO dto) {
         log.info("查询所有部门接口入参:{}", dto);
         RestTemplate template = remoteRestTemplate.getRestTemplate();
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
-        McuBasicParam param = tool.getParam(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
 
         String string = template.getForObject(param.getUrl() + "/ departments/{ssid}/{ssno}", String.class, param.getParamMap());
         log.info("mcu查询所有部门中间件应答:{}", string);
@@ -731,9 +777,10 @@ public class McuServiceImpl implements McuService {
     @Override
     public BaseResult<DepartmentVO> department(DepartmentDTO dto) {
         log.info("创建/删除部门接口入参:{}", dto);
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
-        McuBasicParam param = tool.getParam(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
         log.info("mcu创建/删除部门中间件入参:{}",JSON.toJSONString(dto));
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/department/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         log.info("mcu创建/删除部门响应:{}", s);
@@ -747,9 +794,10 @@ public class McuServiceImpl implements McuService {
     @Override
     public BaseResult<RecsVO> recs(RecsDTO dto) {
         log.info("获取录像列表接口入参:{}", dto);
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
-        McuBasicParam param = tool.getParam(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
         log.info("mcu获取录像列表中间件入参:{}",JSON.toJSONString(dto));
         String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/recs/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         log.info("mcu获取录像列表响应:{}", s);
@@ -763,9 +811,10 @@ public class McuServiceImpl implements McuService {
     @Override
     public BaseResult<VrsVO> vrs(McuRequestDTO dto) {
         log.info("获取vrs列表:{}", dto);
-        UmsMcuEntity entity = mapper.selectById(dto.getMcuId());
-        responseUtil.handleMp(entity);
-        McuBasicParam param = tool.getParam(entity);
+        McuEntity entity = mapper.selectById(dto.getMcuId());
+        UmsMcuEntity umsMcuEntity = convert.convertToUmsMcuEntity(entity);
+        responseUtil.handleMp(umsMcuEntity);
+        McuBasicParam param = tool.getParam(umsMcuEntity);
         ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/vrs/{ssid}/{ssno}", HttpMethod.GET, null, String.class, param.getParamMap());
         log.info("获取vrs列表响应:{}", exchange.getBody());
         String errorMsg = "获取vrs列表失败:{},{},{}";
@@ -778,13 +827,14 @@ public class McuServiceImpl implements McuService {
     @Override
     public UmsMcuEntity getBySsid(Integer ssid) {
         log.info("========根据ssId获取MCU入参：",ssid);
-        LambdaQueryWrapper<UmsMcuEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(UmsMcuEntity::getSsid,ssid);
-        List<UmsMcuEntity> list = mapper.selectList(wrapper);
+        LambdaQueryWrapper<McuEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(McuEntity::getSsid,ssid);
+        List<McuEntity> list = mapper.selectList(wrapper);
+        List<UmsMcuEntity> collect = list.stream().map(a -> convert.convertToUmsMcuEntity(a)).collect(Collectors.toList());
         if(CollectionUtil.isEmpty(list)){
             throw new MpException(DeviceErrorEnum.DEVICE_NOT_FOUND);
         }
-        return list.get(0);
+        return collect.get(0);
     }
 
 }

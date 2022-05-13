@@ -2,10 +2,13 @@ package com.kedacom.device.core.convert;
 
 import com.kedacom.device.mp.mcu.request.*;
 import com.kedacom.device.mp.mcu.response.*;
+import com.kedacom.mp.mcu.entity.McuEntity;
 import com.kedacom.mp.mcu.entity.UmsMcuEntity;
 import com.kedacom.mp.mcu.request.*;
 import com.kedacom.mp.mcu.response.*;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 /**
  * @author hxj
@@ -14,6 +17,12 @@ import org.mapstruct.Mapper;
  */
 @Mapper(componentModel = "spring")
 public interface McuConvert {
+
+    @Mappings({@Mapping(target = "mcuUser",source = "user")})
+    McuEntity convertToEntity(UmsMcuEntity entity);
+
+    @Mappings({@Mapping(target = "user",source = "mcuUser")})
+    UmsMcuEntity convertToUmsMcuEntity(McuEntity entity);
 
     McuLoginRequest login(UmsMcuEntity entity);
 

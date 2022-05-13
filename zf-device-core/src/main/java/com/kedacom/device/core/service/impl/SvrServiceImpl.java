@@ -188,6 +188,8 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
             log.info("=======登录svr失败code!=0");
             return 0;
         }
+        entity.setSsid(response.getSsid());
+        svrMapper.updateById(entity);
         return response.getSsid();
     }
 

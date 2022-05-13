@@ -1307,11 +1307,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 if(CollectionUtil.isNotEmpty(srcChns)){
                     List<CuChannelVo> chnCollect = srcChns.stream().map(a -> convert.convertToCuChannelVo(a)).collect(Collectors.toList());
                     cuDeviceVo.setChildList(chnCollect);
-                    List<EnChn> chn = next.getEncoderChns();
-                    if(CollectionUtil.isNotEmpty(chn)){
-                        List<EnChnVo> col = chn.stream().map(a -> convert.convertToEnChnVo(a)).collect(Collectors.toList());
-                        cuDeviceVo.setEnChnVos(col);
-                    }
                 }
                 collect.add(cuDeviceVo);
             }
@@ -1830,11 +1825,6 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                     List<CuChannelVo> collect = srcChns.stream().map(srcChn -> convert.convertToCuChannelVo(srcChn)).collect(Collectors.toList());
                     CuDeviceVo cuDeviceVo = convert.covertToCuDeviceVo(next);
                     cuDeviceVo.setChildList(collect);
-                    List<EnChn> chn = next.getEncoderChns();
-                    if(CollectionUtil.isNotEmpty(chn)){
-                        List<EnChnVo> col = chn.stream().map(a -> convert.convertToEnChnVo(a)).collect(Collectors.toList());
-                        cuDeviceVo.setEnChnVos(col);
-                    }
                     cuDeviceVos.add(cuDeviceVo);
                 }
             }

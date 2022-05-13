@@ -96,9 +96,6 @@ public class CuDeviceVo {
     @ApiModelProperty("视频源列表")
     private List<CuChannelVo> childList = new ArrayList<>();
 
-    @ApiModelProperty("编码通道列表")
-    private List<EnChnVo> enChnVos;
-
     /**
      * 设备是否在线
      */

@@ -61,9 +61,6 @@ public class PDevice {
 	@ApiModelProperty("视频源列表")
 	private List<SrcChn> srcChns;
 
-	@ApiModelProperty("编码通道列表")
-	private List<EnChn> encoderChns;
-
 	@ApiModelProperty("设备是否在线 0:离线，1:在线")
 	private Integer online = 0;
 

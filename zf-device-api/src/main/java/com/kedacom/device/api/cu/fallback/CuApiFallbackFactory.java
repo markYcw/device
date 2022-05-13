@@ -169,11 +169,6 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
             }
 
             @Override
-            public BaseResult<List<CuChannelVo>> getCuChannelList(CuChnListDto requestDto) {
-                return BaseResult.failed(throwable.getMessage());
-            }
-
-            @Override
             public BaseResult<GbIdVo> gbId(GbIdDto requestDto) {
                 return BaseResult.failed(throwable.getMessage());
             }

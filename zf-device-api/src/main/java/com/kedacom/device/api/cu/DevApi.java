@@ -126,17 +126,6 @@ public interface DevApi {
     @GetMapping("/queryDisk")
     BaseResult<QueryDiskResponseVo> queryDisk(@RequestBody QueryDiskRequestDto requestDto);
 
-   /* @ApiOperation("获取设备详细信息")
-    @PostMapping("getCuDeviceInfo")
-    @ApiImplicitParams({@ApiImplicitParam(name = "kmId",  value = "数据库ID",required = true), @ApiImplicitParam(name = "puId", value = "设备号",required = true)})
-    BaseResult<CuDeviceVo> getCuDeviceInfo(@RequestParam("kmId") Integer kmId,@RequestParam("puId") String puId);
-
-    @ApiOperation("获取设备具体通道信息")
-    @PostMapping("getCuChannelInfo")
-    @ApiImplicitParams({@ApiImplicitParam(name = "kmId",  value = "数据库ID",required = true), @ApiImplicitParam(name = "puId", value = "设备号",required = true),
-            @ApiImplicitParam(name = "sn", value = "通道号",required = true)})
-    BaseResult<CuChannelVo> getCuChannelInfo(@RequestParam("kmId") Integer kmId, @RequestParam("puId") String puId, @RequestParam("sn") Integer sn);*/
-
     @ApiOperation("获取监控平台分组信息")
     @PostMapping("/cuGroup")
     BaseResult<DevEntityVo> cuGroup(@RequestBody CuRequestDto requestDto);
@@ -148,10 +137,6 @@ public interface DevApi {
     @ApiOperation("获取监控平台子分组信息")
     @PostMapping("/cuGroupById")
     BaseResult<List<CuGroupVo>> cuGroupById(@RequestBody CuGroupDto requestDto);
-
-    @ApiOperation("获取设备通道集合")
-    @PostMapping("getCuChannelList")
-    BaseResult<List<CuChannelVo>> getCuChannelList(@RequestBody CuChnListDto requestDto);
 
     @ApiOperation("获取国标id")
     @PostMapping("/gbId")

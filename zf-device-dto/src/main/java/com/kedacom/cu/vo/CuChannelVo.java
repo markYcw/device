@@ -29,6 +29,9 @@ public class CuChannelVo {
     @ApiModelProperty("视频源名称/通道名称")
     private String name;
 
+    @ApiModelProperty("国标ID")
+    private String gbId;
+
     /**
      * 是否启用
      */

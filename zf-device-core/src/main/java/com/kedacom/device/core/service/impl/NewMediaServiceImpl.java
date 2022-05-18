@@ -67,7 +67,7 @@ public class NewMediaServiceImpl implements NewMediaService {
     @Resource
     private RemoteRestTemplate remoteRestTemplate;
 
-    private String newMediaNtyUrl = "127.0.0.1:9000";
+    private String newMediaNtyUrl = "172.16.128.105:9000";
 
     private final static String REQUEST_HEAD = "http://";
 
@@ -148,7 +148,19 @@ public class NewMediaServiceImpl implements NewMediaService {
 
 
     @Override
-    public BaseResult<String> insertUmsDevice(UmsDeviceInfoAddRequestDto requestDto){
+    public void initNM() {
+        log.info("===========服务启动登录新媒体");
+        try {
+            this.loginById(DevTypeConstant.updateRecordKey);
+        } catch (ExecutionException e) {
+            log.error("===========服务启动登录新媒体失败{}", e);
+        } catch (InterruptedException e) {
+            log.error("===========服务启动登录新媒体失败{}", e);
+        }
+    }
+
+    @Override
+    public BaseResult<String> insertUmsDevice(UmsDeviceInfoAddRequestDto requestDto) {
 
         log.info("新增新媒体平台信息参数 ： requestDto {}", requestDto);
         if (!isAddRepeat(requestDto)) {
@@ -169,9 +181,9 @@ public class NewMediaServiceImpl implements NewMediaService {
         try {
             this.loginById(entity.getId());
         } catch (ExecutionException e) {
-            log.error("============新增时登录新媒体失败{}",e);
+            log.error("============新增时登录新媒体失败{}", e);
         } catch (InterruptedException e) {
-            log.error("============新增时登录新媒体失败{}",e);
+            log.error("============新增时登录新媒体失败{}", e);
         }
         return BaseResult.succeed("新增新媒体平台成功");
     }
@@ -212,7 +224,7 @@ public class NewMediaServiceImpl implements NewMediaService {
             //登录成功以后加载分组和设备信息
             getGroup(entity);
             CompletableFuture<Integer> code = CompletableFuture.supplyAsync(() -> getDevice(entity));
-            if(code.get() != 1){
+            if (code.get() != 1) {
                 NewMediaDeviceCache.getInstance().clearDevice();
                 log.error("=============第一次加载新媒体设备失败尝试第二次加载");
                 CompletableFuture.runAsync(() -> getDevice(entity));
@@ -242,46 +254,46 @@ public class NewMediaServiceImpl implements NewMediaService {
         listDto.setQueryCount(queryCount);
         for (int i = 0; i <= countNum; i++) {
             listDto.setQueryIndex(queryIndex);
-            NMDeviceListResponse response = getDeviceList(entity.getSsid(),listDto);
+            NMDeviceListResponse response = getDeviceList(entity.getSsid(), listDto);
             if (response.getCode() != 0) {
                 log.error("从获取第 {} 页设备信息失败", queryIndex);
                 NewMediaDeviceCache.getInstance().clearDevice();
                 return 0;
             }
             Integer resultCount = response.getTotal();
+            //把设备存入cache
+            NewMediaDeviceLoadThread.getInstance().onDevice(response.getDevList());
             if (resultCount < queryCount) {
-                if (queryIndex == 1) {
-                    NewMediaDeviceCache.getInstance().clearDevice();
-                    return 0;
-                }
-                //把设备存入cache
-                NewMediaDeviceLoadThread.getInstance().onDevice(response.getDevList());
+                return 1;
             }
             countNum++;
             queryIndex++;
         }
         //设备加载完往设备状态池中放入设备ID
-        nmDeviceStatusPoll.put(entity.getId(),1);
+        nmDeviceStatusPoll.put(entity.getId(), 1);
         return 1;
 
 
     }
 
     public NMDeviceListResponse getDeviceList(Integer ssid, NMDeviceListDto dto) {
-        log.info("======开始获取第{}页设备",dto.getQueryIndex());
+        log.info("======开始获取第{}页设备", dto.getQueryIndex());
         NewMediaBasicParam param = getParam(ssid);
-        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl()  + "/devlist/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        String s = remoteRestTemplate.getRestTemplate().postForObject(param.getUrl() + "/devlist/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
         log.info("=======获取设备中间件应答{}", s);
         NMDeviceListResponse response = JSONObject.parseObject(s, NMDeviceListResponse.class);
         return response;
     }
 
 
-
+    @Override
     public void logoutById(Integer id) {
         synchronized (this) {
             log.info("======根据ID登出新媒体平台{}", id);
             NewMediaEntity entity = mapper.selectById(id);
+            if (entity.getSsid() == null) {
+                return;
+            }
             //去除底层cache
             NewMediaDeviceCache.getInstance().clear();
             //去除心跳定时任务
@@ -300,7 +312,7 @@ public class NewMediaServiceImpl implements NewMediaService {
             log.info("=======登出新媒体应答{}", exchange.getBody());
             NewMediaResponse response = JSONObject.parseObject(exchange.getBody(), NewMediaResponse.class);
             String errorMsg = "登出新媒体失败:{},{},{}";
-            responseUtil.handleNewMediaRes(errorMsg, DeviceErrorEnum.CU_LOGOUT_FAILED, response);
+            responseUtil.handleNewMediaRes(errorMsg, DeviceErrorEnum.NM_LOGOUT_FAILED, response);
             entity.setSsid(null);
             mapper.updateById(entity);
         }
@@ -460,9 +472,9 @@ public class NewMediaServiceImpl implements NewMediaService {
         try {
             this.loginById(entity.getId());
         } catch (ExecutionException e) {
-            log.error("============更新新媒体时登录新媒体失败{}",e);
+            log.error("============更新新媒体时登录新媒体失败{}", e);
         } catch (InterruptedException e) {
-            log.error("============更新新媒体时登录新媒体失败{}",e);
+            log.error("============更新新媒体时登录新媒体失败{}", e);
         }
         return BaseResult.succeed("修改新媒体平台成功");
 
@@ -549,6 +561,19 @@ public class NewMediaServiceImpl implements NewMediaService {
         dto.setStreamingMediaPort(next.getNmediaPort());
         dto.setStreamingMediaRecPort(next.getRecPort());
         return dto;
+    }
+
+    @Override
+    public void syncDeviceData(UmsDeviceInfoSyncRequestDto requestDto) {
+        log.info("=========手动同步设备接口入参{}", requestDto);
+        try {
+            this.logoutById(Integer.valueOf(requestDto.getUmsId()));
+            this.loginById(Integer.valueOf(requestDto.getUmsId()));
+        } catch (ExecutionException e) {
+            log.error("==========手动同步设备失败{}", e);
+        } catch (InterruptedException e) {
+            log.error("==========手动同步设备失败{}", e);
+        }
     }
 
 }

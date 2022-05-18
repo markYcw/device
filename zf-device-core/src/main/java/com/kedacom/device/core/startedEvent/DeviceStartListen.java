@@ -4,6 +4,7 @@ import com.kedacom.core.ConnectorListener;
 import com.kedacom.core.ConnectorListenerManager;
 import com.kedacom.device.core.notify.stragegy.NotifyFactory;
 import com.kedacom.device.core.service.CuService;
+import com.kedacom.device.core.service.NewMediaService;
 import com.kedacom.device.core.utils.CuUrlFactory;
 import com.kedacom.device.core.utils.McuUrlFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
     @Autowired
     private CuService cuService;
 
+    @Autowired
+    private NewMediaService newMediaService;
+
     @Value("${zf.kmProxy.server_addr}")
     private String kmProxy;
 
@@ -53,9 +57,11 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
         //cu访问地址初始化
         cuUrlFactory.setMap();
         //服务重启时重启监控平台
-        ScheduledThreadPoolExecutor poolExecutor = new ScheduledThreadPoolExecutor(2);
-//        poolExecutor.schedule(()->cuService.logoutCu(),1,TimeUnit.SECONDS);
-//        poolExecutor.schedule(()->cuService.initCu(),2, TimeUnit.MINUTES);
+        ScheduledThreadPoolExecutor poolExecutor = new ScheduledThreadPoolExecutor(8);
+        poolExecutor.schedule(()->cuService.logoutCu(),1,TimeUnit.SECONDS);
+        poolExecutor.schedule(()->cuService.initCu(),2, TimeUnit.MINUTES);
+        poolExecutor.schedule(()->newMediaService.logoutById(1),1, TimeUnit.SECONDS);
+        poolExecutor.schedule(()->newMediaService.initNM(),1, TimeUnit.MINUTES);
 
         if (kmProxy.contains(DEVICE_PORT)) {
             ConnectorListenerManager.getInstance().register(connectorListener);

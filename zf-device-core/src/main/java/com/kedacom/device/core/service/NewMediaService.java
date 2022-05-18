@@ -15,6 +15,10 @@ import java.util.concurrent.ExecutionException;
  */
 public interface NewMediaService {
 
+    void initNM();
+
+    void logoutById(Integer id);
+
     /**
      * 添加统一平台信息
      * @param requestDto
@@ -50,4 +54,5 @@ public interface NewMediaService {
      */
     UmsDeviceInfoSelectByIdResponseDto getDeviceInfoById(UmsDeviceInfoSelectByIdRequestDto requestDto);
 
+    void syncDeviceData(UmsDeviceInfoSyncRequestDto requestDto);
 }

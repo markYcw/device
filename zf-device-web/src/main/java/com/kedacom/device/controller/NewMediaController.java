@@ -41,6 +41,16 @@ public class NewMediaController {
         return service.insertUmsDevice(requestDto);
     }
 
+    @ApiOperation("手动同步设备数据")
+    @PostMapping("/syncDeviceData")
+    public BaseResult<String> syncDeviceData(@Valid @RequestBody UmsDeviceInfoSyncRequestDto requestDto, BindingResult result) {
+
+        ValidUtils.paramValid(result);
+        service.syncDeviceData(requestDto);
+
+        return BaseResult.succeed("当前统一设备开启同步成功");
+    }
+
     @ApiOperation("更新统一平台信息")
     @PostMapping("/updateUmsDevice")
     public BaseResult<String> updateUmsDevice(@Valid @RequestBody UmsDeviceInfoUpdateRequestDto requestDto, BindingResult result) {

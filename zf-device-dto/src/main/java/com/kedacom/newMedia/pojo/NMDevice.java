@@ -2,6 +2,8 @@ package com.kedacom.newMedia.pojo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * @author ycw
  * @version v1.0
@@ -21,7 +23,7 @@ public class NMDevice {
     private String gbId;
 
     @ApiModelProperty(value = "设备类型")
-    private Integer deviceType;
+    private String deviceType;
 
     @ApiModelProperty(value = "设备ip地址")
     private String ipv4;
@@ -54,7 +56,7 @@ public class NMDevice {
     private String longitudeStr;
 
     @ApiModelProperty(value = "创建时间（毫秒）")
-    private Integer createTime;
+    private Date createTime;
 
     @ApiModelProperty(value = "型号")
     private String model;
@@ -75,7 +77,7 @@ public class NMDevice {
     private String address;
 
     @ApiModelProperty(value = "安装日期（毫秒）")
-    private Integer installDate;
+    private Date installDate;
 
     @ApiModelProperty(value = "父设备id")
     private String parentId;

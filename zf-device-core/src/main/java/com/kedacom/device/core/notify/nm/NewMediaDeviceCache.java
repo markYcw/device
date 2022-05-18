@@ -40,9 +40,8 @@ public class NewMediaDeviceCache {
 
     /**
      * 新媒体平台内置根分组的ID。
-     * 通过接口不能获取到内置根分组，只能通过识别“内置未分组”的parentId。
      */
-    private String rootGroupId;
+    private static final String rootGroupId = "root";
 
     /**
      * 新媒体平台上报的根分组ID
@@ -62,10 +61,20 @@ public class NewMediaDeviceCache {
     private ConcurrentHashMap<String, ArrayList<NMDevice>> devicesByGroup = new ConcurrentHashMap<>(100);
 
     /**
+     * 未分组设备
+     * key:未分组ID“root”, value：分组下的设备。
+     */
+    private static ConcurrentHashMap<String, ArrayList<NMDevice>> devicesUnNamed = new ConcurrentHashMap<>(100);
+
+    /**
      * 设备国标ID和分组ID对应
      * key:国标ID, value：分组ID
      */
     private ConcurrentHashMap<String,String> deviceByGbId = new ConcurrentHashMap<>();
+
+    static {
+        devicesUnNamed.put(rootGroupId,new ArrayList<NMDevice>());
+    }
 
     /**
      * 清空数据
@@ -99,12 +108,6 @@ public class NewMediaDeviceCache {
      * @param group
      */
     public void addDeviceGroup(NmGroup group) {
-        if (group.isRootGroup(group)) {
-            /*
-             * 查找根分组
-             */
-            this.rootGroupId = group.getId();
-        }
         this.groups.put(group.getId(), group);
         //设置子分组
         checkSortRootGroups(group);
@@ -156,16 +159,23 @@ public class NewMediaDeviceCache {
      * @param device
      */
     public void addDevice(NMDevice device) {
-        //先记录国标ID和分组ID的关系
-        this.deviceByGbId.put(device.getGbId(),device.getGroupId());
-        String groupId = device.getGroupId();
-        ArrayList<NMDevice> list = this.devicesByGroup.get(groupId);
-        if (list == null) {
-            list = new ArrayList<NMDevice>();
-            this.devicesByGroup.put(groupId, list);
+        String groupId =  device.getGroupId();
+        if(StringUtils.isNotBlank(groupId)){
+            //先记录国标ID和分组ID的关系
+            this.deviceByGbId.put(device.getGbId(),groupId);
+            ArrayList<NMDevice> list = this.devicesByGroup.get(groupId);
+            if (list == null) {
+                list = new ArrayList<NMDevice>();
+                this.devicesByGroup.put(groupId, list);
+            }else {
+                list.add(device);
+            }
         }else {
+            //如果是没有分组ID则把该设备设置在未分组底下
+            ArrayList<NMDevice> list = devicesUnNamed.get(rootGroupId);
             list.add(device);
         }
+
     }
 
     public void addDevices(Collection<NMDevice> devices) {
@@ -206,6 +216,7 @@ public class NewMediaDeviceCache {
             NmGroupDeviceIds next = iterator.next();
             String groupId = this.deviceByGbId.get(next.getGbId());
             if(StringUtils.isNotBlank(groupId)){
+                //如果分组ID不为空说明此设备不是未分组下的设备
                 ArrayList<NMDevice> nmDevices = this.devicesByGroup.get(groupId);
                 if(CollectionUtil.isNotEmpty(nmDevices)){
                     Iterator<NMDevice> ite = nmDevices.iterator();
@@ -220,6 +231,19 @@ public class NewMediaDeviceCache {
                             //把这个设备添加到新的分组下
                             this.addDevice(nm);
                         }
+                    }
+                }
+            }else {
+                //分组ID为空说明此设备为未分组下的设备
+                ArrayList<NMDevice> list = devicesUnNamed.get(rootGroupId);
+                Iterator<NMDevice> ite = list.iterator();
+                while (ite.hasNext()){
+                    NMDevice nex = ite.next();
+                    if(nex.getGbId().equals(next.getGbId())){
+                        //找到此设备给他设置分组ID，然后走添加设备逻辑，最后把他从未分组里删除
+                        nex.setGroupId(next.getGroupId());
+                        this.addDevice(nex);
+                        ite.remove();
                     }
                 }
             }

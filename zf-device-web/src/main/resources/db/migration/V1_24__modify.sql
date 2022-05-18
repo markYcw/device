@@ -16,6 +16,8 @@ CREATE TABLE `ums_new_media` (
     `nmedia_port` INT ( 11 ) DEFAULT NULL COMMENT '流媒体服务端口',
     `rec_port` INT ( 11 ) DEFAULT NULL COMMENT '录像服务端口',
 	`dev_type` INT ( 11 ) DEFAULT NULL COMMENT '新媒体类型',
+    `msp_account` VARCHAR ( 128 ) DEFAULT NULL COMMENT '拼控服务账号',
+    `msp_password` VARCHAR ( 128 ) DEFAULT NULL COMMENT '拼控服务账号',
 	`create_time` datetime DEFAULT NULL COMMENT '创建时间',
 	`modify_time` datetime DEFAULT NULL COMMENT '修改时间',
 	PRIMARY KEY ( `id` ) USING BTREE

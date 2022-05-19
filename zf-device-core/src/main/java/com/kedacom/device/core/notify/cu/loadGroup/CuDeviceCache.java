@@ -322,7 +322,8 @@ public class CuDeviceCache {
         for (ArrayList<PDevice> devices : devicesByGroup.values()) {
             for (PDevice pDevice : devices) {
                 if (puid.equals(pDevice.getPuId())) {
-                    pDevice.updateChn(srcChns);
+                    List<SrcChn> src = pDevice.updateChn(srcChns);
+                    log.info("==============更新完设备状态puid:{}，通道状态：{}",puid,src);
                 }
             }
         }

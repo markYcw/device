@@ -81,7 +81,7 @@ public class PDevice {
 	 * 更新通道在线状态
 	 * @param updateSrcChs
 	 */
-	public void updateChn(List<SrcChns> updateSrcChs){
+	public List<SrcChn> updateChn(List<SrcChns> updateSrcChs){
 		for (SrcChns updateSrcCh : updateSrcChs) {
 			for (SrcChn srcChn : srcChns) {
 				if (srcChn.getSn().equals(updateSrcCh.getSn())){
@@ -90,6 +90,8 @@ public class PDevice {
 				}
 			}
 		}
+
+		return this.srcChns;
 	}
 
 	/**

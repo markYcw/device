@@ -152,7 +152,10 @@ public interface DevApi {
 
     @ApiOperation("根据平台1.0PuId获取平台2.0puId")
     @PostMapping("/puIdByOne")
-    BaseResult<PuIdByOneVo> puIdByOne(@Valid @RequestBody PuIdByOneDto requestDto);
+    BaseResult<PuIdByOneVo> puIdByOne(@RequestBody PuIdByOneDto requestDto);
+
+    @ApiOperation("获取设备通道集合")
+    BaseResult<List<CuChannelVo>> getCuChannelList(@RequestBody CuChnListDto requestDto);
 
 
 }

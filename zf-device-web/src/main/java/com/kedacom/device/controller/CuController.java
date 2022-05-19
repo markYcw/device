@@ -298,14 +298,14 @@ public class CuController {
 
     }*/
 
-/*    @ApiOperation("获取设备通道集合")
+    @ApiOperation("获取设备通道集合")
     @PostMapping("getCuChannelList")
     public BaseResult<List<CuChannelVo>> getCuChannelList(@RequestBody CuChnListDto requestDto, BindingResult br){
         ValidUtils.paramValid(br);
 
         return cuService.getCuChannelList(requestDto);
 
-    }*/
+    }
 
     @ApiOperation("获取监控平台根分组信息")
     @PostMapping("/cuGroup")

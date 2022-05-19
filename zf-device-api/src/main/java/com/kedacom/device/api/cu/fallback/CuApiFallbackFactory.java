@@ -187,6 +187,11 @@ public class CuApiFallbackFactory implements FallbackFactory<DevApi> {
             public BaseResult<PuIdByOneVo> puIdByOne(@Valid PuIdByOneDto requestDto) {
                 return BaseResult.failed(throwable.getMessage());
             }
+
+            @Override
+            public BaseResult<List<CuChannelVo>> getCuChannelList(CuChnListDto requestDto) {
+                return BaseResult.failed(throwable.getMessage());
+            }
         };
     }
 }

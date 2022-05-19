@@ -393,7 +393,7 @@ public class CuDeviceLoadThread {
     }
 
     //设备通道状态
-    private synchronized void onDeviceChnStatus(int ssid, String puid, List<SrcChns> srcChns) {
+    private void onDeviceChnStatus(int ssid, String puid, List<SrcChns> srcChns) {
         CuSession session = client.getSessionManager().getSessionBySSID(ssid);
         if (session != null) {
             CuDeviceCache deviceCache = session.getDeviceCache();

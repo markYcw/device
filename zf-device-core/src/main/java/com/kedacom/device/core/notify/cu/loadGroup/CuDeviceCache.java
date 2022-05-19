@@ -319,14 +319,17 @@ public class CuDeviceCache {
      * @param srcChns 设备通道列表
      */
     public void updateDeviceChnStatus(String puid, List<SrcChns> srcChns) {
-        for (ArrayList<PDevice> devices : devicesByGroup.values()) {
-            for (PDevice pDevice : devices) {
-                if (puid.equals(pDevice.getPuId())) {
-                    List<SrcChn> src = pDevice.updateChn(srcChns);
-                    log.info("==============更新完设备状态puid:{}，通道状态：{}",puid,src);
-                }
-            }
-        }
+      synchronized (this){
+          log.info("==========更新设备通道在线状态：puId{}",puid);
+          for (ArrayList<PDevice> devices : devicesByGroup.values()) {
+              for (PDevice pDevice : devices) {
+                  if (puid.equals(pDevice.getPuId())) {
+                      List<SrcChn> src = pDevice.updateChn(srcChns);
+                      log.info("==============更新完设备状态puid:{}，通道状态：{}",puid,src);
+                  }
+              }
+          }
+      }
     }
 
     /**

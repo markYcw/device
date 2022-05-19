@@ -1157,7 +1157,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         try {
             CuSession cuSession = cuDeviceLoadThread.getCuClient().getSessionManager().getSessionBySSID(ssid);
             PDevice device = cuSession.getDeviceCache().getDevice(requestDto.getPuId());
-            log.info("====根据puId获取设备puId:{}，设备信息：{}",requestDto.getPuId(),device);
+            //log.info("====根据puId获取设备puId:{}，设备信息：{}",requestDto.getPuId(),device);
             if(ObjectUtils.isEmpty(device)){
                 log.error("根据puId查询不到设备，请检查参数是否正确");
                 throw new CuException(DeviceErrorEnum.GET_CU_CHANNEL_INFO_ERROR);

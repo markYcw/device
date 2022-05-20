@@ -84,7 +84,8 @@ public class PDevice {
 	public List<SrcChn> updateChn(List<SrcChns> updateSrcChs){
 		for (SrcChns updateSrcCh : updateSrcChs) {
 			for (SrcChn srcChn : srcChns) {
-				if (srcChn.getSn().equals(updateSrcCh.getSn())){
+				log.info("====开始更新设备状态puId:{}",puId);
+				if (srcChn.getSn()==(updateSrcCh.getSn())){
 					srcChn.setOnline(updateSrcCh.getOnline());
 					srcChn.setEnable(updateSrcCh.getEnable());
 				}

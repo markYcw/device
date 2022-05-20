@@ -320,11 +320,16 @@ public class CuDeviceCache {
      */
     public void updateDeviceChnStatus(String puid, List<SrcChns> srcChns) {
       synchronized (this){
-          log.info("==========更新设备通道在线状态：puId{}",puid);
+          log.info("==========更新设备通道在线状态：puId{},srcChns:{}",puid,srcChns);
           for (ArrayList<PDevice> devices : devicesByGroup.values()) {
               for (PDevice pDevice : devices) {
                   if (puid.equals(pDevice.getPuId())) {
-                      List<SrcChn> src = pDevice.updateChn(srcChns);
+                      List<SrcChn> src = null;
+                      try {
+                          src = pDevice.updateChn(srcChns);
+                      } catch (Exception e) {
+                          log.info("==========更新设备通道在线状态失败:{},puId:{}",e,puid);
+                      }
                       log.info("==============更新完设备状态puid:{}，通道状态：{}",puid,src);
                   }
               }

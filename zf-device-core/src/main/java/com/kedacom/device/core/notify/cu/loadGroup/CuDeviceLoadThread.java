@@ -3,8 +3,10 @@ package com.kedacom.device.core.notify.cu.loadGroup;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.kedacom.api.ConfigFeign;
 import com.kedacom.api.WebsocketFeign;
 import com.kedacom.common.constants.DevTypeConstant;
+import com.kedacom.common.model.Result;
 import com.kedacom.cu.dto.DevicesDto;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.pojo.DeviceSubscribe;
@@ -59,8 +61,8 @@ public class CuDeviceLoadThread {
     @Autowired
     private CuConvert convert;
 
-    @Value("${zf.cu.need_gn:0}")
-    private Integer gn;
+    @Autowired
+    private ConfigFeign config;
 
     /**
      * 当前正在加载的ssid
@@ -171,9 +173,10 @@ public class CuDeviceLoadThread {
         devicesDto.setSubscribe(subscribe);
         devicesDto.setKmId(cuEntity.getId());
         devicesDto.setGroupId(groupId);
-        if(gn==0){
-            devicesDto.setNeedPuId10(1);
-            devicesDto.setNeedGbId(1);
+        Result<Integer> result = config.getIsOpenGbId();
+        if(result.getData()==0){
+            devicesDto.setNeedPuId10(0);
+            devicesDto.setNeedGbId(0);
         }else {
             devicesDto.setNeedPuId10(1);
             devicesDto.setNeedGbId(1);
@@ -305,7 +308,6 @@ public class CuDeviceLoadThread {
 
             case GetDeviceStatusNotify.TYPE_Channel:
                 //视频源（通道）上下线
-                log.info("===========加载设备通道状态开始SSNo为：{}，puId为：{}", notify.getSsno(),puid);
                 List<SrcChns> srcChns = notify.getSrcChns();
                 this.onDeviceChnStatus(ssid, puid, srcChns);
                 break;

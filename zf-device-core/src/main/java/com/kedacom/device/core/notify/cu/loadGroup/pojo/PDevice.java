@@ -81,18 +81,15 @@ public class PDevice {
 	 * 更新通道在线状态
 	 * @param updateSrcChs
 	 */
-	public List<SrcChn> updateChn(List<SrcChns> updateSrcChs){
+	public void updateChn(List<SrcChns> updateSrcChs){
 		for (SrcChns updateSrcCh : updateSrcChs) {
 			for (SrcChn srcChn : srcChns) {
-				log.info("====开始更新设备状态puId:{}",puId);
 				if (srcChn.getSn()==(updateSrcCh.getSn())){
 					srcChn.setOnline(updateSrcCh.getOnline());
 					srcChn.setEnable(updateSrcCh.getEnable());
 				}
 			}
 		}
-
-		return this.srcChns;
 	}
 
 	/**

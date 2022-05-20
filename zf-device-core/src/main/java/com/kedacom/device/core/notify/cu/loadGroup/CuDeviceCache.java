@@ -1,15 +1,9 @@
 package com.kedacom.device.core.notify.cu.loadGroup;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.kedacom.BaseResult;
-import com.kedacom.cu.dto.GbIdDto;
-import com.kedacom.cu.dto.PuIdOneDto;
-import com.kedacom.cu.vo.GbIdVo;
-import com.kedacom.cu.vo.PuIdOneVo;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
-import com.kedacom.device.core.service.CuService;
-import com.kedacom.device.core.utils.ContextUtils;
 import lombok.extern.slf4j.Slf4j;
+
 import java.text.Collator;
 import java.util.*;
 
@@ -65,7 +59,7 @@ public class CuDeviceCache {
      * 设备
      * key:分组ID, value：分组下的设备，根据名称排序。
      */
-    private Hashtable<String, ArrayList<PDevice>> devicesByGroup = new Hashtable<String, ArrayList<PDevice>>(100);
+    private Hashtable<String, List<PDevice>> devicesByGroup = new Hashtable<String, List<PDevice>>(100);
 
     public void setRootGroupId(String rootGroupId) {
         this.rootGroupId = rootGroupId;
@@ -183,7 +177,7 @@ public class CuDeviceCache {
      * @param device
      */
     public void addDevice(PDevice device) {
-        log.info("==加载单个设备{}",device);
+        log.info("==加载单个设备{}", device);
         //loadPuIdOne(device); //加载设备平台1.0对应PuId
         String puid = device.getPuId();
         //根据puid判断设备是否已经存在，如果存在就忽略掉，避免重复
@@ -218,9 +212,9 @@ public class CuDeviceCache {
         }
 
 
-        ArrayList<PDevice> list = this.devicesByGroup.get(groupId);
+        List<PDevice> list = this.devicesByGroup.get(groupId);
         if (list == null) {
-            list = new ArrayList<PDevice>();
+            list = Collections.synchronizedList(new ArrayList<PDevice>());
             this.devicesByGroup.put(groupId, list);
         }
 
@@ -259,7 +253,7 @@ public class CuDeviceCache {
      * @return
      */
     public PDevice getDeviceByOne(String puId) {
-        log.info("1.0puID和设备容器情况{}",devicesOne);
+        log.info("1.0puID和设备容器情况{}", devicesOne);
         return this.devicesOne.get(puId);
     }
 
@@ -274,7 +268,7 @@ public class CuDeviceCache {
             PDevice device = this.getDevice(puid);
             if (device != null) {
                 String groupId = device.getGroupId();
-                ArrayList<PDevice> list = this.devicesByGroup.get(groupId);
+                List<PDevice> list = this.devicesByGroup.get(groupId);
                 if (list != null) {
                     list.remove(device);
                 }
@@ -292,7 +286,7 @@ public class CuDeviceCache {
      * @param online 在线状态
      */
     public void updateDeviceStatus(String puid, Integer online) {
-        for (ArrayList<PDevice> devices : devicesByGroup.values()) {
+        for (List<PDevice> devices : devicesByGroup.values()) {
             for (PDevice pDevice : devices) {
                 if (puid.equals(pDevice.getPuId())) {
                     if (online != null) {
@@ -319,22 +313,19 @@ public class CuDeviceCache {
      * @param srcChns 设备通道列表
      */
     public void updateDeviceChnStatus(String puid, List<SrcChns> srcChns) {
-      synchronized (this){
-          log.info("==========更新设备通道在线状态：puId{},srcChns:{}",puid,srcChns);
-          for (ArrayList<PDevice> devices : devicesByGroup.values()) {
-              for (PDevice pDevice : devices) {
-                  if (puid.equals(pDevice.getPuId())) {
-                      List<SrcChn> src = null;
-                      try {
-                          src = pDevice.updateChn(srcChns);
-                      } catch (Exception e) {
-                          log.info("==========更新设备通道在线状态失败:{},puId:{}",e,puid);
-                      }
-                      log.info("==============更新完设备状态puid:{}，通道状态：{}",puid,src);
-                  }
-              }
-          }
-      }
+        for (List<PDevice> devices : devicesByGroup.values()) {
+            synchronized (devices) {
+                for (PDevice pDevice : devices) {
+                    if (puid.equals(pDevice.getPuId())) {
+                        try {
+                            pDevice.updateChn(srcChns);
+                        } catch (Exception e) {
+                            log.error("==========更新设备通道在线状态失败:{},puId:{}", e, puid);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -344,10 +335,12 @@ public class CuDeviceCache {
      * @param recs 录像状态列表
      */
     public void updateDeviceChnRecStatus(String puid, List<Rec> recs) {
-        for (ArrayList<PDevice> devices : devicesByGroup.values()) {
-            for (PDevice pDevice : devices) {
-                if (puid.equals(pDevice.getPuId())) {
-                    pDevice.updateChnRec(recs);
+        for (List<PDevice> devices : devicesByGroup.values()) {
+            synchronized (devices) {
+                for (PDevice pDevice : devices) {
+                    if (puid.equals(pDevice.getPuId())) {
+                        pDevice.updateChnRec(recs);
+                    }
                 }
             }
         }
@@ -396,10 +389,10 @@ public class CuDeviceCache {
         /*for (ArrayList<PDevice> devices : devicesByGroup.values()) {
             list.addAll(devices);
         }*/
-        Collection<ArrayList<PDevice>> values = devicesByGroup.values();
-        Iterator<ArrayList<PDevice>> iterator = values.iterator();
-        while (iterator.hasNext()){
-            ArrayList<PDevice> next = iterator.next();
+        Collection<List<PDevice>> values = devicesByGroup.values();
+        Iterator<List<PDevice>> iterator = values.iterator();
+        while (iterator.hasNext()) {
+            List<PDevice> next = iterator.next();
             list.addAll(next);
         }
         return list;
@@ -425,7 +418,7 @@ public class CuDeviceCache {
      * @return
      */
     public List<PDevice> getDeivcesByGroupId(String groupId) {
-        ArrayList<PDevice> devices = this.devicesByGroup.get(groupId);
+        List<PDevice> devices = this.devicesByGroup.get(groupId);
         ArrayList<PDevice> list = new ArrayList<PDevice>();
         if (devices != null) {
             list.addAll(devices);

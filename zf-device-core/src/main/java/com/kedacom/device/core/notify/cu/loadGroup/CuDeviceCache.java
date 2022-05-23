@@ -322,9 +322,7 @@ public class CuDeviceCache {
      * @param puid    设备ID
      * @param srcChns 设备通道列表
      */
-    public void updateDeviceChnStatus(String puid, List<SrcChns> srcChns) {
-        writeLock.lock();
-        try {
+    public synchronized void updateDeviceChnStatus(String puid, List<SrcChns> srcChns) {
             for (List<PDevice> devices : devicesByGroup.values()) {
                 synchronized (devices) {
                     for (PDevice pDevice : devices) {
@@ -338,9 +336,6 @@ public class CuDeviceCache {
                     }
                 }
             }
-        } finally {
-            writeLock.unlock();
-        }
     }
 
     /**
@@ -349,9 +344,7 @@ public class CuDeviceCache {
      * @param puid 设备ID
      * @param recs 录像状态列表
      */
-    public void updateDeviceChnRecStatus(String puid, List<Rec> recs) {
-        writeLock.lock();
-        try {
+    public synchronized void updateDeviceChnRecStatus(String puid, List<Rec> recs) {
             for (List<PDevice> devices : devicesByGroup.values()) {
                 synchronized (devices) {
                     for (PDevice pDevice : devices) {
@@ -361,9 +354,6 @@ public class CuDeviceCache {
                     }
                 }
             }
-        } finally {
-            writeLock.unlock();
-        }
     }
 
     public boolean isLoadComplete() {

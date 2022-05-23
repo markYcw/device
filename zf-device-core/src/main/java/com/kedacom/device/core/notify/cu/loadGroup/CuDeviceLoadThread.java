@@ -30,6 +30,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -61,7 +62,7 @@ public class CuDeviceLoadThread {
     @Autowired
     private CuConvert convert;
 
-    @Autowired
+    @Resource
     private ConfigFeign config;
 
     /**
@@ -174,6 +175,7 @@ public class CuDeviceLoadThread {
         devicesDto.setKmId(cuEntity.getId());
         devicesDto.setGroupId(groupId);
         Result<Integer> result = config.getIsOpenGbId();
+        log.info("============加载国标ID设置：{}",result.getData());
         if(result.getData()==0){
             devicesDto.setNeedPuId10(0);
             devicesDto.setNeedGbId(0);

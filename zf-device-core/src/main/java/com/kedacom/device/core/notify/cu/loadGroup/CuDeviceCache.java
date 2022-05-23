@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.text.Collator;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * 设备缓存。一个监控平台一个缓存。
@@ -64,6 +65,10 @@ public class CuDeviceCache {
     public void setRootGroupId(String rootGroupId) {
         this.rootGroupId = rootGroupId;
     }
+
+    private static ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private static ReentrantReadWriteLock.WriteLock writeLock = lock.writeLock();
+
 
     /**
      * 设备是否加载完成
@@ -286,23 +291,28 @@ public class CuDeviceCache {
      * @param online 在线状态
      */
     public void updateDeviceStatus(String puid, Integer online) {
-        for (List<PDevice> devices : devicesByGroup.values()) {
-            for (PDevice pDevice : devices) {
-                if (puid.equals(pDevice.getPuId())) {
-                    if (online != null) {
-                        pDevice.setOnline(online);
-                        if (online == 0) {
+        writeLock.lock();
+        try {
+            for (List<PDevice> devices : devicesByGroup.values()) {
+                for (PDevice pDevice : devices) {
+                    if (puid.equals(pDevice.getPuId())) {
+                        if (online != null) {
+                            pDevice.setOnline(online);
                             if (online == 0) {
-                                //设备下线，所有通道全部下线
-                                List<SrcChn> channels = pDevice.getChannels();
-                                for (SrcChn chl : channels) {
-                                    chl.setOnline(0);
+                                if (online == 0) {
+                                    //设备下线，所有通道全部下线
+                                    List<SrcChn> channels = pDevice.getChannels();
+                                    for (SrcChn chl : channels) {
+                                        chl.setOnline(0);
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+        } finally {
+            writeLock.unlock();
         }
     }
 
@@ -313,18 +323,23 @@ public class CuDeviceCache {
      * @param srcChns 设备通道列表
      */
     public void updateDeviceChnStatus(String puid, List<SrcChns> srcChns) {
-        for (List<PDevice> devices : devicesByGroup.values()) {
-            synchronized (devices) {
-                for (PDevice pDevice : devices) {
-                    if (puid.equals(pDevice.getPuId())) {
-                        try {
-                            pDevice.updateChn(srcChns);
-                        } catch (Exception e) {
-                            log.error("==========更新设备通道在线状态失败:{},puId:{}", e, puid);
+        writeLock.lock();
+        try {
+            for (List<PDevice> devices : devicesByGroup.values()) {
+                synchronized (devices) {
+                    for (PDevice pDevice : devices) {
+                        if (puid.equals(pDevice.getPuId())) {
+                            try {
+                                pDevice.updateChn(srcChns);
+                            } catch (Exception e) {
+                                log.error("==========更新设备通道在线状态失败:{},puId:{}", e, puid);
+                            }
                         }
                     }
                 }
             }
+        } finally {
+            writeLock.unlock();
         }
     }
 
@@ -335,14 +350,19 @@ public class CuDeviceCache {
      * @param recs 录像状态列表
      */
     public void updateDeviceChnRecStatus(String puid, List<Rec> recs) {
-        for (List<PDevice> devices : devicesByGroup.values()) {
-            synchronized (devices) {
-                for (PDevice pDevice : devices) {
-                    if (puid.equals(pDevice.getPuId())) {
-                        pDevice.updateChnRec(recs);
+        writeLock.lock();
+        try {
+            for (List<PDevice> devices : devicesByGroup.values()) {
+                synchronized (devices) {
+                    for (PDevice pDevice : devices) {
+                        if (puid.equals(pDevice.getPuId())) {
+                            pDevice.updateChnRec(recs);
+                        }
                     }
                 }
             }
+        } finally {
+            writeLock.unlock();
         }
     }
 

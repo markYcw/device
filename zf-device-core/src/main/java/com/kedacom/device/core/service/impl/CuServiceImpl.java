@@ -49,6 +49,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
@@ -463,7 +464,13 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             cuDeviceStatusPoll.remove(dto.getKmId());
             CuBasicParam param = tool.getParam(entity);
             log.info("根据ID登出cu接口入参kmId：{},ssid/ssno{}",dto.getKmId(),param);
-            ResponseEntity<String> exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, param.getParamMap());
+            ResponseEntity<String> exchange = null;
+            try {
+                exchange = remoteRestTemplate.getRestTemplate().exchange(param.getUrl() + "/login/{ssid}/{ssno}", HttpMethod.DELETE, null, String.class, param.getParamMap());
+            } catch (RestClientException e) {
+                log.error("==========登出cu失败{}",e
+                );
+            }
             CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);
             String errorMsg = "登出cu失败:{},{},{}";
             responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_LOGOUT_FAILED, response);

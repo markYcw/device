@@ -1,55 +1,54 @@
 package com.kedacom.device.core.utils;
 
 import cn.hutool.core.util.ObjectUtil;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * @Auther: hxj
- * @Date: 2021/7/12 14:01
+ * @author hexijian
+ * @date: 2021/7/12 14:01
  */
-@Component
+@Configuration
 public class RemoteRestTemplate {
 
-    private static final RestTemplate restTemplate;
-    private static final HttpHeaders headers;
+    private static RestTemplate restTemplate;
 
-    static {
-//        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
-//        httpRequestFactory.setConnectionRequestTimeout(15000);
-//        httpRequestFactory.setConnectTimeout(15000);
-//        httpRequestFactory.setReadTimeout(15000);
+    private static HttpHeaders headers;
 
-        OkHttp3ClientHttpRequestFactory httpRequestFactory = new OkHttp3ClientHttpRequestFactory();
-        httpRequestFactory.setConnectTimeout(15000);
-        httpRequestFactory.setReadTimeout(60000);
-        httpRequestFactory.setWriteTimeout(60000);
+    @Value("${zf.restTemplate.timeout:60000}")
+    private String timeout;
 
-        restTemplate = new RestTemplate(httpRequestFactory);
-        setRestTemplateEncode(restTemplate);
+    /**
+     * @return HttpHeaders
+     * @author ycw
+     * 设置请求头
+     */
+    @Bean
+    public HttpHeaders getHttpHeaders() {
         //设置请求头发送put请求需要设置请求头 addBy ycw
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-    }
-
-    /**
-     * @author ycw
-     * 设置请求头
-     * @return HttpHeaders
-     */
-    public HttpHeaders getHttpHeaders(){
         return headers;
     }
 
+    @Bean
     public RestTemplate getRestTemplate() {
+        OkHttp3ClientHttpRequestFactory httpRequestFactory = new OkHttp3ClientHttpRequestFactory();
+        httpRequestFactory.setConnectTimeout(15000);
+        httpRequestFactory.setReadTimeout(Integer.parseInt(timeout));
+        httpRequestFactory.setWriteTimeout(Integer.parseInt(timeout));
+        restTemplate = new RestTemplate(httpRequestFactory);
+        setRestTemplateEncode(restTemplate);
         return restTemplate;
     }
 

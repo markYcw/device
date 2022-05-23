@@ -1,5 +1,6 @@
 package com.kedacom.device.core.notify.nm.pojo;
 
+import com.kedacom.newMedia.pojo.NMDevice;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -52,14 +53,18 @@ public class NmGroup implements Cloneable{
 	@ApiModelProperty("排序索引")
 	private String sortIndex;
 
-	@ApiModelProperty("总设备数")
-	private Integer count;
+	@ApiModelProperty(value = "当前分组设备总数")
+	private Integer deviceTotalNum = 0;
 
-	/**
-	 * 设备在线数
-	 */
-	@ApiModelProperty("设备在线数")
-	private Integer onLineCount;
+	@ApiModelProperty(value = "当前分组在线设备总数")
+	private Integer deviceOnlineNum = 0;
+
+	@ApiModelProperty(value = "当前分组离线设备总数")
+	private Integer deviceOfflineNum = 0;
+
+	@ApiModelProperty(value = "当前分组故障设备总数")
+	private Integer deviceFaultNum = 0;
+
 
 	public void addChildGroup(NmGroup group){
 		synchronized(sortChildGroups){
@@ -75,6 +80,21 @@ public class NmGroup implements Cloneable{
 			}
 			sortChildGroups.add(0,group);
 		}
+	}
+
+	/**
+	 * 更新分组信息如设备总数在线总数离线总数等
+	 * @param device
+	 */
+	public void updateMessage(NMDevice device){
+		this.deviceTotalNum = deviceTotalNum + 1;
+		Integer status = device.getStatus();
+		if(status==0){
+			this.deviceOnlineNum = deviceOnlineNum + 1;
+		}else {
+			this.deviceOfflineNum = deviceOfflineNum +1;
+		}
+
 	}
 	
 	/**

@@ -54,6 +54,12 @@ public class NewMediaEntity implements Serializable {
     @ApiModelProperty(value = "录像服务端口")
     private Integer recPort;
 
+    @ApiModelProperty(value = "拼控服务账号")
+    private String mspAccount;
+
+    @ApiModelProperty(value = "拼控服务密码")
+    private String mspPassword;
+
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 

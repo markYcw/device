@@ -1,4 +1,5 @@
 package com.kedacom.newMedia.pojo;
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -39,6 +40,9 @@ public class NMDevice {
 
     @ApiModelProperty(value = "设备状态 0-在线，1-离线")
     private Integer status;
+
+    @ApiModelProperty(value = "设备名称(拼音+首字母)")
+    private String pinyin;
 
     @ApiModelProperty(value = "操作时间")
     private Double operateTime;

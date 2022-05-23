@@ -2,6 +2,7 @@ package com.kedacom.device.core.notify.nm;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.kedacom.common.utils.PinYinUtils;
 import com.kedacom.device.core.notify.nm.pojo.NmGroup;
 import com.kedacom.device.core.notify.nm.pojo.NmGroupDeviceIds;
 import com.kedacom.newMedia.pojo.NMDevice;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * 新媒体设备缓存。
@@ -53,6 +55,9 @@ public class NewMediaDeviceCache {
      * key:分组ID, value：分组信息
      */
     private Hashtable<String, NmGroup> groups = new Hashtable<String, NmGroup>(20);
+
+    private static ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private static ReentrantReadWriteLock.WriteLock writeLock = lock.writeLock();
 
     /**
      * 设备
@@ -159,8 +164,16 @@ public class NewMediaDeviceCache {
      * @param device
      */
     public void addDevice(NMDevice device) {
+        String name = device.getName();
+        String hanZiPinYin = PinYinUtils.getHanZiPinYin(name);
+        String hanZiInitial = PinYinUtils.getHanZiInitials(name);
+        String lowerCase = PinYinUtils.StrToLowerCase(hanZiInitial);
+        device.setPinyin(hanZiPinYin + "&&" + lowerCase);
         String groupId =  device.getGroupId();
         if(StringUtils.isNotBlank(groupId)){
+            //更新分组信息包括分组下设备总数，在线数离线数等等
+            NmGroup nmGroup = groups.get(groupId);
+            nmGroup.updateMessage(device);
             //先记录国标ID和分组ID的关系
             this.deviceByGbId.put(device.getGbId(),groupId);
             ArrayList<NMDevice> list = this.devicesByGroup.get(groupId);
@@ -255,19 +268,24 @@ public class NewMediaDeviceCache {
      * @param devices
      */
     public void updateDeviceStatus(List<NMDevice> devices){
-        Iterator<NMDevice> iterator = devices.iterator();
-        while (iterator.hasNext()){
-            NMDevice next = iterator.next();
-            ArrayList<NMDevice> nmDevices = devicesByGroup.get(next.getGroupId());
-            if(CollectionUtil.isNotEmpty(nmDevices)){
-                Iterator<NMDevice> list = nmDevices.iterator();
-                while (list.hasNext()){
-                    NMDevice device = list.next();
-                    if(next.getId().equals(device.getId())){
-                        device.setStatus(next.getStatus());
+        writeLock.lock();
+        try {
+            Iterator<NMDevice> iterator = devices.iterator();
+            while (iterator.hasNext()){
+                NMDevice next = iterator.next();
+                ArrayList<NMDevice> nmDevices = devicesByGroup.get(next.getGroupId());
+                if(CollectionUtil.isNotEmpty(nmDevices)){
+                    Iterator<NMDevice> list = nmDevices.iterator();
+                    while (list.hasNext()){
+                        NMDevice device = list.next();
+                        if(next.getId().equals(device.getId())){
+                            device.setStatus(next.getStatus());
+                        }
                     }
                 }
             }
+        } finally {
+            writeLock.unlock();
         }
     }
 
@@ -318,11 +336,16 @@ public class NewMediaDeviceCache {
      * @return
      */
     public List<NMDevice> getDevices() {
-        LinkedList<NMDevice> list = new LinkedList<>();
-        for (ArrayList<NMDevice> devices : devicesByGroup.values()) {
-            list.addAll(devices);
+        writeLock.lock();
+        try {
+            LinkedList<NMDevice> list = new LinkedList<>();
+            for (ArrayList<NMDevice> devices : devicesByGroup.values()) {
+                list.addAll(devices);
+            }
+            return list;
+        } finally {
+            writeLock.unlock();
         }
-        return list;
     }
 
 

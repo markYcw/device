@@ -2,6 +2,7 @@ package com.kedacom.device.core.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -10,9 +11,12 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.common.constants.DevTypeConstant;
+import com.kedacom.common.utils.PinYinUtils;
 import com.kedacom.device.core.basicParam.*;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.NewMediaConvert;
+import com.kedacom.device.core.convert.UmsDeviceConvert;
+import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.core.enums.DeviceModelType;
 import com.kedacom.device.core.exception.NewMediaException;
 import com.kedacom.device.core.mapper.NewMediaMapper;
@@ -25,12 +29,14 @@ import com.kedacom.device.core.utils.RemoteRestTemplate;
 import com.kedacom.newMedia.dto.NMDeviceListDto;
 import com.kedacom.newMedia.dto.NewMediaLoginDto;
 import com.kedacom.newMedia.entity.NewMediaEntity;
+import com.kedacom.newMedia.pojo.NMDevice;
 import com.kedacom.newMedia.resopnse.NMDeviceListResponse;
 import com.kedacom.newMedia.resopnse.NewMediaLoginResponse;
 import com.kedacom.newMedia.resopnse.NewMediaResponse;
 import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.UmsDeviceInfoSelectByIdResponseDto;
 import com.kedacom.ums.responsedto.UmsDeviceInfoSelectResponseDto;
+import com.kedacom.ums.responsedto.UmsSubDeviceInfoQueryResponseDto;
 import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +51,8 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author ycw
@@ -67,7 +75,7 @@ public class NewMediaServiceImpl implements NewMediaService {
     @Resource
     private RemoteRestTemplate remoteRestTemplate;
 
-    private String newMediaNtyUrl = "172.16.128.105:9000";
+    private String newMediaNtyUrl = "127.0.0.1:9000";
 
     private final static String REQUEST_HEAD = "http://";
 
@@ -163,10 +171,12 @@ public class NewMediaServiceImpl implements NewMediaService {
     public BaseResult<String> insertUmsDevice(UmsDeviceInfoAddRequestDto requestDto) {
 
         log.info("新增新媒体平台信息参数 ： requestDto {}", requestDto);
-        if (!isAddRepeat(requestDto)) {
-            throw new NewMediaException(DeviceErrorEnum.IP_OR_NAME_REPEAT);
+        NewMediaEntity n = mapper.selectById(1);
+        if (ObjectUtil.isNotNull(n)) {
+            BaseResult.failed("===已有新媒体设备请勿重复添加");
         }
         NewMediaEntity entity = new NewMediaEntity();
+        entity.setId(1);
         entity.setName(requestDto.getName());
         entity.setDevType(DeviceModelType.NM.getCode());
         entity.setDevIp(requestDto.getDeviceIp());
@@ -177,13 +187,13 @@ public class NewMediaServiceImpl implements NewMediaService {
         entity.setNmediaIp(requestDto.getStreamingMediaIp());
         entity.setNmediaPort(requestDto.getStreamingMediaPort());
         entity.setRecPort(requestDto.getStreamingMediaRecPort());
+        entity.setMspAccount(requestDto.getMspAccount());
+        entity.setMspPassword(requestDto.getMspPassword());
         mapper.insert(entity);
         try {
-            this.loginById(entity.getId());
-        } catch (ExecutionException e) {
-            log.error("============新增时登录新媒体失败{}", e);
-        } catch (InterruptedException e) {
-            log.error("============新增时登录新媒体失败{}", e);
+            CompletableFuture.runAsync(() -> logoutById(1));
+        } catch (Exception e) {
+            log.error("=========新增新媒体时登录失败，失败原因为{}", e);
         }
         return BaseResult.succeed("新增新媒体平台成功");
     }
@@ -468,13 +478,13 @@ public class NewMediaServiceImpl implements NewMediaService {
         entity.setNmediaIp(requestDto.getStreamingMediaIp());
         entity.setNmediaPort(requestDto.getStreamingMediaPort());
         entity.setRecPort(requestDto.getStreamingMediaRecPort());
+        entity.setMspAccount(requestDto.getMspAccount());
+        entity.setMspPassword(requestDto.getMspPassword());
         mapper.updateById(entity);
         try {
-            this.loginById(entity.getId());
-        } catch (ExecutionException e) {
-            log.error("============更新新媒体时登录新媒体失败{}", e);
-        } catch (InterruptedException e) {
-            log.error("============更新新媒体时登录新媒体失败{}", e);
+            CompletableFuture.runAsync(() -> logoutById(1));
+        } catch (Exception e) {
+            log.error("====更新新媒体信息时登录新媒体失败，失败原因为：{}", e);
         }
         return BaseResult.succeed("修改新媒体平台成功");
 
@@ -574,6 +584,72 @@ public class NewMediaServiceImpl implements NewMediaService {
         } catch (InterruptedException e) {
             log.error("==========手动同步设备失败{}", e);
         }
+    }
+
+    @Override
+    public BasePage<UmsSubDeviceInfoQueryResponseDto> selectUmsSubDeviceList(UmsSubDeviceInfoQueryRequestDto requestDto) {
+        log.info("==查询统一设备平台下挂载的子设备信息接口入参:{}", requestDto);
+        List<NMDevice> devices = NewMediaDeviceCache.getInstance().getDevices();
+        Stream<NMDevice> stream = devices.stream();
+
+        String deviceName = requestDto.getDeviceName();
+        if (StrUtil.isNotBlank(deviceName)) {
+            stream = stream.filter(x -> x.getName().toLowerCase().contains(deviceName.toLowerCase()));
+        }
+        String deviceIp = requestDto.getDeviceIp();
+        if (StrUtil.isNotBlank(deviceIp)) {
+            stream = stream.filter(x -> x.getIpv4().equals(deviceIp));
+        }
+        String gbId = requestDto.getGbId();
+        if (StrUtil.isNotBlank(gbId)) {
+            stream = stream.filter(x -> x.getGbId().equals(gbId));
+        }
+        String groupId = requestDto.getGroupId();
+        if (StrUtil.isNotBlank(groupId)) {
+            stream = stream.filter(x -> x.getGroupId().equals(groupId));
+        }
+        Integer status = requestDto.getStatus();
+        if (status != null) {
+            stream = stream.filter(x -> x.getStatus()==status);
+        }
+        List<NMDevice> collect = stream.collect(Collectors.toList());
+        ArrayList<NMDevice> list = new ArrayList<>();
+        if(CollectionUtil.isNotEmpty(collect)){
+            Iterator<NMDevice> iterator = collect.iterator();
+            while (iterator.hasNext()){
+                NMDevice next = iterator.next();
+                List<String> deviceTypeList = requestDto.getDeviceTypeList();
+                if (CollectionUtil.isNotEmpty(deviceTypeList)) {
+                    Iterator<String> ite = deviceTypeList.iterator();
+                    while (ite.hasNext()) {
+                        String devType = ite.next();
+                        String type = next.getDeviceType();
+                        //遍历前端传的设备类型集合只要有其中一种和咱们设备类型一致就把设备加入新的集合
+                        if(type.equals(devType)){
+                            list.add(next);
+                        }
+                    }
+
+                }
+            }
+        }
+        if (CollectionUtil.isEmpty(list)) {
+            log.error("查询平台下挂载的子设备为空");
+            return null;
+        }
+        log.info("查询统一平台下挂载的子设备信息 ： records [{}]", list);
+        List<UmsSubDeviceInfoQueryResponseDto> umsSubDeviceInfoQueryResponseDtoList =  list.stream().map(a->convert.convertToPage(a)).collect(Collectors.toList());
+        //这里有一个非常基础但是容易被忽视的问题:整数相除会造成进度丢失，先转成double类型
+        int totalPage = (int) Math.ceil((double) umsSubDeviceInfoQueryResponseDtoList.size() / requestDto.getPageSize());
+        BasePage<UmsSubDeviceInfoQueryResponseDto> basePage = new BasePage<>();
+        basePage.setTotal(Long.valueOf(umsSubDeviceInfoQueryResponseDtoList.size()));
+        basePage.setTotalPage(Long.valueOf(totalPage));
+        basePage.setCurPage(requestDto.getCurPage());
+        basePage.setPageSize(requestDto.getPageSize());
+        basePage.setData(umsSubDeviceInfoQueryResponseDtoList);
+
+        return basePage;
+
     }
 
 }

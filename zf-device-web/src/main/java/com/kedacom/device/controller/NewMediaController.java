@@ -6,6 +6,7 @@ import com.kedacom.device.core.service.NewMediaService;
 import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.UmsDeviceInfoSelectByIdResponseDto;
 import com.kedacom.ums.responsedto.UmsDeviceInfoSelectResponseDto;
+import com.kedacom.ums.responsedto.UmsSubDeviceInfoQueryResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -69,7 +70,7 @@ public class NewMediaController {
         return service.deleteUmsDevice(requestDto);
     }
 
-    @ApiOperation("查询统一平台信息")
+    @ApiOperation("分页查询统一平台信息")
     @PostMapping("/selectUmsDeviceList")
     public BaseResult<BasePage<UmsDeviceInfoSelectResponseDto>> selectUmsDeviceList(@RequestBody UmsDeviceInfoSelectRequestDto requestDto) {
 
@@ -86,6 +87,15 @@ public class NewMediaController {
         UmsDeviceInfoSelectByIdResponseDto responseDto = service.getDeviceInfoById(requestDto);
 
         return BaseResult.succeed("查询成功", responseDto);
+    }
+
+    @ApiOperation("查询统一设备平台下挂载的子设备信息")
+    @PostMapping("/selectUmsSubDeviceList")
+    public BaseResult<BasePage<UmsSubDeviceInfoQueryResponseDto>> selectUmsSubDeviceList(@RequestBody UmsSubDeviceInfoQueryRequestDto requestDto) {
+
+        BasePage<UmsSubDeviceInfoQueryResponseDto> basePage = service.selectUmsSubDeviceList(requestDto);
+
+        return BaseResult.succeed(basePage);
     }
 
 }

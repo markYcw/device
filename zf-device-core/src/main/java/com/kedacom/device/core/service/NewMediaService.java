@@ -5,6 +5,7 @@ import com.kedacom.BaseResult;
 import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.UmsDeviceInfoSelectByIdResponseDto;
 import com.kedacom.ums.responsedto.UmsDeviceInfoSelectResponseDto;
+import com.kedacom.ums.responsedto.UmsSubDeviceInfoQueryResponseDto;
 
 import java.util.concurrent.ExecutionException;
 
@@ -55,4 +56,6 @@ public interface NewMediaService {
     UmsDeviceInfoSelectByIdResponseDto getDeviceInfoById(UmsDeviceInfoSelectByIdRequestDto requestDto);
 
     void syncDeviceData(UmsDeviceInfoSyncRequestDto requestDto);
+
+    BasePage<UmsSubDeviceInfoQueryResponseDto> selectUmsSubDeviceList(UmsSubDeviceInfoQueryRequestDto requestDto);
 }

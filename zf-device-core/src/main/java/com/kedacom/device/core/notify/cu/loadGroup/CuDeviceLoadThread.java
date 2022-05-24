@@ -176,6 +176,7 @@ public class CuDeviceLoadThread {
         devicesDto.setGroupId(groupId);
         Result<Integer> result = config.getIsOpenGbId();
         log.info("============加载国标ID设置：{}",result.getData());
+        log.info("====测试123");
         if(result.getData()==0){
             devicesDto.setNeedPuId10(0);
             devicesDto.setNeedGbId(0);

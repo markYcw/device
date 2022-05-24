@@ -3,10 +3,9 @@ package com.kedacom.device.core.service;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.ums.requestdto.*;
-import com.kedacom.ums.responsedto.UmsDeviceInfoSelectByIdResponseDto;
-import com.kedacom.ums.responsedto.UmsDeviceInfoSelectResponseDto;
-import com.kedacom.ums.responsedto.UmsSubDeviceInfoQueryResponseDto;
+import com.kedacom.ums.responsedto.*;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -58,4 +57,12 @@ public interface NewMediaService {
     void syncDeviceData(UmsDeviceInfoSyncRequestDto requestDto);
 
     BasePage<UmsSubDeviceInfoQueryResponseDto> selectUmsSubDeviceList(UmsSubDeviceInfoQueryRequestDto requestDto);
+
+    List<UmsSubDeviceInfoQueryResponseDto> selectUmsSubDeviceByGroupId(UmsSubDeviceInfoQueryByGroupIdRequestDto requestDto);
+
+    List<UmsSubDeviceInfoQueryResponseDto> selectUmsSubDeviceByGbIds(UmsSubDeviceInfoQueryByGbIdsRequestDto requestDto);
+
+    List<UmsScheduleGroupItemQueryResponseDto> selectUmsGroupList(UmsScheduleGroupQueryRequestDto requestDto);
+
+    List<SelectChildUmsGroupResponseDto> selectChildUmsGroupList(SelectChildUmsGroupRequestDto requestDto);
 }

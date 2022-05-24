@@ -11,17 +11,19 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.common.constants.DevTypeConstant;
-import com.kedacom.common.utils.PinYinUtils;
 import com.kedacom.device.core.basicParam.*;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.convert.NewMediaConvert;
 import com.kedacom.device.core.convert.UmsDeviceConvert;
+import com.kedacom.device.core.convert.UmsGroupConvert;
+import com.kedacom.device.core.entity.GroupInfoEntity;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.core.enums.DeviceModelType;
 import com.kedacom.device.core.exception.NewMediaException;
 import com.kedacom.device.core.mapper.NewMediaMapper;
 import com.kedacom.device.core.notify.nm.NewMediaDeviceCache;
 import com.kedacom.device.core.notify.nm.NewMediaDeviceLoadThread;
+import com.kedacom.device.core.notify.nm.pojo.NmGroup;
 import com.kedacom.device.core.service.NewMediaService;
 import com.kedacom.device.core.utils.ContextUtils;
 import com.kedacom.device.core.utils.HandleResponseUtil;
@@ -34,9 +36,7 @@ import com.kedacom.newMedia.resopnse.NMDeviceListResponse;
 import com.kedacom.newMedia.resopnse.NewMediaLoginResponse;
 import com.kedacom.newMedia.resopnse.NewMediaResponse;
 import com.kedacom.ums.requestdto.*;
-import com.kedacom.ums.responsedto.UmsDeviceInfoSelectByIdResponseDto;
-import com.kedacom.ums.responsedto.UmsDeviceInfoSelectResponseDto;
-import com.kedacom.ums.responsedto.UmsSubDeviceInfoQueryResponseDto;
+import com.kedacom.ums.responsedto.*;
 import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -589,6 +589,9 @@ public class NewMediaServiceImpl implements NewMediaService {
     @Override
     public BasePage<UmsSubDeviceInfoQueryResponseDto> selectUmsSubDeviceList(UmsSubDeviceInfoQueryRequestDto requestDto) {
         log.info("==查询统一设备平台下挂载的子设备信息接口入参:{}", requestDto);
+        if (!check()) {
+            return null;
+        }
         List<NMDevice> devices = NewMediaDeviceCache.getInstance().getDevices();
         Stream<NMDevice> stream = devices.stream();
 
@@ -610,13 +613,13 @@ public class NewMediaServiceImpl implements NewMediaService {
         }
         Integer status = requestDto.getStatus();
         if (status != null) {
-            stream = stream.filter(x -> x.getStatus()==status);
+            stream = stream.filter(x -> x.getStatus() == status);
         }
         List<NMDevice> collect = stream.collect(Collectors.toList());
         ArrayList<NMDevice> list = new ArrayList<>();
-        if(CollectionUtil.isNotEmpty(collect)){
+        if (CollectionUtil.isNotEmpty(collect)) {
             Iterator<NMDevice> iterator = collect.iterator();
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 NMDevice next = iterator.next();
                 List<String> deviceTypeList = requestDto.getDeviceTypeList();
                 if (CollectionUtil.isNotEmpty(deviceTypeList)) {
@@ -625,7 +628,7 @@ public class NewMediaServiceImpl implements NewMediaService {
                         String devType = ite.next();
                         String type = next.getDeviceType();
                         //遍历前端传的设备类型集合只要有其中一种和咱们设备类型一致就把设备加入新的集合
-                        if(type.equals(devType)){
+                        if (type.equals(devType)) {
                             list.add(next);
                         }
                     }
@@ -638,7 +641,7 @@ public class NewMediaServiceImpl implements NewMediaService {
             return null;
         }
         log.info("查询统一平台下挂载的子设备信息 ： records [{}]", list);
-        List<UmsSubDeviceInfoQueryResponseDto> umsSubDeviceInfoQueryResponseDtoList =  list.stream().map(a->convert.convertToPage(a)).collect(Collectors.toList());
+        List<UmsSubDeviceInfoQueryResponseDto> umsSubDeviceInfoQueryResponseDtoList = list.stream().map(a -> convert.convertToPage(a)).collect(Collectors.toList());
         //这里有一个非常基础但是容易被忽视的问题:整数相除会造成进度丢失，先转成double类型
         int totalPage = (int) Math.ceil((double) umsSubDeviceInfoQueryResponseDtoList.size() / requestDto.getPageSize());
         BasePage<UmsSubDeviceInfoQueryResponseDto> basePage = new BasePage<>();
@@ -650,6 +653,83 @@ public class NewMediaServiceImpl implements NewMediaService {
 
         return basePage;
 
+    }
+
+    @Override
+    public List<UmsSubDeviceInfoQueryResponseDto> selectUmsSubDeviceByGroupId(UmsSubDeviceInfoQueryByGroupIdRequestDto requestDto) {
+        log.info("==========查询当前分组下挂载的子设备信息接口入参:{}", requestDto);
+        if (!check()) {
+            return null;
+        }
+        String groupId = requestDto.getGroupId();
+        if (StringUtils.isEmpty(groupId)) {
+            return null;
+        }
+        List<NMDevice> list = NewMediaDeviceCache.getInstance().getDeviceByGroupId(groupId);
+        if (CollectionUtil.isEmpty(list)) {
+            log.error("查询当前分组下挂载的子设备为空");
+            return null;
+        }
+        List<UmsSubDeviceInfoQueryResponseDto> collect = list.stream().map(a -> convert.convertToPage(a)).collect(Collectors.toList());
+        return collect;
+    }
+
+    @Override
+    public List<UmsSubDeviceInfoQueryResponseDto> selectUmsSubDeviceByGbIds(UmsSubDeviceInfoQueryByGbIdsRequestDto requestDto) {
+        List<String> gbIds = requestDto.getGbIds();
+        log.info("根据国标id查询设备信息入参 : [{}]", gbIds);
+        if (!check()) {
+            return null;
+        }
+        List<NMDevice> list = NewMediaDeviceCache.getInstance().getDeviceByGroupId(gbIds);
+        if (CollectionUtil.isEmpty(list)) {
+            log.error("根据国标id查询设备信息为空");
+            return null;
+        }
+        log.info("根据国标id查询设备信息 : [{}]", list);
+        List<UmsSubDeviceInfoQueryResponseDto> collect = list.stream().map(a -> convert.convertToPage(a)).collect(Collectors.toList());
+        return collect;
+    }
+
+    @Override
+    public List<UmsScheduleGroupItemQueryResponseDto> selectUmsGroupList(UmsScheduleGroupQueryRequestDto requestDto) {
+        log.info("==========查询统一平台分组集合信息接口入参：{}", requestDto);
+        if (!check()) {
+            return null;
+        }
+        List<NmGroup> list = NewMediaDeviceCache.getInstance().getAllGroups();
+        List<UmsScheduleGroupItemQueryResponseDto> collect = list.stream().map(a -> convert.convertToGroup(a)).collect(Collectors.toList());
+        return collect;
+    }
+
+    @Override
+    public List<SelectChildUmsGroupResponseDto> selectChildUmsGroupList(SelectChildUmsGroupRequestDto requestDto) {
+        log.info("根据当前分组ID查询子分组集合入参 : [{}]", requestDto);
+        if (!check()) {
+            return null;
+        }
+        String groupId = requestDto.getGroupId();
+        LambdaQueryWrapper<GroupInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
+        if (StrUtil.isBlank(groupId)) {
+            groupId = "0";
+        }
+        NmGroup group = NewMediaDeviceCache.getInstance().getPGroupById(groupId);
+        List<NmGroup> list = group.getSortChildGroups();
+        if (CollectionUtil.isEmpty(list)) {
+            log.error("根据当前分组ID查询子分组集合信息为空");
+            return null;
+        }
+        List<SelectChildUmsGroupResponseDto> collect = list.stream().map(a -> convert.convertToSelectGroup(a)).collect(Collectors.toList());
+        return collect;
+    }
+
+    private boolean check() {
+        if (newMediaStatusPoll.get(1) == null) {
+            log.error("=======新媒体处于离线状态无法获取设备信息");
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }

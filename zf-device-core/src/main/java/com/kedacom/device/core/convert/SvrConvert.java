@@ -1,6 +1,5 @@
 package com.kedacom.device.core.convert;
 
-import com.kedacom.device.svr.pojo.DeChnList;
 import com.kedacom.device.svr.pojo.EnChnList;
 import com.kedacom.device.svr.pojo.PicChn;
 import com.kedacom.device.svr.pojo.RemoteCfgInfo;

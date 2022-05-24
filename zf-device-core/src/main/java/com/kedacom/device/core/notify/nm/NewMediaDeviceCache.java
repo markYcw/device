@@ -3,6 +3,7 @@ package com.kedacom.device.core.notify.nm;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.kedacom.common.utils.PinYinUtils;
+import com.kedacom.device.core.notify.cu.loadGroup.pojo.PDevice;
 import com.kedacom.device.core.notify.nm.pojo.NmGroup;
 import com.kedacom.device.core.notify.nm.pojo.NmGroupDeviceIds;
 import com.kedacom.newMedia.pojo.NMDevice;
@@ -63,22 +64,28 @@ public class NewMediaDeviceCache {
      * 设备
      * key:分组ID, value：分组下的设备。
      */
-    private ConcurrentHashMap<String, ArrayList<NMDevice>> devicesByGroup = new ConcurrentHashMap<>(100);
+    private ConcurrentHashMap<String, List<NMDevice>> devicesByGroup = new ConcurrentHashMap<>(100);
+
+    /**
+     * 根据国标ID存储设备
+     * key:国标ID, value：设备。
+     */
+    private ConcurrentHashMap<String, NMDevice> deviceGb = new ConcurrentHashMap<>(1000);
 
     /**
      * 未分组设备
      * key:未分组ID“root”, value：分组下的设备。
      */
-    private static ConcurrentHashMap<String, ArrayList<NMDevice>> devicesUnNamed = new ConcurrentHashMap<>(100);
+    private static ConcurrentHashMap<String, List<NMDevice>> devicesUnNamed = new ConcurrentHashMap<>(100);
 
     /**
      * 设备国标ID和分组ID对应
      * key:国标ID, value：分组ID
      */
-    private ConcurrentHashMap<String,String> deviceByGbId = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, String> deviceByGbId = new ConcurrentHashMap<>();
 
     static {
-        devicesUnNamed.put(rootGroupId,new ArrayList<NMDevice>());
+        devicesUnNamed.put(rootGroupId, Collections.synchronizedList(new ArrayList<NMDevice>(100)));
     }
 
     /**
@@ -87,6 +94,7 @@ public class NewMediaDeviceCache {
     public void clear() {
         this.groups.clear();
         this.devicesByGroup.clear();
+        this.deviceGb.clear();
         this.deviceByGbId.clear();
     }
 
@@ -99,6 +107,7 @@ public class NewMediaDeviceCache {
 
     /**
      * 添加分组集合
+     *
      * @param groups
      */
     public void addDeviceGroups(Collection<NmGroup> groups) {
@@ -157,35 +166,36 @@ public class NewMediaDeviceCache {
     }
 
 
-
     /**
      * 增加设备
      *
      * @param device
      */
     public void addDevice(NMDevice device) {
+        //先构建国标ID和设备信息对应关系
+        this.deviceGb.put(device.getGbId(),device);
         String name = device.getName();
         String hanZiPinYin = PinYinUtils.getHanZiPinYin(name);
         String hanZiInitial = PinYinUtils.getHanZiInitials(name);
         String lowerCase = PinYinUtils.StrToLowerCase(hanZiInitial);
         device.setPinyin(hanZiPinYin + "&&" + lowerCase);
-        String groupId =  device.getGroupId();
-        if(StringUtils.isNotBlank(groupId)){
+        String groupId = device.getGroupId();
+        if (StringUtils.isNotBlank(groupId)) {
             //更新分组信息包括分组下设备总数，在线数离线数等等
             NmGroup nmGroup = groups.get(groupId);
             nmGroup.updateMessage(device);
             //先记录国标ID和分组ID的关系
-            this.deviceByGbId.put(device.getGbId(),groupId);
-            ArrayList<NMDevice> list = this.devicesByGroup.get(groupId);
+            this.deviceByGbId.put(device.getGbId(), groupId);
+            List<NMDevice> list = this.devicesByGroup.get(groupId);
             if (list == null) {
-                list = new ArrayList<NMDevice>();
+                list = Collections.synchronizedList(new ArrayList<NMDevice>());
                 this.devicesByGroup.put(groupId, list);
-            }else {
+            } else {
                 list.add(device);
             }
-        }else {
+        } else {
             //如果是没有分组ID则把该设备设置在未分组底下
-            ArrayList<NMDevice> list = devicesUnNamed.get(rootGroupId);
+            List<NMDevice> list = devicesUnNamed.get(rootGroupId);
             list.add(device);
         }
 
@@ -199,20 +209,23 @@ public class NewMediaDeviceCache {
 
     /**
      * 更新设备信息
+     *
      * @param devices
      */
-    public void updateDevices(List<NMDevice> devices){
+    public void updateDevices(List<NMDevice> devices) {
         Iterator<NMDevice> iterator = devices.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             NMDevice next = iterator.next();
-            ArrayList<NMDevice> nmDevices = devicesByGroup.get(next.getGroupId());
-            if(CollectionUtil.isNotEmpty(nmDevices)){
-                Iterator<NMDevice> list = nmDevices.iterator();
-                while (list.hasNext()){
-                    NMDevice device = list.next();
-                    if(next.getId().equals(device.getId())){
-                        list.remove();
-                        nmDevices.add(next);
+            List<NMDevice> nmDevices = devicesByGroup.get(next.getGroupId());
+            synchronized (nmDevices) {
+                if (CollectionUtil.isNotEmpty(nmDevices)) {
+                    Iterator<NMDevice> list = nmDevices.iterator();
+                    while (list.hasNext()) {
+                        NMDevice device = list.next();
+                        if (next.getId().equals(device.getId())) {
+                            list.remove();
+                            nmDevices.add(next);
+                        }
                     }
                 }
             }
@@ -221,21 +234,22 @@ public class NewMediaDeviceCache {
 
     /**
      * 分组和设备关系变更
+     *
      * @param groupList
      */
-    public void deviceGroupChange(List<NmGroupDeviceIds> groupList){
+    public void deviceGroupChange(List<NmGroupDeviceIds> groupList) {
         Iterator<NmGroupDeviceIds> iterator = groupList.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             NmGroupDeviceIds next = iterator.next();
             String groupId = this.deviceByGbId.get(next.getGbId());
-            if(StringUtils.isNotBlank(groupId)){
+            if (StringUtils.isNotBlank(groupId)) {
                 //如果分组ID不为空说明此设备不是未分组下的设备
-                ArrayList<NMDevice> nmDevices = this.devicesByGroup.get(groupId);
-                if(CollectionUtil.isNotEmpty(nmDevices)){
+                List<NMDevice> nmDevices = this.devicesByGroup.get(groupId);
+                if (CollectionUtil.isNotEmpty(nmDevices)) {
                     Iterator<NMDevice> ite = nmDevices.iterator();
-                    while (ite.hasNext()){
+                    while (ite.hasNext()) {
                         NMDevice nm = ite.next();
-                        if(nm.getGbId().equals(next.getGbId())){
+                        if (nm.getGbId().equals(next.getGbId())) {
                             nm.setGroupId(next.getGroupId());
                             //删除原国标ID和分组ID对应关系
                             this.deviceByGbId.remove(next.getGbId());
@@ -246,13 +260,13 @@ public class NewMediaDeviceCache {
                         }
                     }
                 }
-            }else {
+            } else {
                 //分组ID为空说明此设备为未分组下的设备
-                ArrayList<NMDevice> list = devicesUnNamed.get(rootGroupId);
+                List<NMDevice> list = devicesUnNamed.get(rootGroupId);
                 Iterator<NMDevice> ite = list.iterator();
-                while (ite.hasNext()){
+                while (ite.hasNext()) {
                     NMDevice nex = ite.next();
-                    if(nex.getGbId().equals(next.getGbId())){
+                    if (nex.getGbId().equals(next.getGbId())) {
                         //找到此设备给他设置分组ID，然后走添加设备逻辑，最后把他从未分组里删除
                         nex.setGroupId(next.getGroupId());
                         this.addDevice(nex);
@@ -265,20 +279,21 @@ public class NewMediaDeviceCache {
 
     /**
      * 更新设备在线状态
+     *
      * @param devices
      */
-    public void updateDeviceStatus(List<NMDevice> devices){
+    public void updateDeviceStatus(List<NMDevice> devices) {
         writeLock.lock();
         try {
             Iterator<NMDevice> iterator = devices.iterator();
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 NMDevice next = iterator.next();
-                ArrayList<NMDevice> nmDevices = devicesByGroup.get(next.getGroupId());
-                if(CollectionUtil.isNotEmpty(nmDevices)){
+                List<NMDevice> nmDevices = devicesByGroup.get(next.getGroupId());
+                if (CollectionUtil.isNotEmpty(nmDevices)) {
                     Iterator<NMDevice> list = nmDevices.iterator();
-                    while (list.hasNext()){
+                    while (list.hasNext()) {
                         NMDevice device = list.next();
-                        if(next.getId().equals(device.getId())){
+                        if (next.getId().equals(device.getId())) {
                             device.setStatus(next.getStatus());
                         }
                     }
@@ -297,17 +312,19 @@ public class NewMediaDeviceCache {
      */
     public void removeDevices(List<NMDevice> devices) {
         Iterator<NMDevice> iterator = devices.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             NMDevice next = iterator.next();
             //先删除国标ID和分组ID的关系
             this.deviceByGbId.remove(next.getGbId());
+            //删除国标ID和设备信息维护关系
+            this.deviceGb.remove(next.getGbId());
             //得到分组下设备集合然后判断设备集合里面有没有这个元素有这个元素的话就删除
-            ArrayList<NMDevice> nmDevices = devicesByGroup.get(next.getGroupId());
-            if(CollectionUtil.isNotEmpty(nmDevices)){
+            List<NMDevice> nmDevices = devicesByGroup.get(next.getGroupId());
+            if (CollectionUtil.isNotEmpty(nmDevices)) {
                 Iterator<NMDevice> list = nmDevices.iterator();
-                while (list.hasNext()){
+                while (list.hasNext()) {
                     NMDevice device = list.next();
-                    if(next.getId().equals(device.getId())){
+                    if (next.getId().equals(device.getId())) {
                         list.remove();
                     }
                 }
@@ -339,7 +356,7 @@ public class NewMediaDeviceCache {
         writeLock.lock();
         try {
             LinkedList<NMDevice> list = new LinkedList<>();
-            for (ArrayList<NMDevice> devices : devicesByGroup.values()) {
+            for (List<NMDevice> devices : devicesByGroup.values()) {
                 list.addAll(devices);
             }
             return list;
@@ -356,10 +373,29 @@ public class NewMediaDeviceCache {
      * @return
      */
     public List<NMDevice> getDeviceByGroupId(String groupId) {
-        ArrayList<NMDevice> devices = this.devicesByGroup.get(groupId);
+        List<NMDevice> devices = this.devicesByGroup.get(groupId);
+        synchronized (devices){
+            ArrayList<NMDevice> list = new ArrayList<NMDevice>();
+            if (devices != null) {
+                list.addAll(devices);
+            }
+            return list;
+        }
+    }
+
+    /**
+     * 获取指定分组的设备
+     *
+     * @param ids
+     * @return
+     */
+    public List<NMDevice> getDeviceByGroupId(List<String> ids) {
         ArrayList<NMDevice> list = new ArrayList<NMDevice>();
-        if (devices != null) {
-            list.addAll(devices);
+        Iterator<String> iterator = ids.iterator();
+        while (iterator.hasNext()){
+            String gbId = iterator.next();
+            NMDevice nmDevice = this.deviceGb.get(gbId);
+            list.add(nmDevice);
         }
         return list;
     }

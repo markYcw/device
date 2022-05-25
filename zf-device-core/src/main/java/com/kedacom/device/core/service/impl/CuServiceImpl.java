@@ -471,9 +471,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                 log.error("==========登出cu失败{}",e
                 );
             }
-            CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);
+            /*CuResponse response = JSONObject.parseObject(exchange.getBody(), CuResponse.class);
             String errorMsg = "登出cu失败:{},{},{}";
-            responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_LOGOUT_FAILED, response);
+            responseUtil.handleCuRes(errorMsg, DeviceErrorEnum.CU_LOGOUT_FAILED, response);*/
             LambdaUpdateWrapper<CuEntity> wrapper = new LambdaUpdateWrapper();
             wrapper.set(CuEntity::getSsid,null)
                     .set(CuEntity::getModifyTime,new Date())

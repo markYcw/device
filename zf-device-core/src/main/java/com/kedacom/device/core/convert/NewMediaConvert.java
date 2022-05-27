@@ -23,7 +23,7 @@ public interface NewMediaConvert {
 
     NewMediaLoginDto convertToNewMediaLoginDto(NewMediaEntity entity);
 
-    @Mappings({@Mapping(target = "deviceId",source = "id"),@Mapping(target ="gbid",source = "gbId"),@Mapping(target ="deviceIp",source = "ipv4"),@Mapping(target ="manufactorName",source = "manufactorCodeName"),@Mapping(target ="longitude",source = "latitude"),@Mapping(target ="longitudeStr",source = "latitudeStr"),@Mapping(target ="latitude",source = "longitude"),@Mapping(target ="latitudeStr",source = "longitudeStr"),@Mapping(target ="civilName",source = "civilCodeName"),@Mapping(target ="departmentName",source = "departmentCodeName"),@Mapping(target ="maintainMan",source = "mgtMan"),@Mapping(target ="maintainContact",source = "mgtUnitContact"),@Mapping(target ="maintainContact",source = "mgtUnitContact")})
+    @Mappings({@Mapping(target = "deviceId",source = "id"),@Mapping(target ="gbid",source = "gbId"),@Mapping(target ="deviceIp",source = "ipv4"),@Mapping(target ="manufactorName",source = "manufactorCodeName"),@Mapping(target ="longitude",source = "latitude"),@Mapping(target ="longitudeStr",source = "latitudeStr"),@Mapping(target ="latitude",source = "longitude"),@Mapping(target ="latitudeStr",source = "longitudeStr"),@Mapping(target ="civilName",source = "civilCodeName"),@Mapping(target ="departmentName",source = "departmentCodeName"),@Mapping(target ="maintainMan",source = "mgtMan"),@Mapping(target ="maintainContact",source = "mgtUnitContact")})
     UmsSubDeviceInfoQueryResponseDto convertToPage(NMDevice device);
 
     @Mappings({@Mapping(target = "groupId",source = "id"),@Mapping(target ="groupName",source = "name")})

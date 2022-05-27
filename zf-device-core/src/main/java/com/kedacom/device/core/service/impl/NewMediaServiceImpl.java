@@ -46,7 +46,6 @@ import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.*;
 import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;
-import netscape.javascript.JSObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpMethod;
@@ -84,7 +83,7 @@ public class NewMediaServiceImpl implements NewMediaService {
     @Resource
     private RemoteRestTemplate remoteRestTemplate;
 
-    private String newMediaNtyUrl = "127.0.0.1:9000";
+    private String newMediaNtyUrl = "172.16.128.105:9000";
 
     private final static String REQUEST_HEAD = "http://";
 
@@ -241,13 +240,7 @@ public class NewMediaServiceImpl implements NewMediaService {
             entity.setModifyTime(new Date());
             mapper.updateById(entity);
             //登录成功以后加载分组和设备信息
-            getGroup(entity);
-          /*  CompletableFuture<Integer> code = CompletableFuture.supplyAsync(() -> getDevice(entity));
-            if (code.get() != 1) {
-                NewMediaDeviceCache.getInstance().clearDevice();
-                log.error("=============第一次加载新媒体设备失败尝试第二次加载");
-                CompletableFuture.runAsync(() -> getDevice(entity));
-            }*/
+           CompletableFuture.runAsync(()->loadDevice(entity));
             //往新媒体状态池放入当前状态 1已登录
             newMediaStatusPoll.put(entity.getId(), DevTypeConstant.updateRecordKey);
             //发送心跳
@@ -264,8 +257,19 @@ public class NewMediaServiceImpl implements NewMediaService {
         log.info("获取新媒体分组中间件响应:{}", exchange.getBody());
     }
 
+    public void loadDevice(NewMediaEntity entity){
+        getGroup(entity);
+        Integer code = getDevice(entity);
+        if (code != 1) {
+            NewMediaDeviceCache.getInstance().clearDevice();
+            log.error("=============第一次加载新媒体设备失败尝试第二次加载");
+            CompletableFuture.runAsync(() -> getDevice(entity));
+        }
+    }
+
     public Integer getDevice(NewMediaEntity entity) {
         log.info("======开始获取新媒体设备");
+
         int queryIndex = 0;
         int queryCount = 100;
         int countNum = 0;
@@ -273,7 +277,12 @@ public class NewMediaServiceImpl implements NewMediaService {
         listDto.setQueryCount(queryCount);
         for (int i = 0; i <= countNum; i++) {
             listDto.setQueryIndex(queryIndex);
-            NMDeviceListResponse response = getDeviceList(entity.getSsid(), listDto);
+            NMDeviceListResponse response = null;
+            try {
+                response = getDeviceList(entity.getSsid(), listDto);
+            } catch (Exception e) {
+                log.error("======新媒体获取设备失败，失败原因为：{}",e);
+            }
             if (response.getCode() != 0) {
                 log.error("从获取第 {} 页设备信息失败", queryIndex);
                 NewMediaDeviceCache.getInstance().clearDevice();

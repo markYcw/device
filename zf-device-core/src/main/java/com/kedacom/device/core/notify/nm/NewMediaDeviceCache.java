@@ -1,6 +1,7 @@
 package com.kedacom.device.core.notify.nm;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.kedacom.common.utils.PinYinUtils;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.PDevice;
@@ -183,7 +184,12 @@ public class NewMediaDeviceCache {
         if (StringUtils.isNotBlank(groupId)) {
             //更新分组信息包括分组下设备总数，在线数离线数等等
             NmGroup nmGroup = groups.get(groupId);
-            nmGroup.updateMessage(device);
+            if (ObjectUtil.isNotNull(nmGroup)){
+                nmGroup.updateMessage(device);
+            }else {
+                log.info("====设备有分组ID，但没找到对应分组，设备分组ID为：{}",groupId);
+            }
+
             //先记录国标ID和分组ID的关系
             this.deviceByGbId.put(device.getGbId(), groupId);
             List<NMDevice> list = this.devicesByGroup.get(groupId);

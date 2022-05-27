@@ -19,6 +19,8 @@ public class NewMediaNotifyFactory {
         factory.register(7,400,new NewMediaGroupNotify());
         factory.register(7,401,new NewMediaGroupNotify());
         factory.register(7,403,new NewMediaDeviceStatusNotify());
+        factory.register(7,405,new NewMediaSvrBurnNotify());
+        factory.register(7,406,new NewMediaSvrAlarmNotify());
     }
 
 }

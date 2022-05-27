@@ -2,6 +2,13 @@ package com.kedacom.device.core.service;
 
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
+import com.kedacom.newMedia.dto.SVROrderDTO;
+import com.kedacom.streamMedia.request.GetAudioCapDTO;
+import com.kedacom.streamMedia.request.GetBurnStateDTO;
+import com.kedacom.streamMedia.request.GetSvrAudioActStateDTO;
+import com.kedacom.streamMedia.response.GetAudioCapVO;
+import com.kedacom.streamMedia.response.GetBurnStateVO;
+import com.kedacom.streamMedia.response.GetSvrAudioActStateVo;
 import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.*;
 
@@ -65,4 +72,12 @@ public interface NewMediaService {
     List<UmsScheduleGroupItemQueryResponseDto> selectUmsGroupList(UmsScheduleGroupQueryRequestDto requestDto);
 
     List<SelectChildUmsGroupResponseDto> selectChildUmsGroupList(SelectChildUmsGroupRequestDto requestDto);
+
+    Boolean sendOrderData(SVROrderDTO dto);
+
+    GetAudioCapVO getAudioCap(GetAudioCapDTO getAudioCapDTO);
+
+    GetSvrAudioActStateVo getSvrAudioActState(GetSvrAudioActStateDTO dto);
+
+    GetBurnStateVO getBurnState(GetBurnStateDTO getBurnStateDTO);
 }

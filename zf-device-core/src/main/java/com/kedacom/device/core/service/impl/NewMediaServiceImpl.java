@@ -28,17 +28,25 @@ import com.kedacom.device.core.service.NewMediaService;
 import com.kedacom.device.core.utils.ContextUtils;
 import com.kedacom.device.core.utils.HandleResponseUtil;
 import com.kedacom.device.core.utils.RemoteRestTemplate;
+import com.kedacom.newMedia.dto.AudioCapDTO;
 import com.kedacom.newMedia.dto.NMDeviceListDto;
 import com.kedacom.newMedia.dto.NewMediaLoginDto;
+import com.kedacom.newMedia.dto.SVROrderDTO;
 import com.kedacom.newMedia.entity.NewMediaEntity;
+import com.kedacom.newMedia.pojo.BurnInfo;
 import com.kedacom.newMedia.pojo.NMDevice;
-import com.kedacom.newMedia.resopnse.NMDeviceListResponse;
-import com.kedacom.newMedia.resopnse.NewMediaLoginResponse;
-import com.kedacom.newMedia.resopnse.NewMediaResponse;
+import com.kedacom.newMedia.resopnse.*;
+import com.kedacom.streamMedia.request.GetAudioCapDTO;
+import com.kedacom.streamMedia.request.GetBurnStateDTO;
+import com.kedacom.streamMedia.request.GetSvrAudioActStateDTO;
+import com.kedacom.streamMedia.response.GetAudioCapVO;
+import com.kedacom.streamMedia.response.GetBurnStateVO;
+import com.kedacom.streamMedia.response.GetSvrAudioActStateVo;
 import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.*;
 import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;
+import netscape.javascript.JSObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpMethod;
@@ -46,6 +54,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
@@ -233,12 +242,12 @@ public class NewMediaServiceImpl implements NewMediaService {
             mapper.updateById(entity);
             //登录成功以后加载分组和设备信息
             getGroup(entity);
-            CompletableFuture<Integer> code = CompletableFuture.supplyAsync(() -> getDevice(entity));
+          /*  CompletableFuture<Integer> code = CompletableFuture.supplyAsync(() -> getDevice(entity));
             if (code.get() != 1) {
                 NewMediaDeviceCache.getInstance().clearDevice();
                 log.error("=============第一次加载新媒体设备失败尝试第二次加载");
                 CompletableFuture.runAsync(() -> getDevice(entity));
-            }
+            }*/
             //往新媒体状态池放入当前状态 1已登录
             newMediaStatusPoll.put(entity.getId(), DevTypeConstant.updateRecordKey);
             //发送心跳
@@ -721,6 +730,124 @@ public class NewMediaServiceImpl implements NewMediaService {
         }
         List<SelectChildUmsGroupResponseDto> collect = list.stream().map(a -> convert.convertToSelectGroup(a)).collect(Collectors.toList());
         return collect;
+    }
+
+    @Override
+    public Boolean sendOrderData(SVROrderDTO dto) {
+        log.info("=============发送SVR宏指令接口入参：{}",dto);
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        NewMediaEntity entity = mapper.selectById(dto.getUmsId());
+        if (entity == null) {
+            throw new NewMediaException(DeviceErrorEnum.DEVICE_NOT_FOUND);
+        }
+        if (!check()) {
+            return false;
+        }
+        NewMediaBasicParam param = getParam(entity.getSsid());
+        String string = null;
+        try {
+            string = template.postForObject(param.getUrl() + "/svrorder/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        } catch (RestClientException e) {
+            log.error("====发送SVR宏指令失败{}",e);
+            return false;
+        }
+        log.info("发送SVR宏指令中间件应答:{}", string);
+        NewMediaResponse response = JSON.parseObject(string, NewMediaResponse.class);
+        String errorMsg = "发送SVR宏指令失败:{},{},{}";
+        responseUtil.handleNewMediaRes(errorMsg,DeviceErrorEnum.NM_SEND_ORDER_FAILED,response);
+        return true;
+    }
+
+    @Override
+    public GetAudioCapVO getAudioCap(GetAudioCapDTO getAudioCapDTO) {
+        log.info("====获取音频能力集接口入参：{}",getAudioCapDTO);
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        NewMediaEntity entity = mapper.selectById(Integer.valueOf(getAudioCapDTO.getUmsId()));
+        if (entity == null) {
+            throw new NewMediaException(DeviceErrorEnum.DEVICE_NOT_FOUND);
+        }
+        if (!check()) {
+            return null;
+        }
+        AudioCapDTO dto = new AudioCapDTO();
+        dto.setDeviceId(getAudioCapDTO.getDeviceID());
+        NewMediaBasicParam param = getParam(entity.getSsid());
+        String s = null;
+        try {
+            s = template.postForObject(param.getUrl() + "/svraudiocap/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        } catch (RestClientException e) {
+            log.error("====获取音频能力集失败{}",e);
+            return null;
+        }
+        log.info("发送SVR宏指令中间件应答:{}", s);
+        NewMediaResponse response = JSON.parseObject(s, NewMediaResponse.class);
+        String errorMsg = "获取音频能力集失败:{},{},{}";
+        responseUtil.handleNewMediaRes(errorMsg,DeviceErrorEnum.NM_GET_AUDIO_CAP_FAILED,response);
+        GetAudioResponse audioResponse = JSONObject.parseObject(s, GetAudioResponse.class);
+        return audioResponse.getAudioCap();
+    }
+
+    @Override
+    public GetSvrAudioActStateVo getSvrAudioActState(GetSvrAudioActStateDTO dto) {
+        log.info("=========获取SVR当前语音激励状态接口入参：{}",dto);
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        NewMediaEntity entity = mapper.selectById(Integer.valueOf(dto.getUmsId()));
+        if (entity == null) {
+            throw new NewMediaException(DeviceErrorEnum.DEVICE_NOT_FOUND);
+        }
+        if (!check()) {
+            return null;
+        }
+        NewMediaBasicParam param = getParam(entity.getSsid());
+        String s = null;
+        try {
+            s = template.postForObject(param.getUrl() + "/svraudioactcfg/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        } catch (RestClientException e) {
+            log.error("====获取SVR当前语音激励状态失败{}",e);
+            return null;
+        }
+        log.info("获取SVR当前语音激励状态中间件应答:{}", s);
+        NewMediaResponse response = JSON.parseObject(s, NewMediaResponse.class);
+        String errorMsg = "获取SVR当前语音激励状态失败:{},{},{}";
+        responseUtil.handleNewMediaRes(errorMsg,DeviceErrorEnum.NM_GET_AUDIO_STATE_FAILED,response);
+        GetSvrAudioActStateVo vo = JSONObject.parseObject(s, GetSvrAudioActStateVo.class);
+        return vo;
+    }
+
+    @Override
+    public GetBurnStateVO getBurnState(GetBurnStateDTO dto) {
+        log.info("=========获取SVR当前刻录状态接口入参：{}",dto);
+        RestTemplate template = remoteRestTemplate.getRestTemplate();
+        NewMediaEntity entity = mapper.selectById(Integer.valueOf(dto.getUmsId()));
+        if (entity == null) {
+            throw new NewMediaException(DeviceErrorEnum.DEVICE_NOT_FOUND);
+        }
+        if (!check()) {
+            return null;
+        }
+        NewMediaBasicParam param = getParam(entity.getSsid());
+        String s = null;
+        try {
+            s = template.postForObject(param.getUrl() + "/svrburnstate/{ssid}/{ssno}", JSON.toJSONString(dto), String.class, param.getParamMap());
+        } catch (RestClientException e) {
+            log.error("====获取SVR当前刻录状态失败{}",e);
+            return null;
+        }
+        log.info("获取SVR当前刻录状态中间件应答:{}", s);
+        NewMediaResponse response = JSON.parseObject(s, NewMediaResponse.class);
+        String errorMsg = "获取SVR当前刻录状态失败:{},{},{}";
+        responseUtil.handleNewMediaRes(errorMsg,DeviceErrorEnum.NM_GET_BURN_STATE_FAILED,response);
+        GetBurnStateResponse res = JSONObject.parseObject(s, GetBurnStateResponse.class);
+        BurnInfo info = res.getBurnInfo();
+        GetBurnStateVO vo = new GetBurnStateVO();
+        vo.setChnId(info.getBurnChnId());
+        vo.setMsgType(info.getType());
+        vo.setStatus(info.getBurnState());
+        vo.setTotalSpace(info.getTotalSpace());
+        vo.setRemainingSpace(info.getFreeSpace());
+        vo.setErrorCode(info.getErrorCode());
+        vo.setDvdId(info.getDvdId());
+        return vo;
     }
 
     private boolean check() {

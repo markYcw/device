@@ -1,5 +1,6 @@
 package com.kedacom.streamMedia.response;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.io.Serializable;
 public class GetSvrAudioActStateVo implements Serializable {
 
     @ApiModelProperty("激励开关，0-关，1-开")
+    @JSONField(name = "actCfg")
     private Integer ActCfg;
 
 

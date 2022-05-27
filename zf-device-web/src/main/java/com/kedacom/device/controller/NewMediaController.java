@@ -5,6 +5,14 @@ import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.DeviceManagerService;
 import com.kedacom.device.core.service.NewMediaService;
+import com.kedacom.newMedia.dto.SVROrderDTO;
+import com.kedacom.streamMedia.request.GetAudioCapDTO;
+import com.kedacom.streamMedia.request.GetBurnStateDTO;
+import com.kedacom.streamMedia.request.GetSvrAudioActStateDTO;
+import com.kedacom.streamMedia.request.SendOrderDataDTO;
+import com.kedacom.streamMedia.response.GetAudioCapVO;
+import com.kedacom.streamMedia.response.GetBurnStateVO;
+import com.kedacom.streamMedia.response.GetSvrAudioActStateVo;
 import com.kedacom.ums.requestdto.*;
 import com.kedacom.ums.responsedto.*;
 import io.swagger.annotations.Api;
@@ -148,6 +156,42 @@ public class NewMediaController {
         List<SelectChildUmsGroupResponseDto> responseDtoList = service.selectChildUmsGroupList(requestDto);
 
         return BaseResult.succeed(responseDtoList);
+    }
+
+    @ApiOperation("发送宏指令数据 目前只支持SVR2931型号")
+    @PostMapping("/sendOrderData")
+    public BaseResult<Boolean> sendOrderData(@Valid @RequestBody SVROrderDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean aBoolean = service.sendOrderData(dto);
+        return BaseResult.succeed("发送成功", aBoolean);
+    }
+
+    @ApiOperation("获取音频能力集 目前只支持SVR2931型号")
+    @PostMapping("/getAudioCap")
+    public BaseResult<GetAudioCapVO> getAudioCap(@Valid @RequestBody GetAudioCapDTO getAudioCapDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        GetAudioCapVO getAudioCapVO = service.getAudioCap(getAudioCapDTO);
+        return BaseResult.succeed("获取音频能力集成功", getAudioCapVO);
+    }
+
+    @ApiOperation("获取当前语音激励状态 目前只支持SVR2931型号")
+    @PostMapping("/getSvrAudioActState")
+    public BaseResult<GetSvrAudioActStateVo> getSvrAudioActState(@Valid @RequestBody GetSvrAudioActStateDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        GetSvrAudioActStateVo vo = service.getSvrAudioActState(dto);
+        return BaseResult.succeed("获取当前语音激励状态成功", vo);
+    }
+
+    @ApiOperation("刻录状态请求 目前只支持SVR2931型号")
+    @PostMapping("/getBurnState")
+    public BaseResult<GetBurnStateVO> getBurnState(@Valid @RequestBody GetBurnStateDTO getBurnStateDTO, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        GetBurnStateVO getBurnStateVO = service.getBurnState(getBurnStateDTO);
+        return BaseResult.succeed("刻录状态请求成功", getBurnStateVO);
     }
 
 }

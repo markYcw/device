@@ -155,6 +155,7 @@ public interface DevApi {
     BaseResult<PuIdByOneVo> puIdByOne(@RequestBody PuIdByOneDto requestDto);
 
     @ApiOperation("获取设备通道集合")
+    @PostMapping("/getCuChannelList")
     BaseResult<List<CuChannelVo>> getCuChannelList(@RequestBody CuChnListDto requestDto);
 
 

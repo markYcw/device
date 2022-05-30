@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 
 
@@ -18,7 +19,7 @@ import java.util.Date;
  */
 @Data
 @TableName("ums_cu")
-public class CuEntity {
+public class CuEntity implements Serializable {
 
 
 	@ApiModelProperty(value = "监控平台数据库ID")

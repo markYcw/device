@@ -3,7 +3,7 @@
     <springProperty scope="context" name="logPath" source="logging.path" defaultValue="/opt/kedacom/web/logs"/>
     <springProperty scope="context" name="springAppName" source="spring.application.name"/>
     <property name="log.name.prefix" value="device"/>
-    <property name="log.path" value="${logPath}/zf-${log.name.prefix}"/>
+    <property name="log.path" value="${logPath}/device-server"/>
     <property name="log.colorPattern"
               value="%magenta(%d{yyyy-MM-dd HH:mm:ss.SSS}) %highlight(%-5level) %boldCyan(${springAppName:-}) %yellow(%thread) %green(%logger) %msg%n"/>
     <property name="log.pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [${springAppName:-}] %thread %logger %msg%n"/>

@@ -83,7 +83,7 @@ public class NewMediaServiceImpl implements NewMediaService {
     @Resource
     private RemoteRestTemplate remoteRestTemplate;
 
-    private String newMediaNtyUrl = "172.16.128.105:9000";
+    private String newMediaNtyUrl = "127.0.0.1:9000";
 
     private final static String REQUEST_HEAD = "http://";
 

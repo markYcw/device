@@ -677,6 +677,8 @@ public class SvrServiceImpl extends ServiceImpl<SvrMapper, SvrEntity> implements
         String errorMsg = "获取画面叠加失败:{},{},{}";
         responseUtil.handleSvrRes(errorMsg, DeviceErrorEnum.SVR_GET_OSD_FAILED, response);
         GetOsdVo vo = convert.convertToGetOsdVo(response);
+        log.info("======获取画面叠加接口响应:{}",response);
+        log.error("======获取画面叠加接口Vo:{}",vo);
         return BaseResult.succeed("获取画面叠加成功", vo);
     }
 

@@ -3,6 +3,7 @@ package com.kedacom.device.api.power;
 import com.kedacom.common.model.Result;
 import com.kedacom.device.api.power.fallback.ControlPowerApiFallBackFactory;
 import com.kedacom.power.entity.Device;
+import com.kedacom.power.entity.NetDeviceConfig;
 import com.kedacom.power.model.PageRespVo;
 import com.kedacom.power.vo.*;
 import io.swagger.annotations.ApiImplicitParam;
@@ -65,6 +66,10 @@ public interface ControlPowerApi {
     @ApiOperation(value = "局域网搜索")
     @GetMapping(value = "/device/lanSearch")
     Result<Set<Device>> lanSearch();
+
+    @ApiOperation(value = "局域网搜索-根据设备Mac获取电源的详细配置")
+    @GetMapping(value = "/device/getPowerConfig")
+    Result<NetDeviceConfig> getPowerConfig(@RequestParam("macAddr") String macAddr);
     /*
      * ================================================Bwant-IPM-08操作==============================================================
      */

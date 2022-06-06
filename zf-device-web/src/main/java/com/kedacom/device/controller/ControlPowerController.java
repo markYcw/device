@@ -4,6 +4,7 @@ import com.kedacom.common.model.Result;
 import com.kedacom.device.core.power.ConfigPower;
 import com.kedacom.device.core.service.ControlPowerService;
 import com.kedacom.power.entity.Device;
+import com.kedacom.power.entity.NetDeviceConfig;
 import com.kedacom.power.model.PageRespVo;
 import com.kedacom.power.vo.*;
 import io.swagger.annotations.Api;
@@ -78,7 +79,7 @@ public class ControlPowerController {
         return controlPowerService.getDeviceById(id);
     }
 
-    @ApiOperation(value = "局域网配置")
+    @ApiOperation(value = "对局域网搜索进行配置")
     @GetMapping(value = "/device/lanConfig")
     @ApiImplicitParams({@ApiImplicitParam(name = "ip", required = false, value = "广播搜索的服务器ip")
             , @ApiImplicitParam(name = "timeout", required = false, value = "超时时间")
@@ -93,13 +94,27 @@ public class ControlPowerController {
     @GetMapping(value = "/device/lanSearch")
     public Result<Set<Device>> lanSearch() {
         try {
-            final Set<Device> devices = configPower.searchDevices();
+            Set<Device> devices = configPower.searchDevices();
             return Result.succeed(devices);
         } catch (Exception e) {
             log.error("局域网搜索失败：{}", e.getMessage());
             return Result.failed("局域网搜索失败：" + e.getMessage());
         }
     }
+
+    @ApiOperation(value = "局域网搜索-根据设备Mac获取电源的详细配置")
+    @GetMapping(value = "/device/getPowerConfig")
+    @ApiImplicitParams({@ApiImplicitParam(name = "macAddr", required = true, value = "设备Mac")})
+    public Result<NetDeviceConfig> getPowerConfig(@RequestParam("macAddr") String macAddr) {
+        try {
+            NetDeviceConfig config = configPower.getConfig(macAddr);
+            return Result.succeed(config);
+        } catch (Exception e) {
+            log.error("获取电源的具体配置失败：{}", e.getMessage());
+            return Result.failed("获取电源的具体配置失败：" + e.getMessage());
+        }
+    }
+
     /*
      * ================================================Bwant-IPM-08操作==============================================================
      */

@@ -3,6 +3,7 @@ package com.kedacom.device.api.power.fallback;
 import com.kedacom.common.model.Result;
 import com.kedacom.device.api.power.ControlPowerApi;
 import com.kedacom.power.entity.Device;
+import com.kedacom.power.entity.NetDeviceConfig;
 import com.kedacom.power.model.PageRespVo;
 import com.kedacom.power.vo.*;
 import feign.hystrix.FallbackFactory;
@@ -62,6 +63,11 @@ public class ControlPowerApiFallBackFactory implements FallbackFactory<ControlPo
 
             @Override
             public Result<Set<Device>> lanSearch() {
+                return Result.failed(throwable.getMessage());
+            }
+
+            @Override
+            public Result<NetDeviceConfig> getPowerConfig(String macAddr) {
                 return Result.failed(throwable.getMessage());
             }
 

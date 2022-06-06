@@ -22,7 +22,7 @@ public class SendMessage {
     public void send() {
         try {
             DatagramChannel channel = DatagramChannel.open();
-            buffer.clear();
+            buffer.flip();
             InetSocketAddress inetSocketAddress = new InetSocketAddress(NetConstant.SEND_IP, NetConstant.SEND_PORT);
             for (int i = 0; i < 3; i++) {
                 channel.send(buffer, inetSocketAddress);

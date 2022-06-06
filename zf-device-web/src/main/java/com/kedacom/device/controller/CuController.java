@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -50,6 +51,12 @@ public class CuController {
     public BaseResult<List<CuEntity>> all() {
 
         List<CuEntity> list = cuService.list();
+        Iterator<CuEntity> iterator = list.iterator();
+        while (iterator.hasNext()){
+            CuEntity next = iterator.next();
+            next.setCreateTime(null);
+            next.setModifyTime(null);
+        }
         return BaseResult.succeed("查询所有设备成功",list);
     }
 

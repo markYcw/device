@@ -83,7 +83,7 @@ public class NewMediaServiceImpl implements NewMediaService {
     @Resource
     private RemoteRestTemplate remoteRestTemplate;
 
-    private String newMediaNtyUrl = "172.16.128.105:9000";
+    private String newMediaNtyUrl = "127.0.0.1:9000";
 
     private final static String REQUEST_HEAD = "http://";
 
@@ -181,7 +181,7 @@ public class NewMediaServiceImpl implements NewMediaService {
         log.info("新增新媒体平台信息参数 ： requestDto {}", requestDto);
         NewMediaEntity n = mapper.selectById(1);
         if (ObjectUtil.isNotNull(n)) {
-            BaseResult.failed("===已有新媒体设备请勿重复添加");
+           return BaseResult.failed("===已有新媒体设备请勿重复添加");
         }
         NewMediaEntity entity = new NewMediaEntity();
         entity.setId(1);

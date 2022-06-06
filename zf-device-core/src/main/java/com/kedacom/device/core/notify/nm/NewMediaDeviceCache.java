@@ -380,6 +380,9 @@ public class NewMediaDeviceCache {
      */
     public List<NMDevice> getDeviceByGroupId(String groupId) {
         List<NMDevice> devices = this.devicesByGroup.get(groupId);
+        if(CollectionUtil.isEmpty(devices)){
+            return null;
+        }
         synchronized (devices){
             ArrayList<NMDevice> list = new ArrayList<NMDevice>();
             if (devices != null) {

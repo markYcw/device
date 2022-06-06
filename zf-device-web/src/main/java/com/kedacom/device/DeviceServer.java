@@ -59,12 +59,12 @@ public class DeviceServer {
         List<MediaType> fastMediaTypes = new ArrayList<>();
         fastMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
         fastMediaTypes.add(MediaType.APPLICATION_JSON);
-        //4.解决Long转json精度丢失的问题
+   /*     //4.解决Long转json精度丢失的问题
         SerializeConfig serializeConfig = SerializeConfig.globalInstance;
         serializeConfig.put(BigInteger.class, ToStringSerializer.instance);
         serializeConfig.put(Long.class, ToStringSerializer.instance);
         serializeConfig.put(Long.TYPE, ToStringSerializer.instance);
-        fastJsonConfig.setSerializeConfig(serializeConfig);
+        fastJsonConfig.setSerializeConfig(serializeConfig);*/
         //5.在convert中添加配置信息.
         fastJsonHttpMessageConverter.setSupportedMediaTypes(fastMediaTypes);
         fastJsonHttpMessageConverter.setFastJsonConfig(fastJsonConfig);

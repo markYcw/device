@@ -26,7 +26,7 @@ import java.util.List;
  * @author hxj
  * @date 2022/5/7 14:16:01
  */
-@Api(description = "电源配置业务API", tags = {"电源配置业务controller"})
+@Api(tags = "电源控制")
 @Slf4j
 @RestController
 @RequestMapping("/power")

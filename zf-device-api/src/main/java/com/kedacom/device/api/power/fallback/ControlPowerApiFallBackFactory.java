@@ -2,8 +2,9 @@ package com.kedacom.device.api.power.fallback;
 
 import com.kedacom.common.model.Result;
 import com.kedacom.device.api.power.ControlPowerApi;
-import com.kedacom.power.entity.Device;
-import com.kedacom.power.entity.NetDeviceConfig;
+import com.kedacom.power.dto.UpdatePowerLanConfigDTO;
+import com.kedacom.power.entity.LanDevice;
+import com.kedacom.power.entity.PowerDeviceEntity;
 import com.kedacom.power.model.PageRespVo;
 import com.kedacom.power.vo.*;
 import feign.hystrix.FallbackFactory;
@@ -11,7 +12,6 @@ import feign.hystrix.FallbackFactory;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author hxj
@@ -21,18 +21,14 @@ public class ControlPowerApiFallBackFactory implements FallbackFactory<ControlPo
     @Override
     public ControlPowerApi create(Throwable throwable) {
         return new ControlPowerApi() {
+
             @Override
-            public Result<List<PowerDeviceTypeResponseVo>> getDevType() {
+            public Result<PowerDeviceEntity> addBwPower(BwPowerDeviceAddVo powerDeviceAddVo) {
                 return Result.failed(throwable.getMessage());
             }
 
             @Override
-            public Result<Integer> deviceAdd(@Valid PowerDeviceAddVo powerDeviceAddVo) {
-                return Result.failed(throwable.getMessage());
-            }
-
-            @Override
-            public Result<Integer> deviceUpdate(@Valid PowerDeviceUpdateVo powerDeviceUpdateVo) {
+            public Result<PowerDeviceEntity> updateBwPower(BwPowerDeviceUpdateVo powerDeviceUpdateVo) {
                 return Result.failed(throwable.getMessage());
             }
 
@@ -62,7 +58,7 @@ public class ControlPowerApiFallBackFactory implements FallbackFactory<ControlPo
             }
 
             @Override
-            public Result<Set<Device>> lanSearch() {
+            public Result<List<LanDevice>> lanSearch() {
                 return Result.failed(throwable.getMessage());
             }
 
@@ -72,9 +68,10 @@ public class ControlPowerApiFallBackFactory implements FallbackFactory<ControlPo
             }
 
             @Override
-            public Result<Integer> portAdd(@Valid PowerConfigAddVo powerConfigAddVo) {
+            public Result updatePowerConfigByMac(UpdatePowerLanConfigDTO dto) {
                 return Result.failed(throwable.getMessage());
             }
+
 
             @Override
             public Result<Integer> portUpdate(@Valid PowerConfigUpdateVo powerConfigUpdateVo) {
@@ -102,23 +99,23 @@ public class ControlPowerApiFallBackFactory implements FallbackFactory<ControlPo
             }
 
             @Override
-            public Result<PowerDeviceMessageVo> deviceMessage(@Valid PowerDeviceMessageReqVo powerDeviceMessageReqVo) throws IOException {
+            public Result<PowerDeviceMessageVo> deviceMessage(@Valid PowerDeviceMessageReqVo powerDeviceMessageReqVo) {
                 return Result.failed(throwable.getMessage());
 
             }
 
             @Override
-            public Result<List<PowerChannelStateVo>> deviceChannelState(@Valid PowerDeviceMessageReqVo powerDeviceMessageReqVo) throws IOException {
+            public Result<List<PowerChannelStateVo>> deviceChannelState(@Valid PowerDeviceMessageReqVo powerDeviceMessageReqVo) {
                 return Result.failed(throwable.getMessage());
             }
 
             @Override
-            public Result<Boolean> deviceTurn(@Valid PowerDeviceTurnVO powerDeviceTurnsVo) throws IOException {
-                return null;
+            public Result<Boolean> deviceTurn(@Valid PowerDeviceTurnVO powerDeviceTurnsVo) {
+                return Result.failed(throwable.getMessage());
             }
 
             @Override
-            public Result<Boolean> deviceTurns(@Valid PowerDeviceTurnsVo powerDeviceTurnsVo) throws IOException {
+            public Result<Boolean> deviceTurns(@Valid PowerDeviceTurnsVo powerDeviceTurnsVo) {
                 return Result.failed(throwable.getMessage());
             }
 

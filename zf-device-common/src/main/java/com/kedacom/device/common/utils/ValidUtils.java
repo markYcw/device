@@ -7,8 +7,8 @@ import org.springframework.validation.FieldError;
 import java.util.stream.Collectors;
 
 /**
- * @Auther: hxj
- * @Date: 2021/4/30 10:19
+ * @author hexijian
+ * @date 2021/4/30 10:19
  */
 public class ValidUtils {
 

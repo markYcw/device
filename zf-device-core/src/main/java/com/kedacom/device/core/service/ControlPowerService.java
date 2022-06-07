@@ -1,12 +1,13 @@
 package com.kedacom.device.core.service;
 
 import com.kedacom.common.model.Result;
+import com.kedacom.power.entity.LanDevice;
 import com.kedacom.power.entity.PowerConfigEntity;
 import com.kedacom.power.model.PageRespVo;
 import com.kedacom.power.vo.*;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @ClassName ControlPowerService
@@ -104,7 +105,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:58
      */
-    Result powerStart(int id) throws IOException;
+    Result powerStart(int id) ;
 
     /**
      * @Description 获取所有设备，填充下拉列表
@@ -141,7 +142,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:58
      */
-    Result<PowerDeviceMessageVo> deviceMessage(PowerDeviceMessageReqVo powerDeviceMessageReqVo) throws IOException;
+    Result<PowerDeviceMessageVo> deviceMessage(PowerDeviceMessageReqVo powerDeviceMessageReqVo) ;
 
     /**
      * @Description 获取设备下通道状态
@@ -150,7 +151,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:58
      */
-    Result<List<PowerChannelStateVo>> deviceChannelState(PowerDeviceMessageReqVo powerDeviceMessageReqVo) throws IOException;
+    Result<List<PowerChannelStateVo>> deviceChannelState(PowerDeviceMessageReqVo powerDeviceMessageReqVo) ;
 
     Result<Boolean> deviceTurn(PowerDeviceTurnVO vo);
 
@@ -161,7 +162,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:57
      */
-    Result<Boolean> deviceTurns(PowerDeviceTurnsVo powerDeviceTurnsVo) throws IOException;
+    Result<Boolean> deviceTurns(PowerDeviceTurnsVo powerDeviceTurnsVo) ;
 
     /**
      * @Description 关闭TCP连接
@@ -208,5 +209,11 @@ public interface ControlPowerService {
      */
     Result<List<PowerDeviceTypeResponseVo>> getDevType();
 
+
+    Result<Integer> lanDeviceAdd(LanPowerDeviceAddVo vo);
+
+    Set<LanDevice> searchDevices() throws Exception;
+
+    Result<PowerLanConfigVO> getPowerConfigByMac(String macAddr);
 
 }

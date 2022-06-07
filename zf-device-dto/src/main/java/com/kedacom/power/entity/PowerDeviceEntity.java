@@ -25,63 +25,49 @@ public class PowerDeviceEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 电源设备数据库Id
-     */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    /**
-     * 设备类型（1：RK100；2：Bwant-IPM-08）
-     */
+    @ApiModelProperty(value = "设备类型（1：RK100；2：Bwant-IPM-08）")
     private Integer type;
 
-    /**
-     * 电源设备名称
-     */
+    @ApiModelProperty(value = "电源设备名称")
     private String name;
 
-    /**
-     * 设备IP地址
-     */
+    @ApiModelProperty(value = "设备IP地址")
     private String ip;
 
-    /**
-     * 端口号
-     */
+    @ApiModelProperty(value = "端口号")
     private Integer port;
 
-    /**
-     * 设备MAC地址
-     */
+    @ApiModelProperty(value = "设备MAC地址")
     private String mac;
 
-    /**
-     * 电源通道数量
-     */
+    @ApiModelProperty(value = "网关")
+    private String devGatewayIp;
+
+    @ApiModelProperty(value = "子网掩码")
+    private String devIpMask;
+
+    @ApiModelProperty(value = "服务器ip")
+    private String desIp;
+
+    @ApiModelProperty(value = "服务器端口")
+    private Integer desPort;
+
     @ApiModelProperty(value = "电源通道数量")
     private Integer channels;
 
-    /**
-     * 使用状态（0：关；1：开）
-     */
+    @ApiModelProperty(value = "使用状态（0：关；1：开）")
     private Integer state;
 
-    /**
-     * RK100设备序列号
-     */
+    @ApiModelProperty(value = "使用状态（0：关；1：开）")
     private String deviceSn;
 
-    /**
-     * 创建时间
-     */
     @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT, updateStrategy = FieldStrategy.NOT_NULL)
     private Date createTime;
 
-    /**
-     * 修改时间
-     */
     @ApiModelProperty(value = "修改时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;

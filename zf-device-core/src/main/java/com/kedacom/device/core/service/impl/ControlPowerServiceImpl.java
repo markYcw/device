@@ -1,6 +1,8 @@
 package com.kedacom.device.core.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,8 +11,8 @@ import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
-import com.kedacom.common.constants.DevTypeConstant;
 import com.kedacom.common.model.Result;
+import com.kedacom.device.core.convert.ControlPowerConvert;
 import com.kedacom.device.core.convert.PowerPortConvert;
 import com.kedacom.device.core.enums.AssertBiz;
 import com.kedacom.device.core.enums.PowerTypeEnum;
@@ -18,13 +20,11 @@ import com.kedacom.device.core.exception.KmServiceException;
 import com.kedacom.device.core.mapper.PowerConfigMapper;
 import com.kedacom.device.core.mapper.PowerDeviceMapper;
 import com.kedacom.device.core.mapper.PowerTypeMapper;
+import com.kedacom.device.core.power.ConfigPower;
 import com.kedacom.device.core.service.ControlPowerService;
 import com.kedacom.device.core.task.ControlPowerStatusCallback;
 import com.kedacom.power.ControlPower;
-import com.kedacom.power.entity.Device;
-import com.kedacom.power.entity.PowerConfigEntity;
-import com.kedacom.power.entity.PowerDeviceEntity;
-import com.kedacom.power.entity.PowerTypeEntity;
+import com.kedacom.power.entity.*;
 import com.kedacom.power.model.KmResultCodeEnum;
 import com.kedacom.power.model.PageRespVo;
 import com.kedacom.power.vo.*;
@@ -32,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -61,6 +60,12 @@ public class ControlPowerServiceImpl implements ControlPowerService {
 
     @Autowired
     private PowerTypeMapper powerTypeMapper;
+
+    @Autowired
+    private ConfigPower configPower;
+
+    @Autowired
+    private ControlPowerConvert convert;
 
     /**
      * @param powerConfigAddVo
@@ -287,33 +292,32 @@ public class ControlPowerServiceImpl implements ControlPowerService {
     /**
      * 修改BWANT_IPM_08类型的电源设备
      */
-    private void dealUpdateBwant(PowerDeviceEntity powerDeviceEntity, PowerDeviceUpdateVo powerDeviceUpdateVo) {
-        if (StringUtils.isNotBlank(powerDeviceUpdateVo.getName())) {
-            powerDeviceEntity.setName(powerDeviceUpdateVo.getName());
+    private void dealUpdateBwant(PowerDeviceEntity powerDeviceEntity, PowerDeviceUpdateVo vo) {
+        if (StringUtils.isNotBlank(vo.getName())) {
+            powerDeviceEntity.setName(vo.getName());
         }
-        if (StringUtils.isNotBlank(powerDeviceUpdateVo.getIp())) {
-            powerDeviceEntity.setIp(powerDeviceUpdateVo.getIp());
+        if (StringUtils.isNotBlank(vo.getIp())) {
+            powerDeviceEntity.setIp(vo.getIp());
         }
-        Result<List<PowerDeviceVo>> listResult = this.getDeviceDatas();
-        if (CollectionUtils.isNotEmpty(listResult.getData())) {
-            Optional<PowerDeviceVo> deviceVoOptional = listResult.getData().stream()
-                    .filter(a -> powerDeviceUpdateVo.getIp().equals(a.getIpAddr())).findAny();
-            if (deviceVoOptional.isPresent()) {
-                powerDeviceEntity.setMac(deviceVoOptional.get().getMacAddr());
-                powerDeviceEntity.setState(DevTypeConstant.updateRecordKey);
-                if (ObjectUtil.isNotNull(deviceVoOptional.get().getChannels())) {
-                    powerDeviceEntity.setChannels(deviceVoOptional.get().getChannels());
-                }
-            } else {
-                powerDeviceEntity.setMac(null);
-            }
+        if (StrUtil.isNotBlank(vo.getMac())) {
+            // 校验mac地址是否重复
+            LambdaQueryWrapper<PowerDeviceEntity> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(PowerDeviceEntity::getMac, powerDeviceEntity.getMac()).ne(PowerDeviceEntity::getId, vo.getId());
+            AssertBiz.OBJECT_NONE_NULL.isNull(powerDeviceMapper.selectOne(wrapper), KmResultCodeEnum.ERROR_OF_DEVICE_ALREADY_INUSE);
+            powerDeviceEntity.setMac(vo.getMac());
         }
-        AssertBiz.OBJECT_NONE_NULL.notNull(powerDeviceEntity.getMac(), KmResultCodeEnum.ERROR_OF_DEVICE_MAC_NOT_FOUND);
-
-        // 校验mac地址是否重复
-        LambdaQueryWrapper<PowerDeviceEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(PowerDeviceEntity::getMac, powerDeviceEntity.getMac()).ne(PowerDeviceEntity::getId, powerDeviceUpdateVo.getId());
-        AssertBiz.OBJECT_NONE_NULL.isNull(powerDeviceMapper.selectOne(wrapper), KmResultCodeEnum.ERROR_OF_DEVICE_ALREADY_INUSE);
+        if (StrUtil.isNotBlank(vo.getDevGatewayIp())) {
+            powerDeviceEntity.setDevGatewayIp(vo.getDevGatewayIp());
+        }
+        if (StrUtil.isNotBlank(vo.getDevIpMask())) {
+            powerDeviceEntity.setDevIpMask(vo.getDevIpMask());
+        }
+        if (StrUtil.isNotBlank(vo.getDesIp())) {
+            powerDeviceEntity.setDesIp(vo.getDesIp());
+        }
+        if (ObjectUtil.isNotNull(vo.getDesPort())) {
+            powerDeviceEntity.setDesPort(vo.getDesPort());
+        }
     }
 
     /**
@@ -412,7 +416,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/25 13:58
      */
     @Override
-    public Result powerStart(int id) throws IOException {
+    public Result powerStart(int id) {
         PowerConfigEntity powerConfigEntity = powerConfigMapper.selectById(id);
         AssertBiz.OBJECT_NONE_NULL.notNull(powerConfigEntity, KmResultCodeEnum.ERROR_OF_DATA_NONE);
 
@@ -486,7 +490,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/25 13:58
      */
     @Override
-    public Result<PowerDeviceMessageVo> deviceMessage(PowerDeviceMessageReqVo powerDeviceMessageReqVo) throws IOException {
+    public Result<PowerDeviceMessageVo> deviceMessage(PowerDeviceMessageReqVo powerDeviceMessageReqVo) {
         PowerDeviceEntity powerDeviceEntity = powerDeviceMapper.selectById(powerDeviceMessageReqVo.getId());
         AssertBiz.OBJECT_NONE_NULL.notNull(powerDeviceEntity, KmResultCodeEnum.ERROR_OF_DATA_NONE);
 
@@ -518,7 +522,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/25 13:58
      */
     @Override
-    public Result<List<PowerChannelStateVo>> deviceChannelState(PowerDeviceMessageReqVo powerDeviceMessageReqVo) throws IOException {
+    public Result<List<PowerChannelStateVo>> deviceChannelState(PowerDeviceMessageReqVo powerDeviceMessageReqVo) {
         PowerDeviceEntity powerDeviceEntity = powerDeviceMapper.selectById(powerDeviceMessageReqVo.getId());
         AssertBiz.OBJECT_NONE_NULL.notNull(powerDeviceEntity, KmResultCodeEnum.ERROR_OF_DATA_NONE);
 
@@ -556,7 +560,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/25 13:57
      */
     @Override
-    public Result<Boolean> deviceTurns(PowerDeviceTurnsVo powerDeviceTurnsVo) throws IOException {
+    public Result<Boolean> deviceTurns(PowerDeviceTurnsVo powerDeviceTurnsVo) {
         PowerDeviceEntity powerDeviceEntity = powerDeviceMapper.selectById(powerDeviceTurnsVo.getId());
         AssertBiz.OBJECT_NONE_NULL.notNull(powerDeviceEntity, KmResultCodeEnum.ERROR_OF_DATA_NONE);
         String mac = powerDeviceEntity.getMac();
@@ -669,6 +673,70 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         return Result.succeed(responseVos);
     }
 
+    @Override
+    public Result<Integer> lanDeviceAdd(LanPowerDeviceAddVo vo) {
+        PowerDeviceEntity entity = PowerDeviceEntity.builder()
+                .type(2)
+                .name(vo.getName())
+                .ip(vo.getIp())
+                .mac(vo.getMac())
+                .devGatewayIp(vo.getDevGatewayIp())
+                .devIpMask(vo.getDevIpMask())
+                .desIp(vo.getDesIp())
+                .desPort(vo.getDesPort()).build();
+        powerDeviceMapper.insert(entity);
+        return Result.succeed(entity.getId());
+    }
+
+    @Override
+    public Set<LanDevice> searchDevices() throws Exception {
+        Set<Device> devices = configPower.searchDevices();
+        Set<LanDevice> lanDevices = convert.convertDevices(devices);
+        for (LanDevice lanDevice : lanDevices) {
+            LambdaQueryWrapper<PowerDeviceEntity> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(PowerDeviceEntity::getMac, lanDevice.getMacAddr());
+            List<PowerDeviceEntity> entities = powerDeviceMapper.selectList(wrapper);
+            lanDevice.setIsAdd(CollectionUtil.isNotEmpty(entities) ? 1 : 0);
+        }
+        return lanDevices;
+    }
+
+    @Override
+    public Result<PowerLanConfigVO> getPowerConfigByMac(String macAddr) {
+        DevicePortConfig devicePortConfig = null;
+        PowerLanConfigVO vo = null;
+        LambdaQueryWrapper<PowerDeviceEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PowerDeviceEntity::getMac, macAddr);
+        List<PowerDeviceEntity> entities = powerDeviceMapper.selectList(wrapper);
+        if (CollectionUtil.isNotEmpty(entities)) {
+            PowerDeviceEntity entity = entities.get(0);
+            vo = convert.covertEntityToVO(entity);
+        } else {
+            try {
+                NetDeviceConfig config = configPower.getConfig(macAddr);
+                vo = new PowerLanConfigVO();
+                DeviceConfig deviceConfig = config.getDeviceConfig();
+                vo.setName(deviceConfig.getModuleName().replaceAll("\\u0000", ""));
+                vo.setIp(deviceConfig.getDevIp());
+                List<DevicePortConfig> devicePortConfigs = config.getDevicePortConfigs();
+                for (DevicePortConfig portConfig : devicePortConfigs) {
+                    if (Objects.equals("1", portConfig.getPortEn())) {
+                        devicePortConfig = portConfig;
+                        break;
+                    }
+                }
+                vo.setDesIp(devicePortConfig.getDesIp());
+                vo.setDesPort(devicePortConfig.getDesPort());
+                vo.setDevGatewayIp(deviceConfig.getDevGatewayIp());
+                vo.setDevIpMask(deviceConfig.getDevIpMask());
+            } catch (Exception e) {
+                log.error("根据设备Mac地址获取电源的详细配置，异常:{}", e.getMessage());
+                return Result.failed("根据设备Mac地址获取电源的详细配置，异常");
+            }
+        }
+        return Result.succeed(vo);
+    }
+
     /**
      * 开启tcp连接端口
      */
@@ -691,6 +759,30 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         Pattern pattern = Pattern.compile(p);
         Matcher matcher = pattern.matcher(String.valueOf(port));
         return matcher.matches();
+    }
+
+    public static void main(String[] args) {
+        boolean validIpAddress = isValidMacAddr("84-c2e4-24-30-88");
+        System.out.println("validIpAddress = " + validIpAddress);
+    }
+
+    public static boolean isValidIpAddress(String ipAddress) {
+        if (StrUtil.isBlank(ipAddress)) {
+            return false;
+        }
+        String regex = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."
+                + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+                + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+                + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";
+        return ipAddress.matches(regex);
+    }
+
+    public static boolean isValidMacAddr(String macAddr) {
+        if (StrUtil.isBlank(macAddr)) {
+            return false;
+        }
+        String regex = "^[a-fA-F0-9]{2}(-[a-fA-F0-9]{2}){5}$";
+        return macAddr.matches(regex);
     }
 
     /**

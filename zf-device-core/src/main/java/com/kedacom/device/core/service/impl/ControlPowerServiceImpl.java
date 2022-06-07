@@ -68,6 +68,21 @@ public class ControlPowerServiceImpl implements ControlPowerService {
     @Autowired
     private ControlPowerConvert convert;
 
+    @Override
+    public Result<PowerDeviceEntity> addBwPower(BwPowerDeviceAddVo powerDeviceAddVo) {
+        PowerDeviceEntity entity = dealInsertBw(powerDeviceAddVo);
+        powerDeviceMapper.insert(entity);
+        return Result.succeed(powerDeviceMapper.selectById(entity.getId()));
+    }
+
+    @Override
+    public Result<PowerDeviceEntity> updateBwPower(BwPowerDeviceUpdateVo powerDeviceUpdateVo) {
+        PowerDeviceEntity powerDeviceEntity = powerDeviceMapper.selectById(powerDeviceUpdateVo.getId());
+        dealUpdateBw(powerDeviceEntity, powerDeviceUpdateVo);
+        powerDeviceMapper.updateById(powerDeviceEntity);
+        return Result.succeed(powerDeviceMapper.selectById(powerDeviceEntity.getId()));
+    }
+
     /**
      * @param powerConfigAddVo
      * @Description 配置监听端口
@@ -169,47 +184,15 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         return powerConfigMapper.selectOne(wrapper);
     }
 
-    /**
-     * @param powerDeviceAddVo
-     * @Description 添加电源设备
-     * @param:
-     * @return:
-     * @author:zlf
-     * @date:2021/5/27 11:15
-     */
-    @Override
-    public Result<PowerDeviceEntity> deviceAdd(PowerDeviceAddVo powerDeviceAddVo) {
-        PowerDeviceEntity entity = null;
-        PowerTypeEnum powerTypeEnum = PowerTypeEnum.valueOf(powerDeviceAddVo.getType());
-        switch (powerTypeEnum) {
-            case RK100:
-                AssertBiz.OBJECT_NONE_NULL.notNull(powerDeviceAddVo.getPort(), KmResultCodeEnum.ERROR_OF_PORT_NOT_NULL);
-                AssertBiz.OBJECT_NONE_NULL.notNull(powerDeviceAddVo.getDeviceSn(), KmResultCodeEnum.ERROR_OF_NONE_RK100_DEVICE_SN);
-                AssertBiz.OBJECT_IS_TRUE.isTrue(checkPortRegex(powerDeviceAddVo.getPort()), KmResultCodeEnum.ERROR_OF_PORT_REGEX);
-                entity = dealInsertRk100(powerDeviceAddVo);
-                break;
-            case BWANT_IPM_08:
-                entity = dealInsertBwant(powerDeviceAddVo);
-                break;
-            default:
-                throw new KmServiceException(KmResultCodeEnum.ERROR_OF_DO_NOT_ALLOW_DEV_TYPE);
-        }
-        // 新增
-        powerDeviceMapper.insert(entity);
-//        if (!org.springframework.util.StringUtils.isEmpty(entity.getDeviceSn())) {
-//            this.rkLogin(entity.getId());
-//        }
-        return Result.succeed(powerDeviceMapper.selectById(entity.getId()));
-    }
 
     /**
      * 处理BWANT_IPM_08类型的电源设备
      */
-    private PowerDeviceEntity dealInsertBwant(PowerDeviceAddVo powerDeviceAddVo) {
+    private PowerDeviceEntity dealInsertBw(BwPowerDeviceAddVo powerDeviceAddVo) {
         PowerDeviceEntity entity = PowerDeviceEntity.builder()
                 .ip(powerDeviceAddVo.getIp())
                 .name(powerDeviceAddVo.getName())
-                .type(powerDeviceAddVo.getType())
+                .type(2)
                 .mac(powerDeviceAddVo.getMac())
                 .channels(powerDeviceAddVo.getChannels())
                 .build();
@@ -253,42 +236,11 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         return entity;
     }
 
-    /**
-     * @param powerDeviceUpdateVo
-     * @Description 修改电源设备
-     * @param:
-     * @return:
-     * @author:zlf
-     * @date:2021/5/27 11:21
-     */
-    @Override
-    public Result<Integer> deviceUpdate(PowerDeviceUpdateVo powerDeviceUpdateVo) {
-        PowerDeviceEntity powerDeviceEntity = powerDeviceMapper.selectById(powerDeviceUpdateVo.getId());
-        AssertBiz.OBJECT_NONE_NULL.notNull(powerDeviceEntity, KmResultCodeEnum.ERROR_OF_DATA_NONE);
-        AssertBiz.OBJECT_IS_TRUE.isTrue(powerDeviceUpdateVo.getType().equals(powerDeviceEntity.getType()), KmResultCodeEnum.ERROR_OF_DIFFERENT_DEV_TYPE);
-
-        PowerTypeEnum powerTypeEnum = PowerTypeEnum.valueOf(powerDeviceEntity.getType());
-        switch (powerTypeEnum) {
-            case RK100:
-                dealUpdateRK100(powerDeviceEntity, powerDeviceUpdateVo);
-                break;
-            case BWANT_IPM_08:
-                dealUpdateBwant(powerDeviceEntity, powerDeviceUpdateVo);
-                break;
-            default:
-                throw new KmServiceException(KmResultCodeEnum.ERROR_OF_DO_NOT_ALLOW_DEV_TYPE);
-        }
-        powerDeviceMapper.updateById(powerDeviceEntity);
-//        if (!org.springframework.util.StringUtils.isEmpty(powerDeviceEntity.getDeviceSn())) {
-//            this.rkLogin(powerDeviceEntity.getId());
-//        }
-        return Result.succeed(powerDeviceEntity.getId());
-    }
 
     /**
      * 修改BWANT_IPM_08类型的电源设备
      */
-    private void dealUpdateBwant(PowerDeviceEntity powerDeviceEntity, PowerDeviceUpdateVo vo) {
+    private void dealUpdateBw(PowerDeviceEntity powerDeviceEntity, BwPowerDeviceUpdateVo vo) {
         if (StringUtils.isNotBlank(vo.getName())) {
             powerDeviceEntity.setName(vo.getName());
         }
@@ -414,10 +366,6 @@ public class ControlPowerServiceImpl implements ControlPowerService {
 
     /**
      * @Description 获取所有设备，填充下拉列表
-     * @param:
-     * @return:
-     * @author:张龙飞
-     * @date:2021/5/25 13:58
      */
     @Override
     public Result<List<PowerDeviceVo>> getDeviceDatas() {
@@ -433,7 +381,14 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         for (Map.Entry<String, Device> entry : entries) {
             String mac = entry.getKey();
             Device device = entry.getValue();
-
+            // 校验mac或者ip是否已存在
+            LambdaQueryWrapper<PowerDeviceEntity> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(PowerDeviceEntity::getMac, device.getMacAddr());
+            List<PowerDeviceEntity> entities = powerDeviceMapper.selectList(wrapper);
+            if (CollectionUtil.isNotEmpty(entities)) {
+                log.error("获取所有设备，填充下拉列表,电源设备已存在数据库：{}", entities.get(0).getMac());
+                continue;
+            }
             powerDeviceVo = new PowerDeviceVo();
             powerDeviceVo.setDeviceName(device.getDeviceName());
             powerDeviceVo.setIpAddr(device.getIpAddr());

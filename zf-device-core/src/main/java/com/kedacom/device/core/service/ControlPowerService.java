@@ -11,12 +11,20 @@ import com.kedacom.power.vo.*;
 import java.util.List;
 
 /**
- * @ClassName ControlPowerService
- * @Description 电源配置接口
- * @Author zlf
- * @Date 2021/5/25 13:55
+ * @author hxj
+ * @date 2022/5/7 14:16:01
  */
 public interface ControlPowerService {
+
+    /**
+     * 添加北望电源设备
+     */
+    Result<PowerDeviceEntity> addBwPower(BwPowerDeviceAddVo powerDeviceAddVo);
+
+    /**
+     * 修改北望电源设备
+     */
+    Result<PowerDeviceEntity> updateBwPower(BwPowerDeviceUpdateVo powerDeviceUpdateVo);
 
     /**
      * @Description 配置监听端口
@@ -63,23 +71,6 @@ public interface ControlPowerService {
      */
     PowerConfigEntity getPowerByPort(int port);
 
-    /**
-     * @Description 添加电源设备
-     * @param:
-     * @return:
-     * @author:zlf
-     * @date:2021/5/27 11:15
-     */
-    Result<PowerDeviceEntity> deviceAdd(PowerDeviceAddVo powerDeviceAddVo);
-
-    /**
-     * @Description 修改电源设备
-     * @param:
-     * @return:
-     * @author:zlf
-     * @date:2021/5/27 11:21
-     */
-    Result<Integer> deviceUpdate(PowerDeviceUpdateVo powerDeviceUpdateVo);
 
     /**
      * @Description 分页条件查询电源设备
@@ -106,7 +97,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:58
      */
-    Result powerStart(int id) ;
+    Result powerStart(int id);
 
     /**
      * @Description 获取所有设备，填充下拉列表
@@ -149,7 +140,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:58
      */
-    Result<PowerDeviceMessageVo> deviceMessage(PowerDeviceMessageReqVo powerDeviceMessageReqVo) ;
+    Result<PowerDeviceMessageVo> deviceMessage(PowerDeviceMessageReqVo powerDeviceMessageReqVo);
 
     /**
      * @Description 获取设备下通道状态
@@ -158,7 +149,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:58
      */
-    Result<List<PowerChannelStateVo>> deviceChannelState(PowerDeviceMessageReqVo powerDeviceMessageReqVo) ;
+    Result<List<PowerChannelStateVo>> deviceChannelState(PowerDeviceMessageReqVo powerDeviceMessageReqVo);
 
     Result<Boolean> deviceTurn(PowerDeviceTurnVO vo);
 
@@ -169,7 +160,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:57
      */
-    Result<Boolean> deviceTurns(PowerDeviceTurnsVo powerDeviceTurnsVo) ;
+    Result<Boolean> deviceTurns(PowerDeviceTurnsVo powerDeviceTurnsVo);
 
     /**
      * @Description 关闭TCP连接
@@ -215,7 +206,6 @@ public interface ControlPowerService {
      * @date:
      */
     Result<List<PowerDeviceTypeResponseVo>> getDevType();
-
 
 
 }

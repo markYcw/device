@@ -38,26 +38,20 @@ public class ControlPowerController {
     @Autowired
     private ConfigPower configPower;
 
-    @ApiOperation("获取电源支持的类型")
-    @GetMapping("getDevType")
-    public Result<List<PowerDeviceTypeResponseVo>> getDevType() {
-        return controlPowerService.getDevType();
-    }
-
-    @ApiOperation(value = "添加电源设备")
-    @PostMapping(value = "/device/add")
-    public Result<PowerDeviceEntity> deviceAdd(@Valid @RequestBody PowerDeviceAddVo powerDeviceAddVo, BindingResult br) {
+    @ApiOperation(value = "添加北望电源设备")
+    @PostMapping(value = "/addBwPower")
+    public Result<PowerDeviceEntity> addBwPower(@Valid @RequestBody BwPowerDeviceAddVo powerDeviceAddVo, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        return controlPowerService.deviceAdd(powerDeviceAddVo);
+        return controlPowerService.addBwPower(powerDeviceAddVo);
     }
 
-    @ApiOperation(value = "修改电源设备")
-    @PostMapping(value = "/device/update")
-    public Result<Integer> deviceUpdate(@Valid @RequestBody PowerDeviceUpdateVo powerDeviceUpdateVo, BindingResult br) {
+    @ApiOperation(value = "修改北望电源设备")
+    @PostMapping(value = "/updateBwPower")
+    public Result<PowerDeviceEntity> updateBwPower(@Valid @RequestBody BwPowerDeviceUpdateVo powerDeviceUpdateVo, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        return controlPowerService.deviceUpdate(powerDeviceUpdateVo);
+        return controlPowerService.updateBwPower(powerDeviceUpdateVo);
     }
 
     @ApiOperation(value = "删除电源设备")
@@ -140,6 +134,12 @@ public class ControlPowerController {
         }
     }
 
+    @ApiOperation(value = "获取所有设备，填充下拉列表（针对Bwant-IPM-08）")
+    @PostMapping(value = "/device/datas")
+    public Result<List<PowerDeviceVo>> getDeviceDatas() {
+        return controlPowerService.getDeviceDatas();
+    }
+
     /*
      * ================================================电源配置-数据库==============================================================
      */
@@ -178,12 +178,6 @@ public class ControlPowerController {
     /*
      * ================================================Bwant-IPM-08操作==============================================================
      */
-
-    @ApiOperation(value = "获取所有设备，填充下拉列表（针对Bwant-IPM-08）")
-    @PostMapping(value = "/device/datas")
-    public Result<List<PowerDeviceVo>> getDeviceDatas() {
-        return controlPowerService.getDeviceDatas();
-    }
 
     @ApiOperation(value = "启动TCP连接（针对Bwant-IPM-08）")
     @GetMapping(value = "/start")

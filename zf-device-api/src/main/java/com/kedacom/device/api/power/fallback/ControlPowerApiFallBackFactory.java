@@ -67,7 +67,7 @@ public class ControlPowerApiFallBackFactory implements FallbackFactory<ControlPo
             }
 
             @Override
-            public Result<NetDeviceConfig> getPowerConfigByMac(String macAddr) {
+            public Result<PowerLanConfigVO> getPowerConfigByMac(String macAddr) {
                 return Result.failed(throwable.getMessage());
             }
 

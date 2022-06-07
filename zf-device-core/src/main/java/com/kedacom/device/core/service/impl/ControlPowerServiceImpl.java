@@ -24,6 +24,7 @@ import com.kedacom.device.core.power.ConfigPower;
 import com.kedacom.device.core.service.ControlPowerService;
 import com.kedacom.device.core.task.ControlPowerStatusCallback;
 import com.kedacom.power.ControlPower;
+import com.kedacom.power.dto.UpdatePowerLanConfigDTO;
 import com.kedacom.power.entity.*;
 import com.kedacom.power.model.KmResultCodeEnum;
 import com.kedacom.power.model.PageRespVo;
@@ -306,18 +307,6 @@ public class ControlPowerServiceImpl implements ControlPowerService {
             AssertBiz.OBJECT_NONE_NULL.isNull(powerDeviceMapper.selectOne(wrapper), KmResultCodeEnum.ERROR_OF_DEVICE_ALREADY_INUSE);
             powerDeviceEntity.setMac(vo.getMac());
         }
-        if (StrUtil.isNotBlank(vo.getDevGatewayIp())) {
-            powerDeviceEntity.setDevGatewayIp(vo.getDevGatewayIp());
-        }
-        if (StrUtil.isNotBlank(vo.getDevIpMask())) {
-            powerDeviceEntity.setDevIpMask(vo.getDevIpMask());
-        }
-        if (StrUtil.isNotBlank(vo.getDesIp())) {
-            powerDeviceEntity.setDesIp(vo.getDesIp());
-        }
-        if (ObjectUtil.isNotNull(vo.getDesPort())) {
-            powerDeviceEntity.setDesPort(vo.getDesPort());
-        }
     }
 
     /**
@@ -482,6 +471,71 @@ public class ControlPowerServiceImpl implements ControlPowerService {
     }
 
     /**
+     * 局域网搜索，未添加记录排列在前面
+     */
+    @Override
+    public List<LanDevice> searchDevices() throws Exception {
+        Set<Device> devices = configPower.searchDevices();
+        Set<LanDevice> lanDevices = convert.convertDevices(devices);
+        for (LanDevice lanDevice : lanDevices) {
+            LambdaQueryWrapper<PowerDeviceEntity> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(PowerDeviceEntity::getMac, lanDevice.getMacAddr());
+            List<PowerDeviceEntity> entities = powerDeviceMapper.selectList(wrapper);
+            lanDevice.setIsAdd(CollectionUtil.isNotEmpty(entities) ? 1 : 0);
+        }
+        List<LanDevice> lanDeviceList = lanDevices.stream()
+                .sorted(Comparator.comparing(LanDevice::getIsAdd).reversed())
+                .collect(Collectors.toList());
+        return lanDeviceList;
+    }
+
+    @Override
+    public Result<PowerLanConfigVO> getPowerConfigByMac(String macAddr) {
+        DevicePortConfig devicePortConfig = null;
+        PowerLanConfigVO vo = null;
+        try {
+            NetDeviceConfig config = configPower.getConfig(macAddr);
+            vo = new PowerLanConfigVO();
+            DeviceConfig deviceConfig = config.getDeviceConfig();
+            vo.setName(deviceConfig.getModuleName().replaceAll("\\u0000", ""));
+            vo.setIp(deviceConfig.getDevIp());
+            List<DevicePortConfig> devicePortConfigs = config.getDevicePortConfigs();
+            for (DevicePortConfig portConfig : devicePortConfigs) {
+                if (Objects.equals("1", portConfig.getPortEn())) {
+                    devicePortConfig = portConfig;
+                    break;
+                }
+            }
+            vo.setDesIp(devicePortConfig.getDesIp());
+            vo.setDesPort(devicePortConfig.getDesPort());
+            vo.setDevGatewayIp(deviceConfig.getDevGatewayIp());
+            vo.setDevIpMask(deviceConfig.getDevIpMask());
+        } catch (Exception e) {
+            log.error("根据设备Mac地址获取电源的详细配置，异常:{}", e.getMessage());
+            return Result.failed("根据设备Mac地址获取电源的详细配置，异常");
+        }
+        return Result.succeed(vo);
+    }
+
+    @Override
+    public Result updatePowerConfigByMac(UpdatePowerLanConfigDTO dto) {
+        if (!isValidPort(dto.getDesPort())){
+            return Result.failed("服务器端口格式错误");
+        }
+        Config build = Config.builder()
+                .devIp(dto.getIp())
+                .devIpMask(dto.getDevIpMask())
+                .desIp(dto.getDesIp())
+                .desPort(dto.getDesPort())
+                .devGwIp(dto.getDevGatewayIp()).build();
+        int config = configPower.config(build, dto.getMac());
+        if (config == 0) {
+            return Result.succeed();
+        }
+        return Result.failed("修改电源配置失败");
+    }
+
+    /**
      * @param powerDeviceMessageReqVo
      * @Description 获取设备详细信息
      * @param:
@@ -638,11 +692,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
     }
 
     /**
-     * @Description 所有BWANT_IPM_08设备状态置为离线
-     * @param:
-     * @return:
-     * @author:zlf
-     * @date:
+     * 所有BWANT_IPM_08设备状态置为离线
      */
     @Override
     public void changeBwantAllDeviceStatusDown() {
@@ -658,11 +708,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
     }
 
     /**
-     * @Description 获取电源支持的类型
-     * @param:
-     * @return:
-     * @author:zlf
-     * @date:
+     * 获取电源支持的类型
      */
     @Override
     public Result<List<PowerDeviceTypeResponseVo>> getDevType() {
@@ -673,69 +719,6 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         return Result.succeed(responseVos);
     }
 
-    @Override
-    public Result<Integer> lanDeviceAdd(LanPowerDeviceAddVo vo) {
-        PowerDeviceEntity entity = PowerDeviceEntity.builder()
-                .type(2)
-                .name(vo.getName())
-                .ip(vo.getIp())
-                .mac(vo.getMac())
-                .devGatewayIp(vo.getDevGatewayIp())
-                .devIpMask(vo.getDevIpMask())
-                .desIp(vo.getDesIp())
-                .desPort(vo.getDesPort()).build();
-        powerDeviceMapper.insert(entity);
-        return Result.succeed(entity.getId());
-    }
-
-    @Override
-    public Set<LanDevice> searchDevices() throws Exception {
-        Set<Device> devices = configPower.searchDevices();
-        Set<LanDevice> lanDevices = convert.convertDevices(devices);
-        for (LanDevice lanDevice : lanDevices) {
-            LambdaQueryWrapper<PowerDeviceEntity> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(PowerDeviceEntity::getMac, lanDevice.getMacAddr());
-            List<PowerDeviceEntity> entities = powerDeviceMapper.selectList(wrapper);
-            lanDevice.setIsAdd(CollectionUtil.isNotEmpty(entities) ? 1 : 0);
-        }
-        return lanDevices;
-    }
-
-    @Override
-    public Result<PowerLanConfigVO> getPowerConfigByMac(String macAddr) {
-        DevicePortConfig devicePortConfig = null;
-        PowerLanConfigVO vo = null;
-        LambdaQueryWrapper<PowerDeviceEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(PowerDeviceEntity::getMac, macAddr);
-        List<PowerDeviceEntity> entities = powerDeviceMapper.selectList(wrapper);
-        if (CollectionUtil.isNotEmpty(entities)) {
-            PowerDeviceEntity entity = entities.get(0);
-            vo = convert.covertEntityToVO(entity);
-        } else {
-            try {
-                NetDeviceConfig config = configPower.getConfig(macAddr);
-                vo = new PowerLanConfigVO();
-                DeviceConfig deviceConfig = config.getDeviceConfig();
-                vo.setName(deviceConfig.getModuleName().replaceAll("\\u0000", ""));
-                vo.setIp(deviceConfig.getDevIp());
-                List<DevicePortConfig> devicePortConfigs = config.getDevicePortConfigs();
-                for (DevicePortConfig portConfig : devicePortConfigs) {
-                    if (Objects.equals("1", portConfig.getPortEn())) {
-                        devicePortConfig = portConfig;
-                        break;
-                    }
-                }
-                vo.setDesIp(devicePortConfig.getDesIp());
-                vo.setDesPort(devicePortConfig.getDesPort());
-                vo.setDevGatewayIp(deviceConfig.getDevGatewayIp());
-                vo.setDevIpMask(deviceConfig.getDevIpMask());
-            } catch (Exception e) {
-                log.error("根据设备Mac地址获取电源的详细配置，异常:{}", e.getMessage());
-                return Result.failed("根据设备Mac地址获取电源的详细配置，异常");
-            }
-        }
-        return Result.succeed(vo);
-    }
 
     /**
      * 开启tcp连接端口
@@ -775,6 +758,14 @@ public class ControlPowerServiceImpl implements ControlPowerService {
                 + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
                 + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";
         return ipAddress.matches(regex);
+    }
+
+    public static boolean isValidPort(Integer port) {
+        if (ObjectUtil.isNull(port)) {
+            return false;
+        }
+        String regex = "([0-9]|[1-9]\\d{1,3}|[1-5]\\d{4}|6[0-4]\\d{4}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])";
+        return port.toString().matches(regex);
     }
 
     public static boolean isValidMacAddr(String macAddr) {

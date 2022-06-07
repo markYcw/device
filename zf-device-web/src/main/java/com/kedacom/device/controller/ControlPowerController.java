@@ -4,6 +4,7 @@ import com.kedacom.common.model.Result;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.power.ConfigPower;
 import com.kedacom.device.core.service.ControlPowerService;
+import com.kedacom.power.dto.UpdatePowerLanConfigDTO;
 import com.kedacom.power.entity.LanDevice;
 import com.kedacom.power.model.PageRespVo;
 import com.kedacom.power.vo.*;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author hxj
@@ -43,20 +43,12 @@ public class ControlPowerController {
         return controlPowerService.getDevType();
     }
 
-    @ApiOperation(value = "手动添加-添加电源设备")
+    @ApiOperation(value = "添加电源设备")
     @PostMapping(value = "/device/add")
     public Result<Integer> deviceAdd(@Valid @RequestBody PowerDeviceAddVo powerDeviceAddVo, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return controlPowerService.deviceAdd(powerDeviceAddVo);
-    }
-
-    @ApiOperation(value = "局域网-添加电源设备")
-    @PostMapping(value = "/device/lanDeviceAdd")
-    public Result<Integer> lanDeviceAdd(@Valid @RequestBody LanPowerDeviceAddVo vo, BindingResult br) {
-        ValidUtils.paramValid(br);
-
-        return controlPowerService.lanDeviceAdd(vo);
     }
 
     @ApiOperation(value = "修改电源设备")
@@ -96,7 +88,10 @@ public class ControlPowerController {
         return controlPowerService.getDeviceById(id);
     }
 
-    @ApiOperation(value = "对局域网搜索进行配置")
+    @ApiOperation(value = "指定对那个ip进行局域网搜索，可不调用此方法走默认配置。默认配置：\n" +
+            "ip:255.255.255.255\n" +
+            "timeout:3000ms\n" +
+            "searchTime:3000ms")
     @GetMapping(value = "/device/lanConfig")
     @ApiImplicitParams({@ApiImplicitParam(name = "ip", required = false, value = "广播搜索的服务器ip")
             , @ApiImplicitParam(name = "timeout", required = false, value = "超时时间")
@@ -109,9 +104,9 @@ public class ControlPowerController {
 
     @ApiOperation(value = "局域网搜索")
     @GetMapping(value = "/device/lanSearch")
-    public Result<Set<LanDevice>> lanSearch() {
+    public Result<List<LanDevice>> lanSearch() {
         try {
-            Set<LanDevice> devices = controlPowerService.searchDevices();
+            List<LanDevice> devices = controlPowerService.searchDevices();
             return Result.succeed(devices);
         } catch (Exception e) {
             log.error("局域网搜索失败：{}", e.getMessage());
@@ -119,23 +114,36 @@ public class ControlPowerController {
         }
     }
 
-    @ApiOperation(value = "局域网搜索-根据设备Mac获取电源的详细配置")
+    @ApiOperation(value = "局域网搜索-根据设备Mac获取电源设备的详细配置")
     @GetMapping(value = "/device/getPowerConfigByMac")
-    @ApiImplicitParams({@ApiImplicitParam(name = "macAddr", required = true, value = "设备Mac地址")})
-    public Result<PowerLanConfigVO> getPowerConfigByMac(@RequestParam("macAddr") String macAddr) {
+    @ApiImplicitParams({@ApiImplicitParam(name = "mac", required = true, value = "设备Mac地址")})
+    public Result<PowerLanConfigVO> getPowerConfigByMac(@RequestParam("mac") String mac) {
         try {
-            return controlPowerService.getPowerConfigByMac(macAddr);
+            return controlPowerService.getPowerConfigByMac(mac);
         } catch (Exception e) {
             log.error("获取电源的具体配置失败：{}", e.getMessage());
             return Result.failed("获取电源的具体配置失败：" + e.getMessage());
         }
     }
 
+    @ApiOperation(value = "局域网搜索-修改电源设备配置")
+    @PostMapping(value = "/device/updatePowerConfigByMac")
+    public Result updatePowerConfigByMac(@Valid @RequestBody UpdatePowerLanConfigDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        try {
+            return controlPowerService.updatePowerConfigByMac(dto);
+        } catch (Exception e) {
+            log.error("修改电源配置失败：{}", e.getMessage());
+            return Result.failed("修改电源配置失败：" + e.getMessage());
+        }
+    }
+
     /*
-     * ================================================Bwant-IPM-08操作==============================================================
+     * ================================================电源配置-数据库==============================================================
      */
 
-    @ApiOperation(value = "添加电源配置信息（针对Bwant-IPM-08）")
+    @ApiOperation(value = "添加电源数据库配置信息（针对Bwant-IPM-08）")
     @PostMapping(value = "/port/add")
     public Result<Integer> portAdd(@Valid @RequestBody PowerConfigAddVo powerConfigAddVo, BindingResult br) {
         ValidUtils.paramValid(br);
@@ -143,7 +151,7 @@ public class ControlPowerController {
         return controlPowerService.portAdd(powerConfigAddVo);
     }
 
-    @ApiOperation(value = "修改电源配置信息（针对Bwant-IPM-08）")
+    @ApiOperation(value = "修改电源数据库配置信息（针对Bwant-IPM-08）")
     @PostMapping(value = "/port/update")
     public Result<Integer> portUpdate(@Valid @RequestBody PowerConfigUpdateVo powerConfigUpdateVo, BindingResult br) {
         ValidUtils.paramValid(br);
@@ -151,7 +159,7 @@ public class ControlPowerController {
         return controlPowerService.portUpdate(powerConfigUpdateVo);
     }
 
-    @ApiOperation(value = "删除电源配置信息（针对Bwant-IPM-08）")
+    @ApiOperation(value = "删除电源数据库配置信息（针对Bwant-IPM-08）")
     @PostMapping(value = "/port/delete")
     public Result<Boolean> portDelete(@Valid @RequestBody PowerPortVo powerPortVo, BindingResult br) {
         ValidUtils.paramValid(br);
@@ -159,12 +167,16 @@ public class ControlPowerController {
         return controlPowerService.portDelete(powerPortVo);
     }
 
-    @ApiOperation(value = "查询电源配置信息（针对Bwant-IPM-08）")
+    @ApiOperation(value = "查询电源数据库配置信息（针对Bwant-IPM-08）")
     @PostMapping(value = "/port/list")
     public Result<List<PowerPortListVo>> portList(@RequestBody PowerConfigListVo powerConfigListVo) {
 
         return controlPowerService.portList(powerConfigListVo);
     }
+
+    /*
+     * ================================================Bwant-IPM-08操作==============================================================
+     */
 
     @ApiOperation(value = "获取所有设备，填充下拉列表（针对Bwant-IPM-08）")
     @PostMapping(value = "/device/datas")

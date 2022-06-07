@@ -1,4 +1,4 @@
-package com.kedacom.power.vo;
+package com.kedacom.power.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -19,11 +19,7 @@ import java.io.Serializable;
 @ToString
 @Builder
 @ApiModel(description = "局域网添加-新增电源设备信息参数类")
-public class LanPowerDeviceAddVo implements Serializable {
-
-    @NotBlank(message = "电源设备名称不能为空")
-    @ApiModelProperty(value = "电源设备名称", required = true)
-    private String name;
+public class UpdatePowerLanConfigDTO implements Serializable {
 
     @NotBlank(message = "设备IP地址不能为空")
     @Pattern(regexp = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."
@@ -68,8 +64,6 @@ public class LanPowerDeviceAddVo implements Serializable {
     private String desIp;
 
     @NotNull(message = "服务器端口不能为空")
-    @Pattern(regexp = "^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$"
-            , message = "服务器端口格式错误")
     @ApiModelProperty(value = "服务器端口")
     private Integer desPort;
 

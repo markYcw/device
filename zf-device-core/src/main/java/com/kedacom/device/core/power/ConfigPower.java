@@ -10,6 +10,7 @@ import com.kedacom.power.udp.SendMessage;
 import com.kedacom.power.util.DataParser;
 import com.kedacom.power.util.RegUtil;
 import com.kedacom.power.util.RequestData;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.util.concurrent.*;
  * @author hxj
  * @date 2022/5/7 14:16:01
  */
+@Slf4j
 @Component
 public class ConfigPower {
 
@@ -50,18 +52,17 @@ public class ConfigPower {
             return ResponseCode.SUCCESS;
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
+            log.error("发送消息异常：{}", e.getMessage());
             return ResponseCode.ERROR;
         } catch (TimeoutException e) {
+            log.error("发送消息异常：{}", e.getMessage());
             submit.cancel(true);
             return ResponseCode.TIMEOUT;
         }
     }
 
     /**
-     * 获取配置
-     *
-     * @param macAddr
-     * @return
+     * udp方式，获取配置
      */
     public NetDeviceConfig getConfig(String macAddr) {
         if (RegUtil.checkMacAddr(macAddr)) {
@@ -85,10 +86,11 @@ public class ConfigPower {
 
 
     /**
-     * 恢复出厂设置
-     *
-     * @param macAddr
-     * @return
+     * udp方式，恢复出厂设置
+     * 0	成功
+     * 1	失败
+     * 2	超时
+     * 3	参数不合法
      */
     public int restore(String macAddr) {
         if (RegUtil.checkMacAddr(macAddr)) {
@@ -108,6 +110,13 @@ public class ConfigPower {
         return 2;
     }
 
+    /**
+     * udp方式，修改电源配置
+     * 0	成功
+     * 1	失败
+     * 2	超时
+     * 3	参数不合法
+     */
     public int config(Config config, String macAddr) {
         if (RegUtil.checkMacAddr(macAddr)) {
             return 3;

@@ -20,9 +20,6 @@ import java.io.Serializable;
 @ApiModel(value = "局域网搜索-电源基本配置")
 public class PowerLanConfigVO implements Serializable {
 
-    @ApiModelProperty(value = "电源主键id")
-    private Integer id;
-
     @ApiModelProperty(value = "设备名称")
     private String name;
 

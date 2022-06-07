@@ -1,13 +1,13 @@
 package com.kedacom.device.core.service;
 
 import com.kedacom.common.model.Result;
+import com.kedacom.power.dto.UpdatePowerLanConfigDTO;
 import com.kedacom.power.entity.LanDevice;
 import com.kedacom.power.entity.PowerConfigEntity;
 import com.kedacom.power.model.PageRespVo;
 import com.kedacom.power.vo.*;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @ClassName ControlPowerService
@@ -135,6 +135,12 @@ public interface ControlPowerService {
      */
     Result<PowerDeviceListRspVo> getDeviceById(int id);
 
+    List<LanDevice> searchDevices() throws Exception;
+
+    Result<PowerLanConfigVO> getPowerConfigByMac(String macAddr);
+
+    Result updatePowerConfigByMac(UpdatePowerLanConfigDTO dto);
+
     /**
      * @Description 获取设备详细信息
      * @param:
@@ -210,10 +216,5 @@ public interface ControlPowerService {
     Result<List<PowerDeviceTypeResponseVo>> getDevType();
 
 
-    Result<Integer> lanDeviceAdd(LanPowerDeviceAddVo vo);
-
-    Set<LanDevice> searchDevices() throws Exception;
-
-    Result<PowerLanConfigVO> getPowerConfigByMac(String macAddr);
 
 }

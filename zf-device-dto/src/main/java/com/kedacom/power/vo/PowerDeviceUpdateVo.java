@@ -41,16 +41,4 @@ public class PowerDeviceUpdateVo implements Serializable {
     @ApiModelProperty(value = "设备MAC地址", required = false)
     private String mac;
 
-    @ApiModelProperty(value = "网关", required = false)
-    private String devGatewayIp;
-
-    @ApiModelProperty(value = "子网掩码", required = false)
-    private String devIpMask;
-
-    @ApiModelProperty(value = "服务器ip", required = false)
-    private String desIp;
-
-    @ApiModelProperty(value = "服务器端口", required = false)
-    private Integer desPort;
-
 }

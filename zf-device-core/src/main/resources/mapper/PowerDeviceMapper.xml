@@ -8,10 +8,6 @@
         <result column="name" property="name"/>
         <result column="ip" property="ip"/>
         <result column="mac" property="mac"/>
-        <result column="dev_gateway_ip" property="devGatewayIp"/>
-        <result column="dev_ip_mask" property="devIpMask"/>
-        <result column="des_ip" property="desIp"/>
-        <result column="des_port" property="desPort"/>
         <result column="channels" property="channels"/>
         <result column="state" property="state"/>
         <result column="create_time" property="createTime"/>

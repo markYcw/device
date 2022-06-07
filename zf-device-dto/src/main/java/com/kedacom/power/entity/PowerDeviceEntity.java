@@ -43,18 +43,6 @@ public class PowerDeviceEntity implements Serializable {
     @ApiModelProperty(value = "设备MAC地址")
     private String mac;
 
-    @ApiModelProperty(value = "网关")
-    private String devGatewayIp;
-
-    @ApiModelProperty(value = "子网掩码")
-    private String devIpMask;
-
-    @ApiModelProperty(value = "服务器ip")
-    private String desIp;
-
-    @ApiModelProperty(value = "服务器端口")
-    private Integer desPort;
-
     @ApiModelProperty(value = "电源通道数量")
     private Integer channels;
 

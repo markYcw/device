@@ -57,7 +57,7 @@ public interface ControlPowerApi {
     @ApiImplicitParams({@ApiImplicitParam(name = "id", required = true, value = "设备数据库Id")})
     Result<PowerDeviceListRspVo> getDeviceById(@RequestParam(value = "id") int id);
 
-    @ApiOperation(value = "局域网配置")
+    @ApiOperation(value = "对局域网搜索进行配置")
     @GetMapping(value = "/device/lanConfig")
     void lanConfig(@RequestParam("ip") String ip,
                    @RequestParam("timeout") Long timeout,
@@ -68,8 +68,8 @@ public interface ControlPowerApi {
     Result<Set<Device>> lanSearch();
 
     @ApiOperation(value = "局域网搜索-根据设备Mac获取电源的详细配置")
-    @GetMapping(value = "/device/getPowerConfig")
-    Result<NetDeviceConfig> getPowerConfig(@RequestParam("macAddr") String macAddr);
+    @GetMapping(value = "/device/getPowerConfigByMac")
+    Result<NetDeviceConfig> getPowerConfigByMac(@RequestParam("macAddr") String macAddr);
     /*
      * ================================================Bwant-IPM-08操作==============================================================
      */

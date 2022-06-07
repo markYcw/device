@@ -103,9 +103,9 @@ public class ControlPowerController {
     }
 
     @ApiOperation(value = "局域网搜索-根据设备Mac获取电源的详细配置")
-    @GetMapping(value = "/device/getPowerConfig")
-    @ApiImplicitParams({@ApiImplicitParam(name = "macAddr", required = true, value = "设备Mac")})
-    public Result<NetDeviceConfig> getPowerConfig(@RequestParam("macAddr") String macAddr) {
+    @GetMapping(value = "/device/getPowerConfigByMac")
+    @ApiImplicitParams({@ApiImplicitParam(name = "macAddr", required = true, value = "设备Mac地址")})
+    public Result<NetDeviceConfig> getPowerConfigByMac(@RequestParam("macAddr") String macAddr) {
         try {
             NetDeviceConfig config = configPower.getConfig(macAddr);
             return Result.succeed(config);

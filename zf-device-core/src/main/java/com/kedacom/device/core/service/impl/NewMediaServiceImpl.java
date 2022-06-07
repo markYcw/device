@@ -555,6 +555,8 @@ public class NewMediaServiceImpl implements NewMediaService {
             dto.setStreamingMediaIp(next.getNmediaIp());
             dto.setStreamingMediaPort(next.getNmediaPort());
             dto.setStreamingMediaRecPort(next.getRecPort());
+            dto.setMspAccount(next.getMspAccount());
+            dto.setMspPassword(next.getMspPassword());
             dtos.add(dto);
         }
         BasePage<UmsDeviceInfoSelectResponseDto> basePage = new BasePage<>();

@@ -16,7 +16,8 @@ import com.kedacom.device.core.convert.ControlPowerConvert;
 import com.kedacom.device.core.convert.PowerPortConvert;
 import com.kedacom.device.core.enums.AssertBiz;
 import com.kedacom.device.core.enums.PowerTypeEnum;
-import com.kedacom.device.core.exception.KmServiceException;
+import com.kedacom.device.core.exception.PowerServiceException;
+import com.kedacom.device.core.exception.PowerServiceException;
 import com.kedacom.device.core.mapper.PowerConfigMapper;
 import com.kedacom.device.core.mapper.PowerDeviceMapper;
 import com.kedacom.device.core.mapper.PowerTypeMapper;
@@ -203,7 +204,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         List<PowerDeviceEntity> entities = powerDeviceMapper.selectList(wrapper);
         if (CollectionUtil.isNotEmpty(entities)) {
             log.error("添加北望电源设备已存在：{}", entities.get(0).getMac());
-            throw new KmServiceException(KmResultCodeEnum.ERROR_OF_DEVICE_ALREADY_INUSE);
+            throw new PowerServiceException(KmResultCodeEnum.ERROR_OF_DEVICE_ALREADY_INUSE);
         }
         return entity;
     }
@@ -226,10 +227,10 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         if (CollectionUtils.isNotEmpty(powerDeviceEntities)) {
             for (PowerDeviceEntity powerDeviceEntity : powerDeviceEntities) {
                 if (powerDeviceAddVo.getIp().equals(powerDeviceEntity.getIp()) && powerDeviceAddVo.getDeviceSn().equals(powerDeviceEntity.getDeviceSn())) {
-                    throw new KmServiceException(KmResultCodeEnum.ERROR_OF_RK100_IP_AND_DEVICE_SN_SEAM);
+                    throw new PowerServiceException(KmResultCodeEnum.ERROR_OF_RK100_IP_AND_DEVICE_SN_SEAM);
                 }
                 if (powerDeviceAddVo.getName().equals(powerDeviceEntity.getName())) {
-                    throw new KmServiceException(KmResultCodeEnum.ERROR_OF_RK100_NAME_NOT_NULL);
+                    throw new PowerServiceException(KmResultCodeEnum.ERROR_OF_RK100_NAME_NOT_NULL);
                 }
             }
         }
@@ -254,7 +255,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
             List<PowerDeviceEntity> entities = powerDeviceMapper.selectList(wrapper);
             if (CollectionUtil.isNotEmpty(entities)) {
                 log.error("修改北望电源设备已存在：{}", entities.get(0).getMac());
-                throw new KmServiceException(KmResultCodeEnum.ERROR_OF_DEVICE_ALREADY_INUSE);
+                throw new PowerServiceException(KmResultCodeEnum.ERROR_OF_DEVICE_ALREADY_INUSE);
             }
             powerDeviceEntity.setMac(vo.getMac());
         }
@@ -273,7 +274,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
             if (CollectionUtils.isNotEmpty(powerDeviceEntities)) {
                 for (PowerDeviceEntity entity : powerDeviceEntities) {
                     if (powerDeviceUpdateVo.getName().equals(entity.getName()) && !powerDeviceUpdateVo.getId().equals(entity.getId())) {
-                        throw new KmServiceException(KmResultCodeEnum.ERROR_OF_RK100_NAME_NOT_NULL);
+                        throw new PowerServiceException(KmResultCodeEnum.ERROR_OF_RK100_NAME_NOT_NULL);
                     }
                 }
             }
@@ -293,7 +294,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
                             && !powerDeviceEntity.getId().equals(entity.getId())
                             && StringUtils.isNotBlank(powerDeviceUpdateVo.getIp())
                             && powerDeviceUpdateVo.getIp().equals(entity.getIp())) {
-                        throw new KmServiceException(KmResultCodeEnum.ERROR_OF_RK100_DEVICE_SN_NOT_NULL);
+                        throw new PowerServiceException(KmResultCodeEnum.ERROR_OF_RK100_DEVICE_SN_NOT_NULL);
                     }
                 }
             }

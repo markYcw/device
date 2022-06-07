@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @author hxjf
+ * @author hxj
  * @date 2022/4/13 14:17
  */
 @FeignClient(value = "device-server", contextId = "controlPowerApi", path = "/api-device/power",

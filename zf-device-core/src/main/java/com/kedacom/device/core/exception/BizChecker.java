@@ -12,7 +12,7 @@ import com.kedacom.power.model.KmResultCodeEnum;
 public interface BizChecker extends IChecker {
 
     @Override
-    default KmServiceException newException(KmResultCodeEnum codeEnum) {
-        throw new KmServiceException(codeEnum);
+    default PowerServiceException newException(KmResultCodeEnum codeEnum) {
+        throw new PowerServiceException(codeEnum);
     }
 }

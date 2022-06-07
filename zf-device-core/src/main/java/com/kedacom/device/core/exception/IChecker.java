@@ -24,7 +24,7 @@ public interface IChecker {
      * @author:zlf
      * @date:
      */
-    KmServiceException newException(KmResultCodeEnum codeEnum);
+    PowerServiceException newException(KmResultCodeEnum codeEnum);
 
     /**
      * @Description 参数不为空，为空的话抛出异常

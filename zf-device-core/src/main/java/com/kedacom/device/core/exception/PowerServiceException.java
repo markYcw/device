@@ -3,7 +3,10 @@ package com.kedacom.device.core.exception;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.kedacom.power.model.KmResultCodeEnum;
 
-public class KmServiceException extends RuntimeException {
+/**
+ * @author hexijian
+ */
+public class PowerServiceException extends RuntimeException {
 
     private Integer code;
     private String ErrorMsg;
@@ -18,25 +21,25 @@ public class KmServiceException extends RuntimeException {
         return ErrorMsg;
     }
 
-    public KmServiceException(KmResultCodeEnum error) {
+    public PowerServiceException(KmResultCodeEnum error) {
         super(error.getMessage());
         this.code = error.getCode();
         this.ErrorMsg = error.getMessage();
     }
 
-    public KmServiceException(KmResultCodeEnum error, String message) {
+    public PowerServiceException(KmResultCodeEnum error, String message) {
         super(StringUtils.isBlank(message) ? message : error.getMessage());
         this.code = error.getCode();
         this.ErrorMsg = message;
     }
 
-    public KmServiceException(Integer code, String errorMsg, String message) {
+    public PowerServiceException(Integer code, String errorMsg, String message) {
         super(message);
         this.code = code;
         this.ErrorMsg = errorMsg;
     }
 
-    public KmServiceException(Integer code, String errorMsg) {
+    public PowerServiceException(Integer code, String errorMsg) {
         this.code = code;
         this.ErrorMsg = errorMsg;
     }

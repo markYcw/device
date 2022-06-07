@@ -42,7 +42,7 @@ public class UpdatePowerLanConfigDTO implements Serializable {
             + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
             + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$",
             message = "网关IP地址格式错误")
-    @ApiModelProperty(value = "网关")
+    @ApiModelProperty(value = "网关(改成服务器段)")
     private String devGatewayIp;
 
     @NotBlank(message = "子网掩码不能为空")
@@ -51,7 +51,7 @@ public class UpdatePowerLanConfigDTO implements Serializable {
             + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
             + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$",
             message = "子网掩码格式错误")
-    @ApiModelProperty(value = "子网掩码")
+    @ApiModelProperty(value = "子网掩码(改成服务器段)")
     private String devIpMask;
 
     @NotBlank(message = "服务器ip不能为空")

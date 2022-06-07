@@ -6,6 +6,7 @@ import com.kedacom.device.core.power.ConfigPower;
 import com.kedacom.device.core.service.ControlPowerService;
 import com.kedacom.power.dto.UpdatePowerLanConfigDTO;
 import com.kedacom.power.entity.LanDevice;
+import com.kedacom.power.entity.PowerDeviceEntity;
 import com.kedacom.power.model.PageRespVo;
 import com.kedacom.power.vo.*;
 import io.swagger.annotations.Api;
@@ -45,7 +46,7 @@ public class ControlPowerController {
 
     @ApiOperation(value = "添加电源设备")
     @PostMapping(value = "/device/add")
-    public Result<Integer> deviceAdd(@Valid @RequestBody PowerDeviceAddVo powerDeviceAddVo, BindingResult br) {
+    public Result<PowerDeviceEntity> deviceAdd(@Valid @RequestBody PowerDeviceAddVo powerDeviceAddVo, BindingResult br) {
         ValidUtils.paramValid(br);
 
         return controlPowerService.deviceAdd(powerDeviceAddVo);
@@ -142,14 +143,14 @@ public class ControlPowerController {
     /*
      * ================================================电源配置-数据库==============================================================
      */
-
-    @ApiOperation(value = "添加电源数据库配置信息（针对Bwant-IPM-08）")
-    @PostMapping(value = "/port/add")
-    public Result<Integer> portAdd(@Valid @RequestBody PowerConfigAddVo powerConfigAddVo, BindingResult br) {
-        ValidUtils.paramValid(br);
-
-        return controlPowerService.portAdd(powerConfigAddVo);
-    }
+//
+//    @ApiOperation(value = "添加电源数据库配置信息（针对Bwant-IPM-08）")
+//    @PostMapping(value = "/port/add")
+//    public Result<Integer> portAdd(@Valid @RequestBody PowerConfigAddVo powerConfigAddVo, BindingResult br) {
+//        ValidUtils.paramValid(br);
+//
+//        return controlPowerService.portAdd(powerConfigAddVo);
+//    }
 
     @ApiOperation(value = "修改电源数据库配置信息（针对Bwant-IPM-08）")
     @PostMapping(value = "/port/update")

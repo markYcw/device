@@ -4,6 +4,7 @@ import com.kedacom.common.model.Result;
 import com.kedacom.power.dto.UpdatePowerLanConfigDTO;
 import com.kedacom.power.entity.LanDevice;
 import com.kedacom.power.entity.PowerConfigEntity;
+import com.kedacom.power.entity.PowerDeviceEntity;
 import com.kedacom.power.model.PageRespVo;
 import com.kedacom.power.vo.*;
 
@@ -69,7 +70,7 @@ public interface ControlPowerService {
      * @author:zlf
      * @date:2021/5/27 11:15
      */
-    Result<Integer> deviceAdd(PowerDeviceAddVo powerDeviceAddVo);
+    Result<PowerDeviceEntity> deviceAdd(PowerDeviceAddVo powerDeviceAddVo);
 
     /**
      * @Description 修改电源设备

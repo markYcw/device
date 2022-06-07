@@ -178,7 +178,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/27 11:15
      */
     @Override
-    public Result<Integer> deviceAdd(PowerDeviceAddVo powerDeviceAddVo) {
+    public Result<PowerDeviceEntity> deviceAdd(PowerDeviceAddVo powerDeviceAddVo) {
         PowerDeviceEntity entity = null;
         PowerTypeEnum powerTypeEnum = PowerTypeEnum.valueOf(powerDeviceAddVo.getType());
         switch (powerTypeEnum) {
@@ -199,7 +199,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
 //        if (!org.springframework.util.StringUtils.isEmpty(entity.getDeviceSn())) {
 //            this.rkLogin(entity.getId());
 //        }
-        return Result.succeed(entity.getId());
+        return Result.succeed(powerDeviceMapper.selectById(entity.getId()));
     }
 
     /**
@@ -210,23 +210,18 @@ public class ControlPowerServiceImpl implements ControlPowerService {
                 .ip(powerDeviceAddVo.getIp())
                 .name(powerDeviceAddVo.getName())
                 .type(powerDeviceAddVo.getType())
+                .mac(powerDeviceAddVo.getMac())
+                .channels(powerDeviceAddVo.getChannels())
                 .build();
-        Result<List<PowerDeviceVo>> listResult = this.getDeviceDatas();
-        if (CollectionUtils.isNotEmpty(listResult.getData())) {
-            Optional<PowerDeviceVo> deviceVoOptional = listResult.getData().stream()
-                    .filter(a -> powerDeviceAddVo.getIp().equals(a.getIpAddr())).findAny();
-            if (deviceVoOptional.isPresent()) {
-                entity.setMac(deviceVoOptional.get().getMacAddr());
-                if (ObjectUtil.isNotNull(deviceVoOptional.get().getChannels())) {
-                    entity.setChannels(deviceVoOptional.get().getChannels());
-                }
-            }
-        }
         AssertBiz.OBJECT_NONE_NULL.notNull(entity.getMac(), KmResultCodeEnum.ERROR_OF_DEVICE_MAC_NOT_FOUND);
-        // 校验ip是否已存在
+        // 校验mac或者ip是否已存在
         LambdaQueryWrapper<PowerDeviceEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(PowerDeviceEntity::getMac, entity.getMac());
-        AssertBiz.OBJECT_NONE_NULL.isNull(powerDeviceMapper.selectOne(wrapper), KmResultCodeEnum.ERROR_OF_DEVICE_ALREADY_INUSE);
+        List<PowerDeviceEntity> entities = powerDeviceMapper.selectList(wrapper);
+        if (CollectionUtil.isNotEmpty(entities)) {
+            log.error("添加北望电源设备已存在：{}", entities.get(0).getMac());
+            throw new KmServiceException(KmResultCodeEnum.ERROR_OF_DEVICE_ALREADY_INUSE);
+        }
         return entity;
     }
 
@@ -304,7 +299,11 @@ public class ControlPowerServiceImpl implements ControlPowerService {
             // 校验mac地址是否重复
             LambdaQueryWrapper<PowerDeviceEntity> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(PowerDeviceEntity::getMac, powerDeviceEntity.getMac()).ne(PowerDeviceEntity::getId, vo.getId());
-            AssertBiz.OBJECT_NONE_NULL.isNull(powerDeviceMapper.selectOne(wrapper), KmResultCodeEnum.ERROR_OF_DEVICE_ALREADY_INUSE);
+            List<PowerDeviceEntity> entities = powerDeviceMapper.selectList(wrapper);
+            if (CollectionUtil.isNotEmpty(entities)) {
+                log.error("修改北望电源设备已存在：{}", entities.get(0).getMac());
+                throw new KmServiceException(KmResultCodeEnum.ERROR_OF_DEVICE_ALREADY_INUSE);
+            }
             powerDeviceEntity.setMac(vo.getMac());
         }
     }
@@ -519,7 +518,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
 
     @Override
     public Result updatePowerConfigByMac(UpdatePowerLanConfigDTO dto) {
-        if (!isValidPort(dto.getDesPort())){
+        if (!isValidPort(dto.getDesPort())) {
             return Result.failed("服务器端口格式错误");
         }
         Config build = Config.builder()

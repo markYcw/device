@@ -12,7 +12,7 @@ CREATE TABLE `km_power_config`
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE INDEX `port_unique_index` (`port`) USING BTREE COMMENT '监听端口号唯一索引'
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
+  AUTO_INCREMENT = 10
   CHARACTER SET = utf8
   COLLATE = utf8_general_ci COMMENT = '电源配置信息表'
   ROW_FORMAT = DYNAMIC;
@@ -43,7 +43,7 @@ CREATE TABLE `km_power_device`
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE INDEX `mac_ip_group_unique_index` (`mac`, `ip`) USING BTREE COMMENT '设备MAC地址IP地址组合唯一索引'
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
+  AUTO_INCREMENT = 10
   CHARACTER SET = utf8
   COLLATE = utf8_general_ci COMMENT = '电源设备信息表'
   ROW_FORMAT = DYNAMIC;
@@ -60,7 +60,7 @@ CREATE TABLE `km_power_type`
     `update_time` timestamp(0)                                           NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
+  AUTO_INCREMENT = 10
   CHARACTER SET = utf8
   COLLATE = utf8_general_ci COMMENT = '电源设备类型表'
   ROW_FORMAT = DYNAMIC;

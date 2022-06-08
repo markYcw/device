@@ -1,35 +1,3 @@
--- ----------------------------
--- Table structure for km_power_type
--- ----------------------------
-
-DROP TABLE IF EXISTS "km_power_type";
-
-CREATE SEQUENCE IF NOT EXISTS "km_power_type_id";
-CREATE TABLE "km_power_type"(
-"id" INT4 NOT NULL DEFAULT NEXTVAL('km_power_type_id'::REGCLASS) ,
-"dev_type" VARCHAR(50 CHAR) NOT NULL ,
-"create_time" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-"update_time" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-PRIMARY KEY ("id") 
-);
-COMMENT ON TABLE "km_power_type" IS '电源设备类型表';
-COMMENT ON COLUMN "km_power_type"."id" IS '电源设备类型数据库Id';
-COMMENT ON COLUMN "km_power_type"."dev_type" IS '电源设备类型';
-COMMENT ON COLUMN "km_power_type"."create_time" IS '创建时间';
-COMMENT ON COLUMN "km_power_type"."update_time" IS '更新时间';
-
--- ----------------------------
--- Records of km_power_type
--- ----------------------------
-
-INSERT INTO "km_power_type"VALUES (1, 'RK100', '2021-06-09 09:25:31', '2021-06-09 09:25:31');
-
-INSERT INTO "km_power_type"VALUES (2, 'Bwant-IPM-08', '2021-06-09 09:25:31', '2021-06-09 09:25:31');
-
--- ----------------------------
--- Table structure for km_power_config
--- ----------------------------
-
 DROP TABLE IF EXISTS "km_power_config";
 
 CREATE SEQUENCE IF NOT EXISTS "km_power_config_id";
@@ -87,4 +55,32 @@ COMMENT ON COLUMN "km_power_device"."port" IS '端口号';
 COMMENT ON COLUMN "km_power_device"."device_sn" IS 'RK100设备序列号';
 COMMENT ON COLUMN "km_power_device"."create_time" IS '创建时间';
 COMMENT ON COLUMN "km_power_device"."update_time" IS '更新时间';
+
+-- ----------------------------
+-- Table structure for km_power_type
+-- ----------------------------
+
+DROP TABLE IF EXISTS "km_power_type";
+
+CREATE SEQUENCE IF NOT EXISTS "km_power_type_id";
+CREATE TABLE "km_power_type"(
+"id" INT4 NOT NULL DEFAULT NEXTVAL('km_power_type_id'::REGCLASS) ,
+"dev_type" VARCHAR(50 CHAR) NOT NULL ,
+"create_time" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+"update_time" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+PRIMARY KEY ("id") 
+);
+COMMENT ON TABLE "km_power_type" IS '电源设备类型表';
+COMMENT ON COLUMN "km_power_type"."id" IS '电源设备类型数据库Id';
+COMMENT ON COLUMN "km_power_type"."dev_type" IS '电源设备类型';
+COMMENT ON COLUMN "km_power_type"."create_time" IS '创建时间';
+COMMENT ON COLUMN "km_power_type"."update_time" IS '更新时间';
+
+-- ----------------------------
+-- Records of km_power_type
+-- ----------------------------
+
+INSERT INTO "km_power_type"VALUES (1, 'RK100', '2021-06-09 09:25:31', '2021-06-09 09:25:31');
+
+INSERT INTO "km_power_type"VALUES (2, 'Bwant-IPM-08', '2021-06-09 09:25:31', '2021-06-09 09:25:31');
 

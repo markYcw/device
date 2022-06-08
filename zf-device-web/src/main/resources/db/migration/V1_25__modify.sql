@@ -2,34 +2,6 @@ use bmp_new_udms;
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
--- ----------------------------
--- Table structure for km_power_type
--- ----------------------------
-DROP TABLE IF EXISTS `km_power_type`;
-CREATE TABLE `km_power_type`
-(
-    `id`          int(11)                                                NOT NULL AUTO_INCREMENT COMMENT '电源设备类型数据库Id',
-    `dev_type`    varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '电源设备类型',
-    `create_time` timestamp(0)                                           NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-    `update_time` timestamp(0)                                           NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 3
-  CHARACTER SET = utf8
-  COLLATE = utf8_general_ci COMMENT = '电源设备类型表'
-  ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of km_power_type
--- ----------------------------
-INSERT INTO `km_power_type`
-VALUES (1, 'RK100', '2021-06-09 09:25:31', '2021-06-09 09:25:31');
-INSERT INTO `km_power_type`
-VALUES (2, 'Bwant-IPM-08', '2021-06-09 09:25:31', '2021-06-09 09:25:31');
-
--- ----------------------------
--- Table structure for km_power_config
--- ----------------------------
 DROP TABLE IF EXISTS `km_power_config`;
 CREATE TABLE `km_power_config`
 (
@@ -40,7 +12,7 @@ CREATE TABLE `km_power_config`
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE INDEX `port_unique_index` (`port`) USING BTREE COMMENT '监听端口号唯一索引'
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 3
+  AUTO_INCREMENT = 1
   CHARACTER SET = utf8
   COLLATE = utf8_general_ci COMMENT = '电源配置信息表'
   ROW_FORMAT = DYNAMIC;
@@ -71,9 +43,35 @@ CREATE TABLE `km_power_device`
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE INDEX `mac_ip_group_unique_index` (`mac`, `ip`) USING BTREE COMMENT '设备MAC地址IP地址组合唯一索引'
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 16
+  AUTO_INCREMENT = 1
   CHARACTER SET = utf8
   COLLATE = utf8_general_ci COMMENT = '电源设备信息表'
   ROW_FORMAT = DYNAMIC;
 
+-- ----------------------------
+-- Table structure for km_power_type
+-- ----------------------------
+DROP TABLE IF EXISTS `km_power_type`;
+CREATE TABLE `km_power_type`
+(
+    `id`          int(11)                                                NOT NULL AUTO_INCREMENT COMMENT '电源设备类型数据库Id',
+    `dev_type`    varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '电源设备类型',
+    `create_time` timestamp(0)                                           NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+    `update_time` timestamp(0)                                           NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  CHARACTER SET = utf8
+  COLLATE = utf8_general_ci COMMENT = '电源设备类型表'
+  ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of km_power_type
+-- ----------------------------
+INSERT INTO `km_power_type`
+VALUES (1, 'RK100', '2021-06-09 09:25:31', '2021-06-09 09:25:31');
+INSERT INTO `km_power_type`
+VALUES (2, 'Bwant-IPM-08', '2021-06-09 09:25:31', '2021-06-09 09:25:31');
+
 SET FOREIGN_KEY_CHECKS = 1;
+

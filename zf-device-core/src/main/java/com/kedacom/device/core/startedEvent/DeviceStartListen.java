@@ -20,7 +20,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @auther hxj
+ * @author hexijian
  * @date 2021/5/20 09:51
  */
 @Component

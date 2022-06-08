@@ -183,7 +183,7 @@ public class DeviceAdvice {
     @ExceptionHandler({PowerServiceException.class})
     public Result handleException(PowerServiceException e) {
         log.error("电源异常捕获:{}", e.getMessage());
-        return Result.failed(e.getMessage());
+        return Result.failed(e.getCode(), e.getMessage());
     }
 
     /**

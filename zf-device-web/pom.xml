@@ -76,11 +76,23 @@
             <groupId>com.kedacom.zf</groupId>
             <artifactId>zf-doc-spring-boot-starter</artifactId>
             <version>1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.kedacom.zf</groupId>
+                    <artifactId>zf-commons</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.kedacom</groupId>
             <artifactId>zf-device-common</artifactId>
             <version>1.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.kedacom.zf</groupId>
+                    <artifactId>zf-commons</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

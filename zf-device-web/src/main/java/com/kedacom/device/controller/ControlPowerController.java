@@ -143,14 +143,6 @@ public class ControlPowerController {
     /*
      * ================================================电源配置-数据库==============================================================
      */
-//
-//    @ApiOperation(value = "添加电源数据库配置信息（针对Bwant-IPM-08）")
-//    @PostMapping(value = "/port/add")
-//    public Result<Integer> portAdd(@Valid @RequestBody PowerConfigAddVo powerConfigAddVo, BindingResult br) {
-//        ValidUtils.paramValid(br);
-//
-//        return controlPowerService.portAdd(powerConfigAddVo);
-//    }
 
     @ApiOperation(value = "修改电源数据库配置信息（针对Bwant-IPM-08）")
     @PostMapping(value = "/port/update")
@@ -158,14 +150,6 @@ public class ControlPowerController {
         ValidUtils.paramValid(br);
 
         return controlPowerService.portUpdate(powerConfigUpdateVo);
-    }
-
-    @ApiOperation(value = "删除电源数据库配置信息（针对Bwant-IPM-08）")
-    @PostMapping(value = "/port/delete")
-    public Result<Boolean> portDelete(@Valid @RequestBody PowerPortVo powerPortVo, BindingResult br) {
-        ValidUtils.paramValid(br);
-
-        return controlPowerService.portDelete(powerPortVo);
     }
 
     @ApiOperation(value = "查询电源数据库配置信息（针对Bwant-IPM-08）")

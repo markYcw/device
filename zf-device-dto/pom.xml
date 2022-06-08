@@ -31,6 +31,12 @@
             <artifactId>mybatis-plus-generator</artifactId>
             <version>3.3.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.kedacom.zf</groupId>
+            <artifactId>zf-commons</artifactId>
+            <version>${zf-commons.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

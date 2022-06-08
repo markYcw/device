@@ -19,6 +19,12 @@
             <groupId>com.kedacom.zf</groupId>
             <artifactId>zf-system-api</artifactId>
             <version>1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.kedacom.zf</groupId>
+                    <artifactId>zf-commons</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.kedacom</groupId>
@@ -53,6 +59,12 @@
             <groupId>com.kedacom.zf</groupId>
             <artifactId>zf-serviceinfo-spring-boot-starter</artifactId>
             <version>1.0.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.kedacom.zf</groupId>
+                    <artifactId>zf-commons</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -76,6 +88,12 @@
             <groupId>com.kedacom.zf</groupId>
             <artifactId>zf-msgmanager-api</artifactId>
             <version>1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.kedacom.zf</groupId>
+                    <artifactId>zf-commons</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>

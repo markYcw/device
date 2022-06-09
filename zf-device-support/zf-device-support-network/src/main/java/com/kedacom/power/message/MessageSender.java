@@ -175,7 +175,7 @@ public class MessageSender {
 
     private void sendForHeartBurn(RequestParam param) throws IOException {
 
-        log.info("开始发送心跳【mac：{}】", param.getMac());
+        log.debug("开始发送心跳【mac：{}】", param.getMac());
 
         String mac = param.getMac();
         if (null != mac && !"".equals(mac)) {

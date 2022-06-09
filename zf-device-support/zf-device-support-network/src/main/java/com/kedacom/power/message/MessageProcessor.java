@@ -257,7 +257,7 @@ public class MessageProcessor {
             }
 
         }
-        log.info("获取心跳指令回复【mac：{}, type：{}】", mac, deviceInfo.getType());
+        log.debug("获取心跳指令回复【mac：{}, type：{}】", mac, deviceInfo.getType());
         MessageCache.getInstance().setMac(param.getIp(), mac);
         MessageCache.getInstance().setDevice(mac, deviceInfo);
 

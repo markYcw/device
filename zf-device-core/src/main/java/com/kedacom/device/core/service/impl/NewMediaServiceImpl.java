@@ -19,6 +19,7 @@ import com.kedacom.device.core.convert.UmsGroupConvert;
 import com.kedacom.device.core.entity.GroupInfoEntity;
 import com.kedacom.device.core.entity.SubDeviceInfoEntity;
 import com.kedacom.device.core.enums.DeviceModelType;
+import com.kedacom.device.core.exception.CuException;
 import com.kedacom.device.core.exception.NewMediaException;
 import com.kedacom.device.core.mapper.NewMediaMapper;
 import com.kedacom.device.core.notify.nm.NewMediaDeviceCache;
@@ -175,6 +176,14 @@ public class NewMediaServiceImpl implements NewMediaService {
         }
     }
 
+    public boolean checkDevice(){
+        if (nmDeviceStatusPoll.get(DevTypeConstant.updateRecordKey) == null) {
+            log.error("获取新媒体设备信息失败,设备未加载完成{}");
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public BaseResult<String> insertUmsDevice(UmsDeviceInfoAddRequestDto requestDto) {
 
@@ -265,6 +274,8 @@ public class NewMediaServiceImpl implements NewMediaService {
             log.error("=============第一次加载新媒体设备失败尝试第二次加载");
             CompletableFuture.runAsync(() -> getDevice(entity));
         }
+        //设备状态池设置设备加载完成状态
+        nmDeviceStatusPoll.put(1,1);
     }
 
     public Integer getDevice(NewMediaEntity entity) {
@@ -612,6 +623,9 @@ public class NewMediaServiceImpl implements NewMediaService {
         if (!check()) {
             return null;
         }
+        if (!checkDevice()) {
+            throw new NewMediaException(DeviceErrorEnum.GET_NM_GROUP_ERROR);
+        }
         List<NMDevice> devices = NewMediaDeviceCache.getInstance().getDevices();
         Stream<NMDevice> stream = devices.stream();
 
@@ -681,6 +695,9 @@ public class NewMediaServiceImpl implements NewMediaService {
         if (!check()) {
             return null;
         }
+        if (!checkDevice()) {
+            throw new NewMediaException(DeviceErrorEnum.GET_NM_GROUP_ERROR);
+        }
         String groupId = requestDto.getGroupId();
         if (StringUtils.isEmpty(groupId)) {
             return null;
@@ -700,6 +717,9 @@ public class NewMediaServiceImpl implements NewMediaService {
         log.info("根据国标id查询设备信息入参 : [{}]", gbIds);
         if (!check()) {
             return null;
+        }
+        if (!checkDevice()) {
+            throw new NewMediaException(DeviceErrorEnum.GET_NM_GROUP_ERROR);
         }
         List<NMDevice> list = NewMediaDeviceCache.getInstance().getDeviceByGroupId(gbIds);
         if (CollectionUtil.isEmpty(list)) {

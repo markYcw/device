@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>zf-device-support-mock</artifactId>
-    <version>1.0.6</version>
+    <version>1.1.0</version>
     <description>项目mock测试模块</description>
 
 
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.kedacom</groupId>
             <artifactId>zf-device-acl</artifactId>
-            <version>1.0.6</version>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
 

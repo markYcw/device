@@ -1,6 +1,10 @@
 package com.kedacom.device.core.startedEvent;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.github.rholder.retry.Retryer;
+import com.github.rholder.retry.RetryerBuilder;
+import com.github.rholder.retry.StopStrategies;
+import com.github.rholder.retry.WaitStrategies;
 import com.kedacom.core.ConnectorListener;
 import com.kedacom.core.ConnectorListenerManager;
 import com.kedacom.device.core.mapper.PowerConfigMapper;
@@ -23,7 +27,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Objects;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -65,6 +68,17 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
 
     private final static String POWER_TCP_START = "1";
 
+    static Retryer<Boolean> retryer;
+
+    static {
+        retryer = RetryerBuilder.<Boolean>newBuilder()
+                .retryIfResult(result -> Objects.equals(false, result))
+                .retryIfExceptionOfType(Exception.class)
+                .withWaitStrategy(WaitStrategies.fixedWait(2, TimeUnit.MINUTES))
+                .withStopStrategy(StopStrategies.stopAfterAttempt(3))
+                .build();
+    }
+
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
 
@@ -92,16 +106,19 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
     }
 
     public void startPowerTcpServer() {
-        PowerConfigMapper powerConfigMapper = ContextUtils.getBean(PowerConfigMapper.class);
-        ControlPowerService controlPowerService = ContextUtils.getBean(ControlPowerService.class);
-        PowerConfigEntity powerConfigEntity = powerConfigMapper.selectOne(new LambdaQueryWrapper<>());
         try {
-            log.info("B_WANT电源配置启动TCP端口号为：{}", powerConfigEntity.getPort());
-            ControlPower.getInstance().stopServer();
-            controlPowerService.changeBwantAllDeviceStatusDown();
-            ControlPower.getInstance().startServer(powerConfigEntity.getPort(), new ControlPowerStatusCallback());
+            PowerConfigMapper powerConfigMapper = ContextUtils.getBean(PowerConfigMapper.class);
+            ControlPowerService controlPowerService = ContextUtils.getBean(ControlPowerService.class);
+            PowerConfigEntity powerConfigEntity = powerConfigMapper.selectOne(new LambdaQueryWrapper<>());
+            retryer.call(() -> {
+                log.info("B_WANT电源配置启动TCP端口号为：{}", powerConfigEntity.getPort());
+                ControlPower.getInstance().stopServer();
+                controlPowerService.changeBwantAllDeviceStatusDown();
+                ControlPower.getInstance().startServer(powerConfigEntity.getPort(), new ControlPowerStatusCallback());
+                return true;
+            });
         } catch (Exception e) {
-            log.error("开启B_WANT，tcp连接端口失败，case：" + e, e);
+            log.error("开启B_WANT，tcp连接端口最终失败，case：" + e, e);
         }
     }
 }

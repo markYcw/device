@@ -10,14 +10,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>zf-device-acl</artifactId>
-    <version>1.0.6</version>
+    <version>1.1.0</version>
     <description>设备支撑抽象模块</description>
 
     <dependencies>
         <dependency>
             <groupId>com.kedacom</groupId>
             <artifactId>zf-device-dto</artifactId>
-            <version>1.0.6</version>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
 

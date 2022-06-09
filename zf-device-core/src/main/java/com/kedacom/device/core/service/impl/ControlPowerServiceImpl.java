@@ -17,7 +17,6 @@ import com.kedacom.device.core.convert.PowerPortConvert;
 import com.kedacom.device.core.enums.AssertBiz;
 import com.kedacom.device.core.enums.PowerTypeEnum;
 import com.kedacom.device.core.exception.PowerServiceException;
-import com.kedacom.device.core.exception.PowerServiceException;
 import com.kedacom.device.core.mapper.PowerConfigMapper;
 import com.kedacom.device.core.mapper.PowerDeviceMapper;
 import com.kedacom.device.core.mapper.PowerTypeMapper;
@@ -32,6 +31,7 @@ import com.kedacom.power.model.PageRespVo;
 import com.kedacom.power.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -68,6 +68,9 @@ public class ControlPowerServiceImpl implements ControlPowerService {
 
     @Autowired
     private ControlPowerConvert convert;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Override
     public Result<PowerDeviceEntity> addBwPower(BwPowerDeviceAddVo powerDeviceAddVo) {
@@ -621,6 +624,14 @@ public class ControlPowerServiceImpl implements ControlPowerService {
             powerDeviceEntity.setState(state);
             if (powerDeviceEntity.getIp().equals(ip)) {
                 powerDeviceMapper.updateById(powerDeviceEntity);
+                List<Integer> ids = new ArrayList<>();
+                ids.add(powerDeviceEntity.getId());
+                PowerStateVO vo = PowerStateVO.builder()
+                        .ids(ids)
+                        .state(state)
+                        .build();
+                log.info("修改电源设备状态，发布消息：{}", JSON.toJSONString(vo));
+                redisTemplate.convertAndSend("powerState", JSON.toJSONString(vo));
             }
             return true;
         }
@@ -660,6 +671,12 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         log.info("TCP服务关闭，所有电源设备状态置为离线，name：{}", powerDeviceEntities.stream().map(PowerDeviceEntity::getName).collect(Collectors.toList()));
         List<Integer> ids = powerDeviceEntities.stream().map(PowerDeviceEntity::getId).collect(Collectors.toList());
         powerDeviceMapper.updateStatus(ids, 0);
+        PowerStateVO vo = PowerStateVO.builder()
+                .ids(ids)
+                .state(0)
+                .build();
+        log.info("TCP服务关闭，所有电源设备状态置为离线，发布消息：{}", JSON.toJSONString(vo));
+        redisTemplate.convertAndSend("powerState", JSON.toJSONString(vo));
     }
 
     /**

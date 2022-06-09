@@ -1,13 +1,20 @@
 package com.kedacom.device.core.startedEvent;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.kedacom.core.ConnectorListener;
 import com.kedacom.core.ConnectorListenerManager;
+import com.kedacom.device.core.mapper.PowerConfigMapper;
 import com.kedacom.device.core.notify.stragegy.NotifyFactory;
 import com.kedacom.device.core.service.ControlPowerService;
 import com.kedacom.device.core.service.CuService;
 import com.kedacom.device.core.service.NewMediaService;
+import com.kedacom.device.core.task.ControlPowerStatusCallback;
+import com.kedacom.device.core.utils.ContextUtils;
 import com.kedacom.device.core.utils.CuUrlFactory;
 import com.kedacom.device.core.utils.McuUrlFactory;
+import com.kedacom.power.ControlPower;
+import com.kedacom.power.entity.PowerConfigEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -16,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Objects;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -23,6 +31,7 @@ import java.util.concurrent.TimeUnit;
  * @author hexijian
  * @date 2021/5/20 09:51
  */
+@Slf4j
 @Component
 public class DeviceStartListen implements ApplicationListener<ApplicationStartedEvent> {
 
@@ -59,7 +68,6 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
 
-
         //初始化通知工厂
         NotifyFactory.init();
         //mcu访问地址初始化
@@ -77,10 +85,23 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
             ConnectorListenerManager.getInstance().register(connectorListener);
         }
 
-        // 启动电源的tcp连接
+        // 启动电源的tcp连接，延迟是为了方便power-server能知晓电源状态变更后调用device-server的借口
         if (Objects.equals(POWER_TCP_START, powerTcp)) {
-            controlPowerService.powerStart(1);
+            poolExecutor.schedule(this::startPowerTcpServer, 2, TimeUnit.MINUTES);
         }
     }
 
+    public void startPowerTcpServer() {
+        PowerConfigMapper powerConfigMapper = ContextUtils.getBean(PowerConfigMapper.class);
+        ControlPowerService controlPowerService = ContextUtils.getBean(ControlPowerService.class);
+        PowerConfigEntity powerConfigEntity = powerConfigMapper.selectOne(new LambdaQueryWrapper<>());
+        try {
+            log.info("B_WANT电源配置启动TCP端口号为：{}", powerConfigEntity.getPort());
+            ControlPower.getInstance().stopServer();
+            controlPowerService.changeBwantAllDeviceStatusDown();
+            ControlPower.getInstance().startServer(powerConfigEntity.getPort(), new ControlPowerStatusCallback());
+        } catch (Exception e) {
+            log.error("开启B_WANT，tcp连接端口失败，case：" + e, e);
+        }
+    }
 }

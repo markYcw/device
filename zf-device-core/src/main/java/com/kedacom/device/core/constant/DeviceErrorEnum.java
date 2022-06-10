@@ -223,6 +223,7 @@ public enum DeviceErrorEnum {
     NM_GET_AUDIO_CAP_FAILED(10002, "获取音频能力集失败"),
     NM_GET_AUDIO_STATE_FAILED(10003, "获取SVR当前语音激励状态"),
     NM_GET_BURN_STATE_FAILED(10004, "获取SVR当前刻录状态失败"),
+    GET_NM_GROUP_ERROR(10005,"获取新媒体设备信息失败，设备未加载完成请稍后重试"),
 
 
     ;

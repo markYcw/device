@@ -333,6 +333,8 @@ public class NewMediaServiceImpl implements NewMediaService {
             if (entity.getSsid() == null) {
                 return;
             }
+            //去除设备锁
+            nmDeviceStatusPoll.remove(1);
             //去除底层cache
             NewMediaDeviceCache.getInstance().clear();
             //去除心跳定时任务

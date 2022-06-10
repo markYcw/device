@@ -89,6 +89,8 @@ public class ControlPower {
         long delay = 20 * 1000;
         long period = 10 * 1000;
         timer = new Timer();
+        // task-所要安排的任务 time-首次执行任务的时间 period-执行一次task的时间间隔，单位毫秒
+        // 第一次心跳在tcp启动20s后，之后每个10s执行一次定时任务
         timer.scheduleAtFixedRate(messageTimer, delay, period);
 
         log.info("server start with port {}", port);

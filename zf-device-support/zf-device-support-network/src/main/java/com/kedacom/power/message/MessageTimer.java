@@ -29,7 +29,7 @@ public class MessageTimer extends TimerTask {
     @Override
     public void run() {
         try {
-            log.info("channel:{}, device:{}", channelMap.size(), deviceMap.size());
+            log.info("channel:{}, device:{}", channelMap, deviceMap);
 
             if (null != channelMap && channelMap.size() > 0) {
 

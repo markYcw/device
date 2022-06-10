@@ -257,7 +257,7 @@ public class MessageProcessor {
             }
 
         }
-        log.debug("获取心跳指令回复【mac：{}, type：{}】", mac, deviceInfo.getType());
+        log.info("获取心跳指令回复【mac：{}, type：{}】", mac, deviceInfo.getType());
         MessageCache.getInstance().setMac(param.getIp(), mac);
         MessageCache.getInstance().setDevice(mac, deviceInfo);
 
@@ -279,7 +279,7 @@ public class MessageProcessor {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    channelMap.remove(mac);
+                    channelMap.remove(finalDeviceInfo.getIpAddr());
                 }
                 if (null != callback) {
                     Device device = new Device();

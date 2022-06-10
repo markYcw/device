@@ -1,5 +1,7 @@
 package com.kedacom.power.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Map;
 
 /**
@@ -20,6 +22,7 @@ public class DeviceInfo extends Device {
 
     private Map<Integer, Integer> channelStatus;
 
+    @ApiModelProperty(value = "1：8通道，2：4通道")
     private int type;
 
     private boolean operationResult;

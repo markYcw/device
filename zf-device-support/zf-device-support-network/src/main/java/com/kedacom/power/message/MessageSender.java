@@ -260,7 +260,6 @@ public class MessageSender {
         if (null == deviceInfo) {
             return;
         }
-        log.info("==================channelMap{}",channelMap);
         SocketChannel socketChannel = channelMap.get(deviceInfo.getIpAddr());
         if (null != socketChannel && socketChannel.isConnected()) {
             socketChannel.write(buffer);

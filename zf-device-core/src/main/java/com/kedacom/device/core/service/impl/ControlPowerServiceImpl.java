@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -488,6 +489,10 @@ public class ControlPowerServiceImpl implements ControlPowerService {
                 .devGwIp(dto.getDevGatewayIp()).build();
         int config = configPower.config(build, dto.getMac());
         if (config == 0) {
+            LambdaUpdateWrapper<PowerDeviceEntity> wrapper = new LambdaUpdateWrapper<>();
+            wrapper.eq(PowerDeviceEntity::getMac, dto.getMac())
+                    .set(PowerDeviceEntity::getIp, dto.getIp());
+            powerDeviceMapper.update(null, wrapper);
             return Result.succeed();
         }
         return Result.failed("修改电源配置失败");

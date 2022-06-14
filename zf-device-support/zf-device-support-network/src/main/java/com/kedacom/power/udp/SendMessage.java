@@ -22,6 +22,8 @@ public class SendMessage {
     public void send() {
         try {
             DatagramChannel channel = DatagramChannel.open();
+            // Linux下UDP广播java.net.SocketException: Permission denied，打开客户端将数据报发送到特定的广播地址
+            channel.socket().setBroadcast(true);
             buffer.flip();
             InetSocketAddress inetSocketAddress = new InetSocketAddress(NetConstant.SEND_IP, NetConstant.SEND_PORT);
             for (int i = 0; i < 3; i++) {

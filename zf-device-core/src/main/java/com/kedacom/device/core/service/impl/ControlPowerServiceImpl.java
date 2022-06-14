@@ -435,6 +435,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
     @Override
     public List<LanDevice> searchDevices() throws Exception {
         Set<Device> devices = configPower.searchDevices();
+        log.info("局域网搜索：{}",devices);
         Set<LanDevice> lanDevices = convert.convertDevices(devices);
         for (LanDevice lanDevice : lanDevices) {
             LambdaQueryWrapper<PowerDeviceEntity> wrapper = new LambdaQueryWrapper<>();

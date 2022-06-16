@@ -37,11 +37,11 @@ public class BwPowerDeviceAddVo implements Serializable {
     @NotBlank(message = "设备MAC地址不能为空")
     @Pattern(regexp = "^[a-fA-F0-9]{2}(-[a-fA-F0-9]{2}){5}$",
             message = "设备MAC地址格式错误")
-    @ApiModelProperty(value = "设备MAC地址")
+    @ApiModelProperty(value = "设备MAC地址", required = true)
     private String mac;
 
     @NotNull(message = "电源通道数量不能为空")
-    @ApiModelProperty(value = "电源通道数量")
+    @ApiModelProperty(value = "电源通道数量", required = true)
     private Integer channels;
 
 }

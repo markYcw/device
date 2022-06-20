@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>zf-device-support-network</artifactId>
+    <version>1.1.0</version>
     <description>网络支撑模块</description>
 
 
@@ -18,7 +19,7 @@
         <dependency>
             <groupId>com.kedacom</groupId>
             <artifactId>zf-device-acl</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
 
         <dependency>

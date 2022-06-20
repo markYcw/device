@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <artifactId>zf-device-web</artifactId>
     <description>项目web统一访问模块</description>
 
@@ -21,7 +21,7 @@
 
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
-        <version-flag>Release</version-flag>
+        <version-flag>Alpha</version-flag>
     </properties>
 
     <dependencies>
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>com.kedacom</groupId>
             <artifactId>zf-device-core</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -76,11 +76,23 @@
             <groupId>com.kedacom.zf</groupId>
             <artifactId>zf-doc-spring-boot-starter</artifactId>
             <version>1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.kedacom.zf</groupId>
+                    <artifactId>zf-commons</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.kedacom</groupId>
             <artifactId>zf-device-common</artifactId>
             <version>1.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.kedacom.zf</groupId>
+                    <artifactId>zf-commons</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

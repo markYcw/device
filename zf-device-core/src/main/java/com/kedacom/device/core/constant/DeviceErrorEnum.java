@@ -217,6 +217,14 @@ public enum DeviceErrorEnum {
     SCHEDULE_SET_MEDIA_FAILED(9008, "设置调度组媒体源失败"),
     SCHEDULE_PTZ_CONTROLLER(9009, "调度组PTZ控制失败"),
 
+    //新媒体相关错误码
+    NM_LOGOUT_FAILED(10000, "登出新媒体失败"),
+    NM_SEND_ORDER_FAILED(10001, "发送SVR宏指令失败"),
+    NM_GET_AUDIO_CAP_FAILED(10002, "获取音频能力集失败"),
+    NM_GET_AUDIO_STATE_FAILED(10003, "获取SVR当前语音激励状态"),
+    NM_GET_BURN_STATE_FAILED(10004, "获取SVR当前刻录状态失败"),
+    GET_NM_GROUP_ERROR(10005,"获取新媒体设备信息失败，设备未加载完成请稍后重试"),
+
 
     ;
 

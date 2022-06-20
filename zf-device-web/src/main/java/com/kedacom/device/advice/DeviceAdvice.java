@@ -1,6 +1,7 @@
 package com.kedacom.device.advice;
 
 import com.kedacom.BaseResult;
+import com.kedacom.common.model.Result;
 import com.kedacom.device.common.exception.ParamException;
 import com.kedacom.device.core.constant.DeviceErrorEnum;
 import com.kedacom.device.core.exception.*;
@@ -122,7 +123,7 @@ public class DeviceAdvice {
     @ExceptionHandler({MpException.class})
     public BaseResult handleException(MpException e) {
         log.error("mcu异常捕获:{}", e.getMessage());
-        return BaseResult.failed(e.getCode(),e.getMessage());
+        return BaseResult.failed(e.getCode(), e.getMessage());
     }
 
     /**
@@ -135,7 +136,7 @@ public class DeviceAdvice {
     @ExceptionHandler({SvrException.class})
     public BaseResult handleException(SvrException e) {
         log.error("svr异常捕获:{}", e.getMessage());
-        return BaseResult.failed(e.getCode(),e.getMessage());
+        return BaseResult.failed(e.getCode(), e.getMessage());
     }
 
     /**
@@ -148,7 +149,7 @@ public class DeviceAdvice {
     @ExceptionHandler({VrsException.class})
     public BaseResult handleException(VrsException e) {
         log.error("vrs异常捕获:{}", e.getMessage());
-        return BaseResult.failed(e.getCode(),e.getMessage());
+        return BaseResult.failed(e.getCode(), e.getMessage());
     }
 
 
@@ -169,7 +170,20 @@ public class DeviceAdvice {
     @ExceptionHandler({CuException.class})
     public BaseResult handleException(CuException e) {
         log.error("cu异常捕获:{}", e.getMessage());
-        return BaseResult.failed(e.getCode(),e.getMessage());
+        return BaseResult.failed(e.getCode(), e.getMessage());
+    }
+
+    /**
+     * 电源异常捕获,为了适配基础平台的电源控制系统，这里返回Result
+     *
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler({PowerServiceException.class})
+    public Result handleException(PowerServiceException e) {
+        log.error("电源异常捕获:{}", e.getMessage());
+        return Result.failed(e.getCode(), e.getMessage());
     }
 
     /**

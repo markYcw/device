@@ -1,5 +1,6 @@
 package com.kedacom.streamMedia.response;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -49,6 +50,7 @@ public class GetAudioCapVO implements Serializable {
 
     @ApiModelProperty("音频输入列表 0:SVR_AUD_INTF_MACIN 1:SVR_AUD_INTF_LINEIN 2:SVR_AUD_INTF_JACKIN 3:SVR_AUD_INTF_DMICIN 4:SVR_AUD_INTF_DVIIN 5:SVR_AUD_INTF_ATBOXIN " +
             "6:SVR_AUD_INTF_LOCAL_NETIN 7:SVR_AUD_INTF_REM_NETIN")
+    @JSONField(name = "audIns")
     private List<Integer> audIn;
 
 

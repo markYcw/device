@@ -132,7 +132,7 @@ public class HandleResponseUtil {
         if (ObjectUtil.notEqual(res.getCode(), DeviceConstants.SUCCESS)) {
             if (StrUtil.isNotBlank(mcuErrCode.matchErrMsg(res.getCode()))) {
                 log.error(str, res.getCode(), errorEnum.getCode(), mcuErrCode.matchErrMsg(res.getCode()));
-                throw new MpException(errorEnum.getCode(), mcuErrCode.matchErrMsg(res.getCode()));
+                throw new MpException(res.getCode(), mcuErrCode.matchErrMsg(res.getCode()));
             } else {
                 log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
                 throw new MpException(errorEnum.getCode(), errorEnum.getMsg());

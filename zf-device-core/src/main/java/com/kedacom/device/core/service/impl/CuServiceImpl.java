@@ -12,6 +12,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.kedacom.BasePage;
 import com.kedacom.BaseResult;
 import com.kedacom.common.constants.DevTypeConstant;
+import com.kedacom.common.model.Result;
 import com.kedacom.cu.dto.*;
 import com.kedacom.cu.entity.CuEntity;
 import com.kedacom.cu.pojo.DeviceSubscribe;
@@ -39,6 +40,7 @@ import com.kedacom.device.cu.CuResponse;
 import com.kedacom.device.cu.request.CuLoginRequest;
 import com.kedacom.device.cu.response.CuLoginResponse;
 import com.kedacom.exception.KMException;
+import com.kedacom.km.api.DevApi;
 import com.kedacom.util.NumGen;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +102,9 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
 
     @Autowired
     private LogUtil logUtil;
+
+    @Resource
+    private DevApi cuApi;
 
     private final static String modelName = "device";
 
@@ -1252,6 +1257,33 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
         PuIdByOneVo vo = new PuIdByOneVo();
         vo.setPuId(device.getPuId());
         return BaseResult.succeed("根据平台1.0PuId获取平台2.0puId成功", vo);
+    }
+
+    @Override
+    public BaseResult<String> asyList() {
+        Result<List<com.kedacom.km.vo.DevEntityVo>> result = cuApi.cuList();
+        List<com.kedacom.km.vo.DevEntityVo> list = result.getData();
+        Iterator<com.kedacom.km.vo.DevEntityVo> iterator = list.iterator();
+        while (iterator.hasNext()){
+            com.kedacom.km.vo.DevEntityVo next = iterator.next();
+            CuEntity entity = new CuEntity();
+            entity.setName(next.getName());
+            entity.setIp(next.getIp());
+            entity.setPort(next.getPort());
+            entity.setUsername(next.getUsername());
+            entity.setPassword(next.getPassword());
+            entity.setType(9);
+            cuMapper.insert(entity);
+        }
+        return BaseResult.succeed("同步数据成功");
+    }
+
+    @Override
+    public BaseResult<DevEntityVo> findName(CuByNameDto dto) {
+        log.info("===============跟据名称搜索CU接口入参CuByNameDto:{}",dto);
+        DevEntityVo vo = getDevEntityVoByName(dto.getKmId(), dto.getName());
+        vo = this.removeEmptySortGroup(vo);
+        return BaseResult.succeed("根据名称查询成功",vo);
     }
 
     @Override

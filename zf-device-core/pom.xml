@@ -31,6 +31,12 @@
             <groupId>com.kedacom.zf</groupId>
             <artifactId>zf-km-api</artifactId>
             <version>4.1.6</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.kedacom.zf</groupId>
+                    <artifactId>zf-commons</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

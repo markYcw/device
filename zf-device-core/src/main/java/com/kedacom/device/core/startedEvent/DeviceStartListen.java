@@ -1,12 +1,15 @@
 package com.kedacom.device.core.startedEvent;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.github.rholder.retry.Retryer;
+import com.github.rholder.retry.RetryerBuilder;
+import com.github.rholder.retry.StopStrategies;
+import com.github.rholder.retry.WaitStrategies;
 import com.kedacom.core.ConnectorListener;
 import com.kedacom.core.ConnectorListenerManager;
+import com.kedacom.device.core.mapper.PowerConfigMapper;
 import com.kedacom.device.core.notify.stragegy.NotifyFactory;
-import com.kedacom.device.core.service.CuService;
-import com.kedacom.device.core.service.DataService;
-import com.kedacom.device.core.service.SvrService;
-import com.kedacom.device.core.service.NewMediaService;
+import com.kedacom.device.core.service.*;
 import com.kedacom.device.core.task.ControlPowerStatusCallback;
 import com.kedacom.device.core.utils.ContextUtils;
 import com.kedacom.device.core.utils.CuUrlFactory;
@@ -14,6 +17,7 @@ import com.kedacom.device.core.utils.McuUrlFactory;
 import com.kedacom.power.ControlPower;
 import com.kedacom.power.entity.PowerConfigEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -47,6 +51,12 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
 
     @Autowired
     private NewMediaService newMediaService;
+
+    @Autowired
+    private DataService dataService;
+
+    @Autowired
+    private SvrService svrService;
 
     @Autowired
     private ControlPowerService controlPowerService;

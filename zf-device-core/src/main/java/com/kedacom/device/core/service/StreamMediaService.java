@@ -84,4 +84,6 @@ public interface StreamMediaService {
 
     QueryMeetRecTaskVO queryMeetRecTask(QueryMeetRecTaskDTO dto);
 
+    Boolean deleteMeetRec(DeleteMeetRecDTO dto);
+
 }

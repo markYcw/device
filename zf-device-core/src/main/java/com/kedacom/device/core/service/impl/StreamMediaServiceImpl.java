@@ -799,4 +799,26 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         responseUtil.handleSMSRes(error, DeviceErrorEnum.MEET_REC_KEEP_ALIVE_FAILED, response);
         return response.acquireData(QueryMeetRecTaskVO.class);
     }
+
+    @Override
+    public Boolean deleteMeetRec(DeleteMeetRecDTO request) {
+        log.info("删除会议记录入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        DeleteMeetRecRequest recRequest = streamMediaConvert.covertDeleteMeetRecRequest(request);
+        recRequest.setAccountToken("123");
+        recRequest.setRequestId("321321");
+        recRequest.setSsid(ssid);
+        log.info("删除会议记录交互参数:{}", recRequest);
+        DeleteMeetRecResponse response = client.deleteMeetRec(recRequest);
+        log.info("删除会议记录应答信息:{}", response);
+        String error = "删除会议记录失败:{},{},{}";
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.MEET_REC_KEEP_ALIVE_FAILED, response);
+        return true;
+    }
 }

@@ -260,4 +260,6 @@ public interface StreamMediaClient {
 
     QueryMeetRecTaskResponse queryMeetRecTask(QueryMeetRecTaskRequest taskRequest);
 
+    DeleteMeetRecResponse deleteMeetRec(DeleteMeetRecRequest recRequest);
+
 }

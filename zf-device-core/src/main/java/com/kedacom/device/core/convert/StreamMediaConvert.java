@@ -92,4 +92,6 @@ public interface StreamMediaConvert {
 
     QueryMeetRecTaskRequest covertQueryMeetRecTaskRequest(QueryMeetRecTaskDTO request);
 
+    DeleteMeetRecRequest covertDeleteMeetRecRequest(DeleteMeetRecDTO request);
+
 }

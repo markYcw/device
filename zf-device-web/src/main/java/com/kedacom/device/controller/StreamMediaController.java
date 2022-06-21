@@ -345,4 +345,13 @@ public class StreamMediaController {
         return BaseResult.succeed(vo);
     }
 
+    @ApiOperation("删除会议记录")
+    @PostMapping("/deleteMeetRec")
+    public BaseResult<Boolean> deleteMeetRec(@Valid @RequestBody DeleteMeetRecDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean vo = streamMediaService.deleteMeetRec(dto);
+        return BaseResult.succeed(vo);
+    }
+
 }

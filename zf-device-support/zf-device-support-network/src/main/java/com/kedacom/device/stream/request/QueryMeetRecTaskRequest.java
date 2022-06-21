@@ -28,6 +28,6 @@ public class QueryMeetRecTaskRequest extends BaseRequest {
 
     @Override
     public String name() {
-        return null;
+        return COMMAND;
     }
 }

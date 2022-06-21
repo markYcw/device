@@ -47,6 +47,10 @@ public enum DeviceErrorEnum {
     SET_AUDIO_ACT_INTERVAL_FAILED(2028, "设置音频功率上报间隔失败"),
     GET_BURN_STATE_FAILED(2029, "刻录状态请求失败"),
     GET_SVR_AUDIO_ACT_STATE_FAILED(2030, "获取当前语音激励状态失败"),
+    QUERY_MEET_REC_FAILED(2031, "查询会议录像记录失败"),
+    START_MEET_REC_FAILED(2032, "开启会议录像失败"),
+    STOP_MEET_REC_FAILED(2033, "停止会议录像失败"),
+    UPDATE_MEET_REC_FAILED(2034, "更新会议录像失败"),
 
 
     MSP_REMOTE_ERROR(3001, "调用拼控服务远程接口错误"),

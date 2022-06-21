@@ -14,7 +14,7 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 @ToString(callSuper = true)
-public class StartRecMeetRequest extends BaseRequest {
+public class StartMeetRecRequest extends BaseRequest {
 
     private static final String COMMAND = "startrecm";
 

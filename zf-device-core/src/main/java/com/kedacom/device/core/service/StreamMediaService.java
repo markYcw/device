@@ -1,7 +1,7 @@
 package com.kedacom.device.core.service;
 
 import com.kedacom.device.core.entity.DeviceInfoEntity;
-import com.kedacom.device.stream.request.StartRecMeetDTO;
+import com.kedacom.streamMedia.request.StartMeetRecDTO;
 import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
 
@@ -72,8 +72,10 @@ public interface StreamMediaService {
     GetSvrAudioActStateVo getSvrAudioActState(GetSvrAudioActStateDTO dto);
 
 
-    QueryMeetRecVO recMeetQuery(QueryMeetRecDTO dto);
+    QueryMeetRecVO queryMeetRec(QueryMeetRecDTO dto);
 
-    StartRecMeetResponseVO startRecMeet(StartRecMeetDTO dto);
+    StartMeetRecResponseVO startMeetRec(StartMeetRecDTO dto);
+
+    Boolean stopMeetRec(StopMeetRecDTO dto);
 
 }

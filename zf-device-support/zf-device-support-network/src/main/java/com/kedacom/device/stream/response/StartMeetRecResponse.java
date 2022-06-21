@@ -11,7 +11,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(callSuper = true)
-public class StartRecMeetResponse extends BaseResponse {
+public class StartMeetRecResponse extends BaseResponse {
 
     @ApiModelProperty("唯一请求ID（用户自定义数据）")
     private String request_id;

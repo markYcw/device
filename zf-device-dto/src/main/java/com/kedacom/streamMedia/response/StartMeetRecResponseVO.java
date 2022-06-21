@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel(description = "开启录像应答")
-public class StartRecMeetResponseVO implements Serializable {
+public class StartMeetRecResponseVO implements Serializable {
 
     @ApiModelProperty("唯一请求ID（用户自定义数据）")
     private String request_id;

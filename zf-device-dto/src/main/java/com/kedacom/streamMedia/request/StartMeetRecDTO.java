@@ -1,4 +1,4 @@
-package com.kedacom.device.stream.request;
+package com.kedacom.streamMedia.request;
 
 import com.kedacom.streamMedia.info.BackgroundPicParam;
 import io.swagger.annotations.ApiModel;
@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel(description = "开始会议录像入参")
-public class StartRecMeetDTO implements Serializable {
+public class StartMeetRecDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")
     @ApiModelProperty(value = "平台id")

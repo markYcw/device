@@ -3,7 +3,7 @@ package com.kedacom.device.controller;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.StreamMediaService;
-import com.kedacom.device.stream.request.StartRecMeetDTO;
+import com.kedacom.streamMedia.request.StartMeetRecDTO;
 import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
 import io.swagger.annotations.Api;
@@ -293,22 +293,30 @@ public class StreamMediaController {
     }
 
     @ApiOperation("查询会议录像记录")
-    @PostMapping("/recMeetQuery")
-    public BaseResult<QueryMeetRecVO> recMeetQuery(@Valid @RequestBody QueryMeetRecDTO dto, BindingResult br) {
+    @PostMapping("/queryMeetRec")
+    public BaseResult<QueryMeetRecVO> queryMeetRec(@Valid @RequestBody QueryMeetRecDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        QueryMeetRecVO vo = streamMediaService.recMeetQuery(dto);
+        QueryMeetRecVO vo = streamMediaService.queryMeetRec(dto);
         return BaseResult.succeed("查询会议录像记录成功", vo);
     }
 
     @ApiOperation("开启会议录像")
-    @PostMapping("/startRecMeet")
-    public BaseResult<StartRecMeetResponseVO> startRecMeet(@Valid @RequestBody StartRecMeetDTO dto, BindingResult br) {
+    @PostMapping("/startMeetRec")
+    public BaseResult<StartMeetRecResponseVO> startMeetRec(@Valid @RequestBody StartMeetRecDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        StartRecMeetResponseVO startRec = streamMediaService.startRecMeet(dto);
+        StartMeetRecResponseVO startRec = streamMediaService.startMeetRec(dto);
         return BaseResult.succeed(startRec);
     }
 
+    @ApiOperation("停止录像")
+    @PostMapping("/stopMeetRec")
+    public BaseResult<Boolean> stopMeetRec(@Valid @RequestBody StopMeetRecDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean stopRec = streamMediaService.stopMeetRec(dto);
+        return BaseResult.succeed("停止成功", stopRec);
+    }
 
 }

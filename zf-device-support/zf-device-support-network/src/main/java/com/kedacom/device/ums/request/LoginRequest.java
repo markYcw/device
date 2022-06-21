@@ -53,6 +53,10 @@ public class LoginRequest extends BaseRequest {
     @ApiModelProperty(value = "录像服务端口")
     private Integer streamingMediaRecPort;
 
+    @JSONField(name = "recmpath")
+    @ApiModelProperty(value = "录像微服务路径",required = true)
+    private String preAddress;
+
     @Override
     public String name() {
         return COMMAND;

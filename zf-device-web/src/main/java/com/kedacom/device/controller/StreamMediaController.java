@@ -310,7 +310,7 @@ public class StreamMediaController {
         return BaseResult.succeed(startRec);
     }
 
-    @ApiOperation("停止录像")
+    @ApiOperation("停止会议录像")
     @PostMapping("/stopMeetRec")
     public BaseResult<Boolean> stopMeetRec(@Valid @RequestBody StopMeetRecDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
@@ -318,5 +318,15 @@ public class StreamMediaController {
         Boolean stopRec = streamMediaService.stopMeetRec(dto);
         return BaseResult.succeed("停止成功", stopRec);
     }
+
+    @ApiOperation("更新会议录像")
+    @PostMapping("/updateMeetRec")
+    public BaseResult<Boolean> updateMeetRec(@Valid @RequestBody UpdateMeetRecDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean updateRec = streamMediaService.updateMeetRec(dto);
+        return BaseResult.succeed("更新成功", updateRec);
+    }
+
 
 }

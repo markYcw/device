@@ -734,4 +734,25 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         responseUtil.handleSMSRes(error, DeviceErrorEnum.STOP_MEET_REC_FAILED, response);
         return true;
     }
+
+    @Override
+    public Boolean updateMeetRec(UpdateMeetRecDTO request) {
+        log.info("更新会议录像入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+        UpdateMeetRecRequest recRequest = streamMediaConvert.convertUpdateMeetRecRequest(request);
+        recRequest.setAccount_token("123");
+        recRequest.setRequest_id("321321");
+        recRequest.setSsid(ssid);
+        log.info("更新会议录像交互参数:{}", recRequest);
+        UpdateMeetRecResponse response = client.updateMeetRec(recRequest);
+        log.info("更新会议录像应答信息:{}", response);
+        String error = "更新会议录像失败:{},{},{}";
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.UPDATE_REC_FAILED, response);
+        return true;
+    }
 }

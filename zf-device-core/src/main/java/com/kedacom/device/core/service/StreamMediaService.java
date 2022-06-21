@@ -78,4 +78,6 @@ public interface StreamMediaService {
 
     Boolean stopMeetRec(StopMeetRecDTO dto);
 
+    Boolean updateMeetRec(UpdateMeetRecDTO dto);
+
 }

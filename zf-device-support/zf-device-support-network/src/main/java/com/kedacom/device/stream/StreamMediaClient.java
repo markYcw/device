@@ -254,4 +254,6 @@ public interface StreamMediaClient {
 
     StopMeetRecResponse stopMeetRec(StopMeetRecRequest recRequest);
 
+    UpdateMeetRecResponse updateMeetRec(UpdateMeetRecRequest recRequest);
+
 }

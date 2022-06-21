@@ -11,12 +11,12 @@ public enum DeviceErrorEnum {
     URL_ERROR(1002, "根据devType获取的URL为空，请核对传入参数是否合理，异常信息来自DeviceErrorEnum"),
 
     //全局统一错误码 addBy ycw
-    DEVICE_NOT_FOUND(1003,"设备未找到请检查"),
-    DEVICE_NOT_LOGIN(1004,"设备未登录，请先登录设备"),
-    DEVICE_HEART_BEAT_FAILED(1005,"发送心跳失败"),
-    IP_OR_NAME_REPEAT(1006,"IP或名称重复"),
-    DEV_TYPE_NAME_ERROR(1007,"设备类型填写错误请输入正确的设备类型"),
-    DEVICE_NOT_FOUND_ERROR(1008,"根据IP或名称未找到相应设备"),
+    DEVICE_NOT_FOUND(1003, "设备未找到请检查"),
+    DEVICE_NOT_LOGIN(1004, "设备未登录，请先登录设备"),
+    DEVICE_HEART_BEAT_FAILED(1005, "发送心跳失败"),
+    IP_OR_NAME_REPEAT(1006, "IP或名称重复"),
+    DEV_TYPE_NAME_ERROR(1007, "设备类型填写错误请输入正确的设备类型"),
+    DEVICE_NOT_FOUND_ERROR(1008, "根据IP或名称未找到相应设备"),
 
     UMS_SERVICE_ERROR(2000, "统一设备服务失败"),
 
@@ -51,6 +51,15 @@ public enum DeviceErrorEnum {
     START_MEET_REC_FAILED(2032, "开启会议录像失败"),
     STOP_MEET_REC_FAILED(2033, "停止会议录像失败"),
     UPDATE_MEET_REC_FAILED(2034, "更新会议录像失败"),
+    MEET_REC_KEEP_ALIVE_FAILED(2035, "会议录像任务保活失败"),
+    QUERY_MEET_REC_TASK_FAILED(2036, "查询会议录像任务失败"),
+    DELETE_MEET_REC_FAILED(2037, "删除会议录像失败"),
+    MEET_REC_CONFIG_FAILED(2038, "会议录像全局配置失败"),
+    QUERY_MEET_REC_CONFIG_FAILED(2039, "会议录像全局配置查询失败"),
+    QUERY_MEET_REC_CAP_FAILED(2040, "容量存储查询失败"),
+    EVENT_SUB_FAILED(2041, "事件订阅失败"),
+    EVENT_ESCALATION_FAILED(2042, "事件上报失败"),
+
 
 
     MSP_REMOTE_ERROR(3001, "调用拼控服务远程接口错误"),
@@ -177,15 +186,15 @@ public enum DeviceErrorEnum {
     CU_QUERY_DISK_FAILED(6017, "查询磁阵(磁盘)信息失败"),
     CU_QUERY_VIDEO_DAYS_FAILED(6018, "查询录像日历信息失败"),
     CU_QUERY_VIDEO_FAILED(6019, "查询录像失败"),
-    QUERY_MONITOR_ERROR(6020,"根据数据库ID查询监控平台树失败"),
-    GET_CU_DEVICE_INFO_ERROR(6021,"获取设备详细信息失败"),
-    GET_CU_CHANNEL_INFO_ERROR(6022,"获取设备具体通道信息失败"),
-    GET_CU_GROUP_ERROR(6023,"获取监控平台（分组/设备）信息失败，设备未加载完成请稍后重试"),
-    GET_CU_CHANNEL_LIST_ERROR(6024,"获取设备通道集合信息失败"),
-    CU_GB_ID_ERROR(6025,"获取国标id失败"),
-    CU_Pu_ID_TWO_ERROR(6026,"根据平台1.0puId查询不到设备，获取平台2.0puId失败"),
-    CU_SUBSCRIBE_ERROR(6027,"单个设备状态订阅失败"),
-    CU_Pu_ID_ONE_ERROR(6028,"获取平台1.0puId失败"),
+    QUERY_MONITOR_ERROR(6020, "根据数据库ID查询监控平台树失败"),
+    GET_CU_DEVICE_INFO_ERROR(6021, "获取设备详细信息失败"),
+    GET_CU_CHANNEL_INFO_ERROR(6022, "获取设备具体通道信息失败"),
+    GET_CU_GROUP_ERROR(6023, "获取监控平台（分组/设备）信息失败，设备未加载完成请稍后重试"),
+    GET_CU_CHANNEL_LIST_ERROR(6024, "获取设备通道集合信息失败"),
+    CU_GB_ID_ERROR(6025, "获取国标id失败"),
+    CU_Pu_ID_TWO_ERROR(6026, "根据平台1.0puId查询不到设备，获取平台2.0puId失败"),
+    CU_SUBSCRIBE_ERROR(6027, "单个设备状态订阅失败"),
+    CU_Pu_ID_ONE_ERROR(6028, "获取平台1.0puId失败"),
 
     // 终端相关错误码
     MT_LOGIN_FAILED(7000, "终端登录失败"),
@@ -207,7 +216,7 @@ public enum DeviceErrorEnum {
     MT_SET_PIP_MODE_FAILED(7016, "设置画面显示模式失败"),
 
     // 录像机相关错误码
-    VS_LOGIN_FAILED(8000,"登录VRS失败请稍后重试"),
+    VS_LOGIN_FAILED(8000, "登录VRS失败请稍后重试"),
     VS_QUERY_REC_FAILED(8001, "查询录像失败"),
     VS_QUERY_LIVE_FAILED(8002, "查询直播失败"),
 
@@ -227,7 +236,7 @@ public enum DeviceErrorEnum {
     NM_GET_AUDIO_CAP_FAILED(10002, "获取音频能力集失败"),
     NM_GET_AUDIO_STATE_FAILED(10003, "获取SVR当前语音激励状态"),
     NM_GET_BURN_STATE_FAILED(10004, "获取SVR当前刻录状态失败"),
-    GET_NM_GROUP_ERROR(10005,"获取新媒体设备信息失败，设备未加载完成请稍后重试"),
+    GET_NM_GROUP_ERROR(10005, "获取新媒体设备信息失败，设备未加载完成请稍后重试"),
 
 
     ;

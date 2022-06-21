@@ -752,7 +752,29 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         UpdateMeetRecResponse response = client.updateMeetRec(recRequest);
         log.info("更新会议录像应答信息:{}", response);
         String error = "更新会议录像失败:{},{},{}";
-        responseUtil.handleSMSRes(error, DeviceErrorEnum.UPDATE_REC_FAILED, response);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.UPDATE_MEET_REC_FAILED, response);
+        return true;
+    }
+
+    @Override
+    public Boolean meetRecKeepAlive(MeetRecKeepAliveDTO request) {
+        log.info("录像任务保活入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        MeetRecKeepAliveRequest aliveRequest = streamMediaConvert.covertMeetRecKeepAliveRequest(request);
+        aliveRequest.setAccountToken("123");
+        aliveRequest.setRequestId("321321");
+        aliveRequest.setSsid(ssid);
+        log.info("录像任务保活交互参数:{}", aliveRequest);
+        MeetRecKeepAliveResponse response = client.meetRecKeepAlive(aliveRequest);
+        log.info("录像任务保活应答信息:{}", response);
+        String error = "录像任务保活失败:{},{},{}";
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.MEET_REC_KEEP_ALIVE_FAILED, response);
         return true;
     }
 }

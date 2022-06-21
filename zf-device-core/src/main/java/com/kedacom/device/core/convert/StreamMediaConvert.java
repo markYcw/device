@@ -88,4 +88,6 @@ public interface StreamMediaConvert {
 
     UpdateMeetRecRequest convertUpdateMeetRecRequest(UpdateMeetRecDTO request);
 
+    MeetRecKeepAliveRequest covertMeetRecKeepAliveRequest(MeetRecKeepAliveDTO request);
+
 }

@@ -328,5 +328,13 @@ public class StreamMediaController {
         return BaseResult.succeed("更新成功", updateRec);
     }
 
+    @ApiOperation("会议录像任务保活")
+    @PostMapping("/meetRecKeepAlive")
+    public BaseResult<Boolean> meetRecKeepAlive(@Valid @RequestBody MeetRecKeepAliveDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean alive = streamMediaService.meetRecKeepAlive(dto);
+        return BaseResult.succeed("保活成功", alive);
+    }
 
 }

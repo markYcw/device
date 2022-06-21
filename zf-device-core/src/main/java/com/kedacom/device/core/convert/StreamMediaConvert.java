@@ -82,4 +82,6 @@ public interface StreamMediaConvert {
 
     QueryMeetRecRequest convertQueryMeetRecDTO(QueryMeetRecDTO request);
 
+    StartRecMeetRequest convertStartRecMeetRequest(StartRecMeetDTO request);
+
 }

@@ -3,6 +3,7 @@ package com.kedacom.device.controller;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.StreamMediaService;
+import com.kedacom.device.stream.request.StartRecMeetDTO;
 import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
 import io.swagger.annotations.Api;
@@ -298,6 +299,15 @@ public class StreamMediaController {
 
         QueryMeetRecVO vo = streamMediaService.recMeetQuery(dto);
         return BaseResult.succeed("查询会议录像记录成功", vo);
+    }
+
+    @ApiOperation("开启会议录像")
+    @PostMapping("/startRecMeet")
+    public BaseResult<StartRecMeetResponseVO> startRecMeet(@Valid @RequestBody StartRecMeetDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        StartRecMeetResponseVO startRec = streamMediaService.startRecMeet(dto);
+        return BaseResult.succeed(startRec);
     }
 
 

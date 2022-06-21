@@ -5,15 +5,14 @@ import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
+import lombok.ToString;
 
 /**
  * @author hxj
  * @date 2022/6/21 14:05
  */
 @Data
+@ToString(callSuper = true)
 @ApiModel(description = "查询会议录像记录入参")
 public class QueryMeetRecRequest extends BaseRequest {
 

@@ -250,4 +250,6 @@ public interface StreamMediaClient {
 
     QueryMeetRecResponse recMeetQuery(QueryMeetRecRequest queryMeetRecRequest);
 
+    StartRecMeetResponse startRecMeet(StartRecMeetRequest recMeetRequest);
+
 }

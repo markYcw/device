@@ -690,4 +690,26 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         responseUtil.handleSMSRes(error, DeviceErrorEnum.SEND_TRANS_DATA_FAILED, res);
         return res.acquireData(QueryMeetRecVO.class);
     }
+
+    @Override
+    public StartRecMeetResponseVO startRecMeet(StartRecMeetDTO request) {
+        log.info("开启会议录像入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        StartRecMeetRequest recMeetRequest = streamMediaConvert.convertStartRecMeetRequest(request);
+        recMeetRequest.setAccount_token("123");
+        recMeetRequest.setRequest_id("321321");
+        recMeetRequest.setSsid(ssid);
+        log.info("开启会议录像交互参数:{}", recMeetRequest);
+        StartRecMeetResponse res = client.startRecMeet(recMeetRequest);
+        log.info("开启会议录像应答信息:{}", res);
+        String errorMsg = "开启会议录像失败:{},{},{}";
+        responseUtil.handleSMSRes(errorMsg, DeviceErrorEnum.START_REC_FAILED, res);
+        return res.acquireData(StartRecMeetResponseVO.class);
+    }
 }

@@ -1,6 +1,7 @@
 package com.kedacom.device.core.service;
 
 import com.kedacom.device.core.entity.DeviceInfoEntity;
+import com.kedacom.device.stream.request.StartRecMeetDTO;
 import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
 
@@ -72,5 +73,7 @@ public interface StreamMediaService {
 
 
     QueryMeetRecVO recMeetQuery(QueryMeetRecDTO dto);
+
+    StartRecMeetResponseVO startRecMeet(StartRecMeetDTO dto);
 
 }

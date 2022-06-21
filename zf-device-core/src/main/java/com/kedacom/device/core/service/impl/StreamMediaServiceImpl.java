@@ -796,7 +796,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         QueryMeetRecTaskResponse response = client.queryMeetRecTask(taskRequest);
         log.info("查询会议录像任务应答信息:{}", response);
         String error = "查询会议录像任务失败:{},{},{}";
-        responseUtil.handleSMSRes(error, DeviceErrorEnum.MEET_REC_KEEP_ALIVE_FAILED, response);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_MEET_REC_TASK_FAILED, response);
         return response.acquireData(QueryMeetRecTaskVO.class);
     }
 
@@ -818,7 +818,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         DeleteMeetRecResponse response = client.deleteMeetRec(recRequest);
         log.info("删除会议记录应答信息:{}", response);
         String error = "删除会议记录失败:{},{},{}";
-        responseUtil.handleSMSRes(error, DeviceErrorEnum.MEET_REC_KEEP_ALIVE_FAILED, response);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.DELETE_MEET_REC_FAILED, response);
         return true;
     }
 }

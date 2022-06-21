@@ -206,6 +206,9 @@ public class NewMediaServiceImpl implements NewMediaService {
         entity.setRecPort(requestDto.getStreamingMediaRecPort());
         entity.setMspAccount(requestDto.getMspAccount());
         entity.setMspPassword(requestDto.getMspPassword());
+        entity.setPreAddress(requestDto.getPreAddress());
+        entity.setExIp(requestDto.getExIp());
+        entity.setExPort(requestDto.getExPort());
         mapper.insert(entity);
         try {
             CompletableFuture.runAsync(() -> logoutById(1));
@@ -511,6 +514,9 @@ public class NewMediaServiceImpl implements NewMediaService {
         entity.setRecPort(requestDto.getStreamingMediaRecPort());
         entity.setMspAccount(requestDto.getMspAccount());
         entity.setMspPassword(requestDto.getMspPassword());
+        entity.setPreAddress(requestDto.getPreAddress());
+        entity.setExIp(requestDto.getExIp());
+        entity.setExPort(requestDto.getExPort());
         mapper.updateById(entity);
         try {
             CompletableFuture.runAsync(() -> logoutById(1));
@@ -570,6 +576,9 @@ public class NewMediaServiceImpl implements NewMediaService {
             dto.setStreamingMediaRecPort(next.getRecPort());
             dto.setMspAccount(next.getMspAccount());
             dto.setMspPassword(next.getMspPassword());
+            dto.setPreAddress(next.getPreAddress());
+            dto.setExIp(next.getExIp());
+            dto.setExPort(next.getExPort());
             dtos.add(dto);
         }
         BasePage<UmsDeviceInfoSelectResponseDto> basePage = new BasePage<>();

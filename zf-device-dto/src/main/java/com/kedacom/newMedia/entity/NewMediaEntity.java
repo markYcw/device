@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -65,5 +68,17 @@ public class NewMediaEntity implements Serializable {
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date modifyTime;
+
+    @ApiModelProperty(value = "接口地址前缀",required = true)
+    private String preAddress;
+
+    @ApiModelProperty(value = "EX服务IP")
+    @Pattern(regexp = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$", message = "媒体调度服务IP地址不合法")
+    private String exIp;
+
+    @ApiModelProperty(value = "EX服务端口")
+    @Min(value = 0, message = "EX服务端口参数不正确")
+    @Max(value = 65536, message = "EX服务端口参数不正确")
+    private Integer exPort;
 
 }

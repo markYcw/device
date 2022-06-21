@@ -6,7 +6,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -66,5 +69,14 @@ public class UmsDeviceInfoSelectResponseDto implements Serializable {
 
     @ApiModelProperty(value = "拼控服务密码")
     private String mspPassword;
+
+    @ApiModelProperty(value = "接口地址前缀",required = true)
+    private String preAddress;
+
+    @ApiModelProperty(value = "EX服务IP")
+    private String exIp;
+
+    @ApiModelProperty(value = "EX服务端口")
+    private Integer exPort;
 
 }

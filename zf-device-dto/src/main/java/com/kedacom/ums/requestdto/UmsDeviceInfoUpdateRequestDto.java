@@ -66,4 +66,16 @@ public class UmsDeviceInfoUpdateRequestDto implements Serializable {
     @ApiModelProperty(value = "拼控服务密码")
     private String mspPassword;
 
+    @ApiModelProperty(value = "接口地址前缀",required = true)
+    private String preAddress;
+
+    @ApiModelProperty(value = "EX服务IP")
+    @Pattern(regexp = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$", message = "媒体调度服务IP地址不合法")
+    private String exIp;
+
+    @ApiModelProperty(value = "EX服务端口")
+    @Min(value = 0, message = "EX服务端口参数不正确")
+    @Max(value = 65536, message = "EX服务端口参数不正确")
+    private Integer exPort;
+
 }

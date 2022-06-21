@@ -777,4 +777,26 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         responseUtil.handleSMSRes(error, DeviceErrorEnum.MEET_REC_KEEP_ALIVE_FAILED, response);
         return true;
     }
+
+    @Override
+    public QueryMeetRecTaskVO queryMeetRecTask(QueryMeetRecTaskDTO request) {
+        log.info("查询会议录像任务入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        QueryMeetRecTaskRequest taskRequest = streamMediaConvert.covertQueryMeetRecTaskRequest(request);
+        taskRequest.setAccountToken("123");
+        taskRequest.setRequestId("321321");
+        taskRequest.setSsid(ssid);
+        log.info("查询会议录像任务交互参数:{}", taskRequest);
+        QueryMeetRecTaskResponse response = client.queryMeetRecTask(taskRequest);
+        log.info("查询会议录像任务应答信息:{}", response);
+        String error = "查询会议录像任务失败:{},{},{}";
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.MEET_REC_KEEP_ALIVE_FAILED, response);
+        return response.acquireData(QueryMeetRecTaskVO.class);
+    }
 }

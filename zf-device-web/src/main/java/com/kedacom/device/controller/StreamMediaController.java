@@ -3,7 +3,6 @@ package com.kedacom.device.controller;
 import com.kedacom.BaseResult;
 import com.kedacom.device.common.utils.ValidUtils;
 import com.kedacom.device.core.service.StreamMediaService;
-import com.kedacom.streamMedia.request.StartMeetRecDTO;
 import com.kedacom.streamMedia.request.*;
 import com.kedacom.streamMedia.response.*;
 import io.swagger.annotations.Api;
@@ -335,6 +334,15 @@ public class StreamMediaController {
 
         Boolean alive = streamMediaService.meetRecKeepAlive(dto);
         return BaseResult.succeed("保活成功", alive);
+    }
+
+    @ApiOperation("查询会议录像任务")
+    @PostMapping("/queryMeetRecTask")
+    public BaseResult<QueryMeetRecTaskVO> queryMeetRecTask(@Valid @RequestBody QueryMeetRecTaskDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        QueryMeetRecTaskVO vo = streamMediaService.queryMeetRecTask(dto);
+        return BaseResult.succeed(vo);
     }
 
 }

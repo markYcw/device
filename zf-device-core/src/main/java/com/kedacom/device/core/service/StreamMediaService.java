@@ -82,4 +82,6 @@ public interface StreamMediaService {
 
     Boolean meetRecKeepAlive(MeetRecKeepAliveDTO dto);
 
+    QueryMeetRecTaskVO queryMeetRecTask(QueryMeetRecTaskDTO dto);
+
 }

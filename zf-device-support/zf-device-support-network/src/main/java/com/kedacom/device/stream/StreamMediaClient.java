@@ -258,4 +258,6 @@ public interface StreamMediaClient {
 
     MeetRecKeepAliveResponse meetRecKeepAlive(MeetRecKeepAliveRequest aliveRequest);
 
+    QueryMeetRecTaskResponse queryMeetRecTask(QueryMeetRecTaskRequest taskRequest);
+
 }

@@ -110,7 +110,7 @@ public class DeviceStartListen implements ApplicationListener<ApplicationStarted
 
         // 启动电源的tcp连接，延迟是为了方便power-server能知晓电源状态变更后调用device-server的借口
         if (Objects.equals(POWER_TCP_START, powerTcp)) {
-            poolExecutor.schedule(this::startPowerTcpServer, 2, TimeUnit.MINUTES);
+            poolExecutor.schedule(this::startPowerTcpServer, 1, TimeUnit.MINUTES);
         }
     }
 

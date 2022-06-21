@@ -291,5 +291,14 @@ public class StreamMediaController {
         return BaseResult.succeed("获取当前语音激励状态成功", vo);
     }
 
+    @ApiOperation("查询会议录像记录")
+    @PostMapping("/recMeetQuery")
+    public BaseResult<QueryMeetRecVO> recMeetQuery(@Valid @RequestBody QueryMeetRecDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        QueryMeetRecVO vo = streamMediaService.recMeetQuery(dto);
+        return BaseResult.succeed("查询会议录像记录成功", vo);
+    }
+
 
 }

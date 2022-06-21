@@ -71,5 +71,6 @@ public interface StreamMediaService {
     GetSvrAudioActStateVo getSvrAudioActState(GetSvrAudioActStateDTO dto);
 
 
+    QueryMeetRecVO recMeetQuery(QueryMeetRecDTO dto);
 
 }

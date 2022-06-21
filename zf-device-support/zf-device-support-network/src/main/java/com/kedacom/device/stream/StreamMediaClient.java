@@ -248,4 +248,6 @@ public interface StreamMediaClient {
      */
     GetSvrAudioActStateResponse getSvrAudioActState(GetSvrAudioActStateRequest request);
 
+    QueryMeetRecResponse recMeetQuery(QueryMeetRecRequest queryMeetRecRequest);
+
 }

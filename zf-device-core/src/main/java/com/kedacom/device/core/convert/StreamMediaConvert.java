@@ -80,4 +80,6 @@ public interface StreamMediaConvert {
 
     BurnStateDTO convertToBurnStateDTO(BurnStateEvent event);
 
+    QueryMeetRecRequest convertQueryMeetRecDTO(QueryMeetRecDTO request);
+
 }

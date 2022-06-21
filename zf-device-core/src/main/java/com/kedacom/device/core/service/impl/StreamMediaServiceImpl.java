@@ -672,4 +672,22 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         responseUtil.handleSMSRes(error, DeviceErrorEnum.SEND_TRANS_DATA_FAILED, res);
         return true;
     }
+
+    @Override
+    public QueryMeetRecVO recMeetQuery(QueryMeetRecDTO request) {
+        String error = "查询会议录像记录失败:{},{},{}";
+        log.info("查询会议录像记录入参信息:{}", request);
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+        QueryMeetRecRequest queryMeetRecRequest = streamMediaConvert.convertQueryMeetRecDTO(request);
+        queryMeetRecRequest.setSsid(ssid);
+        log.info("查询会议录像记录交互参数:{}", queryMeetRecRequest);
+        QueryMeetRecResponse res = client.recMeetQuery(queryMeetRecRequest);
+        log.info("查询会议录像记录应答信息:{}", res);
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.SEND_TRANS_DATA_FAILED, res);
+        return res.acquireData(QueryMeetRecVO.class);
+    }
 }

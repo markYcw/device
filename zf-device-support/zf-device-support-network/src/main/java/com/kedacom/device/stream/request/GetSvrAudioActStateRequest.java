@@ -12,8 +12,8 @@ import lombok.ToString;
  * @date 2021/11/8 13:09
  * @description
  */
-@ToString(callSuper = true)
 @Data
+@ToString(callSuper = true)
 public class GetSvrAudioActStateRequest extends BaseRequest {
 
     private static final String COMMAND = "getsvraudioactstate";

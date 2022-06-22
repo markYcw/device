@@ -268,4 +268,6 @@ public interface StreamMediaClient {
 
     QueryMeetRecordCapResponse queryMeetRecordCap(QueryMeetRecordCapRequest capRequest);
 
+    BaseResponse meetRecEventSub(MeetRecEventSubRequest subRequest);
+
 }

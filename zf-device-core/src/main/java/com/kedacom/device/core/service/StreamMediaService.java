@@ -91,4 +91,7 @@ public interface StreamMediaService {
     QueryMeetRecordConfigVO queryMeetRecordConfig(QueryMeetRecordConfigDTO dto);
 
     QueryMeetRecordCapVO queryMeetRecordCap(QueryMeetRecordCapDTO dto);
+
+    Boolean meetRecEventSub(MeetRecEventSubDTO dto);
+
 }

@@ -887,4 +887,26 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_MEET_REC_CONFIG_FAILED, response);
         return response.acquireData(QueryMeetRecordCapVO.class);
     }
+
+    @Override
+    public Boolean meetRecEventSub(MeetRecEventSubDTO request) {
+        log.info("事件订阅入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        MeetRecEventSubRequest subRequest = streamMediaConvert.covertMeetRecEventSubRequest(request);
+        subRequest.setAccountToken("123");
+        subRequest.setRequestId("321321");
+        subRequest.setSsid(ssid);
+        log.info("事件订阅交互参数:{}", subRequest);
+        BaseResponse response = client.meetRecEventSub(subRequest);
+        log.info("事件订阅应答信息:{}", response);
+        String error = "事件订阅失败:{},{},{}";
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.EVENT_SUB_FAILED, response);
+        return true;
+    }
 }

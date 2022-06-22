@@ -366,6 +366,7 @@ public class StreamMediaController {
     @ApiOperation("查询全局会议录像配置")
     @PostMapping("/queryMeetRecordConfig")
     public BaseResult<QueryMeetRecordConfigVO> queryMeetRecordConfig(@Valid @RequestBody QueryMeetRecordConfigDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
 
         QueryMeetRecordConfigVO vo = streamMediaService.queryMeetRecordConfig(dto);
         return BaseResult.succeed(vo);
@@ -374,9 +375,20 @@ public class StreamMediaController {
     @ApiOperation("容量存储查询")
     @PostMapping("/queryMeetRecordCap")
     public BaseResult<QueryMeetRecordCapVO> queryMeetRecordCap(@Valid @RequestBody QueryMeetRecordCapDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
 
         QueryMeetRecordCapVO vo = streamMediaService.queryMeetRecordCap(dto);
         return BaseResult.succeed(vo);
     }
+
+    @ApiOperation("事件订阅")
+    @PostMapping("/meetRecEventSub")
+    public BaseResult<Boolean> meetRecEventSub(@Valid @RequestBody MeetRecEventSubDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean vo = streamMediaService.meetRecEventSub(dto);
+        return BaseResult.succeed(vo);
+    }
+
 
 }

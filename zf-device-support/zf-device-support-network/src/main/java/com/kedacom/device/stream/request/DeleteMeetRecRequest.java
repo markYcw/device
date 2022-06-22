@@ -32,6 +32,10 @@ public class DeleteMeetRecRequest extends BaseRequest {
     @JSONField(name = "request_id")
     private String requestId;
 
+    @ApiModelProperty(value = "录像ID")
+    @JSONField(name = "record_id")
+    private String recordId;
+
     @ApiModelProperty(value = "录像开始时间，如果没有录像开始结束时间将删除该录像ID的所有录像")
     private Date startTime;
 

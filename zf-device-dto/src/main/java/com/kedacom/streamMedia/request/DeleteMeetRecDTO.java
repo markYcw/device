@@ -20,6 +20,10 @@ public class DeleteMeetRecDTO implements Serializable {
     @ApiModelProperty(value = "平台id")
     private String umsId;
 
+    @NotBlank(message = "录像ID不能为空")
+    @ApiModelProperty(value = "录像ID")
+    private String recordId;
+
     @ApiModelProperty(value = "录像开始时间，如果没有录像开始结束时间将删除该录像ID的所有录像")
     private Date startTime;
 

@@ -823,7 +823,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     }
 
     @Override
-    public Boolean meetRecordConfig(MeetRecordConfigDTO request) {
+    public Boolean meetRecConfig(MeetRecConfigDTO request) {
         log.info("会议录像全局配置入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
@@ -845,7 +845,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
     }
 
     @Override
-    public QueryMeetRecordConfigVO queryMeetRecordConfig(QueryMeetRecordConfigDTO request) {
+    public QueryMeetRecConfigVO queryMeetRecConfig(QueryMeetRecConfigDTO request) {
         log.info("查询全局会议录像配置入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
@@ -863,11 +863,11 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("查询全局会议录像配置应答信息:{}", response);
         String error = "查询全局会议录像配置失败:{},{},{}";
         responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_MEET_REC_CONFIG_FAILED, response);
-        return response.acquireData(QueryMeetRecordConfigVO.class);
+        return response.acquireData(QueryMeetRecConfigVO.class);
     }
 
     @Override
-    public QueryMeetRecordCapVO queryMeetRecordCap(QueryMeetRecordCapDTO request) {
+    public QueryMeetRecCapVO queryMeetRecCap(QueryMeetRecCapDTO request) {
         log.info("容量存储查询入参信息:{}", request);
 
         DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
@@ -885,7 +885,7 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         log.info("容量存储查询应答信息:{}", response);
         String error = "容量存储查询失败:{},{},{}";
         responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_MEET_REC_CONFIG_FAILED, response);
-        return response.acquireData(QueryMeetRecordCapVO.class);
+        return response.acquireData(QueryMeetRecCapVO.class);
     }
 
     @Override

@@ -94,11 +94,11 @@ public interface StreamMediaConvert {
 
     DeleteMeetRecRequest covertDeleteMeetRecRequest(DeleteMeetRecDTO request);
 
-    MeetRecordConfigRequest covertMeetRecordConfigRequest(MeetRecordConfigDTO request);
+    MeetRecordConfigRequest covertMeetRecordConfigRequest(MeetRecConfigDTO request);
 
-    QueryMeetRecordConfigRequest covertQueryMeetRecordConfigRequest(QueryMeetRecordConfigDTO request);
+    QueryMeetRecordConfigRequest covertQueryMeetRecordConfigRequest(QueryMeetRecConfigDTO request);
 
-    QueryMeetRecordCapRequest covertQueryMeetRecordCapRequest(QueryMeetRecordCapDTO request);
+    QueryMeetRecordCapRequest covertQueryMeetRecordCapRequest(QueryMeetRecCapDTO request);
 
     MeetRecEventSubRequest covertMeetRecEventSubRequest(MeetRecEventSubDTO request);
 

@@ -86,11 +86,11 @@ public interface StreamMediaService {
 
     Boolean deleteMeetRec(DeleteMeetRecDTO dto);
 
-    Boolean meetRecordConfig(MeetRecordConfigDTO dto);
+    Boolean meetRecConfig(MeetRecConfigDTO dto);
 
-    QueryMeetRecordConfigVO queryMeetRecordConfig(QueryMeetRecordConfigDTO dto);
+    QueryMeetRecConfigVO queryMeetRecConfig(QueryMeetRecConfigDTO dto);
 
-    QueryMeetRecordCapVO queryMeetRecordCap(QueryMeetRecordCapDTO dto);
+    QueryMeetRecCapVO queryMeetRecCap(QueryMeetRecCapDTO dto);
 
     Boolean meetRecEventSub(MeetRecEventSubDTO dto);
 

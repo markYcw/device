@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel(description = "容量存储查询应答")
-public class QueryMeetRecordCapVO implements Serializable {
+public class QueryMeetRecCapVO implements Serializable {
 
     @ApiModelProperty(value = "int64格式，总空间大小，单位字节")
     private Long totalSize;

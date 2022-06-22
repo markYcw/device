@@ -355,29 +355,29 @@ public class StreamMediaController {
     }
 
     @ApiOperation("会议录像全局配置")
-    @PostMapping("/meetRecordConfig")
-    public BaseResult<Boolean> meetRecordConfig(@Valid @RequestBody MeetRecordConfigDTO dto, BindingResult br) {
+    @PostMapping("/meetRecConfig")
+    public BaseResult<Boolean> meetRecConfig(@Valid @RequestBody MeetRecConfigDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        Boolean vo = streamMediaService.meetRecordConfig(dto);
+        Boolean vo = streamMediaService.meetRecConfig(dto);
         return BaseResult.succeed(vo);
     }
 
     @ApiOperation("查询全局会议录像配置")
-    @PostMapping("/queryMeetRecordConfig")
-    public BaseResult<QueryMeetRecordConfigVO> queryMeetRecordConfig(@Valid @RequestBody QueryMeetRecordConfigDTO dto, BindingResult br) {
+    @PostMapping("/queryMeetRecConfig")
+    public BaseResult<QueryMeetRecConfigVO> queryMeetRecConfig(@Valid @RequestBody QueryMeetRecConfigDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        QueryMeetRecordConfigVO vo = streamMediaService.queryMeetRecordConfig(dto);
+        QueryMeetRecConfigVO vo = streamMediaService.queryMeetRecConfig(dto);
         return BaseResult.succeed(vo);
     }
 
     @ApiOperation("容量存储查询")
-    @PostMapping("/queryMeetRecordCap")
-    public BaseResult<QueryMeetRecordCapVO> queryMeetRecordCap(@Valid @RequestBody QueryMeetRecordCapDTO dto, BindingResult br) {
+    @PostMapping("/queryMeetRecCap")
+    public BaseResult<QueryMeetRecCapVO> queryMeetRecCap(@Valid @RequestBody QueryMeetRecCapDTO dto, BindingResult br) {
         ValidUtils.paramValid(br);
 
-        QueryMeetRecordCapVO vo = streamMediaService.queryMeetRecordCap(dto);
+        QueryMeetRecCapVO vo = streamMediaService.queryMeetRecCap(dto);
         return BaseResult.succeed(vo);
     }
 

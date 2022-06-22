@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Data
 @ApiModel(description = "查询会议录像全局配置应答")
-public class QueryMeetRecordConfigVO implements Serializable {
+public class QueryMeetRecConfigVO implements Serializable {
 
     @ApiModelProperty(value = "覆盖策略，0录像满覆盖，无告警通知; 1录像满停止，有告警通知")
     private Integer coverPolicy;

@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel(description = "会议录像全局配置入参")
-public class MeetRecordConfigDTO implements Serializable {
+public class MeetRecConfigDTO implements Serializable {
 
     @NotBlank(message = "umsId不能为空")
     @ApiModelProperty(value = "平台id")

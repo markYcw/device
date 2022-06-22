@@ -843,4 +843,26 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         responseUtil.handleSMSRes(error, DeviceErrorEnum.MEET_REC_CONFIG_FAILED, response);
         return true;
     }
+
+    @Override
+    public QueryMeetRecordConfigVO queryMeetRecordConfig(QueryMeetRecordConfigDTO request) {
+        log.info("查询全局会议录像配置入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        QueryMeetRecordConfigRequest configRequest = streamMediaConvert.covertQueryMeetRecordConfigRequest(request);
+        configRequest.setAccountToken("123");
+        configRequest.setRequestId("321321");
+        configRequest.setSsid(ssid);
+        log.info("查询全局会议录像配置交互参数:{}", configRequest);
+        QueryMeetRecordConfigResponse response = client.queryMeetRecordConfig(configRequest);
+        log.info("查询全局会议录像配置应答信息:{}", response);
+        String error = "查询全局会议录像配置失败:{},{},{}";
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_MEET_REC_CONFIG_FAILED, response);
+        return response.acquireData(QueryMeetRecordConfigVO.class);
+    }
 }

@@ -363,4 +363,12 @@ public class StreamMediaController {
         return BaseResult.succeed(vo);
     }
 
+    @ApiOperation("查询全局会议录像配置")
+    @PostMapping("/queryMeetRecordConfig")
+    public BaseResult<QueryMeetRecordConfigVO> queryMeetRecordConfig(@Valid @RequestBody QueryMeetRecordConfigDTO dto, BindingResult br) {
+
+        QueryMeetRecordConfigVO vo = streamMediaService.queryMeetRecordConfig(dto);
+        return BaseResult.succeed(vo);
+    }
+
 }

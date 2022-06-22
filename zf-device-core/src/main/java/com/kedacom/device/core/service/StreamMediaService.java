@@ -88,4 +88,7 @@ public interface StreamMediaService {
 
     Boolean meetRecordConfig(MeetRecordConfigDTO dto);
 
+    QueryMeetRecordConfigVO queryMeetRecordConfig(QueryMeetRecordConfigDTO dto);
+
+
 }

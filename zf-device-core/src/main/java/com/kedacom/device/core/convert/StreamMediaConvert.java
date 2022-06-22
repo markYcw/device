@@ -96,4 +96,5 @@ public interface StreamMediaConvert {
 
     MeetRecordConfigRequest covertMeetRecordConfigRequest(MeetRecordConfigDTO request);
 
+    QueryMeetRecordConfigRequest covertQueryMeetRecordConfigRequest(QueryMeetRecordConfigDTO request);
 }

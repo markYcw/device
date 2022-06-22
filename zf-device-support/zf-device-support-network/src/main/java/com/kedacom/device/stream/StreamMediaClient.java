@@ -264,4 +264,5 @@ public interface StreamMediaClient {
 
     MeetRecordConfigResponse meetRecordConfig(MeetRecordConfigRequest configRequest);
 
+    QueryMeetRecordConfigResponse queryMeetRecordConfig(QueryMeetRecordConfigRequest configRequest);
 }

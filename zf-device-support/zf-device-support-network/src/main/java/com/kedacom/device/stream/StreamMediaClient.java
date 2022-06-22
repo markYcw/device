@@ -262,4 +262,6 @@ public interface StreamMediaClient {
 
     DeleteMeetRecResponse deleteMeetRec(DeleteMeetRecRequest recRequest);
 
+    MeetRecordConfigResponse meetRecordConfig(MeetRecordConfigRequest configRequest);
+
 }

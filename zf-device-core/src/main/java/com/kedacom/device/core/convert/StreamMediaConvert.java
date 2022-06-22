@@ -94,4 +94,6 @@ public interface StreamMediaConvert {
 
     DeleteMeetRecRequest covertDeleteMeetRecRequest(DeleteMeetRecDTO request);
 
+    MeetRecordConfigRequest covertMeetRecordConfigRequest(MeetRecordConfigDTO request);
+
 }

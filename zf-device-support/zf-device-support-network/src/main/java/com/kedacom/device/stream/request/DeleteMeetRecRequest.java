@@ -5,6 +5,7 @@ import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.util.Date;
  * @date 2022/6/21 19:34
  */
 @Data
+@ToString(callSuper = true)
 @ApiModel(description = "删除会议录像入参")
 public class DeleteMeetRecRequest extends BaseRequest {
 

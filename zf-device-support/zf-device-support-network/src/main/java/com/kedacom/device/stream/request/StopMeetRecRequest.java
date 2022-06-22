@@ -10,8 +10,8 @@ import lombok.ToString;
  * @author hxj
  * @date 2022/6/21 16:17
  */
-@ToString(callSuper = true)
 @Data
+@ToString(callSuper = true)
 @ApiModel(description = "停止会议录像业务交互参数")
 public class StopMeetRecRequest extends BaseRequest {
 

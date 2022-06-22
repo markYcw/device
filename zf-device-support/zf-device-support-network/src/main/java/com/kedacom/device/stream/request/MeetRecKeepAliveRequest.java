@@ -5,12 +5,14 @@ import com.kedacom.core.pojo.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * @author hxj
  * @date 2022/6/21 17:17
  */
 @Data
+@ToString(callSuper = true)
 @ApiModel(description = "录像任务保活中间件入参")
 public class MeetRecKeepAliveRequest extends BaseRequest {
 

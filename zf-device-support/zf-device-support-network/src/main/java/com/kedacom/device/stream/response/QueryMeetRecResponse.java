@@ -5,6 +5,7 @@ import com.kedacom.streamMedia.info.MeetRecords;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
  * @date 2022/6/21 14:41
  */
 @Data
+@ToString(callSuper = true)
 @ApiModel(description = "查询会议录像记录响应")
 public class QueryMeetRecResponse extends BaseResponse {
 

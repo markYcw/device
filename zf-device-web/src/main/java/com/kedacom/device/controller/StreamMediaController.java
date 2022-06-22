@@ -354,4 +354,13 @@ public class StreamMediaController {
         return BaseResult.succeed(vo);
     }
 
+    @ApiOperation("会议录像全局配置")
+    @PostMapping("/meetRecordConfig")
+    public BaseResult<Boolean> meetRecordConfig(@Valid @RequestBody MeetRecordConfigDTO dto, BindingResult br) {
+        ValidUtils.paramValid(br);
+
+        Boolean vo = streamMediaService.meetRecordConfig(dto);
+        return BaseResult.succeed(vo);
+    }
+
 }

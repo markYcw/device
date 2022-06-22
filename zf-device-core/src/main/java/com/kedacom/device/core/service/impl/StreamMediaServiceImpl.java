@@ -821,4 +821,26 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         responseUtil.handleSMSRes(error, DeviceErrorEnum.DELETE_MEET_REC_FAILED, response);
         return true;
     }
+
+    @Override
+    public Boolean meetRecordConfig(MeetRecordConfigDTO request) {
+        log.info("会议录像全局配置入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        MeetRecordConfigRequest configRequest = streamMediaConvert.covertMeetRecordConfigRequest(request);
+        configRequest.setAccountToken("123");
+        configRequest.setRequestId("321321");
+        configRequest.setSsid(ssid);
+        log.info("会议录像全局配置交互参数:{}", configRequest);
+        MeetRecordConfigResponse response = client.meetRecordConfig(configRequest);
+        log.info("会议录像全局配置应答信息:{}", response);
+        String error = "会议录像全局配置失败:{},{},{}";
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.MEET_REC_CONFIG_FAILED, response);
+        return true;
+    }
 }

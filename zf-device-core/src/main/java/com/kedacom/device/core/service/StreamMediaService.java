@@ -86,4 +86,6 @@ public interface StreamMediaService {
 
     Boolean deleteMeetRec(DeleteMeetRecDTO dto);
 
+    Boolean meetRecordConfig(MeetRecordConfigDTO dto);
+
 }

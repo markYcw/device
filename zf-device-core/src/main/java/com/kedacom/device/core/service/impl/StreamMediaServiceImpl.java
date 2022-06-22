@@ -865,4 +865,26 @@ public class StreamMediaServiceImpl implements StreamMediaService {
         responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_MEET_REC_CONFIG_FAILED, response);
         return response.acquireData(QueryMeetRecordConfigVO.class);
     }
+
+    @Override
+    public QueryMeetRecordCapVO queryMeetRecordCap(QueryMeetRecordCapDTO request) {
+        log.info("容量存储查询入参信息:{}", request);
+
+        DeviceInfoEntity deviceInfoEntity = deviceMapper.selectById(request.getUmsId());
+        if (ObjectUtil.isNull(deviceInfoEntity)) {
+            throw new StreamMediaException(DeviceErrorEnum.STREAM_MEDIA_FAILED.getCode(), "请输入正确的统一平台id");
+        }
+        Integer ssid = Integer.valueOf(deviceInfoEntity.getSessionId());
+
+        QueryMeetRecordCapRequest capRequest = streamMediaConvert.covertQueryMeetRecordCapRequest(request);
+        capRequest.setAccountToken("123");
+        capRequest.setRequestId("321321");
+        capRequest.setSsid(ssid);
+        log.info("容量存储查询交互参数:{}", capRequest);
+        QueryMeetRecordCapResponse response = client.queryMeetRecordCap(capRequest);
+        log.info("容量存储查询应答信息:{}", response);
+        String error = "容量存储查询失败:{},{},{}";
+        responseUtil.handleSMSRes(error, DeviceErrorEnum.QUERY_MEET_REC_CONFIG_FAILED, response);
+        return response.acquireData(QueryMeetRecordCapVO.class);
+    }
 }

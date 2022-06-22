@@ -371,4 +371,12 @@ public class StreamMediaController {
         return BaseResult.succeed(vo);
     }
 
+    @ApiOperation("容量存储查询")
+    @PostMapping("/queryMeetRecordCap")
+    public BaseResult<QueryMeetRecordCapVO> queryMeetRecordCap(@Valid @RequestBody QueryMeetRecordCapDTO dto, BindingResult br) {
+
+        QueryMeetRecordCapVO vo = streamMediaService.queryMeetRecordCap(dto);
+        return BaseResult.succeed(vo);
+    }
+
 }

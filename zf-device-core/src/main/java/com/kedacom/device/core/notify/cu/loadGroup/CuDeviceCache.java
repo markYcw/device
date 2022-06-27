@@ -1,6 +1,7 @@
 package com.kedacom.device.core.notify.cu.loadGroup;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.kedacom.device.core.notify.cu.loadGroup.pojo.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -183,7 +184,7 @@ public class CuDeviceCache {
      */
     public void addDevice(PDevice device) {
         log.info("==加载单个设备{}", device);
-        //loadPuIdOne(device); //加载设备平台1.0对应PuId
+        String puId10 = device.getPuId10();
         String puid = device.getPuId();
         //根据puid判断设备是否已经存在，如果存在就忽略掉，避免重复
         PDevice pDevice = this.devices.get(puid);
@@ -200,10 +201,14 @@ public class CuDeviceCache {
             pDbk.setSrcChns(pDevice.getSrcChns());
             this.devices.put(puid, pDbk);
             //把平台1.0puId和对应设备存储在容器里
-            this.devicesOne.put(device.getPuId10(), pDbk);
+            if(StringUtils.isNotBlank(puId10)){
+                this.devicesOne.put(device.getPuId10(), device);
+            }
         } else {
             this.devices.put(puid, device);
-            this.devicesOne.put(device.getPuId10(), device);
+            if(StringUtils.isNotBlank(puId10)){
+                this.devicesOne.put(device.getPuId10(), device);
+            }
         }
 
         String groupId = device.getGroupId();

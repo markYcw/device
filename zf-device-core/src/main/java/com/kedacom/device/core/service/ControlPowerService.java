@@ -1,6 +1,6 @@
 package com.kedacom.device.core.service;
 
-import com.kedacom.common.model.Result;
+import com.kedacom.BaseResult;
 import com.kedacom.power.dto.UpdatePowerLanConfigDTO;
 import com.kedacom.power.entity.LanDevice;
 import com.kedacom.power.entity.PowerConfigEntity;
@@ -19,12 +19,12 @@ public interface ControlPowerService {
     /**
      * 添加北望电源设备
      */
-    Result<PowerDeviceEntity> addBwPower(BwPowerDeviceAddVo powerDeviceAddVo);
+    BaseResult<PowerDeviceEntity> addBwPower(BwPowerDeviceAddVo powerDeviceAddVo);
 
     /**
      * 修改北望电源设备
      */
-    Result<PowerDeviceEntity> updateBwPower(BwPowerDeviceUpdateVo powerDeviceUpdateVo);
+    BaseResult<PowerDeviceEntity> updateBwPower(BwPowerDeviceUpdateVo powerDeviceUpdateVo);
 
     /**
      * @Description 配置监听端口
@@ -33,7 +33,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:59
      */
-    Result<Integer> portAdd(PowerConfigAddVo powerConfigAddVo);
+    BaseResult<Integer> portAdd(PowerConfigAddVo powerConfigAddVo);
 
     /**
      * @Description 修改监听端口
@@ -42,7 +42,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:59
      */
-    Result<Integer> portUpdate(PowerConfigUpdateVo powerConfigUpdateVo);
+    BaseResult<Integer> portUpdate(PowerConfigUpdateVo powerConfigUpdateVo);
 
     /**
      * @Description 批量删除监听端口
@@ -51,7 +51,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:58
      */
-    Result<Boolean> portDelete(PowerPortVo powerPortVo);
+    BaseResult<Boolean> portDelete(PowerPortVo powerPortVo);
 
     /**
      * @Description 查询所有监听端口
@@ -60,7 +60,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:58
      */
-    Result<List<PowerPortListVo>> portList(PowerConfigListVo powerConfigListVo);
+    BaseResult<List<PowerPortListVo>> portList(PowerConfigListVo powerConfigListVo);
 
     /**
      * @Description 根据端口号查询配置
@@ -79,7 +79,7 @@ public interface ControlPowerService {
      * @author:zlf
      * @date:2021/5/27 13:06
      */
-    Result<PageRespVo<List<PowerDeviceListRspVo>>> deviceList(PowerDeviceListVo powerDeviceListVo);
+    BaseResult<PageRespVo<List<PowerDeviceListRspVo>>> deviceList(PowerDeviceListVo powerDeviceListVo);
 
     /**
      * @Description 批量删除电源设备
@@ -88,7 +88,7 @@ public interface ControlPowerService {
      * @author:zlf
      * @date:2021/5/27 11:26
      */
-    Result<Boolean> deviceDelete(PowerDeviceDeleteVo powerDeviceDeleteVo);
+    BaseResult<Boolean> deviceDelete(PowerDeviceDeleteVo powerDeviceDeleteVo);
 
     /**
      * @Description 启动TCP连接
@@ -97,7 +97,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:58
      */
-    Result powerStart(int id);
+    BaseResult powerStart(int id);
 
     /**
      * @Description 获取所有设备，填充下拉列表
@@ -106,7 +106,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:58
      */
-    Result<List<PowerDeviceVo>> getDeviceDatas();
+    BaseResult<List<PowerDeviceVo>> getDeviceDatas();
 
     /**
      * @Description 获取所有设备
@@ -115,7 +115,7 @@ public interface ControlPowerService {
      * @author:zlf
      * @date:2021/5/27 13:50
      */
-    Result<List<PowerDeviceListRspVo>> listDevices();
+    BaseResult<List<PowerDeviceListRspVo>> listDevices();
 
     /**
      * 根据Id获取设备
@@ -125,13 +125,13 @@ public interface ControlPowerService {
      * @author zlf
      * @date 15:34 2021/7/29
      */
-    Result<PowerDeviceListRspVo> getDeviceById(int id);
+    BaseResult<PowerDeviceListRspVo> getDeviceById(int id);
 
     List<LanDevice> searchDevices() throws Exception;
 
-    Result<PowerLanConfigVO> getPowerConfigByMac(String macAddr);
+    BaseResult<PowerLanConfigVO> getPowerConfigByMac(String macAddr);
 
-    Result updatePowerConfigByMac(UpdatePowerLanConfigDTO dto);
+    BaseResult<Boolean> updatePowerConfigByMac(UpdatePowerLanConfigDTO dto);
 
     /**
      * @Description 获取设备详细信息
@@ -140,7 +140,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:58
      */
-    Result<PowerDeviceMessageVo> deviceMessage(PowerDeviceMessageReqVo powerDeviceMessageReqVo);
+    BaseResult<PowerDeviceMessageVo> deviceMessage(PowerDeviceMessageReqVo powerDeviceMessageReqVo);
 
     /**
      * @Description 获取设备下通道状态
@@ -149,9 +149,9 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:58
      */
-    Result<List<PowerChannelStateVo>> deviceChannelState(PowerDeviceMessageReqVo powerDeviceMessageReqVo);
+    BaseResult<List<PowerChannelStateVo>> deviceChannelState(PowerDeviceMessageReqVo powerDeviceMessageReqVo);
 
-    Result<Boolean> deviceTurn(PowerDeviceTurnVO vo);
+    BaseResult<Boolean> deviceTurn(PowerDeviceTurnVO vo);
 
     /**
      * @Description 多个通道开关
@@ -160,7 +160,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:57
      */
-    Result<Boolean> deviceTurns(PowerDeviceTurnsVo powerDeviceTurnsVo);
+    BaseResult<Boolean> deviceTurns(PowerDeviceTurnsVo powerDeviceTurnsVo);
 
     /**
      * @Description 关闭TCP连接
@@ -169,7 +169,7 @@ public interface ControlPowerService {
      * @author:张龙飞
      * @date:2021/5/25 13:57
      */
-    Result<Boolean> powerStop();
+    BaseResult<Boolean> powerStop();
 
     /**
      * @Description 修改电源设备状态
@@ -205,7 +205,7 @@ public interface ControlPowerService {
      * @author:zlf
      * @date:
      */
-    Result<List<PowerDeviceTypeResponseVo>> getDevType();
+    BaseResult<List<PowerDeviceTypeResponseVo>> getDevType();
 
 
 }

@@ -181,9 +181,9 @@ public class DeviceAdvice {
      */
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler({PowerServiceException.class})
-    public Result handleException(PowerServiceException e) {
+    public BaseResult handleException(PowerServiceException e) {
         log.error("电源异常捕获:{}", e.getMessage());
-        return Result.failed(e.getCode(), e.getMessage());
+        return BaseResult.failed(e.getCode(), e.getMessage());
     }
 
     /**

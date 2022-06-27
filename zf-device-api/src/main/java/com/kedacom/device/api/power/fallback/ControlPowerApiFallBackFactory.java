@@ -1,6 +1,6 @@
 package com.kedacom.device.api.power.fallback;
 
-import com.kedacom.common.model.Result;
+import com.kedacom.BaseResult;
 import com.kedacom.device.api.power.ControlPowerApi;
 import com.kedacom.power.dto.UpdatePowerLanConfigDTO;
 import com.kedacom.power.entity.LanDevice;
@@ -23,33 +23,33 @@ public class ControlPowerApiFallBackFactory implements FallbackFactory<ControlPo
         return new ControlPowerApi() {
 
             @Override
-            public Result<PowerDeviceEntity> addBwPower(BwPowerDeviceAddVo powerDeviceAddVo) {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<PowerDeviceEntity> addBwPower(BwPowerDeviceAddVo powerDeviceAddVo) {
+                return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public Result<PowerDeviceEntity> updateBwPower(BwPowerDeviceUpdateVo powerDeviceUpdateVo) {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<PowerDeviceEntity> updateBwPower(BwPowerDeviceUpdateVo powerDeviceUpdateVo) {
+                return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public Result<Boolean> deviceDelete(@Valid PowerDeviceDeleteVo powerDeviceDeleteVo) {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<Boolean> deviceDelete(@Valid PowerDeviceDeleteVo powerDeviceDeleteVo) {
+                return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public Result<PageRespVo<List<PowerDeviceListRspVo>>> deviceList(@Valid PowerDeviceListVo powerDeviceListVo) {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<PageRespVo<List<PowerDeviceListRspVo>>> deviceList(@Valid PowerDeviceListVo powerDeviceListVo) {
+                return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public Result<List<PowerDeviceListRspVo>> listDevices() {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<List<PowerDeviceListRspVo>> listDevices() {
+                return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public Result<PowerDeviceListRspVo> getDeviceById(int id) {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<PowerDeviceListRspVo> getDeviceById(int id) {
+                return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
@@ -58,70 +58,70 @@ public class ControlPowerApiFallBackFactory implements FallbackFactory<ControlPo
             }
 
             @Override
-            public Result<List<LanDevice>> lanSearch() {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<List<LanDevice>> lanSearch() {
+                return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public Result<PowerLanConfigVO> getPowerConfigByMac(String macAddr) {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<PowerLanConfigVO> getPowerConfigByMac(String macAddr) {
+                return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public Result updatePowerConfigByMac(UpdatePowerLanConfigDTO dto) {
-                return Result.failed(throwable.getMessage());
+            public BaseResult updatePowerConfigByMac(UpdatePowerLanConfigDTO dto) {
+                return BaseResult.failed(throwable.getMessage());
             }
 
 
             @Override
-            public Result<Integer> portUpdate(@Valid PowerConfigUpdateVo powerConfigUpdateVo) {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<Integer> portUpdate(@Valid PowerConfigUpdateVo powerConfigUpdateVo) {
+                return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public Result<Boolean> portDelete(@Valid PowerPortVo powerPortVo) {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<Boolean> portDelete(@Valid PowerPortVo powerPortVo) {
+                return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public Result<List<PowerPortListVo>> portList(PowerConfigListVo powerConfigListVo) {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<List<PowerPortListVo>> portList(PowerConfigListVo powerConfigListVo) {
+                return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public Result<List<PowerDeviceVo>> getDeviceDatas() {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<List<PowerDeviceVo>> getDeviceDatas() {
+                return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public Result powerStart(int id) throws IOException {
-                return Result.failed(throwable.getMessage());
+            public BaseResult powerStart(int id) throws IOException {
+                return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public Result<PowerDeviceMessageVo> deviceMessage(@Valid PowerDeviceMessageReqVo powerDeviceMessageReqVo) {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<PowerDeviceMessageVo> deviceMessage(@Valid PowerDeviceMessageReqVo powerDeviceMessageReqVo) {
+                return BaseResult.failed(throwable.getMessage());
 
             }
 
             @Override
-            public Result<List<PowerChannelStateVo>> deviceChannelState(@Valid PowerDeviceMessageReqVo powerDeviceMessageReqVo) {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<List<PowerChannelStateVo>> deviceChannelState(@Valid PowerDeviceMessageReqVo powerDeviceMessageReqVo) {
+                return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public Result<Boolean> deviceTurn(@Valid PowerDeviceTurnVO powerDeviceTurnsVo) {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<Boolean> deviceTurn(@Valid PowerDeviceTurnVO powerDeviceTurnsVo) {
+                return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public Result<Boolean> deviceTurns(@Valid PowerDeviceTurnsVo powerDeviceTurnsVo) {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<Boolean> deviceTurns(@Valid PowerDeviceTurnsVo powerDeviceTurnsVo) {
+                return BaseResult.failed(throwable.getMessage());
             }
 
             @Override
-            public Result<Boolean> powerStop() {
-                return Result.failed(throwable.getMessage());
+            public BaseResult<Boolean> powerStop() {
+                return BaseResult.failed(throwable.getMessage());
             }
         };
     }

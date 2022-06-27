@@ -12,7 +12,7 @@ import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
-import com.kedacom.common.model.Result;
+import com.kedacom.BaseResult;
 import com.kedacom.device.core.convert.ControlPowerConvert;
 import com.kedacom.device.core.convert.PowerPortConvert;
 import com.kedacom.device.core.enums.AssertBiz;
@@ -74,18 +74,18 @@ public class ControlPowerServiceImpl implements ControlPowerService {
     private RedisTemplate redisTemplate;
 
     @Override
-    public Result<PowerDeviceEntity> addBwPower(BwPowerDeviceAddVo powerDeviceAddVo) {
+    public BaseResult<PowerDeviceEntity> addBwPower(BwPowerDeviceAddVo powerDeviceAddVo) {
         PowerDeviceEntity entity = dealInsertBw(powerDeviceAddVo);
         powerDeviceMapper.insert(entity);
-        return Result.succeed(powerDeviceMapper.selectById(entity.getId()));
+        return BaseResult.succeed(powerDeviceMapper.selectById(entity.getId()));
     }
 
     @Override
-    public Result<PowerDeviceEntity> updateBwPower(BwPowerDeviceUpdateVo powerDeviceUpdateVo) {
+    public BaseResult<PowerDeviceEntity> updateBwPower(BwPowerDeviceUpdateVo powerDeviceUpdateVo) {
         PowerDeviceEntity powerDeviceEntity = powerDeviceMapper.selectById(powerDeviceUpdateVo.getId());
         dealUpdateBw(powerDeviceEntity, powerDeviceUpdateVo);
         powerDeviceMapper.updateById(powerDeviceEntity);
-        return Result.succeed(powerDeviceMapper.selectById(powerDeviceEntity.getId()));
+        return BaseResult.succeed(powerDeviceMapper.selectById(powerDeviceEntity.getId()));
     }
 
     /**
@@ -97,7 +97,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/25 13:59
      */
     @Override
-    public Result<Integer> portAdd(PowerConfigAddVo powerConfigAddVo) {
+    public BaseResult<Integer> portAdd(PowerConfigAddVo powerConfigAddVo) {
         AssertBiz.OBJECT_NONE_NULL.notNull(powerConfigAddVo.getPort(), KmResultCodeEnum.ERROR_OF_PORT_REGEX);
         AssertBiz.OBJECT_IS_TRUE.isTrue(checkPortRegex(powerConfigAddVo.getPort()), KmResultCodeEnum.ERROR_OF_PORT_REGEX);
 
@@ -112,7 +112,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         // 连接开启tcp连接端口
         startTcpOfPort(powerConfigAddVo.getPort());
 
-        return Result.succeed(entity.getId());
+        return BaseResult.succeed(entity.getId());
     }
 
     /**
@@ -124,7 +124,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/25 13:59
      */
     @Override
-    public Result<Integer> portUpdate(PowerConfigUpdateVo powerConfigUpdateVo) {
+    public BaseResult<Integer> portUpdate(PowerConfigUpdateVo powerConfigUpdateVo) {
         AssertBiz.OBJECT_NONE_NULL.notNull(powerConfigUpdateVo.getPort(), KmResultCodeEnum.ERROR_OF_PORT_REGEX);
         AssertBiz.OBJECT_IS_TRUE.isTrue(checkPortRegex(powerConfigUpdateVo.getPort()), KmResultCodeEnum.ERROR_OF_PORT_REGEX);
 
@@ -135,7 +135,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
 
         // 开启tcp连接端口
         startTcpOfPort(powerConfigUpdateVo.getPort());
-        return Result.succeed(powerConfigUpdateVo.getId());
+        return BaseResult.succeed(powerConfigUpdateVo.getId());
     }
 
     /**
@@ -147,12 +147,12 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/25 13:58
      */
     @Override
-    public Result<Boolean> portDelete(PowerPortVo powerPortVo) {
+    public BaseResult<Boolean> portDelete(PowerPortVo powerPortVo) {
         powerConfigMapper.deleteBatchIds(powerPortVo.getIds());
         // 断开tcp连接
         ControlPower.getInstance().stopServer();
         this.changeBwantAllDeviceStatusDown();
-        return Result.succeed(Boolean.TRUE);
+        return BaseResult.succeed(Boolean.TRUE);
     }
 
     /**
@@ -164,14 +164,14 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/25 13:58
      */
     @Override
-    public Result<List<PowerPortListVo>> portList(PowerConfigListVo powerConfigListVo) {
+    public BaseResult<List<PowerPortListVo>> portList(PowerConfigListVo powerConfigListVo) {
         LambdaQueryWrapper<PowerConfigEntity> wrapper = new LambdaQueryWrapper<>();
         if (ObjectUtils.isNotEmpty(powerConfigListVo.getId())) {
             wrapper.eq(PowerConfigEntity::getId, powerConfigListVo.getId());
         }
         List<PowerConfigEntity> powerConfigEntities = powerConfigMapper.selectList(wrapper);
         List<PowerPortListVo> powerPortListVos = powerPortConvert.convertToPowerPortListVo(powerConfigEntities);
-        return Result.succeed(powerPortListVos);
+        return BaseResult.succeed(powerPortListVos);
     }
 
     /**
@@ -316,7 +316,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/27 13:06
      */
     @Override
-    public Result<PageRespVo<List<PowerDeviceListRspVo>>> deviceList(PowerDeviceListVo powerDeviceListVo) {
+    public BaseResult<PageRespVo<List<PowerDeviceListRspVo>>> deviceList(PowerDeviceListVo powerDeviceListVo) {
         Page<PowerDeviceEntity> page = new Page<>(powerDeviceListVo.getPageIndex(), powerDeviceListVo.getPageSize());
         LambdaQueryWrapper<PowerDeviceEntity> wrapper = new LambdaQueryWrapper<>();
         if (StringUtils.isNotBlank(powerDeviceListVo.getIp())) {
@@ -330,7 +330,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         }
         Page<PowerDeviceEntity> powerDeviceEntityPage = powerDeviceMapper.selectPage(page, wrapper);
         List<PowerDeviceListRspVo> powerDeviceListRspVos = powerPortConvert.convertToPowerDeviceListRspVo(powerDeviceEntityPage.getRecords());
-        return Result.succeed(PageRespVo.newInstance(powerDeviceListRspVos,
+        return BaseResult.succeed(PageRespVo.newInstance(powerDeviceListRspVos,
                 powerDeviceEntityPage.getTotal(), powerDeviceEntityPage.getCurrent(), powerDeviceEntityPage.getSize()));
     }
 
@@ -343,14 +343,14 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/27 11:26
      */
     @Override
-    public Result<Boolean> deviceDelete(PowerDeviceDeleteVo powerDeviceDeleteVo) {
+    public BaseResult<Boolean> deviceDelete(PowerDeviceDeleteVo powerDeviceDeleteVo) {
         powerDeviceMapper.deleteBatchIds(powerDeviceDeleteVo.getIds());
 
         /*for (Integer id : powerDeviceDeleteVo.getIds()) {
             AssertBiz.OBJECT_IS_TRUE.isTrue(mapEntity.contains(id), KmResultCodeEnum.ERROR_OF_RK100_ALREADY_LOGIN_IN); // 已登录RK100设备的不允许删除
         }*/
 
-        return Result.succeed(Boolean.TRUE);
+        return BaseResult.succeed(Boolean.TRUE);
     }
 
     /**
@@ -361,26 +361,26 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/25 13:58
      */
     @Override
-    public Result powerStart(int id) {
+    public BaseResult powerStart(int id) {
         PowerConfigEntity powerConfigEntity = powerConfigMapper.selectById(id);
         AssertBiz.OBJECT_NONE_NULL.notNull(powerConfigEntity, KmResultCodeEnum.ERROR_OF_DATA_NONE);
 
         startTcpOfPort(powerConfigEntity.getPort());
-        return Result.succeed(KmResultCodeEnum.SUCCESS.getMessage());
+        return BaseResult.succeed(KmResultCodeEnum.SUCCESS.getMessage());
     }
 
     /**
      * @Description 获取所有设备，填充下拉列表
      */
     @Override
-    public Result<List<PowerDeviceVo>> getDeviceDatas() {
+    public BaseResult<List<PowerDeviceVo>> getDeviceDatas() {
         List<PowerDeviceVo> powerDeviceVos = Lists.newArrayList();
         PowerDeviceVo powerDeviceVo = null;
 
         Map<String, Device> devices = ControlPower.getInstance().getDevices();
         log.info("获取所有设备集合：{}", JSON.toJSONString(devices));
         if (CollectionUtils.isEmpty(devices)) {
-            return Result.succeed(powerDeviceVos);
+            return BaseResult.succeed(powerDeviceVos);
         }
         Set<Map.Entry<String, Device>> entries = devices.entrySet();
         for (Map.Entry<String, Device> entry : entries) {
@@ -404,7 +404,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
             powerDeviceVos.add(powerDeviceVo);
         }
 
-        return Result.succeed(powerDeviceVos);
+        return BaseResult.succeed(powerDeviceVos);
     }
 
     /**
@@ -415,18 +415,18 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/27 13:50
      */
     @Override
-    public Result<List<PowerDeviceListRspVo>> listDevices() {
+    public BaseResult<List<PowerDeviceListRspVo>> listDevices() {
         List<PowerDeviceEntity> powerDeviceEntities = powerDeviceMapper.selectList(new QueryWrapper<>());
         List<PowerDeviceListRspVo> powerDeviceListRspVos = powerPortConvert.convertToPowerDeviceListRspVo(powerDeviceEntities);
-        return Result.succeed(powerDeviceListRspVos);
+        return BaseResult.succeed(powerDeviceListRspVos);
     }
 
     @Override
-    public Result<PowerDeviceListRspVo> getDeviceById(int id) {
+    public BaseResult<PowerDeviceListRspVo> getDeviceById(int id) {
         PowerDeviceEntity entity = powerDeviceMapper.selectById(id);
         AssertBiz.OBJECT_NONE_NULL.notNull(entity, KmResultCodeEnum.ERROR_OF_DATA_NONE);
         PowerDeviceListRspVo powerDeviceListRspVo = powerPortConvert.convertToPowerDeviceListRspVo(entity);
-        return Result.succeed(powerDeviceListRspVo);
+        return BaseResult.succeed(powerDeviceListRspVo);
     }
 
     /**
@@ -450,7 +450,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
     }
 
     @Override
-    public Result<PowerLanConfigVO> getPowerConfigByMac(String macAddr) {
+    public BaseResult<PowerLanConfigVO> getPowerConfigByMac(String macAddr) {
         DevicePortConfig devicePortConfig = null;
         PowerLanConfigVO vo = null;
         try {
@@ -472,15 +472,15 @@ public class ControlPowerServiceImpl implements ControlPowerService {
             vo.setDevIpMask(deviceConfig.getDevIpMask());
         } catch (Exception e) {
             log.error("根据设备Mac地址获取电源的详细配置，异常:{}", e.getMessage());
-            return Result.failed("根据设备Mac地址获取电源的详细配置，异常");
+            return BaseResult.failed("根据设备Mac地址获取电源的详细配置，异常");
         }
-        return Result.succeed(vo);
+        return BaseResult.succeed(vo);
     }
 
     @Override
-    public Result updatePowerConfigByMac(UpdatePowerLanConfigDTO dto) {
+    public BaseResult<Boolean> updatePowerConfigByMac(UpdatePowerLanConfigDTO dto) {
         if (!isValidPort(dto.getDesPort())) {
-            return Result.failed("服务器端口格式错误");
+            return BaseResult.failed("服务器端口格式错误");
         }
         Config build = Config.builder()
                 .devIp(dto.getIp())
@@ -494,9 +494,9 @@ public class ControlPowerServiceImpl implements ControlPowerService {
             wrapper.eq(PowerDeviceEntity::getMac, dto.getMac())
                     .set(PowerDeviceEntity::getIp, dto.getIp());
             powerDeviceMapper.update(null, wrapper);
-            return Result.succeed();
+            return BaseResult.succeed(true);
         }
-        return Result.failed("修改电源配置失败");
+        return BaseResult.failed("修改电源配置失败");
     }
 
     /**
@@ -508,7 +508,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/25 13:58
      */
     @Override
-    public Result<PowerDeviceMessageVo> deviceMessage(PowerDeviceMessageReqVo powerDeviceMessageReqVo) {
+    public BaseResult<PowerDeviceMessageVo> deviceMessage(PowerDeviceMessageReqVo powerDeviceMessageReqVo) {
         PowerDeviceEntity powerDeviceEntity = powerDeviceMapper.selectById(powerDeviceMessageReqVo.getId());
         AssertBiz.OBJECT_NONE_NULL.notNull(powerDeviceEntity, KmResultCodeEnum.ERROR_OF_DATA_NONE);
 
@@ -524,7 +524,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         }
 
 
-        return Result.succeed(PowerDeviceMessageVo.builder()
+        return BaseResult.succeed(PowerDeviceMessageVo.builder()
                 .voltage(voltage)
                 .temperature(temperature)
                 .electricities(electricityVos)
@@ -540,33 +540,33 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/25 13:58
      */
     @Override
-    public Result<List<PowerChannelStateVo>> deviceChannelState(PowerDeviceMessageReqVo powerDeviceMessageReqVo) {
+    public BaseResult<List<PowerChannelStateVo>> deviceChannelState(PowerDeviceMessageReqVo powerDeviceMessageReqVo) {
         PowerDeviceEntity powerDeviceEntity = powerDeviceMapper.selectById(powerDeviceMessageReqVo.getId());
         AssertBiz.OBJECT_NONE_NULL.notNull(powerDeviceEntity, KmResultCodeEnum.ERROR_OF_DATA_NONE);
 
         Map<Integer, Integer> channelState = ControlPower.getInstance().getChannelState(powerDeviceEntity.getMac());
         log.info("获取设备下通道状态：{}", JSON.toJSONString(channelState));
         if (CollectionUtils.isEmpty(channelState)) {
-            return Result.succeed(Lists.newArrayList());
+            return BaseResult.succeed(Lists.newArrayList());
         }
         List<PowerChannelStateVo> powerChannelStateVos = channelState.entrySet().stream().map(a -> {
             return PowerChannelStateVo.builder().channel(a.getKey()).state(a.getValue()).build();
         }).collect(Collectors.toList());
-        return Result.succeed(powerChannelStateVos);
+        return BaseResult.succeed(powerChannelStateVos);
     }
 
     @Override
-    public Result<Boolean> deviceTurn(PowerDeviceTurnVO vo) {
+    public BaseResult<Boolean> deviceTurn(PowerDeviceTurnVO vo) {
         PowerDeviceEntity powerDeviceEntity = powerDeviceMapper.selectById(vo.getId());
         AssertBiz.OBJECT_NONE_NULL.notNull(powerDeviceEntity, KmResultCodeEnum.ERROR_OF_DATA_NONE);
         String mac = powerDeviceEntity.getMac();
         if (ObjectUtil.isNull(vo.getFlag())) {
             log.info("通道对应开关状态为空，操作失败！");
-            return Result.failed(KmResultCodeEnum.ERROR.getMessage());
+            return BaseResult.failed(KmResultCodeEnum.ERROR.getMessage());
         }
         boolean flag = Objects.equals(1, vo.getFlag());
         log.info("单个通道开关请求参数：mac: {}, flag: {}", mac, vo.getFlag());
-        return Result.succeed(ControlPower.getInstance().turn(mac, vo.getChannel(), flag));
+        return BaseResult.succeed(ControlPower.getInstance().turn(mac, vo.getChannel(), flag));
     }
 
     /**
@@ -578,7 +578,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/25 13:57
      */
     @Override
-    public Result<Boolean> deviceTurns(PowerDeviceTurnsVo powerDeviceTurnsVo) {
+    public BaseResult<Boolean> deviceTurns(PowerDeviceTurnsVo powerDeviceTurnsVo) {
         PowerDeviceEntity powerDeviceEntity = powerDeviceMapper.selectById(powerDeviceTurnsVo.getId());
         AssertBiz.OBJECT_NONE_NULL.notNull(powerDeviceEntity, KmResultCodeEnum.ERROR_OF_DATA_NONE);
         String mac = powerDeviceEntity.getMac();
@@ -590,12 +590,12 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         }
         if (CollectionUtils.isEmpty(channels)) {
             log.info("通道对应开关状态为空，操作失败！");
-            return Result.failed(KmResultCodeEnum.ERROR.getMessage());
+            return BaseResult.failed(KmResultCodeEnum.ERROR.getMessage());
         }
         Map<Integer, Integer> stateMap = channels.stream()
                 .collect(Collectors.toMap(PowerDeviceChannelTurnsVo::getChannel, PowerDeviceChannelTurnsVo::getFlag, (a1, a2) -> a1));
         log.info("多个通道开关请求参数：mac: {}, stateMap: {}", mac, JSON.toJSONString(stateMap));
-        return Result.succeed(ControlPower.getInstance().turnMany(mac, channelState));
+        return BaseResult.succeed(ControlPower.getInstance().turnMany(mac, channelState));
     }
 
     /**
@@ -606,10 +606,10 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * @date:2021/5/25 13:57
      */
     @Override
-    public Result<Boolean> powerStop() {
+    public BaseResult<Boolean> powerStop() {
         ControlPower.getInstance().stopServer();
         this.changeBwantAllDeviceStatusDown();
-        return Result.succeed(KmResultCodeEnum.SUCCESS.getMessage());
+        return BaseResult.succeed(KmResultCodeEnum.SUCCESS.getMessage());
     }
 
     /**
@@ -689,12 +689,12 @@ public class ControlPowerServiceImpl implements ControlPowerService {
      * 获取电源支持的类型
      */
     @Override
-    public Result<List<PowerDeviceTypeResponseVo>> getDevType() {
+    public BaseResult<List<PowerDeviceTypeResponseVo>> getDevType() {
         List<PowerTypeEntity> powerTypeEntities = powerTypeMapper.selectList(new QueryWrapper<>());
         List<PowerDeviceTypeResponseVo> responseVos = powerTypeEntities.stream().map(p -> {
             return PowerDeviceTypeResponseVo.builder().devType(p.getDevType()).id(p.getId()).build();
         }).collect(Collectors.toList());
-        return Result.succeed(responseVos);
+        return BaseResult.succeed(responseVos);
     }
 
 

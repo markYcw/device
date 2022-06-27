@@ -1,6 +1,7 @@
 package com.kedacom.device.api.power;
 
-import com.kedacom.common.model.Result;
+
+import com.kedacom.BaseResult;
 import com.kedacom.device.api.power.fallback.ControlPowerApiFallBackFactory;
 import com.kedacom.power.dto.UpdatePowerLanConfigDTO;
 import com.kedacom.power.entity.LanDevice;
@@ -29,28 +30,28 @@ public interface ControlPowerApi {
 
     @ApiOperation(value = "添加北望电源设备")
     @PostMapping(value = "/addBwPower")
-    Result<PowerDeviceEntity> addBwPower(@RequestBody BwPowerDeviceAddVo powerDeviceAddVo);
+    BaseResult<PowerDeviceEntity> addBwPower(@RequestBody BwPowerDeviceAddVo powerDeviceAddVo);
 
     @ApiOperation(value = "修改北望电源设备")
     @PostMapping(value = "/updateBwPower")
-    Result<PowerDeviceEntity> updateBwPower(@RequestBody BwPowerDeviceUpdateVo powerDeviceUpdateVo);
+    BaseResult<PowerDeviceEntity> updateBwPower(@RequestBody BwPowerDeviceUpdateVo powerDeviceUpdateVo);
 
     @ApiOperation(value = "删除电源设备")
     @PostMapping(value = "/device/delete")
-    Result<Boolean> deviceDelete(@RequestBody PowerDeviceDeleteVo powerDeviceDeleteVo);
+    BaseResult<Boolean> deviceDelete(@RequestBody PowerDeviceDeleteVo powerDeviceDeleteVo);
 
     @ApiOperation(value = "分页条件查询电源设备")
     @PostMapping(value = "/device/list")
-    Result<PageRespVo<List<PowerDeviceListRspVo>>> deviceList(@RequestBody PowerDeviceListVo powerDeviceListVo);
+    BaseResult<PageRespVo<List<PowerDeviceListRspVo>>> deviceList(@RequestBody PowerDeviceListVo powerDeviceListVo);
 
     @ApiOperation(value = "获取所有设备")
     @GetMapping(value = "/list/device")
-    Result<List<PowerDeviceListRspVo>> listDevices();
+    BaseResult<List<PowerDeviceListRspVo>> listDevices();
 
     @ApiOperation(value = "根据Id获取设备")
     @GetMapping(value = "/list/getDeviceById")
     @ApiImplicitParams({@ApiImplicitParam(name = "id", required = true, value = "设备数据库Id")})
-    Result<PowerDeviceListRspVo> getDeviceById(@RequestParam(value = "id") int id);
+    BaseResult<PowerDeviceListRspVo> getDeviceById(@RequestParam(value = "id") int id);
 
     @ApiOperation(value = "指定对那个ip进行局域网搜索，可不调用此方法走默认配置。默认配置：\n" +
             "ip:255.255.255.255\n" +
@@ -66,20 +67,20 @@ public interface ControlPowerApi {
 
     @ApiOperation(value = "局域网搜索")
     @GetMapping(value = "/device/lanSearch")
-    Result<List<LanDevice>> lanSearch();
+    BaseResult<List<LanDevice>> lanSearch();
 
     @ApiOperation(value = "局域网搜索-根据设备Mac获取电源设备的详细配置")
     @GetMapping(value = "/device/getPowerConfigByMac")
     @ApiImplicitParams({@ApiImplicitParam(name = "mac", required = true, value = "设备Mac地址")})
-    Result<PowerLanConfigVO> getPowerConfigByMac(@RequestParam("mac") String mac);
+    BaseResult<PowerLanConfigVO> getPowerConfigByMac(@RequestParam("mac") String mac);
 
     @ApiOperation(value = "局域网搜索-修改电源设备配置")
     @PostMapping(value = "/device/updatePowerConfigByMac")
-    Result updatePowerConfigByMac(@RequestBody UpdatePowerLanConfigDTO dto);
+    BaseResult<Boolean> updatePowerConfigByMac(@RequestBody UpdatePowerLanConfigDTO dto);
 
     @ApiOperation(value = "获取所有设备，填充下拉列表（针对Bwant-IPM-08）")
     @PostMapping(value = "/device/datas")
-    Result<List<PowerDeviceVo>> getDeviceDatas();
+    BaseResult<List<PowerDeviceVo>> getDeviceDatas();
 
     /*
      * ================================================电源配置-数据库==============================================================
@@ -87,15 +88,15 @@ public interface ControlPowerApi {
 
     @ApiOperation(value = "修改电源数据库配置信息（针对Bwant-IPM-08）")
     @PostMapping(value = "/port/update")
-    Result<Integer> portUpdate(@RequestBody PowerConfigUpdateVo powerConfigUpdateVo);
+    BaseResult<Integer> portUpdate(@RequestBody PowerConfigUpdateVo powerConfigUpdateVo);
 
     @ApiOperation(value = "删除电源数据库配置信息（针对Bwant-IPM-08）")
     @PostMapping(value = "/port/delete")
-    Result<Boolean> portDelete(@RequestBody PowerPortVo powerPortVo);
+    BaseResult<Boolean> portDelete(@RequestBody PowerPortVo powerPortVo);
 
     @ApiOperation(value = "查询电源数据库配置信息（针对Bwant-IPM-08）")
     @PostMapping(value = "/port/list")
-    Result<List<PowerPortListVo>> portList(@RequestBody PowerConfigListVo powerConfigListVo);
+    BaseResult<List<PowerPortListVo>> portList(@RequestBody PowerConfigListVo powerConfigListVo);
 
     /*
      * ================================================Bwant-IPM-08操作==============================================================
@@ -104,25 +105,25 @@ public interface ControlPowerApi {
     @ApiOperation(value = "启动TCP连接（针对Bwant-IPM-08）")
     @GetMapping(value = "/start")
     @ApiImplicitParams({@ApiImplicitParam(name = "id", required = true, value = "电源配置数据库Id")})
-    Result powerStart(@RequestParam(value = "id") int id) throws IOException;
+    BaseResult powerStart(@RequestParam(value = "id") int id) throws IOException;
 
     @ApiOperation(value = "获取设备详细信息（针对Bwant-IPM-08）")
     @PostMapping(value = "/device/msg")
-    Result<PowerDeviceMessageVo> deviceMessage(@RequestBody PowerDeviceMessageReqVo powerDeviceMessageReqVo);
+    BaseResult<PowerDeviceMessageVo> deviceMessage(@RequestBody PowerDeviceMessageReqVo powerDeviceMessageReqVo);
 
     @ApiOperation(value = "获取设备下通道开关状态（针对Bwant-IPM-08）")
     @PostMapping(value = "/device/channel/state")
-    Result<List<PowerChannelStateVo>> deviceChannelState(@RequestBody PowerDeviceMessageReqVo powerDeviceMessageReqVo);
+    BaseResult<List<PowerChannelStateVo>> deviceChannelState(@RequestBody PowerDeviceMessageReqVo powerDeviceMessageReqVo);
 
     @ApiOperation(value = "单个通道开关（针对Bwant-IPM-08）")
     @PostMapping(value = "/device/turn")
-    Result<Boolean> deviceTurn(@RequestBody PowerDeviceTurnVO vo);
+    BaseResult<Boolean> deviceTurn(@RequestBody PowerDeviceTurnVO vo);
 
     @ApiOperation(value = "单个电源多个通道开关（针对Bwant-IPM-08）")
     @PostMapping(value = "/device/turns")
-    Result<Boolean> deviceTurns(@RequestBody PowerDeviceTurnsVo powerDeviceTurnsVo);
+    BaseResult<Boolean> deviceTurns(@RequestBody PowerDeviceTurnsVo powerDeviceTurnsVo);
 
     @ApiOperation(value = "关闭TCP连接（针对Bwant-IPM-08）")
     @GetMapping(value = "/stop")
-    Result<Boolean> powerStop();
+    BaseResult<Boolean> powerStop();
 }

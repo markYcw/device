@@ -46,7 +46,7 @@ public class CuDeviceCache {
 
     /**
      * 设备
-     * key:设备ID, value：设备信息
+     * key:2.0设备puID, value：设备信息
      */
     private Hashtable<String, PDevice> devices = new Hashtable<String, PDevice>(100);
 
@@ -200,10 +200,10 @@ public class CuDeviceCache {
             pDbk.setSrcChns(pDevice.getSrcChns());
             this.devices.put(puid, pDbk);
             //把平台1.0puId和对应设备存储在容器里
-            //this.devicesOne.put(device.getPuIdOne(), pDbk);
+            this.devicesOne.put(device.getPuId10(), pDbk);
         } else {
             this.devices.put(puid, device);
-            //this.devicesOne.put(device.getPuIdOne(), device);
+            this.devicesOne.put(device.getPuId10(), device);
         }
 
         String groupId = device.getGroupId();
@@ -272,6 +272,8 @@ public class CuDeviceCache {
         synchronized (deviceLock) {
             PDevice device = this.getDevice(puid);
             if (device != null) {
+                //先删除1.0puId容器里的对象
+                this.devicesOne.remove(device.getPuId10());
                 String groupId = device.getGroupId();
                 List<PDevice> list = this.devicesByGroup.get(groupId);
                 if (list != null) {

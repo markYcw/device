@@ -440,7 +440,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
     public BaseResult logoutById(CuRequestDto dto) {
         synchronized (this) {
             CuEntity entity = cuMapper.selectById(dto.getKmId());
-            check(entity);
+            //check(entity);
             //去除底层session
             CuSessionManager manager = cuDeviceLoadThread.getCuClient().getSessionManager();
             manager.removeSession(entity.getSsid());

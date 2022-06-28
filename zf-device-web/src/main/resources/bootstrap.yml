@@ -34,7 +34,9 @@ spring:
             refresh: true
           - dataId: heartbeat.yml
             refresh: true
-
+zf:
+  power:
+    tcp: 1
 
 
 #mybatis-plus:

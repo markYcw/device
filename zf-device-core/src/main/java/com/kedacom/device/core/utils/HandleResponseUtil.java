@@ -135,7 +135,7 @@ public class HandleResponseUtil {
                 throw new MpException(res.getCode(), mcuErrCode.matchErrMsg(res.getCode()));
             } else {
                 log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
-                throw new MpException(errorEnum.getCode(), errorEnum.getMsg());
+                throw new MpException(res.getCode(), errorEnum.getMsg());
             }
         }
     }
@@ -179,7 +179,7 @@ public class HandleResponseUtil {
         if (ObjectUtil.notEqual(res.getCode(), DeviceConstants.SUCCESS)) {
             if(StringUtils.isNotBlank(cuErrCode.matchErrMsg(res.getCode()))){
                 log.error(str, res.getCode(), errorEnum.getCode(), cuErrCode.matchErrMsg(res.getCode()));
-                throw new CuException(errorEnum.getCode(), cuErrCode.matchErrMsg(res.getCode()));
+                throw new CuException(res.getCode(), cuErrCode.matchErrMsg(res.getCode()));
             }else {
                 log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
                 throw new CuException(res.getCode(), errorEnum.getMsg());
@@ -197,7 +197,7 @@ public class HandleResponseUtil {
         if (ObjectUtil.notEqual(res.getCode(), DeviceConstants.SUCCESS)) {
             if(StringUtils.isNotBlank(mtErrorCode.matchErrMsg(res.getCode()))){
                 log.error(str, res.getCode(), errorEnum.getCode(), mtErrorCode.matchErrMsg(res.getCode()));
-                throw new MtException(errorEnum.getCode(), mtErrorCode.matchErrMsg(res.getCode()));
+                throw new MtException(res.getCode(), mtErrorCode.matchErrMsg(res.getCode()));
             } else {
                 log.error(str, res.getCode(), errorEnum.getCode(), errorEnum.getMsg());
                 throw new MtException(res.getCode(), errorEnum.getMsg());

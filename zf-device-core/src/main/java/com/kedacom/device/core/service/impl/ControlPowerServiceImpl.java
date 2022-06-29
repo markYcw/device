@@ -435,7 +435,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
     @Override
     public List<LanDevice> searchDevices() throws Exception {
         Set<Device> devices = configPower.searchDevices();
-        log.info("局域网搜索：{}",devices);
+        log.info("局域网搜索：{}", devices);
         Set<LanDevice> lanDevices = convert.convertDevices(devices);
         for (LanDevice lanDevice : lanDevices) {
             LambdaQueryWrapper<PowerDeviceEntity> wrapper = new LambdaQueryWrapper<>();
@@ -626,6 +626,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         LambdaQueryWrapper<PowerDeviceEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(PowerDeviceEntity::getMac, macAddr);
         PowerDeviceEntity powerDeviceEntity = powerDeviceMapper.selectOne(wrapper);
+        log.info("修改电源设备状态-mac：{}，ip:{}，状态：{}，数据库电源：{}", macAddr, ip, state, JSON.toJSONString(powerDeviceEntity));
         if (ObjectUtils.isNotEmpty(powerDeviceEntity)) {
             powerDeviceEntity.setState(state);
             if (powerDeviceEntity.getIp().equals(ip)) {

@@ -62,7 +62,7 @@ public class UmsDeviceInfoAddRequestDto implements Serializable {
     @ApiModelProperty(value = "拼控服务密码")
     private String mspPassword;
 
-    @ApiModelProperty(value = "录像微服务路径",required = true)
+    @ApiModelProperty(value = "录像微服务路径")
     private String preAddress;
 
     @ApiModelProperty(value = "EX服务IP")

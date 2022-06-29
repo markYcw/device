@@ -105,6 +105,10 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.kedacom.zf</groupId>
+            <artifactId>zf-redis-spring-boot-starter</artifactId>
+        </dependency>
 
     </dependencies>
 

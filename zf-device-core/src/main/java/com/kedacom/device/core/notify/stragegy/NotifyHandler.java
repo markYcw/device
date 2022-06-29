@@ -38,7 +38,11 @@ public class NotifyHandler {
      */
     public void distributeMessages(Integer ssid,Integer devType, Integer notifyType, String message){
         INotify notify = ContextUtils.getBean(NotifyFactory.class).getNotify(devType, notifyType);
-        notify.consumeMessage(ssid,message);
+        try {
+            notify.consumeMessage(ssid,message);
+        } catch (Exception e) {
+            log.error("==========处理设备通知消息异常{}",e);
+        }
     }
 
 }

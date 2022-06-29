@@ -253,7 +253,7 @@ public class CuDeviceLoadThread {
      */
     public void onDeviceNotify(GetDeviceNotify notify) {
         int ssid = notify.getSsid();
-        CuEntity cuEntity = cuService.getBySsid(ssid);
+        //CuEntity cuEntity = cuService.getBySsid(ssid);
         Integer isSend = notify.getIsEnd();
         List<PDevice> devices = notify.getDeviceList();
         //给设备下每一个通道设置设备PuId

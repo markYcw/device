@@ -24,12 +24,12 @@ import java.util.List;
 @ApiModel(description = "电源配置多个通道开关操作参数类")
 public class PowerDeviceTurnsVo implements Serializable {
 
-    @NotNull(message = "电源设备数据库Id不能为空")
+    @NotNull(message = "电源Id不能为空")
     @ApiModelProperty(value = "电源设备数据库Id", required = true)
     private Integer id;
 
     @Valid
-    @NotEmpty(message = "通道开关操作对应集合不能为空")
+    @NotEmpty(message = "通道不能为空")
     @ApiModelProperty(required = true)
     private List<PowerDeviceChannelTurnsVo> channels;
 

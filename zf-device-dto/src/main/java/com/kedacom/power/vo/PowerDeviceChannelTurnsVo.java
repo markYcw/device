@@ -23,12 +23,12 @@ import java.io.Serializable;
 @ApiModel(description = "电源配置多个通道具体开关操作参数类")
 public class PowerDeviceChannelTurnsVo implements Serializable {
 
-    @NotNull
+    @NotNull(message = "通道编号不能为空")
     @Min(value = 1, message = "通道编号不合法")
     @ApiModelProperty(value = "通道编号", required = true)
     private Integer channel;
 
-    @NotNull
+    @NotNull(message = "通道开关状态不能为空")
     @Max(value = 1, message = "开关状态必须是0或者1")
     @Min(value = 0, message = "开关状态必须是0或者1")
     @ApiModelProperty(value = "1:表示开，0表示关", required = true)

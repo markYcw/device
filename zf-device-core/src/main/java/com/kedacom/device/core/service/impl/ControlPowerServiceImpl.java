@@ -210,6 +210,13 @@ public class ControlPowerServiceImpl implements ControlPowerService {
             log.error("添加北望电源设备已存在：{}", entities.get(0).getMac());
             throw new PowerServiceException(KmResultCodeEnum.ERROR_OF_DEVICE_ALREADY_INUSE);
         }
+        if (entity.getChannels() == 0) {
+            Map<String, Device> devices = ControlPower.getInstance().getDevices();
+            Device device = devices.get(entity.getMac());
+            if (ObjectUtil.isNotNull(device)) {
+                entity.setChannels(device.getChannels());
+            }
+        }
         return entity;
     }
 
@@ -330,6 +337,20 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         }
         Page<PowerDeviceEntity> powerDeviceEntityPage = powerDeviceMapper.selectPage(page, wrapper);
         List<PowerDeviceListRspVo> powerDeviceListRspVos = powerPortConvert.convertToPowerDeviceListRspVo(powerDeviceEntityPage.getRecords());
+        Map<String, Device> devices = ControlPower.getInstance().getDevices();
+        LambdaUpdateWrapper<PowerDeviceEntity> updateWrapper = new LambdaUpdateWrapper<>();
+        for (PowerDeviceListRspVo vo : powerDeviceListRspVos) {
+            if (vo.getChannels() == 0) {
+                Device device = devices.get(vo.getMac());
+                if (ObjectUtil.isNotNull(device)) {
+                    updateWrapper.clear();
+                    updateWrapper.eq(PowerDeviceEntity::getId, vo.getId())
+                            .set(PowerDeviceEntity::getChannels, vo.getChannels());
+                    powerDeviceMapper.update(null, updateWrapper);
+                    vo.setChannels(device.getChannels());
+                }
+            }
+        }
         return BaseResult.succeed(PageRespVo.newInstance(powerDeviceListRspVos,
                 powerDeviceEntityPage.getTotal(), powerDeviceEntityPage.getCurrent(), powerDeviceEntityPage.getSize()));
     }
@@ -444,7 +465,7 @@ public class ControlPowerServiceImpl implements ControlPowerService {
             lanDevice.setIsAdd(CollectionUtil.isNotEmpty(entities) ? 1 : 0);
         }
         List<LanDevice> lanDeviceList = lanDevices.stream()
-                .sorted(Comparator.comparing(LanDevice::getIsAdd).reversed())
+                .sorted(Comparator.comparing(LanDevice::getIsAdd))
                 .collect(Collectors.toList());
         return lanDeviceList;
     }

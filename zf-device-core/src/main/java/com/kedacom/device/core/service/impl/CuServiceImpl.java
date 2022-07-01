@@ -351,6 +351,10 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                     removeReTryLogin(entity.getId());
                     return BaseResult.failed("登录失败，用户名或密码错误请检查");
                 } else {
+                    //进行重连
+                    CuReLoginParam paramLogin = new CuReLoginParam();
+                    paramLogin.setDbId(dto.getKmId());
+                    CompletableFuture.runAsync(() -> ContextUtils.publishReLogin(paramLogin));
                     return BaseResult.failed("登录失败，请稍后重试");
                 }
             }
@@ -595,7 +599,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
      */
     @EventListener
     public void reTryLogin(CuReLoginParam paramLogin) {
-        log.info("==================观察者收到CU发送心跳失败，即将进行自动重连，数据库ID为：{}", paramLogin.getDbId());
+        log.info("==================观察者收到CU发送心跳失败或服务启动时登录失败，即将进行自动重连，数据库ID为：{}", paramLogin.getDbId());
         CuRequestDto dto = new CuRequestDto();
         dto.setKmId(paramLogin.getDbId());
         try {
@@ -659,6 +663,10 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
                     this.loginById(dto);
                 } catch (Exception e) {
                     log.error("服务启动登录CU失败{}", e);
+                    //进行重连
+                    CuReLoginParam paramLogin = new CuReLoginParam();
+                    paramLogin.setDbId(dto.getKmId());
+                    CompletableFuture.runAsync(() -> ContextUtils.publishReLogin(paramLogin));
                 }
             }
         }

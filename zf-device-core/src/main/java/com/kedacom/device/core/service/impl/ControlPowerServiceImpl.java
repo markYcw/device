@@ -210,7 +210,8 @@ public class ControlPowerServiceImpl implements ControlPowerService {
             log.error("添加北望电源设备已存在：{}", entities.get(0).getMac());
             throw new PowerServiceException(KmResultCodeEnum.ERROR_OF_DEVICE_ALREADY_INUSE);
         }
-        if (entity.getChannels() == 0) {
+        // 通道数量不正确，重新设置
+        if (entity.getChannels() != 4 && entity.getChannels() != 8) {
             Map<String, Device> devices = ControlPower.getInstance().getDevices();
             Device device = devices.get(entity.getMac());
             if (ObjectUtil.isNotNull(device)) {
@@ -230,7 +231,8 @@ public class ControlPowerServiceImpl implements ControlPowerService {
                 .type(powerDeviceAddVo.getType())
                 .port(powerDeviceAddVo.getPort())
                 .deviceSn(powerDeviceAddVo.getDeviceSn())
-                .state(0) // 默认是离线
+                // 默认是离线
+                .state(0)
                 .build();
         LambdaQueryWrapper<PowerDeviceEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(PowerDeviceEntity::getType, PowerTypeEnum.RK100.getType());
@@ -745,8 +747,12 @@ public class ControlPowerServiceImpl implements ControlPowerService {
     }
 
     public static void main(String[] args) {
-        boolean validIpAddress = isValidMacAddr("84-c2e4-24-30-88");
-        System.out.println("validIpAddress = " + validIpAddress);
+        boolean b = get(0);
+        System.out.println("b = " + b);
+    }
+
+    public static boolean get(Integer a) {
+        return a != 4 && a != 8;
     }
 
     public static boolean isValidIpAddress(String ipAddress) {

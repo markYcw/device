@@ -254,5 +254,49 @@ public interface StreamMediaApi {
     @PostMapping("/getSvrAudioActState")
     BaseResult<GetSvrAudioActStateVo> getSvrAudioActState(@RequestBody GetSvrAudioActStateDTO dto);
 
+    @ApiOperation("查询会议录像记录")
+    @PostMapping("/queryMeetRec")
+    BaseResult<QueryMeetRecVO> queryMeetRec(@RequestBody QueryMeetRecDTO dto);
+
+    @ApiOperation("开启会议录像")
+    @PostMapping("/startMeetRec")
+    BaseResult<StartMeetRecResponseVO> startMeetRec(@RequestBody StartMeetRecDTO dto);
+
+    @ApiOperation("停止会议录像")
+    @PostMapping("/stopMeetRec")
+    BaseResult<Boolean> stopMeetRec(@RequestBody StopMeetRecDTO dto);
+
+    @ApiOperation("更新会议录像")
+    @PostMapping("/updateMeetRec")
+    BaseResult<Boolean> updateMeetRec(@RequestBody UpdateMeetRecDTO dto);
+
+    @ApiOperation("会议录像任务保活")
+    @PostMapping("/meetRecKeepAlive")
+    BaseResult<Boolean> meetRecKeepAlive(@RequestBody MeetRecKeepAliveDTO dto);
+
+    @ApiOperation("查询会议录像任务")
+    @PostMapping("/queryMeetRecTask")
+    BaseResult<QueryMeetRecTaskVO> queryMeetRecTask(@RequestBody QueryMeetRecTaskDTO dto);
+
+    @ApiOperation("删除会议记录")
+    @PostMapping("/deleteMeetRec")
+    BaseResult<Boolean> deleteMeetRec(@RequestBody DeleteMeetRecDTO dto);
+
+    @ApiOperation("会议录像全局配置")
+    @PostMapping("/meetRecConfig")
+    BaseResult<Boolean> meetRecConfig(@RequestBody MeetRecConfigDTO dto);
+
+    @ApiOperation("查询全局会议录像配置")
+    @PostMapping("/queryMeetRecConfig")
+    BaseResult<QueryMeetRecConfigVO> queryMeetRecConfig(@RequestBody QueryMeetRecConfigDTO dto);
+
+    @ApiOperation("容量存储查询")
+    @PostMapping("/queryMeetRecCap")
+    BaseResult<QueryMeetRecCapVO> queryMeetRecCap(@RequestBody QueryMeetRecCapDTO dto);
+
+    @ApiOperation("事件订阅")
+    @PostMapping("/meetRecEventSub")
+    BaseResult<Boolean> meetRecEventSub(@RequestBody MeetRecEventSubDTO dto);
+
 
 }

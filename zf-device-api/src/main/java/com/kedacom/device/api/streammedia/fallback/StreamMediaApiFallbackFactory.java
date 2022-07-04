@@ -160,6 +160,61 @@ public class StreamMediaApiFallbackFactory implements FallbackFactory<StreamMedi
             public BaseResult<GetSvrAudioActStateVo> getSvrAudioActState(GetSvrAudioActStateDTO dto) {
                 return BaseResult.failed("服务出错，请稍后重试");
             }
+
+            @Override
+            public BaseResult<QueryMeetRecVO> queryMeetRec(QueryMeetRecDTO dto) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<StartMeetRecResponseVO> startMeetRec(StartMeetRecDTO dto) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<Boolean> stopMeetRec(StopMeetRecDTO dto) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<Boolean> updateMeetRec(UpdateMeetRecDTO dto) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<Boolean> meetRecKeepAlive(MeetRecKeepAliveDTO dto) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<QueryMeetRecTaskVO> queryMeetRecTask(QueryMeetRecTaskDTO dto) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<Boolean> deleteMeetRec(DeleteMeetRecDTO dto) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<Boolean> meetRecConfig(MeetRecConfigDTO dto) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<QueryMeetRecConfigVO> queryMeetRecConfig(QueryMeetRecConfigDTO dto) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<QueryMeetRecCapVO> queryMeetRecCap(QueryMeetRecCapDTO dto) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
+
+            @Override
+            public BaseResult<Boolean> meetRecEventSub(MeetRecEventSubDTO dto) {
+                return BaseResult.failed("服务出错，请稍后重试");
+            }
         };
     }
 }

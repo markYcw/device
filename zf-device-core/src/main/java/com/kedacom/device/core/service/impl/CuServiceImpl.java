@@ -191,8 +191,53 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             //保存成功后登录平台
             CuRequestDto dto = new CuRequestDto();
             dto.setKmId(cuEntity.getId());
-            loginById(dto);
+            login(dto);
             return BaseResult.succeed("保存成功", vo);
+        }
+    }
+
+    public void login(CuRequestDto dto) {
+        synchronized (this) {
+            log.info("新增CU时登录cu入参信息:{}", dto.getKmId());
+            RestTemplate template = remoteRestTemplate.getRestTemplate();
+            CuEntity entity = cuMapper.selectById(dto.getKmId());
+            if (entity == null) {
+                throw new CuException(DeviceErrorEnum.DEVICE_NOT_FOUND);
+            }
+            CuLoginRequest request = convert.convertToCuLoginRequest(entity);
+            String ntyUrl = REQUEST_HEAD + cuNtyUrl + NOTIFY_URL;
+            request.setNtyUrl(ntyUrl);
+            request.setDevType(DeviceModelType.CU2.getCode());
+            String url = factory.geturl(entity.getType());
+            Map<String, Long> paramMap = new HashMap<>();
+            paramMap.put("ssno", (long) NumGen.getNum());
+
+            log.info("登录cu中间件入参信息:{},登录cu的ssno为：{}", JSON.toJSONString(request), paramMap);
+            String string = template.postForObject(url + "/login/{ssno}", JSON.toJSONString(request), String.class, paramMap);
+            log.info("登录cu中间件应答:{}", string);
+
+            CuLoginResponse response = JSON.parseObject(string, CuLoginResponse.class);
+            //如果是密码错误或者是用户不存在首先去除定时任务不进行无限重连
+            if (response.getCode() != 0) {
+                if (response.getCode() == 10012 || response.getCode() == 10011 || response.getCode() == 9 || response.getCode() == 10) {
+                    removeReTryLogin(entity.getId());
+                    throw new CuException(response.getCode(),"登录CU失败，用户名或密码错误请检查");
+                }
+            }
+            responseUtil.handleCuRes("登录CU失败", DeviceErrorEnum.CU_LOGIN_FAILED, response);
+            //如果登录成功再把ssid保存进数据库
+            entity.setSsid(response.getSsid());
+            entity.setModifyTime(new Date());
+            cuMapper.updateById(entity);
+            DevEntityVo devEntityVo = convert.convertToDevEntityVo(entity);
+            devEntityVo.setStatus(DevTypeConstant.updateRecordKey);
+
+            //登录成功以后加载分组信息
+            CompletableFuture.runAsync(() -> getGroups(dto.getKmId(), response.getSsid()));
+            //往cu状态池放入当前mcu状态 1已登录
+            cuStatusPoll.put(dto.getKmId(), DevTypeConstant.updateRecordKey);
+            //发送心跳
+            hbTask(entity.getId());
         }
     }
 

@@ -349,7 +349,7 @@ public class CuServiceImpl extends ServiceImpl<CuMapper, CuEntity> implements Cu
             if (response.getCode() != 0) {
                 if (response.getCode() == 10012 || response.getCode() == 10011 || response.getCode() == 9 || response.getCode() == 10) {
                     removeReTryLogin(entity.getId());
-                    return BaseResult.failed("登录失败，用户名或密码错误请检查");
+                    return BaseResult.failed(response.getCode(),"登录失败，用户名或密码错误请检查");
                 } else {
                     //进行重连
                     CuReLoginParam paramLogin = new CuReLoginParam();

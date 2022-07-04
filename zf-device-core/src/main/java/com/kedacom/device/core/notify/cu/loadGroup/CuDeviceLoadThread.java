@@ -334,7 +334,10 @@ public class CuDeviceLoadThread {
 
             case GetDeviceStatusNotify.TYPE_DEVICE_IN:
                 //设备入网
-                this.onDeviceIN(ssid, notify.getDevice());
+                String puId = notify.getPuId();
+                PDevice device = notify.getDevice();
+                device.setPuId(puId);
+                this.onDeviceIN(ssid, device);
                 break;
 
             case GetDeviceStatusNotify.TYPE_DEVICE_OUT:

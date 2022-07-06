@@ -212,6 +212,11 @@ public class ControlPowerServiceImpl implements ControlPowerService {
         }
         // 通道数量不正确，重新设置
         if (entity.getChannels() != 4 && entity.getChannels() != 8) {
+            try {
+                Thread.sleep(6000);
+            } catch (InterruptedException e) {
+                log.error("为了获取电源通道，线程暂停，error：" + e);
+            }
             Map<String, Device> devices = ControlPower.getInstance().getDevices();
             Device device = devices.get(entity.getMac());
             if (ObjectUtil.isNotNull(device)) {
